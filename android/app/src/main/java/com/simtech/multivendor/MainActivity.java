@@ -1,22 +1,20 @@
 package com.simtech.multivendor;
 
-import android.view.Gravity;
-import android.graphics.Color;
+import com.reactnativenavigation.NavigationActivity;
+import android.os.Bundle;
 import android.widget.ImageView;
+import androidx.annotation.Nullable;
 
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
-import android.widget.LinearLayout;
+public class MainActivity extends NavigationActivity {
+  @Override
+  protected void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setSplashLayout();
+  }
 
-import com.reactnativenavigation.controllers.SplashActivity;
-
-public class MainActivity extends SplashActivity {
-    @Override
-    public LinearLayout createSplashLayout() {
-        LinearLayout splash = new LinearLayout(this);
-        Drawable launch_screen_bitmap = ContextCompat.getDrawable(getApplicationContext(), R.drawable.splash);
-        splash.setBackground(launch_screen_bitmap);
-
-        return splash;
-    }
+  private void setSplashLayout() {
+    ImageView img = new ImageView(this);
+    img.setImageDrawable(getDrawable(R.mipmap.ic_splash));
+    setContentView(img);
+  }
 }

@@ -2,13 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-  Text,
-  View,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
+import { Text, View, Image, ScrollView, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import uniqueId from 'lodash/uniqueId';
 import i18n from '../utils/i18n';
@@ -33,7 +27,7 @@ const styles = EStyleSheet.create({
     backgroundColor: '$drawerHeaderBackgroundColor',
     position: 'relative',
     borderBottomWidth: 1,
-    borderColor: '$drawerHeaderBorderColor'
+    borderColor: '$drawerHeaderBorderColor',
   },
   headerUserName: {
     paddingTop: 10,
@@ -143,7 +137,7 @@ const styles = EStyleSheet.create({
   },
   redColor: {
     color: '$primaryColor',
-  }
+  },
 });
 
 class Drawer extends Component {
@@ -191,7 +185,7 @@ class Drawer extends Component {
       },
     });
     this.closeDrawer();
-  }
+  };
 
   closeDrawer() {
     const { navigator } = this.props;
@@ -201,21 +195,15 @@ class Drawer extends Component {
   }
 
   renderHeader() {
-    const {
-      cart,
-      auth,
-      authActions,
-      navigator
-    } = this.props;
+    const { cart, auth, authActions, navigator } = this.props;
     if (auth.logged) {
       return (
         <View style={styles.header}>
           {theme.$logoUrl !== '' ? (
-            <Image
-              source={{ uri: theme.$logoUrl }}
-              style={styles.logo}
-            />
-          ) : <View style={{ height: 30 }} />}
+            <Image source={{ uri: theme.$logoUrl }} style={styles.logo} />
+          ) : (
+            <View style={{ height: 30 }} />
+          )}
           <View style={styles.headerUserName}>
             <Text style={styles.headerUserNameText} numberOfLines={2}>
               {cart.user_data.b_firstname} {cart.user_data.b_lastname}
@@ -232,8 +220,7 @@ class Drawer extends Component {
                   payload: {},
                 });
                 this.closeDrawer();
-              }}
-            >
+              }}>
               <Icon name="exit-to-app" style={styles.signOutBtnIcon} />
             </TouchableOpacity>
           </View>
@@ -244,11 +231,10 @@ class Drawer extends Component {
     return (
       <View style={styles.header}>
         {theme.$logoUrl !== '' ? (
-          <Image
-            source={{ uri: theme.$logoUrl }}
-            style={styles.logo}
-          />
-        ) : <View style={{ height: 30 }} />}
+          <Image source={{ uri: theme.$logoUrl }} style={styles.logo} />
+        ) : (
+          <View style={{ height: 30 }} />
+        )}
         <View style={styles.signInWrapper}>
           <TouchableOpacity
             style={styles.signInBtn}
@@ -257,11 +243,8 @@ class Drawer extends Component {
               navigator.showModal({
                 screen: 'Login',
               });
-            }}
-          >
-            <Text style={styles.signInBtnText}>
-              {i18n.t('Login')}
-            </Text>
+            }}>
+            <Text style={styles.signInBtnText}>{i18n.t('Login')}</Text>
           </TouchableOpacity>
 
           <Text style={[styles.signInBtnText, styles.signInDelim]}>
@@ -279,11 +262,8 @@ class Drawer extends Component {
                   showClose: true,
                 },
               });
-            }}
-          >
-            <Text style={styles.signInBtnText}>
-              {i18n.t('Registration')}
-            </Text>
+            }}>
+            <Text style={styles.signInBtnText}>{i18n.t('Registration')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -303,9 +283,7 @@ class Drawer extends Component {
       }
       return (
         <View style={badgeStyle}>
-          <Text style={badgeTextStyle}>
-            {badge}
-          </Text>
+          <Text style={badgeTextStyle}>{badge}</Text>
         </View>
       );
     };
@@ -313,12 +291,9 @@ class Drawer extends Component {
       <TouchableOpacity
         style={styles.itemBtn}
         onPress={onPress}
-        key={uniqueId()}
-      >
+        key={uniqueId()}>
         <View>
-          <Text style={styles.itemBtnText}>
-            {text}
-          </Text>
+          <Text style={styles.itemBtnText}>{text}</Text>
           {renderBadge()}
         </View>
       </TouchableOpacity>
@@ -337,12 +312,10 @@ class Drawer extends Component {
     }
     return (
       <View style={badgeStyle}>
-        <Text style={badgeTextStyle}>
-          {badge}
-        </Text>
+        <Text style={badgeTextStyle}>{badge}</Text>
       </View>
     );
-  }
+  };
 
   renderVendorMenu = () => {
     const { navigator, profile } = this.props;
@@ -379,7 +352,7 @@ class Drawer extends Component {
               payload: {},
             });
           },
-          styles.redColor
+          styles.redColor,
         )}
         <View style={styles.devider} />
       </View>
@@ -388,37 +361,26 @@ class Drawer extends Component {
 
   renderMenuItem = (icon, text, onPress, customStyle = {}) => {
     return (
-      <TouchableOpacity
-        style={styles.itemBtn}
-        onPress={onPress}
-      >
+      <TouchableOpacity style={styles.itemBtn} onPress={onPress}>
         <View style={styles.itemBtnWrapper}>
           <Icon name={icon} style={[styles.itemBtnIcon, customStyle]} />
-          <Text style={[styles.itemBtnText, customStyle]}>
-            {text}
-          </Text>
+          <Text style={[styles.itemBtnText, customStyle]}>{text}</Text>
         </View>
       </TouchableOpacity>
     );
-  }
+  };
 
   render() {
-    const {
-      navigator,
-      pages,
-      auth,
-      cart,
-      wishList,
-    } = this.props;
-    const pagesList = pages.items
-      .map(p => this.renderItem(p.page, () => this.handleOpenPage(p)));
+    const { navigator, pages, auth, cart, wishList } = this.props;
+    const pagesList = pages.items.map((p) =>
+      this.renderItem(p.page, () => this.handleOpenPage(p)),
+    );
 
     return (
       <View style={styles.container}>
         {this.renderHeader()}
         <ScrollView style={styles.scroll}>
           <View style={styles.mainMenu}>
-
             {auth.logged && this.renderVendorMenu()}
 
             {this.renderMenuItem('home', i18n.t('Home'), () => {
@@ -436,13 +398,10 @@ class Drawer extends Component {
                   screen: 'Cart',
                 });
                 this.closeDrawer();
-              }}
-            >
+              }}>
               <View style={styles.itemBtnWrapper}>
                 <Icon name="shopping-cart" style={styles.itemBtnIcon} />
-                <Text style={styles.itemBtnText}>
-                  {i18n.t('Cart')}
-                </Text>
+                <Text style={styles.itemBtnText}>{i18n.t('Cart')}</Text>
                 {this.renderBadge(cart.amount)}
               </View>
             </TouchableOpacity>
@@ -455,19 +414,16 @@ class Drawer extends Component {
                     screen: 'WishList',
                   });
                   this.closeDrawer();
-                }}
-              >
+                }}>
                 <View style={styles.itemBtnWrapper}>
                   <Icon name="favorite" style={styles.itemBtnIcon} />
-                  <Text style={styles.itemBtnText}>
-                    {i18n.t('Wish List')}
-                  </Text>
+                  <Text style={styles.itemBtnText}>{i18n.t('Wish List')}</Text>
                   {this.renderBadge(wishList.items.length)}
                 </View>
               </TouchableOpacity>
             )}
 
-            {auth.logged && (
+            {auth.logged &&
               this.renderMenuItem('person', i18n.t('My Profile'), () => {
                 navigator.showModal({
                   screen: 'Profile',
@@ -475,23 +431,19 @@ class Drawer extends Component {
                   passProps: {},
                 });
                 this.closeDrawer();
-              })
-            )}
+              })}
 
-            {auth.logged && (
+            {auth.logged &&
               this.renderMenuItem('receipt', i18n.t('Orders'), () => {
                 navigator.handleDeepLink({
                   link: 'dispatch=orders.search',
                   payload: {},
                 });
                 this.closeDrawer();
-              })
-            )}
+              })}
           </View>
           <View style={styles.devider} />
-          <View style={styles.pagesMenu}>
-            {pagesList}
-          </View>
+          <View style={styles.pagesMenu}>{pagesList}</View>
         </ScrollView>
       </View>
     );
@@ -499,15 +451,15 @@ class Drawer extends Component {
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     auth: state.auth,
     cart: state.cart,
     wishList: state.wishList,
     pages: state.pages,
     profile: state.profile,
   }),
-  dispatch => ({
+  (dispatch) => ({
     authActions: bindActionCreators(authActions, dispatch),
     pagesActions: bindActionCreators(pagesActions, dispatch),
-  })
+  }),
 )(Drawer);

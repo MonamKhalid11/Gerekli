@@ -5,9 +5,7 @@ import {
   AUTH_RESET_STATE,
   AUTH_LOGOUT,
   AUTH_REGESTRATION_SUCCESS,
-
   REGISTER_DEVICE_SUCCESS,
-
   RESTORE_STATE,
 } from '../constants';
 

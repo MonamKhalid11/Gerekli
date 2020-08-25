@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  View,
-  Text,
-  TextInput,
-} from 'react-native';
+import { View, Text, TextInput } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 const styles = EStyleSheet.create({
@@ -29,7 +25,7 @@ const styles = EStyleSheet.create({
     borderRadius: 3,
     marginTop: 8,
     padding: 8,
-  }
+  },
 });
 
 export default class extends Component {
@@ -69,7 +65,7 @@ export default class extends Component {
 
   renderComment = (option) => {
     if (option.comment) {
-      return (<Text style={styles.commentText}>{option.comment}</Text>);
+      return <Text style={styles.commentText}>{option.comment}</Text>;
     }
     return null;
   };
@@ -79,11 +75,7 @@ export default class extends Component {
     const { value } = this.state;
     return (
       <View style={styles.container}>
-        <Text
-          style={styles.title}
-        >
-          {option.option_name}
-        </Text>
+        <Text style={styles.title}>{option.option_name}</Text>
         <View style={styles.optionsVariants}>
           <TextInput
             multiline
@@ -92,7 +84,7 @@ export default class extends Component {
             autoCapitalize="none"
             keyboardAppearance="dark"
             clearButtonMode="while-editing"
-            onChangeText={text => this.handleChange(text)}
+            onChangeText={(text) => this.handleChange(text)}
           />
         </View>
         {this.renderComment(option)}

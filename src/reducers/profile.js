@@ -5,7 +5,7 @@ import {
 } from '../constants';
 
 const initialState = {
-  user_type: 'C'
+  user_type: 'C',
 };
 
 export default function (state = initialState, action) {

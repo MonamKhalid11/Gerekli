@@ -1,3 +1,3 @@
-import Application from './src';
+import Start from './src/index';
 
-Application();
+Start();

@@ -1,15 +1,9 @@
-/* eslint-disable no-nested-ternary */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { format } from 'date-fns';
-import {
-  View,
-  Text,
-  ScrollView,
-  Image,
-} from 'react-native';
+import { View, Text, ScrollView, Image } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Import actions.
@@ -21,8 +15,8 @@ import FormBlockField from '../../components/FormBlockField';
 import Spinner from '../../components/Spinner';
 
 import i18n from '../../utils/i18n';
-import theme from '../../config/theme';
 import { formatPrice, getImagePath, getOrderStatus } from '../../utils';
+import { Navigation } from 'react-native-navigation';
 
 const styles = EStyleSheet.create({
   container: {
@@ -95,11 +89,6 @@ const styles = EStyleSheet.create({
 });
 
 class OrderDetail extends Component {
-  static navigatorStyle = {
-    navBarBackgroundColor: '#FAFAFA',
-    navBarButtonColor: '#989898',
-  };
-
   static propTypes = {
     orderId: PropTypes.number,
     fetching: PropTypes.bool,
@@ -107,34 +96,25 @@ class OrderDetail extends Component {
       fetchOrder: PropTypes.func,
     }),
     order: PropTypes.shape({}),
-    navigator: PropTypes.shape({
-      push: PropTypes.func,
-      setTitle: PropTypes.func,
-      setButtons: PropTypes.func,
-    }),
   };
 
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
+  static options = {
+    topBar: {
+      title: {
+        text: i18n.t('Order Detail').toUpperCase(),
+      },
+    },
   };
 
   async componentWillMount() {
-    const { orderId, navigator, ordersActions } = this.props;
+    const { orderId, ordersActions } = this.props;
     const data = await ordersActions.fetchOrder(orderId);
 
     if (!data) {
       setTimeout(() => {
-        navigator.pop();
+        Navigation.pop(this.props.componentId);
       });
     }
-
-    navigator.setTitle({
-      title: i18n.t('Order Detail').toUpperCase(),
-    });
   }
 
   renderProduct = (item, index) => {
@@ -143,20 +123,15 @@ class OrderDetail extends Component {
 
     if (imageUri) {
       productImage = (
-        <Image
-          source={{ uri: imageUri }}
-          style={styles.productItemImage}
-        />);
+        <Image source={{ uri: imageUri }} style={styles.productItemImage} />
+      );
     }
 
     return (
       <View style={styles.productItem} key={index}>
         {productImage}
         <View style={styles.productItemDetail}>
-          <Text
-            style={styles.productItemName}
-            numberOfLines={1}
-          >
+          <Text style={styles.productItemName} numberOfLines={1}>
             {item.product}
           </Text>
           <Text style={styles.productItemPrice}>
@@ -165,18 +140,14 @@ class OrderDetail extends Component {
         </View>
       </View>
     );
-  }
+  };
 
   renderFieldRow = (title, text) => {
     if (text === '') {
       return null;
     }
-    return (
-      <FormBlockField title={title}>
-        {text}
-      </FormBlockField>
-    );
-  }
+    return <FormBlockField title={title}>{text}</FormBlockField>;
+  };
 
   renderFields() {
     const { order } = this.props;
@@ -185,8 +156,7 @@ class OrderDetail extends Component {
       <React.Fragment>
         <FormBlock
           title={i18n.t('Contact information')}
-          style={styles.formBlockWraper}
-        >
+          style={styles.formBlockWraper}>
           <View>
             {this.renderFieldRow(i18n.t('Email:'), order.email)}
             {this.renderFieldRow(i18n.t('Phone:'), order.phone)}
@@ -194,8 +164,7 @@ class OrderDetail extends Component {
         </FormBlock>
         <FormBlock
           title={i18n.t('Billing address')}
-          style={styles.formBlockWraper}
-        >
+          style={styles.formBlockWraper}>
           <View>
             {this.renderFieldRow(i18n.t('First name:'), order.b_firstname)}
             {this.renderFieldRow(i18n.t('Last name:'), order.b_lastname)}
@@ -208,8 +177,7 @@ class OrderDetail extends Component {
         </FormBlock>
         <FormBlock
           title={i18n.t('Shipping address')}
-          style={styles.formBlockWraper}
-        >
+          style={styles.formBlockWraper}>
           <View>
             {this.renderFieldRow(i18n.t('First name:'), order.s_firstname)}
             {this.renderFieldRow(i18n.t('Last name:'), order.s_lastname)}
@@ -230,12 +198,10 @@ class OrderDetail extends Component {
 
     return (
       <FormBlock style={styles.formBlockWraper}>
-        <View>
-          {this.renderFieldRow(i18n.t('Status'), status.text)}
-        </View>
+        <View>{this.renderFieldRow(i18n.t('Status'), status.text)}</View>
       </FormBlock>
     );
-  }
+  };
 
   render() {
     const { order, fetching } = this.props;
@@ -250,8 +216,9 @@ class OrderDetail extends Component {
 
     const productsList = order.products.map((p, i) => this.renderProduct(p, i));
 
-    const shippingMethodsList = order.shipping
-      .map((s, index) => <Text key={index}>{s.shipping}</Text>);
+    const shippingMethodsList = order.shipping.map((s, index) => (
+      <Text key={index}>{s.shipping}</Text>
+    ));
 
     const date = new Date(order.timestamp * 1000);
     return (
@@ -261,24 +228,20 @@ class OrderDetail extends Component {
             {i18n.t('Order')} #{order.order_id}
           </Text>
           <Text style={styles.subHeader}>
-            {i18n.t('Placed on')} {format(date, 'MM/DD/YYYY')}
+            {i18n.t('Placed on')} {format(date, 'mm/dd/yyyy')}
           </Text>
 
           <FormBlock>
             <Text style={styles.header}>
               {i18n.t('Products information').toUpperCase()}
             </Text>
-            <View style={styles.productsWrapper}>
-              {productsList}
-            </View>
+            <View style={styles.productsWrapper}>{productsList}</View>
           </FormBlock>
 
           {this.renderStatus()}
 
           <FormBlock>
-            <Text style={styles.header}>
-              {i18n.t('Summary').toUpperCase()}
-            </Text>
+            <Text style={styles.header}>{i18n.t('Summary').toUpperCase()}</Text>
             <View style={styles.formBlockWraper}>
               <FormBlockField title={`${i18n.t('Payment method')}:`}>
                 {order.payment_method.payment}
@@ -306,11 +269,11 @@ class OrderDetail extends Component {
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     order: state.vendorManageOrders.current,
     fetching: state.vendorManageOrders.loadingCurrent,
   }),
-  dispatch => ({
+  (dispatch) => ({
     ordersActions: bindActionCreators(ordersActions, dispatch),
-  })
+  }),
 )(OrderDetail);

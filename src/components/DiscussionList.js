@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Text,
-  View,
-  FlatList,
-  ActivityIndicator,
-} from 'react-native';
+import { Text, View, FlatList, ActivityIndicator } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Rating from './Rating';
 
@@ -30,7 +25,7 @@ const styles = EStyleSheet.create({
     color: '$discussionMessageColor',
     marginTop: 0,
     paddingBottom: 10,
-    textAlign: 'left'
+    textAlign: 'left',
   },
   itemContainer: {
     marginBottom: 10,
@@ -51,12 +46,12 @@ const styles = EStyleSheet.create({
   name: {
     fontWeight: '800',
     fontSize: '0.9rem',
-    textAlign: 'left'
+    textAlign: 'left',
   },
   empty: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   emptyText: {
     fontSize: '0.9rem',
@@ -73,28 +68,34 @@ export default class DiscussionList extends Component {
     onEndReached: PropTypes.func,
     type: PropTypes.string,
     fetching: PropTypes.bool,
-  }
+  };
 
   static defaultProps = {
     items: [],
     infinite: false,
-  }
+  };
 
   renderItem(item, index) {
     const { type } = this.props;
-    const showRating = (
-      type === DISCUSSION_RATING || type === DISCUSSION_COMMUNICATION_AND_RATING
-    );
-    const showMessage = (
-      type === DISCUSSION_COMMUNICATION_AND_RATING || type === DISCUSSION_COMMUNICATION
-    );
+    const showRating =
+      type === DISCUSSION_RATING ||
+      type === DISCUSSION_COMMUNICATION_AND_RATING;
+    const showMessage =
+      type === DISCUSSION_COMMUNICATION_AND_RATING ||
+      type === DISCUSSION_COMMUNICATION;
     const noUnderlineStyle = this.props.items.length === index + 1;
 
     return (
-      <View style={[styles.itemContainer, noUnderlineStyle && styles.itemContainerNoBorder]}>
+      <View
+        style={[
+          styles.itemContainer,
+          noUnderlineStyle && styles.itemContainerNoBorder,
+        ]}>
         <View style={styles.itemWrapper}>
           <Text style={styles.name}>{item.name}</Text>
-          {showRating && <Rating value={item.rating_value} containerStyle={styles.rating} />}
+          {showRating && (
+            <Rating value={item.rating_value} containerStyle={styles.rating} />
+          )}
         </View>
         {showMessage && <Text style={styles.msg}>{item.message}</Text>}
       </View>
@@ -106,16 +107,12 @@ export default class DiscussionList extends Component {
       return null;
     }
 
-    return (
-      <ActivityIndicator animating />
-    );
+    return <ActivityIndicator animating />;
   }
 
   renderEmpty = () => (
     <View style={styles.empty}>
-      <Text style={styles.emptyText}>
-        {i18n.t('No posts found')}
-      </Text>
+      <Text style={styles.emptyText}>{i18n.t('No posts found')}</Text>
     </View>
   );
 

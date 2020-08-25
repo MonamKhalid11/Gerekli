@@ -12,22 +12,14 @@ import {
   Dimensions,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-
-// Styles
-import theme from '../../config/theme';
-
-// Components
 import CheckoutSteps from '../../components/CheckoutSteps';
 import Section from '../../components/Section';
 import BottomActions from '../../components/BottomActions';
-
 import * as imagePickerActions from '../../actions/imagePickerActions';
-
 import { steps } from '../../services/vendors';
-
+import * as nav from '../../services/navigation';
 import i18n from '../../utils/i18n';
-import { registerDrawerDeepLinks } from '../../utils/deepLinks';
-
+import { Navigation } from 'react-native-navigation';
 
 const styles = EStyleSheet.create({
   container: {
@@ -53,7 +45,7 @@ const styles = EStyleSheet.create({
   },
   sectionText: {
     color: '$primaryColor',
-  }
+  },
 });
 
 const IMAGE_NUM_COLUMNS = 4;
@@ -61,77 +53,35 @@ const IMAGE_NUM_COLUMNS = 4;
 class AddProductStep1 extends Component {
   static propTypes = {
     images: PropTypes.arrayOf(PropTypes.string),
-    navigator: PropTypes.shape({
-      setTitle: PropTypes.func,
-      setButtons: PropTypes.func,
-      push: PropTypes.func,
-      setOnNavigatorEvent: PropTypes.func,
-    }),
     imagePickerActions: PropTypes.shape({
       clear: PropTypes.func,
     }),
   };
 
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
-  };
-
-  constructor(props) {
-    super(props);
-
-    props.navigator.setTitle({
-      title: i18n.t('Select product image').toUpperCase(),
-    });
-
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
-  }
-
   componentDidMount() {
-    const { imagePickerActions } = this.props;
-    imagePickerActions.clear();
-  }
-
-  onNavigatorEvent(event) {
-    const { navigator } = this.props;
-    registerDrawerDeepLinks(event, navigator);
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'sideMenu') {
-        navigator.toggleDrawer({ side: 'left' });
-      }
-    }
+    // const { imagePickerActions } = this.props;
+    // imagePickerActions.clear();
   }
 
   handleGoNext = () => {
-    const { navigator, images, category_ids } = this.props;
-
-    navigator.push({
-      screen: 'VendorManageAddProductStep2',
-      backButtonTitle: '',
-      passProps: {
-        stepsData: {
-          images,
-          category_ids,
-        },
+    const { images, category_ids } = this.props;
+    nav.pushVendorManageAddProductStep2(this.props.componentId, {
+      stepsData: {
+        images,
+        category_ids,
       },
     });
-  }
+  };
 
   handleRemoveImage = (imageIndex) => {
-    const { imagePickerActions, navigator, images } = this.props;
-    const newImages = [
-      ...images,
-    ];
+    const { imagePickerActions, images } = this.props;
+    const newImages = [...images];
     newImages.splice(imageIndex, 1);
     imagePickerActions.toggle(newImages);
-    navigator.dismissModal();
-  }
+    Navigation.dismissModal(this.props.componentId);
+  };
 
   renderHeader = () => {
-    const { navigator } = this.props;
     return (
       <View>
         <View style={styles.header}>
@@ -140,15 +90,9 @@ class AddProductStep1 extends Component {
         <Section containerStyle={styles.containerStyle}>
           <TouchableOpacity
             onPress={() => {
-              navigator.showModal({
-                screen: 'ImagePicker',
-                passProps: {},
-              });
-            }}
-          >
-            <Text style={styles.sectionText}>
-              {i18n.t('Select image')}
-            </Text>
+              nav.showImagePicker();
+            }}>
+            <Text style={styles.sectionText}>{i18n.t('Select image')}</Text>
           </TouchableOpacity>
         </Section>
       </View>
@@ -156,13 +100,10 @@ class AddProductStep1 extends Component {
   };
 
   renderEmptyList = () => (
-    <Text style={styles.emptyList}>
-      {i18n.t('There are no images')}
-    </Text>
+    <Text style={styles.emptyList}>{i18n.t('There are no images')}</Text>
   );
 
   renderImage = (image) => {
-    const { navigator } = this.props;
     const IMAGE_WIDTH = Dimensions.get('window').width / IMAGE_NUM_COLUMNS;
 
     return (
@@ -170,17 +111,12 @@ class AddProductStep1 extends Component {
         style={styles.imageWrapper}
         key={uniqueId('image-')}
         onPress={() => {
-          navigator.showModal({
-            screen: 'Gallery',
-            animationType: 'fade',
-            passProps: {
-              images: [image.item],
-              activeIndex: 1,
-              onRemove: () => this.handleRemoveImage(image.index),
-            },
+          nav.showGallery({
+            images: [image.item],
+            activeIndex: 1,
+            onRemove: () => this.handleRemoveImage(image.index),
           });
-        }}
-      >
+        }}>
         <Image
           style={{
             width: IMAGE_WIDTH,
@@ -190,7 +126,7 @@ class AddProductStep1 extends Component {
         />
       </TouchableOpacity>
     );
-  }
+  };
 
   render() {
     const { images } = this.props;
@@ -199,7 +135,7 @@ class AddProductStep1 extends Component {
         <FlatList
           contentContainerStyle={styles.scrollContainer}
           data={images}
-          keyExtractor={item => item}
+          keyExtractor={(item) => item}
           ListHeaderComponent={() => this.renderHeader()}
           numColumns={IMAGE_NUM_COLUMNS}
           renderItem={this.renderImage}
@@ -215,10 +151,10 @@ class AddProductStep1 extends Component {
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     images: state.imagePicker.selected,
   }),
-  dispatch => ({
+  (dispatch) => ({
     imagePickerActions: bindActionCreators(imagePickerActions, dispatch),
-  })
+  }),
 )(AddProductStep1);

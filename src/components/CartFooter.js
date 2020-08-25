@@ -1,9 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {
-  View,
-  Text,
-} from 'react-native';
+import { View, Text } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 import Button from './Button';
@@ -38,30 +35,20 @@ export default class extends PureComponent {
   };
 
   render() {
-    const {
-      onBtnPress,
-      totalPrice,
-      isBtnDisabled,
-      btnText,
-    } = this.props;
+    const { onBtnPress, totalPrice, isBtnDisabled, btnText } = this.props;
     return (
       <View style={styles.container}>
         <View>
           <Text style={styles.cartInfoTitle}>
             {i18n.t('Total').toUpperCase()}
           </Text>
-          <Text style={styles.cartInfoTotal}>
-            {formatPrice(totalPrice)}
-          </Text>
+          <Text style={styles.cartInfoTotal}>{formatPrice(totalPrice)}</Text>
         </View>
         <Button
           type="primary"
           onPress={() => onBtnPress()}
-          disabled={isBtnDisabled}
-        >
-          <Text style={styles.placeOrderBtnText}>
-            {btnText}
-          </Text>
+          disabled={isBtnDisabled}>
+          <Text style={styles.placeOrderBtnText}>{btnText}</Text>
         </Button>
       </View>
     );

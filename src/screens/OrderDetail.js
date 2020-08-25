@@ -4,12 +4,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { format } from 'date-fns';
-import {
-  View,
-  Text,
-  ScrollView,
-  Image,
-} from 'react-native';
+import { View, Text, ScrollView, Image } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Import actions.
@@ -23,6 +18,7 @@ import Spinner from '../components/Spinner';
 import i18n from '../utils/i18n';
 import { formatPrice, getImagePath } from '../utils';
 import Api from '../services/api';
+import * as nav from '../services/navigation';
 
 const styles = EStyleSheet.create({
   container: {
@@ -95,21 +91,19 @@ const styles = EStyleSheet.create({
 });
 
 class OrderDetail extends Component {
-  static navigatorStyle = {
-    navBarBackgroundColor: '#FAFAFA',
-    navBarButtonColor: '#989898',
-  };
-
   static propTypes = {
     notificationsActions: PropTypes.shape({
       show: PropTypes.func,
     }),
     orderId: PropTypes.string,
-    navigator: PropTypes.shape({
-      push: PropTypes.func,
-      setTitle: PropTypes.func,
-      setButtons: PropTypes.func,
-    }),
+  };
+
+  static options = {
+    topBar: {
+      title: {
+        text: i18n.t('Order Detail').toUpperCase(),
+      },
+    },
   };
 
   constructor(props) {
@@ -123,7 +117,7 @@ class OrderDetail extends Component {
   }
 
   componentWillMount() {
-    const { orderId, navigator, notificationsActions } = this.props;
+    const { orderId, notificationsActions } = this.props;
 
     Api.get(`/sra_orders/${orderId}`)
       .then((response) => {
@@ -132,18 +126,16 @@ class OrderDetail extends Component {
           action: 'update',
         };
 
-        Api.get('/sra_profile', { params })
-          .then(({ data, }) => {
-            const { fields } = data;
-            // eslint-disable-next-line no-param-reassign
-            delete fields.E;
+        Api.get('/sra_profile', { params }).then(({ data }) => {
+          const { fields } = data;
+          delete fields.E;
 
-            this.setState({
-              fetching: false,
-              orderDetail: response.data,
-              fields
-            });
+          this.setState({
+            fetching: false,
+            orderDetail: response.data,
+            fields,
           });
+        });
       })
       .catch(() => {
         notificationsActions.show({
@@ -153,16 +145,9 @@ class OrderDetail extends Component {
           closeLastModal: false,
         });
         setTimeout(() => {
-          navigator.resetTo({
-            screen: 'Layouts',
-            animated: false,
-          });
+          nav.selectTab('profile');
         });
       });
-
-    navigator.setTitle({
-      title: i18n.t('Order Detail').toUpperCase(),
-    });
   }
 
   renderProduct = (item, index) => {
@@ -170,19 +155,14 @@ class OrderDetail extends Component {
     const imageUri = getImagePath(item);
     if (imageUri) {
       productImage = (
-        <Image
-          source={{ uri: imageUri }}
-          style={styles.productItemImage}
-        />);
+        <Image source={{ uri: imageUri }} style={styles.productItemImage} />
+      );
     }
     return (
       <View style={styles.productItem} key={index}>
         {productImage}
         <View style={styles.productItemDetail}>
-          <Text
-            style={styles.productItemName}
-            numberOfLines={1}
-          >
+          <Text style={styles.productItemName} numberOfLines={1}>
             {item.product}
           </Text>
           <Text style={styles.productItemPrice}>
@@ -191,7 +171,7 @@ class OrderDetail extends Component {
         </View>
       </View>
     );
-  }
+  };
 
   renderFields() {
     const { orderDetail, fields } = this.state;
@@ -212,7 +192,8 @@ class OrderDetail extends Component {
       if (country.code) {
         section.fields.forEach((field) => {
           if (field.field_type === 'A' && field.values[country.code]) {
-            state.name = field.values[country.code][orderDetail[field.field_id]];
+            state.name =
+              field.values[country.code][orderDetail[field.field_id]];
           }
         });
       }
@@ -221,27 +202,25 @@ class OrderDetail extends Component {
         <FormBlock
           key={key}
           title={section.description}
-          style={styles.formBlockWraper}
-        >
+          style={styles.formBlockWraper}>
           <View>
-            {
-              section.fields.map((field) => {
-                if (orderDetail[field.field_id]) {
-                  return (
-                    <FormBlockField title={`${field.description}:`} key={field.field_id}>
-                      {field.field_type === 'O' && country.name
-                        ? country.name
-                        : field.field_type === 'A' && state.name
-                          ? state.name
-                          : orderDetail[field.field_id]
-                      }
-                    </FormBlockField>
-                  );
-                }
+            {section.fields.map((field) => {
+              if (orderDetail[field.field_id]) {
+                return (
+                  <FormBlockField
+                    title={`${field.description}:`}
+                    key={field.field_id}>
+                    {field.field_type === 'O' && country.name
+                      ? country.name
+                      : field.field_type === 'A' && state.name
+                        ? state.name
+                        : orderDetail[field.field_id]}
+                  </FormBlockField>
+                );
+              }
 
-                return null;
-              })
-            }
+              return null;
+            })}
           </View>
         </FormBlock>
       );
@@ -259,12 +238,15 @@ class OrderDetail extends Component {
     }
 
     const productsList = orderDetail.product_groups.map((group) => {
-      const products = Object.keys(group.products).map(k => group.products[k]);
+      const products = Object.keys(group.products).map(
+        (k) => group.products[k],
+      );
       return products.map((p, i) => this.renderProduct(p, i));
     });
 
-    const shippingMethodsList = orderDetail.shipping
-      .map((s, index) => <Text key={index}>{s.shipping}</Text>);
+    const shippingMethodsList = orderDetail.shipping.map((s, index) => (
+      <Text key={index}>{s.shipping}</Text>
+    ));
 
     const date = new Date(orderDetail.timestamp * 1000);
     return (
@@ -274,22 +256,18 @@ class OrderDetail extends Component {
             {i18n.t('Order')} #{orderDetail.order_id}
           </Text>
           <Text style={styles.subHeader}>
-            {i18n.t('Placed on')} {format(date, 'MM/DD/YYYY')}
+            {i18n.t('Placed on')} {format(date, 'mm/dd/yyyy')}
           </Text>
 
           <FormBlock>
             <Text style={styles.header}>
               {i18n.t('Products information').toUpperCase()}
             </Text>
-            <View style={styles.productsWrapper}>
-              {productsList}
-            </View>
+            <View style={styles.productsWrapper}>{productsList}</View>
           </FormBlock>
 
           <FormBlock>
-            <Text style={styles.header}>
-              {i18n.t('Summary').toUpperCase()}
-            </Text>
+            <Text style={styles.header}>{i18n.t('Summary').toUpperCase()}</Text>
             <View style={styles.formBlockWraper}>
               <FormBlockField title={`${i18n.t('Payment method')}:`}>
                 {orderDetail.payment_method.payment}
@@ -317,10 +295,10 @@ class OrderDetail extends Component {
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     auth: state.auth,
   }),
-  dispatch => ({
+  (dispatch) => ({
     notificationsActions: bindActionCreators(notificationsActions, dispatch),
-  })
+  }),
 )(OrderDetail);

@@ -2,11 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as t from 'tcomb-form-native';
-import {
-  View,
-  ScrollView,
-} from 'react-native';
+import { View, ScrollView } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Components
@@ -30,6 +26,7 @@ const styles = EStyleSheet.create({
   },
 });
 
+const t = require('tcomb-form-native');
 const Form = t.form.Form;
 const formFields = t.struct({
   product_code: t.String,
@@ -47,57 +44,31 @@ const formOptions = {
     },
     amount: {
       label: i18n.t('In stock'),
-    }
-  }
+    },
+  },
 };
 
 class PricingInventory extends Component {
   static propTypes = {
     stepsData: PropTypes.shape({}),
-    navigator: PropTypes.shape({
-      setTitle: PropTypes.func,
-      setButtons: PropTypes.func,
-      push: PropTypes.func,
-      setOnNavigatorEvent: PropTypes.func,
-    }),
     productsActions: PropTypes.shape({}),
     product: PropTypes.shape({}),
   };
 
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
-  };
-
   constructor(props) {
     super(props);
-
-    props.navigator.setTitle({
-      title: i18n.t('Pricing / inventory').toUpperCase(),
-    });
     this.formRef = React.createRef();
-
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
-  }
-
-  onNavigatorEvent(event) {
-    const { navigator } = this.props;
-    registerDrawerDeepLinks(event, navigator);
   }
 
   handleSave = () => {
     const { product, productsActions } = this.props;
     const values = this.formRef.current.getValue();
 
-    if (!values) { return; }
+    if (!values) {
+      return;
+    }
 
-    productsActions.updateProduct(
-      product.product_id,
-      { ...values }
-    );
+    productsActions.updateProduct(product.product_id, { ...values });
   };
 
   render() {
@@ -121,10 +92,10 @@ class PricingInventory extends Component {
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     product: state.vendorManageProducts.current,
   }),
-  dispatch => ({
+  (dispatch) => ({
     productsActions: bindActionCreators(productsActions, dispatch),
-  })
+  }),
 )(PricingInventory);

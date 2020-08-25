@@ -1,6 +1,6 @@
-import { Platform, AsyncStorage } from 'react-native';
-import isDate from 'date-fns/is_date';
-import format from 'date-fns/format';
+import { Platform } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
+import { format, isDate } from 'date-fns';
 import pickBy from 'lodash/pickBy';
 import identity from 'lodash/identity';
 
@@ -9,30 +9,23 @@ import {
   AUTH_LOGIN_SUCCESS,
   AUTH_LOGIN_FAIL,
   AUTH_RESET_STATE,
-
   AUTH_REGESTRATION_REQUEST,
   AUTH_REGESTRATION_SUCCESS,
   AUTH_REGESTRATION_FAIL,
-
   NOTIFICATION_SHOW,
-
   REGISTER_DEVICE_REQUEST,
   REGISTER_DEVICE_SUCCESS,
   REGISTER_DEVICE_FAIL,
-
   FETCH_PROFILE_FIELDS_REQUEST,
   FETCH_PROFILE_FIELDS_SUCCESS,
   FETCH_PROFILE_FIELDS_FAIL,
-
   FETCH_PROFILE_REQUEST,
   FETCH_PROFILE_SUCCESS,
   FETCH_PROFILE_FAIL,
-
   UPDATE_PROFILE_REQUEST,
   UPDATE_PROFILE_SUCCESS,
   UPDATE_PROFILE_FAIL,
   STORE_KEY,
-
   AUTH_LOGOUT,
 } from '../constants';
 import Api from '../services/api';
@@ -275,7 +268,7 @@ export function registration(token) {
       payload: {
         token,
         ttl: null,
-      }
+      },
     });
     cartActions.fetch(false)(dispatch);
     dispatch({
@@ -301,5 +294,5 @@ export function logout() {
 }
 
 export function resetState() {
-  return dispatch => dispatch({ type: AUTH_RESET_STATE });
+  return (dispatch) => dispatch({ type: AUTH_RESET_STATE });
 }

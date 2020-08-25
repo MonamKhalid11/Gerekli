@@ -2,27 +2,17 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-  View,
-} from 'react-native';
+import { View, SafeAreaView } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Import actions.
 import * as authActions from '../actions/authActions';
-
-// Theme
-import theme from '../config/theme';
-
-// Icons
-import {
-  iconsMap,
-  iconsLoaded,
-} from '../utils/navIcons';
-
 // Components
 import i18n from '../utils/i18n';
+import { iconsMap } from '../utils/navIcons';
 import Spinner from '../components/Spinner';
 import ProfileForm from '../components/ProfileForm';
+import { Navigation } from 'react-native-navigation';
 
 const styles = EStyleSheet.create({
   container: {
@@ -32,24 +22,9 @@ const styles = EStyleSheet.create({
 });
 
 class Registration extends Component {
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
-  };
-
   static propTypes = {
     authActions: PropTypes.shape({
       registration: PropTypes.func,
-    }),
-    navigator: PropTypes.shape({
-      setOnNavigatorEvent: PropTypes.func,
-      setTitle: PropTypes.func,
-      dismissModal: PropTypes.func,
-      showInAppNotification: PropTypes.func,
-      push: PropTypes.func,
     }),
     showClose: PropTypes.bool,
   };
@@ -61,51 +36,36 @@ class Registration extends Component {
       fetching: true,
       forms: [],
     };
-  }
-
-  componentWillMount() {
-    const { navigator, showClose } = this.props;
-
-    navigator.setTitle({
-      title: i18n.t('Registration')
-    });
-    navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
-
-    if (showClose) {
-      iconsLoaded.then(() => {
-        navigator.setButtons({
-          leftButtons: [
-            {
-              id: 'close',
-              icon: iconsMap.close,
-            },
-          ],
-        });
-      });
-    }
+    Navigation.events().bindComponent(this);
   }
 
   componentDidMount() {
-    const { navigator, authActions } = this.props;
-    navigator.setTitle({
-      title: i18n.t('Registration').toUpperCase(),
-    });
-    authActions
-      .profileFields()
-      .then((fields) => {
-        this.setState({
-          fetching: false,
-          forms: fields,
-        });
+    const { authActions } = this.props;
+    authActions.profileFields().then((fields) => {
+      this.setState({
+        fetching: false,
+        forms: fields,
       });
+    });
+
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        title: {
+          text: i18n.t('Registration'),
+        },
+        leftButtons: [
+          {
+            id: 'close',
+            icon: iconsMap.close,
+          },
+        ],
+      },
+    });
   }
 
-  onNavigatorEvent(event) {
-    const { navigator } = this.props;
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'close') {
-        navigator.dismissModal();
-      }
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'close') {
+      Navigation.dismissModal(this.props.componentId);
     }
   }
 
@@ -114,7 +74,7 @@ class Registration extends Component {
     if (values) {
       authActions.createProfile(values);
     }
-  }
+  };
 
   render() {
     const { fetching, forms } = this.state;
@@ -128,22 +88,22 @@ class Registration extends Component {
     }
 
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <ProfileForm
-          showTitles
+          showTitles={true}
           fields={forms}
-          onSubmit={values => this.handleRegister(values)}
+          onSubmit={(values) => this.handleRegister(values)}
         />
-      </View>
+      </SafeAreaView>
     );
   }
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     auth: state.auth,
   }),
-  dispatch => ({
+  (dispatch) => ({
     authActions: bindActionCreators(authActions, dispatch),
-  })
+  }),
 )(Registration);

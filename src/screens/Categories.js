@@ -2,12 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-  View,
-  Text,
-  FlatList,
-  ActivityIndicator,
-} from 'react-native';
+import { View, Text, FlatList, ActivityIndicator } from 'react-native';
+import { Navigation } from 'react-native-navigation';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { PRODUCT_NUM_COLUMNS } from '../utils';
 import i18n from '../utils/i18n';
@@ -24,14 +20,7 @@ import SortProducts from '../components/SortProducts';
 import CategoryBlock from '../components/CategoryBlock';
 import ProductListView from '../components/ProductListView';
 
-// theme
-import theme from '../config/theme';
-
-import {
-  iconsMap,
-  iconsLoaded,
-} from '../utils/navIcons';
-
+import * as nav from '../services/navigation';
 
 // Styles
 const styles = EStyleSheet.create({
@@ -47,20 +36,7 @@ const styles = EStyleSheet.create({
 });
 
 class Categories extends Component {
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
-  };
-
   static propTypes = {
-    navigator: PropTypes.shape({
-      push: PropTypes.func,
-      setOnNavigatorEvent: PropTypes.func,
-      setButtons: PropTypes.func,
-    }),
     categoryId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     companyId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     category: PropTypes.shape({}),
@@ -75,7 +51,7 @@ class Categories extends Component {
     }),
     productsActions: PropTypes.shape({
       fetchByCategory: PropTypes.func,
-    })
+    }),
   };
 
   constructor(props) {
@@ -90,33 +66,10 @@ class Categories extends Component {
       refreshing: false,
       isLoadMoreRequest: false,
     };
-
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
-  }
-
-  componentWillMount() {
-    const { navigator } = this.props;
-    iconsLoaded.then(() => {
-      navigator.setButtons({
-        rightButtons: [
-          {
-            id: 'cart',
-            component: 'CartBtn',
-            passProps: {},
-          },
-          {
-            id: 'search',
-            icon: iconsMap.search,
-          },
-        ]
-      });
-    });
   }
 
   async componentDidMount() {
-    const {
-      products, navigator, categoryId, layouts,
-    } = this.props;
+    const { products, categoryId, layouts } = this.props;
 
     let { category } = this.props;
 
@@ -125,8 +78,12 @@ class Categories extends Component {
     }
 
     if (categoryId) {
-      const categories = layouts.blocks.find(b => b.type === BLOCK_CATEGORIES);
-      const items = Object.keys(categories.content.items).map(k => categories.content.items[k]);
+      const categories = layouts.blocks.find(
+        (b) => b.type === BLOCK_CATEGORIES,
+      );
+      const items = Object.keys(categories.content.items).map(
+        (k) => categories.content.items[k],
+      );
       category = this.findCategoryById(items);
     }
     this.activeCategoryId = category.category_id;
@@ -142,13 +99,20 @@ class Categories extends Component {
       newState.products = categoryProducts;
     }
 
-    this.setState(state => ({
-      ...state,
-      ...newState,
-    }), this.handleLoad);
+    this.setState(
+      (state) => ({
+        ...state,
+        ...newState,
+      }),
+      this.handleLoad,
+    );
 
-    navigator.setTitle({
-      title: category.category,
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        title: {
+          text: category.category,
+        },
+      },
     });
   }
 
@@ -161,20 +125,6 @@ class Categories extends Component {
         refreshing: false,
       });
       this.isFirstLoad = false;
-    }
-  }
-
-  onNavigatorEvent(event) {
-    const { navigator } = this.props;
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'search') {
-        navigator.showModal({
-          screen: 'Search',
-          title: i18n.t('Search'),
-        });
-      } else if (event.id === 'back') {
-        navigator.pop();
-      }
     }
   }
 
@@ -191,7 +141,7 @@ class Categories extends Component {
         features_hash: filters,
       },
     );
-  }
+  };
 
   findCategoryById(items) {
     const { categoryId } = this.props;
@@ -205,7 +155,7 @@ class Categories extends Component {
       });
     };
     makeFlat(items);
-    return flatten.find(i => i.category_id == categoryId) || null;
+    return flatten.find((i) => i.category_id == categoryId) || null;
   }
 
   handleLoadMore() {
@@ -216,26 +166,25 @@ class Categories extends Component {
       this.setState({
         isLoadMoreRequest: true,
       });
-      this.handleLoad(products.params.page + 1)
-        .then(() => {
-          this.setState({
-            isLoadMoreRequest: false,
-          });
+      this.handleLoad(products.params.page + 1).then(() => {
+        this.setState({
+          isLoadMoreRequest: false,
         });
+      });
     }
   }
 
   handleRefresh() {
-    this.setState({
-      refreshing: true,
-    }, this.handleLoad);
+    this.setState(
+      {
+        refreshing: true,
+      },
+      this.handleLoad,
+    );
   }
 
   renderSorting() {
-    const {
-      productsActions,
-      products
-    } = this.props;
+    const { productsActions, products } = this.props;
 
     return (
       <SortProducts
@@ -253,11 +202,7 @@ class Categories extends Component {
   }
 
   renderHeader() {
-    const {
-      navigator,
-      companyId,
-      vendors,
-    } = this.props;
+    const { companyId, vendors } = this.props;
 
     let vendorHeader = null;
     if (companyId && vendors.items[companyId] && !vendors.fetching) {
@@ -265,12 +210,7 @@ class Categories extends Component {
       vendorHeader = (
         <VendorInfo
           onViewDetailPress={() => {
-            navigator.showModal({
-              screen: 'VendorDetail',
-              passProps: {
-                vendorId: companyId,
-              },
-            });
+            nav.showModalVendorDetail({ vendorId: companyId });
           }}
           logoUrl={vendor.logo_url}
           productsCount={vendor.products_count}
@@ -284,14 +224,7 @@ class Categories extends Component {
         <CategoryBlock
           items={this.state.subCategories}
           onPress={(category) => {
-            navigator.push({
-              screen: 'Categories',
-              backButtonTitle: '',
-              passProps: {
-                category,
-                companyId,
-              }
-            });
+            nav.pushCategory(this.props.componentId, { category, companyId });
           }}
         />
         {this.renderSorting()}
@@ -299,9 +232,7 @@ class Categories extends Component {
     );
   }
 
-  renderSpinner = () => (
-    <Spinner visible />
-  );
+  renderSpinner = () => <Spinner visible />;
 
   renderEmptyList = () => (
     <Text style={styles.emptyList}>
@@ -313,34 +244,29 @@ class Categories extends Component {
     const { products } = this.props;
 
     if (products.fetching && products.hasMore) {
-      return (
-        <ActivityIndicator size="large" animating />
-      );
+      return <ActivityIndicator size="large" animating />;
     }
 
     return null;
   }
 
   renderList() {
-    const { navigator } = this.props;
     const { products, refreshing } = this.state;
     return (
       <FlatList
         data={products}
-        keyExtractor={item => +item.product_id}
+        keyExtractor={(item) => +item.product_id}
         ListHeaderComponent={() => this.renderHeader()}
         ListFooterComponent={() => this.renderFooter()}
         numColumns={PRODUCT_NUM_COLUMNS}
-        renderItem={item => (
+        renderItem={(item) => (
           <ProductListView
             product={item}
-            onPress={product => navigator.push({
-              screen: 'ProductDetail',
-              backButtonTitle: '',
-              passProps: {
+            onPress={(product) =>
+              nav.pushProductDetail(this.props.componentId, {
                 pid: product.product_id,
-              }
-            })}
+              })
+            }
           />
         )}
         onRefresh={() => this.handleRefresh()}
@@ -356,23 +282,21 @@ class Categories extends Component {
     const { products } = this.props;
     return (
       <View style={styles.container}>
-        {
-          (products.fetching && this.isFirstLoad)
-            ? this.renderSpinner()
-            : this.renderList()
-        }
+        {products.fetching && this.isFirstLoad
+          ? this.renderSpinner()
+          : this.renderList()}
       </View>
     );
   }
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     products: state.products,
     layouts: state.layouts,
     vendors: state.vendors,
   }),
-  dispatch => ({
+  (dispatch) => ({
     productsActions: bindActionCreators(productsActions, dispatch),
-  })
+  }),
 )(Categories);

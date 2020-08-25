@@ -2,12 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 import values from 'lodash/values';
@@ -27,17 +22,15 @@ import Icon from '../components/Icon';
 import i18n from '../utils/i18n';
 
 import { stripTags, formatPrice } from '../utils';
-
-// theme
-import theme from '../config/theme';
+// import { Navigation } from 'react-native-navigation';
+import * as nav from '../services/navigation';
 
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FAFAFA',
   },
-  contentContainer: {
-  },
+  contentContainer: {},
   shippingItem: {
     padding: 14,
     borderBottomWidth: 1,
@@ -55,7 +48,7 @@ const styles = EStyleSheet.create({
   shippingItemDesc: {
     fontSize: '0.8rem',
     paddingBottom: 6,
-    color: 'gray'
+    color: 'gray',
   },
   shippingTitle: {
     fontSize: '1rem',
@@ -90,19 +83,16 @@ const styles = EStyleSheet.create({
 });
 
 class CheckoutShipping extends Component {
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
-  };
-
   static propTypes = {
     cart: PropTypes.shape({}),
-    navigator: PropTypes.shape({
-      push: PropTypes.func,
-    }),
+  };
+
+  static options = {
+    topBar: {
+      title: {
+        text: i18n.t('Checkout').toUpperCase(),
+      },
+    },
   };
 
   constructor(props) {
@@ -114,8 +104,6 @@ class CheckoutShipping extends Component {
       shipping_id: {},
       isNextDisabled: true,
     };
-
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
   componentDidMount() {
@@ -128,15 +116,6 @@ class CheckoutShipping extends Component {
   componentWillReceiveProps(nextProps) {
     const { cart } = nextProps;
     this.setDefaults(cart);
-  }
-
-  onNavigatorEvent(event) {
-    const { navigator } = this.props;
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'back') {
-        navigator.pop();
-      }
-    }
   }
 
   setDefaults(cart) {
@@ -180,7 +159,7 @@ class CheckoutShipping extends Component {
       });
       return item;
     });
-  }
+  };
 
   handleLoadInitial() {
     const { cartActions } = this.props;
@@ -202,24 +181,16 @@ class CheckoutShipping extends Component {
       }
     });
 
-    cartActions
-      .recalculateTotal(shippingsIds)
-      .then((data) => {
-        this.setState({
-          total: data.total_formatted.price,
-        });
+    cartActions.recalculateTotal(shippingsIds).then((data) => {
+      this.setState({
+        total: data.total_formatted.price,
       });
+    });
   }
 
   handleNextPress() {
-    const { navigator } = this.props;
-    navigator.push({
-      screen: 'CheckoutPayment',
-      title: i18n.t('Checkout').toUpperCase(),
-      backButtonTitle: '',
-      passProps: {
-        shipping_id: this.state.shipping_id,
-      },
+    nav.pushCheckoutPayment(this.props.componentId, {
+      shipping_id: this.state.shipping_id,
     });
   }
 
@@ -230,20 +201,20 @@ class CheckoutShipping extends Component {
     }
     // Check shipping
     const newItems = [...this.state.items];
-    newItems[itemIndex].shippings = newItems[itemIndex].shippings
-      .map(s => ({ ...s, isSelected: false, }));
+    newItems[itemIndex].shippings = newItems[itemIndex].shippings.map((s) => ({
+      ...s,
+      isSelected: false,
+    }));
     newItems[itemIndex].shippings[shippingIndex].isSelected = true;
     // Get selected ids
     const selectedIds = {};
     selectedIds[`${itemIndex}`] = `${shipping.shipping_id}`;
 
-    cartActions
-      .recalculateTotal(selectedIds)
-      .then((data) => {
-        this.setState({
-          total: data.total_formatted.price,
-        });
+    cartActions.recalculateTotal(selectedIds).then((data) => {
+      this.setState({
+        total: data.total_formatted.price,
       });
+    });
 
     this.setState({
       items: newItems,
@@ -256,14 +227,14 @@ class CheckoutShipping extends Component {
       <TouchableOpacity
         key={uniqueId('item_')}
         style={[styles.shippingItem]}
-        onPress={() => this.handleSelect(shipping, shippingIndex, itemIndex)}
-      >
+        onPress={() => this.handleSelect(shipping, shippingIndex, itemIndex)}>
         <View style={styles.shippingItemTitleWrap}>
           <View style={styles.shippingItemTitle}>
-            {shipping.isSelected ?
-              <Icon name="radio-button-checked" style={styles.checkIcon} /> :
+            {shipping.isSelected ? (
+              <Icon name="radio-button-checked" style={styles.checkIcon} />
+            ) : (
               <Icon name="radio-button-unchecked" style={styles.uncheckIcon} />
-            }
+            )}
             <Text style={styles.shippingItemText}>
               {shipping.shipping} {shipping.delivery_time}
             </Text>
@@ -290,11 +261,7 @@ class CheckoutShipping extends Component {
     if (this.state.items.length === 1) {
       return null;
     }
-    return (
-      <Text style={styles.shippingTitle}>
-        {title}
-      </Text>
-    );
+    return <Text style={styles.shippingTitle}>{title}</Text>;
   };
 
   render() {
@@ -302,12 +269,10 @@ class CheckoutShipping extends Component {
     const { cart } = this.props;
 
     if (cart.fetching) {
-      return (
-        <Spinner visible />
-      );
+      return <Spinner visible />;
     }
 
-    const shippingsCount = flatten(items.map(s => s.shippings)).length;
+    const shippingsCount = flatten(items.map((s) => s.shippings)).length;
 
     return (
       <View style={styles.container}>
@@ -317,9 +282,9 @@ class CheckoutShipping extends Component {
           {items.map((item, itemIndex) => (
             <View key={item.company_id}>
               {this.renderCompany(item.name)}
-              {item.shippings
-                .map((shipping, shippingIndex) => this
-                  .renderItem(shipping, shippingIndex, itemIndex))}
+              {item.shippings.map((shipping, shippingIndex) =>
+                this.renderItem(shipping, shippingIndex, itemIndex),
+              )}
             </View>
           ))}
         </ScrollView>
@@ -335,11 +300,11 @@ class CheckoutShipping extends Component {
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     cart: state.cart,
     shippings: state.shippings,
   }),
-  dispatch => ({
+  (dispatch) => ({
     cartActions: bindActionCreators(cartActions, dispatch),
-  })
+  }),
 )(CheckoutShipping);

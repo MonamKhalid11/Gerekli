@@ -2,13 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-  View,
-  FlatList,
-} from 'react-native';
+import { View, FlatList } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { Navigation } from 'react-native-navigation';
 
-import i18n from '../utils/i18n';
 import { PRODUCT_NUM_COLUMNS } from '../utils';
 
 // Import actions.
@@ -21,13 +18,8 @@ import VendorInfo from '../components/VendorInfo';
 import CategoryBlock from '../components/CategoryBlock';
 import ProductListView from '../components/ProductListView';
 import SortProducts from '../components/SortProducts';
-
-// theme
-import theme from '../config/theme';
-import {
-  iconsMap,
-  iconsLoaded,
-} from '../utils/navIcons';
+import { iconsMap } from '../utils/navIcons';
+import * as nav from '../services/navigation';
 
 // Styles
 const styles = EStyleSheet.create({
@@ -38,11 +30,6 @@ const styles = EStyleSheet.create({
 
 class Vendor extends Component {
   static propTypes = {
-    navigator: PropTypes.shape({
-      push: PropTypes.func,
-      setOnNavigatorEvent: PropTypes.func,
-      setButtons: PropTypes.func,
-    }),
     vendors: PropTypes.shape({}),
     vendorCategories: PropTypes.shape({}),
     products: PropTypes.shape({}),
@@ -54,18 +41,7 @@ class Vendor extends Component {
     productsActions: PropTypes.shape({
       fetchDiscussion: PropTypes.func,
     }),
-    companyId: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]),
-  };
-
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
+    companyId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   };
 
   constructor(props) {
@@ -81,21 +57,14 @@ class Vendor extends Component {
       discussion: {
         search: {
           page: 1,
-        }
+        },
       },
     };
-
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+    Navigation.events().bindComponent(this);
   }
 
   componentWillMount() {
-    const {
-      navigator,
-      vendors,
-      companyId,
-      vendorActions,
-      productsActions,
-    } = this.props;
+    const { vendors, companyId, vendorActions, productsActions } = this.props;
 
     vendorActions.categories(companyId);
     this.handleLoad();
@@ -103,98 +72,65 @@ class Vendor extends Component {
     if (!vendors.items[companyId] && !vendors.fetching) {
       vendorActions.fetch(companyId);
     } else {
-      this.setState({
-        vendor: vendors.items[companyId],
-      }, () => {
-        productsActions.fetchDiscussion(
-          this.state.vendor.company_id,
-          { page: this.state.discussion.search.page },
-          'M'
-        );
-      });
+      this.setState(
+        {
+          vendor: vendors.items[companyId],
+        },
+        () => {
+          productsActions.fetchDiscussion(
+            this.state.vendor.company_id,
+            { page: this.state.discussion.search.page },
+            'M',
+          );
+        },
+      );
     }
 
-    iconsLoaded.then(() => {
-      navigator.setButtons({
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
         leftButtons: [
           {
             id: 'close',
             icon: iconsMap.close,
           },
         ],
-        rightButtons: [
-          {
-            id: 'cart',
-            component: 'CartBtn',
-            passProps: {},
-          },
-          {
-            id: 'search',
-            title: i18n.t('Search'),
-            icon: iconsMap.search,
-          },
-        ],
-      });
+      },
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    const {
-      products,
-      vendors,
-      companyId,
-      navigator
-    } = nextProps;
+    const { products, vendors, companyId } = nextProps;
     const vendorProducts = products.items[companyId];
     if (vendorProducts) {
-      this.setState({
-        products: vendorProducts,
-      }, () => {
-        this.isFirstLoad = false;
-      });
+      this.setState(
+        {
+          products: vendorProducts,
+        },
+        () => {
+          this.isFirstLoad = false;
+        },
+      );
     }
 
     if (vendors.items[companyId]) {
-      this.setState({
-        vendor: vendors.items[companyId],
-      }, () => {
-        navigator.setTitle({
-          title: this.state.vendor.company,
-        });
-      });
+      this.setState({ vendor: vendors.items[companyId] });
     }
   }
 
-  onNavigatorEvent(event) {
-    const { navigator } = this.props;
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'close') {
-        navigator.dismissModal();
-      } else if (event.id === 'search') {
-        navigator.showModal({
-          screen: 'Search',
-          title: i18n.t('Search'),
-        });
-      }
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'close') {
+      Navigation.dismissModal(this.props.componentId);
     }
   }
 
   handleLoad = (page = 1) => {
-    const {
-      companyId,
-      vendorActions,
-      products,
-    } = this.props;
+    const { companyId, vendorActions, products } = this.props;
     const { filters } = this.state;
-    return vendorActions.products(
-      companyId,
-      page,
-      {
-        ...products.sortParams,
-        features_hash: filters,
-      }
-    );
-  }
+    return vendorActions.products(companyId, page, {
+      ...products.sortParams,
+      features_hash: filters,
+    });
+  };
 
   handleLoadMore() {
     const { products } = this.props;
@@ -205,7 +141,6 @@ class Vendor extends Component {
 
   renderHeader() {
     const {
-      navigator,
       vendorCategories,
       companyId,
       products,
@@ -234,27 +169,18 @@ class Vendor extends Component {
     return (
       <View>
         <VendorInfo
-          onViewDetailPress={() => {
-            navigator.showModal({
-              screen: 'VendorDetail',
-              passProps: {
-                vendorId: companyId,
-              },
-            });
-          }}
+          onViewDetailPress={() =>
+            nav.showModalVendorDetail({ vendorId: companyId })
+          }
           logoUrl={vendor.logo_url}
           productsCount={vendor.products_count}
         />
         <CategoryBlock
           items={vendorCategories.items}
           onPress={(category) => {
-            navigator.push({
-              screen: 'Categories',
-              backButtonTitle: '',
-              passProps: {
-                category,
-                companyId,
-              }
+            nav.pushCategory(this.props.componentId, {
+              category,
+              companyId,
             });
           }}
         />
@@ -264,34 +190,30 @@ class Vendor extends Component {
   }
 
   render() {
-    const { navigator, vendorCategories, vendors } = this.props;
+    const { vendorCategories, vendors } = this.props;
     const { products } = this.state;
 
     if (vendorCategories.fetching || vendors.fetching) {
-      return (
-        <Spinner visible />
-      );
+      return <Spinner visible />;
     }
 
     return (
       <View style={styles.container}>
         <FlatList
           data={products}
-          keyExtractor={item => +item.product_id}
+          keyExtractor={(item) => +item.product_id}
           removeClippedSubviews
           initialNumToRender={20}
           ListHeaderComponent={() => this.renderHeader()}
           numColumns={PRODUCT_NUM_COLUMNS}
-          renderItem={item => (
+          renderItem={(item) => (
             <ProductListView
               product={item}
-              onPress={product => navigator.push({
-                screen: 'ProductDetail',
-                backButtonTitle: '',
-                passProps: {
+              onPress={(product) =>
+                nav.pushProductDetail(this.props.componentId, {
                   pid: product.product_id,
-                }
-              })}
+                })
+              }
             />
           )}
           onEndReached={() => this.handleLoadMore()}
@@ -302,13 +224,13 @@ class Vendor extends Component {
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     vendorCategories: state.vendorCategories,
     products: state.products,
     vendors: state.vendors,
   }),
-  dispatch => ({
+  (dispatch) => ({
     vendorActions: bindActionCreators(vendorActions, dispatch),
     productsActions: bindActionCreators(productsActions, dispatch),
-  })
+  }),
 )(Vendor);

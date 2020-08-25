@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Text,
-  View,
-  Image,
-  I18nManager,
-  TouchableOpacity,
-} from 'react-native';
+import { Text, View, Image, I18nManager, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swiper from 'react-native-swiper';
 import { get } from 'lodash';
@@ -19,7 +13,7 @@ const styles = EStyleSheet.create({
   img: {
     width: '100%',
     height: '100%',
-    resizeMode: 'contain'
+    resizeMode: 'contain',
   },
   header: {
     fontWeight: 'bold',
@@ -30,7 +24,7 @@ const styles = EStyleSheet.create({
     paddingBottom: 10,
     color: '$categoriesHeaderColor',
     textAlign: I18nManager.isRTL ? 'right' : 'left',
-  }
+  },
 });
 
 export default class BannerBlocks extends Component {
@@ -39,24 +33,21 @@ export default class BannerBlocks extends Component {
     wrapper: PropTypes.string,
     items: PropTypes.arrayOf(PropTypes.object),
     onPress: PropTypes.func,
-  }
+  };
 
   static defaultProps = {
-    items: []
-  }
+    items: [],
+  };
 
   renderImage = (item, index) => {
     const imageUri = get(item, 'main_pair.icon.http_image_path');
 
     return (
-      <TouchableOpacity
-        key={index}
-        onPress={() => this.props.onPress(item)}
-      >
+      <TouchableOpacity key={index} onPress={() => this.props.onPress(item)}>
         <Image source={{ uri: imageUri }} style={styles.img} />
       </TouchableOpacity>
     );
-  }
+  };
 
   render() {
     const { items, name, wrapper } = this.props;
@@ -64,11 +55,7 @@ export default class BannerBlocks extends Component {
     return (
       <View style={styles.container}>
         {wrapper !== '' && <Text style={styles.header}>{name}</Text>}
-        <Swiper
-          horizontal
-          height={200}
-          style={styles.container}
-        >
+        <Swiper horizontal height={200} style={styles.container}>
           {itemsList}
         </Swiper>
       </View>

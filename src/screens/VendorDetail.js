@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { get } from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-  View,
-  Text,
-  Image,
-  ScrollView,
-} from 'react-native';
+import { View, Text, Image, ScrollView } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Import actions.
@@ -19,19 +15,11 @@ import Rating from '../components/Rating';
 import Section from '../components/Section';
 import SectionRow from '../components/SectionRow';
 import DiscussionList from '../components/DiscussionList';
-
-// theme
-import theme from '../config/theme';
-
-// links
-import { registerDrawerDeepLinks } from '../utils/deepLinks';
 import i18n from '../utils/i18n';
 import { stripTags } from '../utils';
-
-import {
-  iconsMap,
-  iconsLoaded,
-} from '../utils/navIcons';
+import { iconsMap } from '../utils/navIcons';
+import { Navigation } from 'react-native-navigation';
+import * as nav from '../services/navigation';
 
 // Styles
 const styles = EStyleSheet.create({
@@ -73,11 +61,6 @@ const styles = EStyleSheet.create({
 
 export class VendorDetail extends Component {
   static propTypes = {
-    navigator: PropTypes.shape({
-      push: PropTypes.func,
-      dismissModal: PropTypes.func,
-      setOnNavigatorEvent: PropTypes.func,
-    }),
     discussion: PropTypes.shape({
       items: PropTypes.shape({}),
       fetching: PropTypes.bool,
@@ -97,20 +80,14 @@ export class VendorDetail extends Component {
     }),
   };
 
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
-  };
-
   constructor(props) {
     super(props);
 
     this.requestSent = true;
     this.state = {
-      vendor: {},
+      vendor: {
+        company_id: '',
+      },
       discussion: {
         average_rating: 0,
         posts: [],
@@ -121,51 +98,43 @@ export class VendorDetail extends Component {
       },
     };
 
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+    Navigation.events().bindComponent(this);
   }
 
   componentWillMount() {
-    const {
-      navigator,
-      vendorId,
-      vendors,
-      vendorActions,
-      productsActions
-    } = this.props;
+    const { vendorId, vendors, vendorActions, productsActions } = this.props;
 
     if (!vendors.items[vendorId] && !vendors.fetching) {
       vendorActions.fetch(vendorId);
     } else {
-      this.setState({
-        vendor: vendors.items[vendorId],
-      }, () => {
+      this.setState({ vendor: vendors.items[vendorId] }, () => {
         productsActions.fetchDiscussion(
           this.state.vendor.company_id,
           { page: this.state.discussion.search.page },
-          'M'
+          'M',
         );
       });
     }
 
-    iconsLoaded.then(() => {
-      navigator.setButtons({
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        title: {
+          text: i18n.t('Vendor Detail').toUpperCase(),
+        },
         leftButtons: [
           {
             id: 'close',
             icon: iconsMap.close,
           },
         ],
-      });
-    });
-
-    navigator.setTitle({
-      title: i18n.t('Vendor Detail').toUpperCase(),
+      },
     });
   }
 
   componentWillReceiveProps(nextProps) {
     // Get active discussion.
-    let activeDiscussion = nextProps.discussion.items[`m_${this.state.vendor.company_id}`];
+    const id = get(this.state.vendor, 'company_id', '0');
+    let activeDiscussion = nextProps.discussion.items[`m_${id}`];
     if (!activeDiscussion) {
       activeDiscussion = {
         average_rating: 0,
@@ -183,20 +152,16 @@ export class VendorDetail extends Component {
     });
   }
 
-  onNavigatorEvent(event) {
-    // handle a deep link
-    registerDrawerDeepLinks(event, this.props.navigator);
-    const { navigator } = this.props;
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'close') {
-        navigator.dismissModal();
-      }
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'close') {
+      Navigation.dismissModal(this.props.componentId);
     }
   }
 
   handleLoadMore() {
     const { discussion, vendor } = this.state;
-    const hasMore = discussion.search.total_items != discussion.posts.length; // eslint-disable-line
+    // eslint-disable-next-line eqeqeq
+    const hasMore = discussion.search.total_items != discussion.posts.length;
 
     if (hasMore && !this.requestSent && !this.props.discussion.fetching) {
       this.requestSent = true;
@@ -205,7 +170,7 @@ export class VendorDetail extends Component {
         {
           page: discussion.search.page + 1,
         },
-        'M'
+        'M',
       );
     }
   }
@@ -215,10 +180,7 @@ export class VendorDetail extends Component {
     return (
       <Section>
         <View style={styles.logoWrapper}>
-          <Image
-            source={{ uri: vendor.logo_url }}
-            style={styles.logo}
-          />
+          <Image source={{ uri: vendor.logo_url }} style={styles.logo} />
         </View>
       </Section>
     );
@@ -229,9 +191,7 @@ export class VendorDetail extends Component {
     return (
       <Section>
         <View style={styles.vendorWrapper}>
-          <Text style={styles.vendorName}>
-            {vendor.company}
-          </Text>
+          <Text style={styles.vendorName}>{vendor.company}</Text>
           <Rating
             value={discussion.average_rating}
             count={discussion.search.total_items}
@@ -250,19 +210,19 @@ export class VendorDetail extends Component {
       <Section title={i18n.t('Contact Information')}>
         <SectionRow
           name={i18n.t('E-mail')}
-          value={vendor.contact_information.email}
+          value={get(vendor.contact_information, 'email', '')}
         />
         <SectionRow
           name={i18n.t('Phone')}
-          value={vendor.contact_information.phone}
+          value={get(vendor.contact_information, 'phone', '')}
         />
         <SectionRow
           name={i18n.t('Fax')}
-          value={vendor.contact_information.fax}
+          value={get(vendor.contact_information, 'fax', '')}
         />
         <SectionRow
           name={i18n.t('Website')}
-          value={vendor.contact_information.url}
+          value={get(vendor.contact_information, 'url', '')}
           last
         />
       </Section>
@@ -273,26 +233,25 @@ export class VendorDetail extends Component {
     const { vendor } = this.state;
     return (
       <Section title={i18n.t('Shipping address')}>
-        <Text style={styles.address}>
-          {vendor.shipping_address.address},
-        </Text>
+        <Text style={styles.address}>{vendor.shipping_address.address},</Text>
         <Text style={styles.address}>
           {vendor.shipping_address.state} {vendor.shipping_address.zipcode},
         </Text>
-        <Text style={styles.address}>
-          {vendor.shipping_address.country}
-        </Text>
+        <Text style={styles.address}>{vendor.shipping_address.country}</Text>
       </Section>
     );
   }
 
   renderDiscussion() {
     const { discussion, vendor } = this.state;
-    const { auth, navigator } = this.props;
+    const { auth } = this.props;
 
     let title = i18n.t('Reviews');
-    if (discussion.search.total_items != 0) { // eslint-disable-line
-      title = i18n.t('Reviews ({{count}})', { count: discussion.search.total_items });
+    // eslint-disable-next-line eqeqeq
+    if (discussion.search.total_items != 0) {
+      title = i18n.t('Reviews ({{count}})', {
+        count: discussion.search.total_items,
+      });
     }
 
     return (
@@ -302,17 +261,12 @@ export class VendorDetail extends Component {
         showRightButton={!discussion.disable_adding && auth.logged}
         rightButtonText={i18n.t('Write a Review')}
         onRightButtonPress={() => {
-          navigator.push({
-            screen: 'WriteReview',
-            backButtonTitle: '',
-            passProps: {
-              activeDiscussion: discussion,
-              discussionType: 'M',
-              discussionId: vendor.company_id,
-            }
+          nav.pushWriteReview(this.props.componentId, {
+            activeDiscussion: discussion,
+            discussionType: 'M',
+            discussionId: vendor.company_id,
           });
-        }}
-      >
+        }}>
         <DiscussionList
           infinite
           items={discussion.posts}
@@ -325,6 +279,14 @@ export class VendorDetail extends Component {
   }
 
   render() {
+    const { vendor } = this.state;
+
+    console.log(this.props, this.state);
+
+    if (!vendor.shipping_address) {
+      return null;
+    }
+
     return (
       <ScrollView style={styles.container}>
         {this.renderLogo()}
@@ -338,13 +300,13 @@ export class VendorDetail extends Component {
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     auth: state.auth,
     vendors: state.vendors,
     discussion: state.discussion,
   }),
-  dispatch => ({
+  (dispatch) => ({
     vendorActions: bindActionCreators(vendorActions, dispatch),
     productsActions: bindActionCreators(productsActions, dispatch),
-  })
+  }),
 )(VendorDetail);

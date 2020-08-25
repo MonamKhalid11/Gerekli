@@ -89,7 +89,7 @@ const styles = EStyleSheet.create({
     paddingTop: 16,
     paddingBottom: 10,
     flexDirection: 'row',
-    width: '100%'
+    width: '100%',
   },
   scrollWrapper: {
     paddingTop: 4,
@@ -131,7 +131,7 @@ const styles = EStyleSheet.create({
   },
   pickerOpenBtnText: {
     fontSize: 20,
-    color: '#000'
+    color: '#000',
   },
   priceRangeMarkerContainer: {
     flexDirection: 'row',
@@ -143,7 +143,7 @@ const styles = EStyleSheet.create({
     width: '100%',
   },
   priceRangeMarkerText: {
-    fontSize: '0.7rem'
+    fontSize: '0.7rem',
   },
   colorItemsContainer: {
     flex: 1,
@@ -181,51 +181,51 @@ const itemsList = [
     name: i18n.t('Sorting: Newest items first'),
     params: {
       sort_by: 'timestamp',
-      sort_order: 'desc'
+      sort_order: 'desc',
     },
   },
   {
     name: i18n.t('Sorting: A to Z'),
     params: {
       sort_by: 'product',
-      sort_order: 'asc'
+      sort_order: 'asc',
     },
   },
   {
     name: i18n.t('Sorting: Z to A'),
     params: {
       sort_by: 'product',
-      sort_order: 'desc'
+      sort_order: 'desc',
     },
   },
   {
     name: i18n.t('Sorting: Lowest prices first'),
     params: {
       sort_by: 'price',
-      sort_order: 'asc'
+      sort_order: 'asc',
     },
   },
   {
     name: i18n.t('Sorting: Highest prices first'),
     params: {
       sort_by: 'price',
-      sort_order: 'desc'
+      sort_order: 'desc',
     },
   },
   {
     name: i18n.t('Sorting: Most popular first'),
     params: {
       sort_by: 'popularity',
-      sort_order: 'desc'
+      sort_order: 'desc',
     },
   },
   {
     name: i18n.t('Cancel'),
     params: {
       sort_by: '',
-      sort_order: ''
+      sort_order: '',
     },
-  }
+  },
 ];
 
 class SortProducts extends Component {
@@ -246,7 +246,9 @@ class SortProducts extends Component {
 
   handlePriceRangeChange = throttle((filter, [min, max]) => {
     const { selectedFilters } = this.state;
-    const selected = selectedFilters.filter(item => item.filter_id !== filter.filter_id);
+    const selected = selectedFilters.filter(
+      (item) => item.filter_id !== filter.filter_id,
+    );
 
     this.setState({
       selectedFilters: [
@@ -255,8 +257,8 @@ class SortProducts extends Component {
           ...filter,
           min: round(min, 2),
           max: round(max, 2),
-        }
-      ]
+        },
+      ],
     });
   }, 100);
 
@@ -266,17 +268,20 @@ class SortProducts extends Component {
 
   showActionSheet = () => {
     this.ActionSheet.show();
-  }
+  };
 
   handleCalculateActiveFilters = () => {
     const { filters } = this.props;
     const selected = filters.filter(
-      item => item.selected_variants !== undefined || item.selected_range
+      (item) => item.selected_variants !== undefined || item.selected_range,
     );
     const selectedFilters = [];
     selected.forEach((filter) => {
       if (filter.selected_variants) {
-        if (filter.filter_style === 'checkbox' || filter.filter_style === 'color') {
+        if (
+          filter.filter_style === 'checkbox' ||
+          filter.filter_style === 'color'
+        ) {
           values(filter.selected_variants).forEach((variantItem) => {
             selectedFilters.push({
               ...filter,
@@ -297,21 +302,18 @@ class SortProducts extends Component {
     });
 
     this.setState({ selectedFilters });
-  }
+  };
 
   handleChange = (itemText) => {
     const { onChange } = this.props;
-    const items = itemsList.map(item => item.name);
-    const foundIndex = items.findIndex(item => item === itemText);
+    const items = itemsList.map((item) => item.name);
+    const foundIndex = items.findIndex((item) => item === itemText);
 
     if (foundIndex === CANCEL_INDEX + 1) {
       return;
     }
 
-    onChange(
-      itemsList[foundIndex].params,
-      foundIndex,
-    );
+    onChange(itemsList[foundIndex].params, foundIndex);
   };
 
   handleChangeFilter = () => {
@@ -325,49 +327,55 @@ class SortProducts extends Component {
       const { filter_id, filter_style, field_type } = filterItems[0];
 
       if (filter_style === 'checkbox' || filter_style === 'color') {
-        filtersIds.push(`${filter_id}-${filterItems.map(item => item.variant_id).join('-')}`);
+        filtersIds.push(
+          `${filter_id}-${filterItems
+            .map((item) => item.variant_id)
+            .join('-')}`,
+        );
       }
 
       // Slider
       if (filter_style === 'slider') {
         const active = filterItems[0];
         if (field_type === 'P') {
-          filtersIds.push(`${filter_id}-${round(active.min, 2)}-${round(active.max, 2)}-${active.extra}`);
+          filtersIds.push(
+            `${filter_id}-${round(active.min, 2)}-${round(active.max, 2)}-${
+              active.extra
+            }`,
+          );
         } else {
-          filtersIds.push(`${filter_id}-${round(active.min, 2)}-${round(active.max, 2)}`);
+          filtersIds.push(
+            `${filter_id}-${round(active.min, 2)}-${round(active.max, 2)}`,
+          );
         }
       }
     });
 
-
     onChangeFilter(filtersIds.join('_'));
-  }
+  };
 
   togglePicker = (id) => {
     const { openIDs } = this.state;
 
-    if (openIDs.some(item => item === id)) {
+    if (openIDs.some((item) => item === id)) {
       this.setState({
-        openIDs: openIDs.filter(item => item !== id),
+        openIDs: openIDs.filter((item) => item !== id),
       });
       return;
     }
     this.setState({
-      openIDs: [
-        ...openIDs,
-        id,
-      ],
+      openIDs: [...openIDs, id],
     });
-  }
+  };
 
   clearAllFilter = () => {
     this.setState({ selectedFilters: [] });
-  }
+  };
 
   removeByFilter(id) {
     const { selectedFilters } = this.state;
     this.setState({
-      selectedFilters: selectedFilters.filter(item => item.filter_id !== id),
+      selectedFilters: selectedFilters.filter((item) => item.filter_id !== id),
     });
   }
 
@@ -379,19 +387,23 @@ class SortProducts extends Component {
     };
 
     if (filter.filter_style === 'checkbox' || filter.filter_style === 'color') {
-      if (selectedFilters.some(item => item.variant_id === selectedFilterItem.variant_id && selectedFilterItem.filter_id === item.filter_id)) {
+      if (
+        selectedFilters.some(
+          (item) =>
+            item.variant_id === selectedFilterItem.variant_id &&
+            selectedFilterItem.filter_id === item.filter_id,
+        )
+      ) {
         this.setState({
-          selectedFilters: selectedFilters
-            .filter(item => !isEqual(item, selectedFilterItem)),
+          selectedFilters: selectedFilters.filter(
+            (item) => !isEqual(item, selectedFilterItem),
+          ),
         });
         return;
       }
 
       this.setState({
-        selectedFilters: [
-          ...selectedFilters,
-          selectedFilterItem,
-        ],
+        selectedFilters: [...selectedFilters, selectedFilterItem],
       });
     }
   }
@@ -399,15 +411,12 @@ class SortProducts extends Component {
   renderPicker = (item) => {
     const { filter_id, filter, selected_variants } = item;
     const { openIDs, selectedFilters } = this.state;
-    const isOpen = openIDs.some(item => item === filter_id);
+    const isOpen = openIDs.some((item) => item === filter_id);
     let variants = [...item.variants];
     const VISIBLE_COUNT = 5;
 
     if (selected_variants) {
-      variants = [
-        ...Object.values(selected_variants),
-        ...variants,
-      ];
+      variants = [...Object.values(selected_variants), ...variants];
     }
 
     const totalCount = variants.length;
@@ -417,36 +426,34 @@ class SortProducts extends Component {
       variants = take(variants, VISIBLE_COUNT);
     }
 
-    const IconToggle = isOpen ? <Icon name="arrow-drop-up" /> : <Icon name="arrow-drop-down" />;
+    const IconToggle = isOpen ? (
+      <Icon name="arrow-drop-up" />
+    ) : (
+      <Icon name="arrow-drop-down" />
+    );
     return (
-      <View
-        style={styles.pickerWrapper}
-        key={filter_id}
-      >
+      <View style={styles.pickerWrapper} key={filter_id}>
         <TouchableOpacity
           style={styles.pickerOpenBtn}
           onPress={() => this.togglePicker(filter_id)}
-          disabled={!isHiddable}
-        >
+          disabled={!isHiddable}>
           <Text style={styles.pickerOpenBtnText}>
             {`${filter} (${totalCount})`}
           </Text>
           {isHiddable && IconToggle}
         </TouchableOpacity>
-        <View
-          style={styles.pickerContent}
-        >
+        <View style={styles.pickerContent}>
           {sortBy(variants, ['position']).map((variant) => {
             const isSelected = selectedFilters.some(
-              selectedFilterItem => (selectedFilterItem.variant_id === variant.variant_id)
-              && (item.filter_id === selectedFilterItem.filter_id)
+              (selectedFilterItem) =>
+                selectedFilterItem.variant_id === variant.variant_id &&
+                item.filter_id === selectedFilterItem.filter_id,
             );
             return (
               <Button
                 type={isSelected ? 'round' : 'label'}
                 key={variant.variant_id}
-                onPress={() => this.toggleVariant(item, variant)}
-              >
+                onPress={() => this.toggleVariant(item, variant)}>
                 {variant.variant}
               </Button>
             );
@@ -454,7 +461,7 @@ class SortProducts extends Component {
         </View>
       </View>
     );
-  }
+  };
 
   renderHader = () => {
     const { selectedFilters } = this.state;
@@ -464,47 +471,39 @@ class SortProducts extends Component {
         <TouchableOpacity
           onPress={() => {
             this.RBSheet.close();
-            this.setState({ selectedFilters: [] }, this.handleCalculateActiveFilters);
-          }}
-        >
+            this.setState(
+              { selectedFilters: [] },
+              this.handleCalculateActiveFilters,
+            );
+          }}>
           <Icon name="close" />
         </TouchableOpacity>
         <ScrollView horizontal contentContainerStyle={styles.scrollWrapper}>
-          <Button
-            type="ghost"
-            onPress={this.clearAllFilter}
-          >
+          <Button type="ghost" onPress={this.clearAllFilter}>
             {i18n.t('Clear all')}
           </Button>
-          {selectedItems.map(item => (
+          {selectedItems.map((item) => (
             <Button
               clear
               key={item.filter_id}
               type="round"
-              onPress={() => this.removeByFilter(item.filter_id)}
-            >
+              onPress={() => this.removeByFilter(item.filter_id)}>
               {item.filter}
             </Button>
           ))}
         </ScrollView>
       </View>
     );
-  }
+  };
 
   renderRange = (item) => {
-    const {
-      feature_id,
-      filter,
-      min,
-      max,
-      suffix,
-      prefix
-    } = item;
+    const { feature_id, filter, min, max, suffix, prefix } = item;
 
     const MultiSliderWidth = Math.round(Dimensions.get('window').width) - 68;
     const { selectedFilters } = this.state;
-    const activeFilter = selectedFilters
-      .find(selectedItem => selectedItem.filter_id === item.filter_id);
+    const activeFilter = selectedFilters.find(
+      (selectedItem) => selectedItem.filter_id === item.filter_id,
+    );
 
     const selectedMin = activeFilter ? activeFilter.min : Math.ceil(min);
     const selectedMax = activeFilter ? activeFilter.max : Math.ceil(max);
@@ -514,20 +513,21 @@ class SortProducts extends Component {
     }
 
     return (
-      <View
-        style={styles.pickerWrapper}
-        key={feature_id}
-      >
-        <View
-          style={styles.pickerOpenBtn}
-        >
+      <View style={styles.pickerWrapper} key={feature_id}>
+        <View style={styles.pickerOpenBtn}>
           <Text style={styles.pickerOpenBtnText}>
-            {`${filter}: ${prefix || ''}${selectedMin}${suffix || ''} - ${prefix || ''}${selectedMax}${suffix || ''}`}
+            {`${filter}: ${prefix || ''}${selectedMin}${suffix || ''} - ${
+              prefix || ''
+            }${selectedMax}${suffix || ''}`}
           </Text>
         </View>
         <View style={styles.priceRangeMarkerContainer}>
-          <Text style={styles.priceRangeMarkerText}>{`${prefix || ''}${Math.ceil(min)}${suffix || ''}`}</Text>
-          <Text style={styles.priceRangeMarkerText}>{`${prefix || ''}${Math.ceil(max)}${suffix || ''}`}</Text>
+          <Text style={styles.priceRangeMarkerText}>{`${
+            prefix || ''
+          }${Math.ceil(min)}${suffix || ''}`}</Text>
+          <Text style={styles.priceRangeMarkerText}>{`${
+            prefix || ''
+          }${Math.ceil(max)}${suffix || ''}`}</Text>
         </View>
         <View style={styles.pickerSlider}>
           <MultiSlider
@@ -535,43 +535,35 @@ class SortProducts extends Component {
             min={Math.ceil(min)}
             max={Math.ceil(max)}
             sliderLength={MultiSliderWidth}
-            onValuesChange={values => this.handlePriceRangeChange(item, values)}
+            onValuesChange={(values) =>
+              this.handlePriceRangeChange(item, values)
+            }
           />
         </View>
       </View>
     );
-  }
+  };
 
   renderColorPicker = (item) => {
-    const {
-      feature_id,
-      filter,
-      selected_variants
-    } = item;
+    const { feature_id, filter, selected_variants } = item;
     const { selectedFilters } = this.state;
     let variants = [...item.variants];
 
     if (selected_variants) {
-      variants = [
-        ...Object.values(selected_variants),
-        ...variants,
-      ];
+      variants = [...Object.values(selected_variants), ...variants];
     }
 
     return (
-      <View
-        style={styles.pickerWrapper}
-        key={feature_id}
-      >
+      <View style={styles.pickerWrapper} key={feature_id}>
         <View style={styles.pickerOpenBtn}>
-          <Text style={styles.pickerOpenBtnText}>
-            {filter}
-          </Text>
+          <Text style={styles.pickerOpenBtnText}>{filter}</Text>
         </View>
         <View style={styles.colorItemsContainer}>
           {variants.map((variant) => {
             const { color, variant_id } = variant;
-            const isSelected = selectedFilters.some(item => item.variant_id === variant.variant_id);
+            const isSelected = selectedFilters.some(
+              (item) => item.variant_id === variant.variant_id,
+            );
             let itemStyles = {
               backgroundColor: color,
             };
@@ -586,15 +578,9 @@ class SortProducts extends Component {
             return (
               <TouchableOpacity
                 key={variant_id}
-                onPress={() => this.toggleVariant(item, variant)}
-              >
-                <View
-                  style={[
-                    styles.colorItem,
-                    itemStyles,
-                  ]}
-                >
-                  {isSelected && (<Icon name="check" borderColor="#fff" />)}
+                onPress={() => this.toggleVariant(item, variant)}>
+                <View style={[styles.colorItem, itemStyles]}>
+                  {isSelected && <Icon name="check" borderColor="#fff" />}
                 </View>
               </TouchableOpacity>
             );
@@ -602,7 +588,7 @@ class SortProducts extends Component {
         </View>
       </View>
     );
-  }
+  };
 
   renderFooter = () => (
     <View style={styles.filterFooterSection}>
@@ -638,28 +624,25 @@ class SortProducts extends Component {
         {this.renderFooter()}
       </React.Fragment>
     );
-  }
+  };
 
   render() {
     const { sortParams, filters } = this.props;
     const { selectedFilters } = this.state;
-    const activeIndex = itemsList
-      .findIndex(item => (
-        item.params.sort_by === sortParams.sort_by
-        && item.params.sort_order === sortParams.sort_order
-      ));
+    const activeIndex = itemsList.findIndex(
+      (item) =>
+        item.params.sort_by === sortParams.sort_by &&
+        item.params.sort_order === sortParams.sort_order,
+    );
 
-    const items = itemsList.map(item => item.name);
-    const filteredItems = items.filter(item => item !== items[activeIndex]);
+    const items = itemsList.map((item) => item.name);
+    const filteredItems = items.filter((item) => item !== items[activeIndex]);
     const RBSheetHeight = Math.round(Dimensions.get('window').height) - 140;
     const activeFiltersCount = selectedFilters.length;
 
     return (
       <View style={styles.wrapper}>
-        <TouchableOpacity
-          style={styles.btn}
-          onPress={this.showActionSheet}
-        >
+        <TouchableOpacity style={styles.btn} onPress={this.showActionSheet}>
           <Text style={styles.text} numberOfLines={2}>
             {items[activeIndex]}
           </Text>
@@ -670,35 +653,35 @@ class SortProducts extends Component {
             style={styles.btnFilter}
             onPress={() => {
               this.RBSheet.open();
-            }}
-          >
+            }}>
             <Icon name="filter-list" style={styles.filterIcon} />
             <Text style={styles.text} numberOfLines={2}>
               {i18n.t('Filter')}
             </Text>
             {activeFiltersCount !== 0 && (
               <View style={styles.badge}>
-                <Text style={styles.badgeText}>
-                  {activeFiltersCount}
-                </Text>
+                <Text style={styles.badgeText}>{activeFiltersCount}</Text>
               </View>
             )}
           </TouchableOpacity>
         )}
 
         <ActionSheet
-          ref={(ref) => { this.ActionSheet = ref; }}
+          ref={(ref) => {
+            this.ActionSheet = ref;
+          }}
           options={filteredItems}
           cancelButtonIndex={DESTRUCTIVE_INDEX}
           destructiveButtonIndex={CANCEL_INDEX}
-          onPress={index => this.handleChange(filteredItems[index])}
+          onPress={(index) => this.handleChange(filteredItems[index])}
         />
         <RBSheet
-          ref={ref => { this.RBSheet = ref; }}
+          ref={(ref) => {
+            this.RBSheet = ref;
+          }}
           closeOnDragDown={false}
           height={RBSheetHeight}
-          duration={250}
-        >
+          duration={250}>
           {this.renderFilters()}
         </RBSheet>
       </View>

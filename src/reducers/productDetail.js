@@ -2,9 +2,7 @@ import {
   FETCH_ONE_PRODUCT_REQUEST,
   FETCH_ONE_PRODUCT_FAIL,
   FETCH_ONE_PRODUCT_SUCCESS,
-
   RECALCULATE_PRODUCT_PRICE_SUCCESS,
-
   CHANGE_PRODUCTS_AMOUNT,
 } from '../constants';
 
@@ -20,7 +18,7 @@ const initialState = {
   },
   taxed_price_formatted: {
     price: '',
-  }
+  },
 };
 
 export default function (state = initialState, action) {
@@ -43,8 +41,9 @@ export default function (state = initialState, action) {
       return {
         ...initialState,
         ...action.payload.product,
-        options: Object.keys(action.payload.product.product_options)
-          .map(k => action.payload.product.product_options[k]),
+        options: Object.keys(action.payload.product.product_options).map(
+          (k) => action.payload.product.product_options[k],
+        ),
         fetching: false,
         qty_step: parseInt(action.payload.product.qty_step, 10) || 1,
         amount: parseInt(action.payload.product.amount, 10) || 0,

@@ -2,19 +2,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { View, Platform } from 'react-native';
+import { View } from 'react-native';
+import { WebView } from 'react-native-webview';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Import actions.
 import * as authActions from '../actions/authActions';
 import * as cartActions from '../actions/cartActions';
-
-// theme
-import theme from '../config/theme';
-
 import { objectToQuerystring } from '../utils/index';
-
-const WebView = Platform.OS === 'ios' ? require('react-native-webview').WebView : require('react-native').WebView;
+import * as nav from '../services/navigation';
 
 const styles = EStyleSheet.create({
   container: {
@@ -24,14 +20,6 @@ const styles = EStyleSheet.create({
 });
 
 class SettlementsCompleteWebView extends Component {
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
-  };
-
   static propTypes = {
     return_url: PropTypes.string,
     payment_url: PropTypes.string,
@@ -39,34 +27,18 @@ class SettlementsCompleteWebView extends Component {
     cartActions: PropTypes.shape({
       clear: PropTypes.func,
     }),
-    navigator: PropTypes.shape({
-      push: PropTypes.func,
-      setOnNavigatorEvent: PropTypes.func,
-    })
   };
 
   onNavigationStateChange = ({ url }) => {
-    const {
-      return_url,
-      cartActions,
-      navigator,
-      orderId
-    } = this.props;
+    const { return_url, cartActions, orderId } = this.props;
 
     if (url && return_url) {
       if (url.toLowerCase().startsWith(return_url.toLowerCase())) {
         cartActions.clear();
-        navigator.push({
-          screen: 'CheckoutComplete',
-          backButtonTitle: '',
-          backButtonHidden: true,
-          passProps: {
-            orderId,
-          }
-        });
+        nav.pushCheckoutComplete(this.props.componentId, { orderId });
       }
     }
-  }
+  };
 
   render() {
     const { payment_url, query_parameters } = this.props;
@@ -87,7 +59,7 @@ class SettlementsCompleteWebView extends Component {
           source={{
             uri: url,
           }}
-          onNavigationStateChange={e => this.onNavigationStateChange(e)}
+          onNavigationStateChange={(e) => this.onNavigationStateChange(e)}
         />
       </View>
     );
@@ -95,11 +67,11 @@ class SettlementsCompleteWebView extends Component {
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     auth: state.auth,
   }),
-  dispatch => ({
+  (dispatch) => ({
     authActions: bindActionCreators(authActions, dispatch),
     cartActions: bindActionCreators(cartActions, dispatch),
-  })
+  }),
 )(SettlementsCompleteWebView);

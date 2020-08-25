@@ -3,89 +3,50 @@ import { Linking, Alert } from 'react-native';
 import i18n from './i18n';
 import config from '../config';
 import store from '../store';
+import * as nav from '../services/navigation';
 import { parseQueryString } from './index';
 
-export const registerDrawerDeepLinks = (event, navigator) => {
+export const registerDrawerDeepLinks = (event, componentId) => {
   const { auth } = store.getState();
-
-  if (event.type !== 'DeepLink') {
-    return;
-  }
 
   const { payload, link } = event;
   const params = parseQueryString(link);
 
   if (params.dispatch === 'pages.view' && params.page_id) {
-    navigator.push({
-      screen: 'Page',
-      backButtonTitle: '',
-      passProps: {
-        uri: `${config.siteUrl}index.php?dispatch=pages.view&page_id=${params.page_id}&s_layout=${config.layoutId}`,
-      },
-      ...payload,
+    nav.showPage(componentId, {
+      title: params.page,
+      uri: `${config.siteUrl}index.php?dispatch=pages.view&page_id=${params.page_id}&s_layout=${config.layoutId}`,
     });
   } else if (params.dispatch === 'cart.content') {
-    navigator.resetTo({
-      screen: 'Cart',
-      animated: false,
-    });
+    nav.selectTab('cart');
   } else if (params.dispatch === 'products.view' && params.product_id) {
-    navigator.push({
-      screen: 'ProductDetail',
-      backButtonTitle: '',
-      passProps: {
-        pid: params.product_id,
-        payload,
-      }
+    nav.pushProductDetail(componentId, {
+      pid: params.product_id,
+      payload,
     });
   } else if (params.dispatch === 'categories.view' && params.category_id) {
-    navigator.push({
-      screen: 'Categories',
-      backButtonTitle: '',
-      passProps: {
-        categoryId: params.category_id,
-      }
+    nav.pushCategory(componentId, {
+      categoryId: params.category_id,
     });
   } else if (params.dispatch === 'companies.products' && params.company_id) {
-    navigator.showModal({
-      screen: 'Vendor',
-      passProps: {
-        companyId: params.company_id,
-      },
+    nav.showModalVendor({
+      companyId: params.company_id,
     });
   } else if (link === 'home/') {
-    navigator.resetTo({
-      screen: 'Layouts',
-      animated: false,
-    });
+    nav.selectTab('home');
   } else if (link === 'vendor/orders/') {
-    navigator.resetTo({
-      screen: 'VendorManageOrders',
-      animated: false,
-      backButtonTitle: '',
-    });
+    nav.pushVendorManageOrders(componentId, {});
   } else if (link === 'vendor/add_product/') {
-    navigator.showModal({
-      screen: 'VendorManageCategoriesPicker',
-      backButtonTitle: '',
+    nav.showVendorManageCategoriesPicker({
       title: i18n.t('Categories').toUpperCase(),
-      passProps: {
-        parent: 0,
-      },
+      parent: 0,
     });
   } else if (link === 'vendor/products/') {
-    navigator.resetTo({
-      screen: 'VendorManageProducts',
-      animated: false,
-      backButtonTitle: '',
-    });
+    nav.pushVendorManageProducts(componentId, {});
   } else if (link.startsWith('http://') || link.startsWith('https://')) {
     Linking.canOpenURL(link).then((supported) => {
       if (!supported) {
-        return Alert.alert(
-          i18n.t('Can\'t handle url'),
-          ''
-        );
+        return Alert.alert(i18n.t("Can't handle url"), '');
       }
       return Linking.openURL(link);
     });
@@ -93,26 +54,13 @@ export const registerDrawerDeepLinks = (event, navigator) => {
 
   if (auth.logged) {
     if (params.dispatch === 'profiles.update') {
-      navigator.push({
-        screen: 'Profile',
-        backButtonTitle: '',
-        animated: false,
-      });
+      nav.pushProfileEdit(componentId, {});
     } else if (params.dispatch === 'orders.details' && params.order_id) {
-      navigator.push({
-        screen: 'OrderDetail',
-        passProps: {
-          orderId: params.order_id,
-        },
-        animated: false,
+      nav.pushOrderDetail(componentId, {
+        orderId: params.order_id,
       });
     } else if (params.dispatch === 'orders.search') {
-      navigator.push({
-        screen: 'Orders',
-        animated: false,
-      });
+      nav.pushOrders(componentId);
     }
   }
 };
-
-export const unregisterDrawerDeepLinks = () => {};

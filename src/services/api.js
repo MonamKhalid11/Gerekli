@@ -27,21 +27,26 @@ AxiosInstance.interceptors.request.use((conf) => {
   newConf.headers.common['Cache-Control'] = 'no-cache';
 
   if (state.auth.token) {
-    newConf.headers.common.Authorization = `Basic ${base64.encode(state.auth.token)}:`;
+    newConf.headers.common.Authorization = `Basic ${base64.encode(
+      state.auth.token,
+    )}:`;
   }
 
   return newConf;
 });
 
-AxiosInstance.interceptors.response.use(config => config, (error) => {
-  if (error.response.status === 401) {
-    store.dispatch({
-      type: AUTH_LOGOUT,
-    });
-  } else if (error.response.status === 408 || error.code === 'ECONNABORTED') {
-    console.log(`A time happend on url ${error.config.url}`);
-  }
-  return Promise.reject(error);
-});
+AxiosInstance.interceptors.response.use(
+  (config) => config,
+  (error) => {
+    if (error.response.status === 401) {
+      store.dispatch({
+        type: AUTH_LOGOUT,
+      });
+    } else if (error.response.status === 408 || error.code === 'ECONNABORTED') {
+      console.log(`A time happend on url ${error.config.url}`);
+    }
+    return Promise.reject(error);
+  },
+);
 
 export default AxiosInstance;

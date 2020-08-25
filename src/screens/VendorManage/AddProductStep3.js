@@ -2,11 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as t from 'tcomb-form-native';
-import {
-  View,
-  ScrollView,
-} from 'react-native';
+import { View, ScrollView } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Components
@@ -21,8 +17,8 @@ import * as productsActions from '../../actions/vendorManage/productsActions';
 import * as imagePickerActions from '../../actions/imagePickerActions';
 
 import i18n from '../../utils/i18n';
-import theme from '../../config/theme';
-import { registerDrawerDeepLinks } from '../../utils/deepLinks';
+import * as nav from '../../services/navigation';
+import { Navigation } from 'react-native-navigation';
 
 const styles = EStyleSheet.create({
   container: {
@@ -38,6 +34,7 @@ const styles = EStyleSheet.create({
   },
 });
 
+const t = require('tcomb-form-native');
 const Form = t.form.Form;
 const formFields = t.struct({
   price: t.Number,
@@ -55,20 +52,6 @@ class AddProductStep4 extends Component {
     imagePickerActions: PropTypes.shape({
       clear: PropTypes.func,
     }),
-    navigator: PropTypes.shape({
-      setTitle: PropTypes.func,
-      setButtons: PropTypes.func,
-      push: PropTypes.func,
-      setOnNavigatorEvent: PropTypes.func,
-    }),
-  };
-
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
   };
 
   constructor(props) {
@@ -77,27 +60,13 @@ class AddProductStep4 extends Component {
     this.state = {
       loading: false,
     };
-
-    props.navigator.setTitle({
-      title: i18n.t('Enter the price').toUpperCase(),
-    });
     this.formRef = React.createRef();
 
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
-  }
-
-  onNavigatorEvent(event) {
-    const { navigator } = this.props;
-    registerDrawerDeepLinks(event, navigator);
+    Navigation.events().bindComponent(this);
   }
 
   handleCreate = async () => {
-    const {
-      navigator,
-      productsActions,
-      stepsData,
-      imagePickerActions,
-    } = this.props;
+    const { productsActions, stepsData, imagePickerActions } = this.props;
     const values = this.formRef.current.getValue();
 
     if (values) {
@@ -117,13 +86,9 @@ class AddProductStep4 extends Component {
         if (newProductID) {
           imagePickerActions.clear();
           this.setState({ loading: false });
-          navigator.push({
-            screen: 'VendorManageEditProduct',
-            backButtonTitle: '',
-            passProps: {
-              productID: newProductID,
-              showClose: true,
-            },
+          nav.pushVendorManageEditProduct(this.props.componentId, {
+            productID: newProductID,
+            showClose: true,
           });
         }
       } catch (error) {
@@ -145,11 +110,7 @@ class AddProductStep4 extends Component {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {this.renderHeader()}
           <Section>
-            <Form
-              ref={this.formRef}
-              type={formFields}
-              options={formOptions}
-            />
+            <Form ref={this.formRef} type={formFields} options={formOptions} />
           </Section>
         </ScrollView>
         <BottomActions
@@ -164,11 +125,11 @@ class AddProductStep4 extends Component {
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     nav: state.nav,
   }),
-  dispatch => ({
+  (dispatch) => ({
     imagePickerActions: bindActionCreators(imagePickerActions, dispatch),
-    productsActions: bindActionCreators(productsActions, dispatch)
-  })
+    productsActions: bindActionCreators(productsActions, dispatch),
+  }),
 )(AddProductStep4);

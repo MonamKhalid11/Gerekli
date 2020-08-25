@@ -14,23 +14,12 @@ import {
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
-
-// Styles
-import theme from '../config/theme';
-
-// Actions
 import * as imagePickerActions from '../actions/imagePickerActions';
-
-// Components
 import Icon from '../components/Icon';
 import BottomActions from '../components/BottomActions';
-
 import i18n from '../utils/i18n';
-
-import {
-  iconsMap,
-  iconsLoaded,
-} from '../utils/navIcons';
+import { iconsMap } from '../utils/navIcons';
+import { Navigation } from 'react-native-navigation';
 
 const styles = EStyleSheet.create({
   container: {
@@ -52,7 +41,7 @@ const styles = EStyleSheet.create({
   },
   selectedIcon: {
     color: '#0f70e2',
-  }
+  },
 });
 
 const IMAGE_NUM_COLUMNS = 4;
@@ -63,20 +52,6 @@ class AddProductStep1 extends Component {
       clear: PropTypes.func,
       toggle: PropTypes.func,
     }),
-    navigator: PropTypes.shape({
-      setTitle: PropTypes.func,
-      setButtons: PropTypes.func,
-      push: PropTypes.func,
-      setOnNavigatorEvent: PropTypes.func,
-    }),
-  };
-
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
   };
 
   constructor(props) {
@@ -89,41 +64,37 @@ class AddProductStep1 extends Component {
       selected: [],
     };
 
-    props.navigator.setTitle({
-      title: i18n.t('Select product image').toUpperCase(),
-    });
-
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+    Navigation.events().bindComponent(this);
   }
 
   componentWillMount() {
-    const { navigator, selected } = this.props;
-    iconsLoaded.then(() => {
-      navigator.setButtons({
+    const { selected } = this.props;
+    this.setState(
+      {
+        selected,
+      },
+      () => this.getImages(),
+    );
+
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
         leftButtons: [
           {
             id: 'close',
             icon: iconsMap.close,
           },
         ],
-      });
+      },
     });
-    this.setState({
-      selected,
-    }, () => this.getImages());
   }
 
-  onNavigatorEvent(event) {
-    const { navigator } = this.props;
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'close') {
-        navigator.dismissModal();
-      }
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'close') {
+      Navigation.dismissModal(this.props.componentId);
     }
   }
 
   getImages = async () => {
-    const { navigator } = this.props;
     const { photos, hasMore, after } = this.state;
 
     let granted = false;
@@ -151,7 +122,7 @@ class AddProductStep1 extends Component {
       }
 
       if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-        navigator.dismissModal();
+        Navigation.dismissModal(this.props.componentId);
       }
     }
 
@@ -179,14 +150,11 @@ class AddProductStep1 extends Component {
 
       if (images) {
         const imagesUris = images.edges
-          .filter(item => item.node.group_name !== 'Recently Added')
-          .map(edge => edge.node.image.uri);
+          .filter((item) => item.node.group_name !== 'Recently Added')
+          .map((edge) => edge.node.image.uri);
 
         this.setState({
-          photos: [
-            ...photos,
-            ...imagesUris,
-          ],
+          photos: [...photos, ...imagesUris],
           hasMore: images.page_info.has_next_page,
           after: images.page_info.end_cursor,
         });
@@ -194,37 +162,34 @@ class AddProductStep1 extends Component {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   handleToggleImage = (image) => {
     const { selected } = this.state;
     let result = [...selected];
 
-    if (selected.some(item => image.item === item)) {
-      result = selected.filter(item => image.item !== item);
+    if (selected.some((item) => image.item === item)) {
+      result = selected.filter((item) => image.item !== item);
     } else {
-      result.push(
-        image.item,
-      );
+      result.push(image.item);
     }
     this.setState({
       selected: result,
     });
-  }
+  };
 
   handleLoadMore = () => this.getImages();
 
   renderImage = (image) => {
     const { selected } = this.state;
-    const isSelected = selected.some(item => item === image.item);
+    const isSelected = selected.some((item) => item === image.item);
     const IMAGE_WIDTH = Dimensions.get('window').width / IMAGE_NUM_COLUMNS;
 
     return (
       <TouchableOpacity
         style={styles.imageWrapper}
         onPress={() => this.handleToggleImage(image)}
-        key={image}
-      >
+        key={image}>
         <Image
           style={{
             width: IMAGE_WIDTH,
@@ -239,17 +204,17 @@ class AddProductStep1 extends Component {
         )}
       </TouchableOpacity>
     );
-  }
+  };
 
   render() {
-    const { navigator, imagePickerActions } = this.props;
+    const { imagePickerActions } = this.props;
     const { photos, selected } = this.state;
     return (
       <View style={styles.container}>
         <FlatList
           contentContainerStyle={styles.scrollContainer}
           data={photos}
-          keyExtractor={item => item}
+          keyExtractor={(item) => item}
           numColumns={IMAGE_NUM_COLUMNS}
           renderItem={this.renderImage}
           onEndReachedThreshold={1}
@@ -258,7 +223,7 @@ class AddProductStep1 extends Component {
         <BottomActions
           onBtnPress={() => {
             imagePickerActions.toggle(selected);
-            navigator.dismissModal();
+            Navigation.dismissModal(this.props.componentId);
           }}
           btnText={i18n.t('Select')}
         />
@@ -268,10 +233,10 @@ class AddProductStep1 extends Component {
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     selected: state.imagePicker.selected,
   }),
-  dispatch => ({
+  (dispatch) => ({
     imagePickerActions: bindActionCreators(imagePickerActions, dispatch),
-  })
+  }),
 )(AddProductStep1);

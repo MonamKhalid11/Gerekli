@@ -1,10 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 const styles = EStyleSheet.create({
@@ -37,7 +33,6 @@ const styles = EStyleSheet.create({
   },
 });
 
-
 const Section = ({
   children,
   title = '',
@@ -47,29 +42,16 @@ const Section = ({
   rightButtonText,
   onRightButtonPress,
 }) => (
-  <View
-    style={[styles.container, containerStyle]}
-  >
-    {title ?
-      <Text style={styles.title}>{title}</Text>
-      :
-      null
-    }
+  <View style={[styles.container, containerStyle]}>
+    {title ? <Text style={styles.title}>{title}</Text> : null}
     {showRightButton && (
       <TouchableOpacity
         onPress={() => onRightButtonPress()}
-        style={styles.rightButton}
-      >
-        <Text
-          style={styles.rightButtonText}
-        >
-          {rightButtonText}
-        </Text>
+        style={styles.rightButton}>
+        <Text style={styles.rightButtonText}>{rightButtonText}</Text>
       </TouchableOpacity>
     )}
-    <View style={[styles.wrapper, wrapperStyle]}>
-      {children}
-    </View>
+    <View style={[styles.wrapper, wrapperStyle]}>{children}</View>
   </View>
 );
 
@@ -82,7 +64,7 @@ Section.propTypes = {
   onRightButtonPress: PropTypes.func,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
+    PropTypes.node,
   ]),
 };
 

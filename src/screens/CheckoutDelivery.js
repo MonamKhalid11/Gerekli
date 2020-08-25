@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { View } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { Navigation } from 'react-native-navigation';
 
 // Import components
 import CheckoutSteps from '../components/CheckoutSteps';
@@ -15,10 +16,8 @@ import * as cartActions from '../actions/cartActions';
 
 import i18n from '../utils/i18n';
 import { formatPrice } from '../utils';
-
-// theme
-import theme from '../config/theme';
 import ProfileForm from '../components/ProfileForm';
+import * as nav from '../services/navigation';
 
 const styles = EStyleSheet.create({
   container: {
@@ -29,34 +28,21 @@ const styles = EStyleSheet.create({
     paddingTop: 14,
     paddingBottom: 0,
     paddingLeft: 14,
-    paddingRight: 14
+    paddingRight: 14,
   },
 });
 
 class Checkout extends Component {
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
-  };
-
   static propTypes = {
-    navigator: PropTypes.shape({
-      push: PropTypes.func,
-      pop: PropTypes.func,
-      setOnNavigatorEvent: PropTypes.func,
-    }),
     cart: PropTypes.shape(),
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      fieldsFetching: true
+      fieldsFetching: true,
     };
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+    Navigation.events().bindComponent(this);
   }
 
   componentDidMount() {
@@ -67,7 +53,7 @@ class Checkout extends Component {
       authActions
         .profileFields({
           location: 'checkout',
-          action: 'update'
+          action: 'update',
         })
         .then(({ fields }) => {
           // eslint-disable-next-line no-param-reassign
@@ -81,31 +67,15 @@ class Checkout extends Component {
     }
   }
 
-  onNavigatorEvent(event) {
-    const { navigator } = this.props;
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'back') {
-        navigator.pop();
-      }
-    }
-  }
-
   handleNextPress(values) {
-    const { navigator, cart, cartActions } = this.props;
+    const { cart, cartActions } = this.props;
 
     cartActions.saveUserData({
       ...cart.user_data,
-      ...values
+      ...values,
     });
 
-    navigator.push({
-      screen: 'CheckoutShipping',
-      backButtonTitle: '',
-      title: i18n.t('Checkout').toUpperCase(),
-      passProps: {
-        total: cart.subtotal,
-      },
-    });
+    nav.pushCheckoutShipping(this.props.componentId, { total: cart.subtotal });
   }
 
   render() {
@@ -132,8 +102,12 @@ class Checkout extends Component {
           showTitles={true}
           totalPrice={formatPrice(cart.total_formatted.price)}
           btnText={i18n.t('Next').toUpperCase()}
-          onBtnPress={(values, validateCb) => { validateCb(); }}
-          onSubmit={(values) => { this.handleNextPress(values); }}
+          onBtnPress={(values, validateCb) => {
+            validateCb();
+          }}
+          onSubmit={(values) => {
+            this.handleNextPress(values);
+          }}
         />
       </View>
     );
@@ -141,13 +115,13 @@ class Checkout extends Component {
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     auth: state.auth,
     cart: state.cart,
     state,
   }),
-  dispatch => ({
+  (dispatch) => ({
     authActions: bindActionCreators(authActions, dispatch),
     cartActions: bindActionCreators(cartActions, dispatch),
-  })
+  }),
 )(Checkout);

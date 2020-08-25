@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { View, Platform } from 'react-native';
+import { View } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-
-// theme
-import theme from '../config/theme';
-
-const WebView = Platform.OS === 'ios' ? require('react-native-webview').WebView : require('react-native').WebView;
+import { WebView } from 'react-native-webview';
+import { Navigation } from 'react-native-navigation';
+import { iconsMap } from '../utils/navIcons';
 
 const styles = EStyleSheet.create({
   container: {
@@ -21,13 +19,30 @@ class Page extends Component {
     uri: PropTypes.string,
   };
 
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
-  };
+  constructor(props) {
+    super(props);
+
+    Navigation.events().bindComponent(this);
+  }
+
+  componentDidMount() {
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        leftButtons: [
+          {
+            id: 'close',
+            icon: iconsMap.close,
+          },
+        ],
+      },
+    });
+  }
+
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'close') {
+      Navigation.dismissModal(this.props.componentId);
+    }
+  }
 
   render() {
     const { uri } = this.props;
@@ -49,8 +64,6 @@ class Page extends Component {
   }
 }
 
-export default connect(
-  state => ({
-    auth: state.auth,
-  })
-)(Page);
+export default connect((state) => ({
+  auth: state.auth,
+}))(Page);

@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  I18nManager,
-} from 'react-native';
+import { Text, View, TouchableOpacity, I18nManager } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 const styles = EStyleSheet.create({
@@ -31,7 +26,7 @@ const styles = EStyleSheet.create({
   },
   btnText: {
     fontSize: '0.8rem',
-  }
+  },
 });
 
 export default class BannerBlocks extends Component {
@@ -40,21 +35,18 @@ export default class BannerBlocks extends Component {
     wrapper: PropTypes.string,
     items: PropTypes.arrayOf(PropTypes.object),
     onPress: PropTypes.func,
-  }
+  };
 
   static defaultProps = {
-    items: []
-  }
+    items: [],
+  };
 
   renderItem = (item, index) => (
     <TouchableOpacity
       key={index}
       style={styles.btn}
-      onPress={() => this.props.onPress(item)}
-    >
-      <Text style={styles.btnText}>
-        {item.page}
-      </Text>
+      onPress={() => this.props.onPress(item)}>
+      <Text style={styles.btnText}>{item.page}</Text>
     </TouchableOpacity>
   );
 

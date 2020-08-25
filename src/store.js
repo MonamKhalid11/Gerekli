@@ -1,14 +1,12 @@
 import { applyMiddleware, createStore } from 'redux';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 import { STORE_KEY } from './constants';
 
 import rootReducer from './reducers';
 
-const middlewares = [
-  thunk,
-];
+const middlewares = [thunk];
 
 // Apply logger if we are in debug mode.
 if (__DEV__) {
@@ -28,7 +26,7 @@ store.subscribe(() => {
       auth: store.getState().auth,
       cart: store.getState().cart,
       profile: store.getState().profile,
-    })
+    }),
   );
 });
 

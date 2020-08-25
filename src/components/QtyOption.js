@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 const styles = EStyleSheet.create({
@@ -42,7 +38,7 @@ const styles = EStyleSheet.create({
     fontWeight: 'bold',
     width: 36,
     textAlign: 'center',
-  }
+  },
 });
 
 export default class extends Component {
@@ -86,7 +82,7 @@ export default class extends Component {
       total: newTotal,
     });
     onChange(newTotal);
-  }
+  };
 
   dicrement = () => {
     const { total } = this.state;
@@ -101,7 +97,7 @@ export default class extends Component {
       total: newTotal,
     });
     onChange(newTotal);
-  }
+  };
 
   render() {
     const { total } = this.state;
@@ -109,19 +105,11 @@ export default class extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.btnGroup}>
-          <TouchableOpacity
-            style={styles.btn}
-            onPress={this.dicrement}
-          >
+          <TouchableOpacity style={styles.btn} onPress={this.dicrement}>
             <Text style={styles.btnText}>-</Text>
           </TouchableOpacity>
-          <Text style={styles.valueText}>
-            {total}
-          </Text>
-          <TouchableOpacity
-            style={styles.btn}
-            onPress={this.increment}
-          >
+          <Text style={styles.valueText}>{total}</Text>
+          <TouchableOpacity style={styles.btn} onPress={this.increment}>
             <Text style={styles.btnText}>+</Text>
           </TouchableOpacity>
         </View>

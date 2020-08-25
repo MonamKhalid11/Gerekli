@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  View,
-  Text,
-} from 'react-native';
+import { View, Text } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 import Button from '../components/Button';
@@ -29,12 +26,12 @@ const styles = EStyleSheet.create({
     marginBottom: 14,
     fontWeight: 'bold',
     fontSize: '0.9rem',
-    textAlign: 'left'
+    textAlign: 'left',
   },
   btnWrapper: {
     marginTop: 14,
     marginBottom: 14,
-  }
+  },
 });
 
 export default class FormBlock extends Component {
@@ -49,7 +46,7 @@ export default class FormBlock extends Component {
     onShowMorePress: PropTypes.func,
     noContainerStyle: PropTypes.bool,
     simpleView: PropTypes.shape(),
-  }
+  };
 
   static defaultProps = {
     onShowMorePress: () => {},
@@ -70,20 +67,11 @@ export default class FormBlock extends Component {
       return null;
     }
 
-    return (
-      <Text style={styles.header}>
-        {title.toUpperCase()}
-      </Text>
-    );
+    return <Text style={styles.header}>{title.toUpperCase()}</Text>;
   }
 
   renderContent() {
-    const {
-      buttonText,
-      children,
-      simpleView,
-      onShowMorePress,
-    } = this.props;
+    const { buttonText, children, simpleView, onShowMorePress } = this.props;
     const { showMore } = this.state;
 
     if (buttonText && !showMore) {
@@ -97,27 +85,21 @@ export default class FormBlock extends Component {
                 this.setState({
                   showMore: !showMore,
                 });
-              }}
-            >
+              }}>
               {buttonText.toUpperCase()}
             </Button>
           </View>
         </View>
       );
     }
-    return (
-      <View>
-        {children}
-      </View>
-    );
+    return <View>{children}</View>;
   }
 
   render() {
     const { noContainerStyle } = this.props;
     return (
       <View
-        style={[styles.container, noContainerStyle && styles.containerSimple]}
-      >
+        style={[styles.container, noContainerStyle && styles.containerSimple]}>
         {this.renderTitle()}
         {this.renderContent()}
       </View>

@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  View,
-  Modal,
-  ActivityIndicator,
-} from 'react-native';
+import { View, Modal, ActivityIndicator } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 const styles = EStyleSheet.create({
@@ -24,7 +20,7 @@ const styles = EStyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
-  }
+  },
 });
 
 class Spinner extends Component {
@@ -45,8 +41,7 @@ class Spinner extends Component {
         animationType="fade"
         transparent
         visible={visible}
-        onRequestClose={() => {}}
-      >
+        onRequestClose={() => {}}>
         <View style={styles.container}>
           <ActivityIndicator
             color="white"
@@ -56,7 +51,7 @@ class Spinner extends Component {
         </View>
       </Modal>
     );
-  }
+  };
 
   renderAsContent = () => {
     const { visible } = this.props;
@@ -68,10 +63,11 @@ class Spinner extends Component {
         <ActivityIndicator
           size="large"
           style={styles.indicator}
+          color="black"
         />
       </View>
     );
-  }
+  };
 
   render() {
     const { mode } = this.props;

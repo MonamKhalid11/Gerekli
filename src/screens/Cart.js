@@ -1,15 +1,10 @@
 import React, { Component } from 'react';
+import { Navigation } from 'react-native-navigation';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { get } from 'lodash';
-import {
-  View,
-  Text,
-  Alert,
-  Image,
-  FlatList,
-} from 'react-native';
+import { View, Text, Alert, Image, FlatList } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swipeout from 'react-native-swipeout';
 import debounce from 'lodash/debounce';
@@ -25,16 +20,10 @@ import CartFooter from '../components/CartFooter';
 
 // theme
 import theme from '../config/theme';
-
-// links
-import { registerDrawerDeepLinks } from '../utils/deepLinks';
 import i18n from '../utils/i18n';
+import * as nav from '../services/navigation';
 import { formatPrice, getImagePath, isPriceIncludesTax } from '../utils';
-
-import {
-  iconsMap,
-  iconsLoaded,
-} from '../utils/navIcons';
+import { iconsMap } from '../utils/navIcons';
 
 // Styles
 const styles = EStyleSheet.create({
@@ -128,24 +117,11 @@ const styles = EStyleSheet.create({
     textAlign: 'right',
     marginTop: 4,
     color: '#979797',
-  }
+  },
 });
 
 class Cart extends Component {
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
-  };
-
   static propTypes = {
-    navigator: PropTypes.shape({
-      push: PropTypes.func,
-      dismissModal: PropTypes.func,
-      setOnNavigatorEvent: PropTypes.func,
-    }),
     cartActions: PropTypes.shape({
       fetch: PropTypes.func,
       clear: PropTypes.func,
@@ -167,41 +143,20 @@ class Cart extends Component {
       fetching: true,
       refreshing: false,
     };
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
-    this.handleChangeAmountRequest = debounce(this.handleChangeAmountRequest, 2000);
+
+    this.handleChangeAmountRequest = debounce(
+      this.handleChangeAmountRequest,
+      2000,
+    );
+    Navigation.events().bindComponent(this);
   }
 
-  componentWillMount() {
-    const { navigator } = this.props;
-    iconsLoaded.then(() => {
-      navigator.setButtons({
-        leftButtons: [
-          {
-            id: 'close',
-            icon: iconsMap.close,
-          },
-        ],
-        rightButtons: [
-          {
-            id: 'clearCart',
-            icon: iconsMap.delete,
-          },
-        ],
-      });
-    });
-
-    navigator.setTitle({
-      title: i18n.t('Cart').toUpperCase(),
-    });
-  }
-
-  componentDidMount() {
-    const { cartActions } = this.props;
-    cartActions.fetch();
+  async componentDidMount() {
+    this.props.cartActions.fetch();
   }
 
   componentWillReceiveProps(nextProps) {
-    const { cart } = nextProps;
+    const { cart, auth } = nextProps;
     if (cart.fetching) {
       return;
     }
@@ -217,33 +172,49 @@ class Cart extends Component {
       fetching: false,
       refreshing: false,
     });
+
+    const buttons = {};
+    if (auth.logged) {
+      buttons.rightButtons = [
+        {
+          id: 'clearCart',
+          icon: iconsMap.delete,
+        },
+      ];
+    }
+
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        title: {
+          text: i18n.t('Cart').toUpperCase(),
+        },
+        ...buttons,
+      },
+      bottomTab: {
+        badge: products.length ? `${products.length}` : null,
+      },
+    });
   }
 
-  onNavigatorEvent(event) {
-    const { navigator, cartActions } = this.props;
-    // handle a deep link
-    registerDrawerDeepLinks(event, navigator);
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'close') {
-        navigator.dismissModal();
-      } else if (event.id === 'clearCart') {
-        Alert.alert(
-          i18n.t('Clear all cart ?'),
-          '',
-          [
-            {
-              text: i18n.t('Cancel'),
-              onPress: () => {},
-              style: 'cancel'
-            },
-            {
-              text: i18n.t('Ok'),
-              onPress: () => cartActions.clear(),
-            },
-          ],
-          { cancelable: true }
-        );
-      }
+  navigationButtonPressed({ buttonId }) {
+    const { cartActions } = this.props;
+    if (buttonId === 'clearCart') {
+      Alert.alert(
+        i18n.t('Clear all cart ?'),
+        '',
+        [
+          {
+            text: i18n.t('Cancel'),
+            onPress: () => {},
+            style: 'cancel',
+          },
+          {
+            text: i18n.t('Ok'),
+            onPress: () => cartActions.clear(),
+          },
+        ],
+        { cancelable: true },
+      );
     }
   }
 
@@ -263,10 +234,8 @@ class Cart extends Component {
     const imageUri = getImagePath(item);
     if (imageUri) {
       productImage = (
-        <Image
-          source={{ uri: imageUri }}
-          style={styles.productItemImage}
-        />);
+        <Image source={{ uri: imageUri }} style={styles.productItemImage} />
+      );
     }
 
     const swipeoutBtns = [
@@ -283,7 +252,8 @@ class Cart extends Component {
     const initialValue = parseInt(item.amount, 10);
 
     const productTaxedPrice = get(item, 'taxed_price_formatted.price', '');
-    const productPrice = productTaxedPrice || get(item, 'price_formatted.price', '');
+    const productPrice =
+      productTaxedPrice || get(item, 'price_formatted.price', '');
     const showTaxedPrice = isPriceIncludesTax(item);
 
     return (
@@ -291,15 +261,11 @@ class Cart extends Component {
         <Swipeout
           autoClose
           right={swipeoutBtns}
-          backgroundColor={theme.$navBarBackgroundColor}
-        >
+          backgroundColor={theme.$navBarBackgroundColor}>
           <View style={styles.productItem}>
             {productImage}
             <View style={styles.productItemDetail}>
-              <Text
-                style={styles.productItemName}
-                numberOfLines={1}
-              >
+              <Text style={styles.productItemName} numberOfLines={1}>
                 {item.product}
               </Text>
               <Text style={styles.productItemPrice}>
@@ -329,18 +295,15 @@ class Cart extends Component {
         </Swipeout>
       </View>
     );
-  }
+  };
 
   handleRefresh() {
     const { cartActions } = this.props;
-    this.setState(
-      { refreshing: true },
-      () => cartActions.fetch(),
-    );
+    this.setState({ refreshing: true }, () => cartActions.fetch());
   }
 
   handlePlaceOrder() {
-    const { auth, navigator } = this.props;
+    const { auth } = this.props;
     const products = {};
     this.state.products.forEach((p) => {
       products[p.product_id] = {
@@ -349,21 +312,9 @@ class Cart extends Component {
       };
     });
     if (!auth.logged) {
-      navigator.push({
-        screen: 'CheckoutAuth',
-        backButtonTitle: '',
-        passProps: {
-          products,
-        },
-      });
+      nav.pushCheckoutAuth(this.props.componentId, { products });
     } else {
-      navigator.push({
-        screen: 'CheckoutDelivery',
-        backButtonTitle: '',
-        passProps: {
-          products,
-        },
-      });
+      nav.showCheckoutDelivery({ products });
     }
   }
 
@@ -395,9 +346,7 @@ class Cart extends Component {
         <Text style={styles.emptyListHeader}>
           {i18n.t('Your shopping cart is empty.')}
         </Text>
-        <Text style={styles.emptyListDesc}>
-          {i18n.t('Looking for ideas?')}
-        </Text>
+        <Text style={styles.emptyListDesc}>{i18n.t('Looking for ideas?')}</Text>
       </View>
     );
   };
@@ -413,17 +362,29 @@ class Cart extends Component {
     return (
       <View style={styles.totalWrapper}>
         <Text style={styles.totalText}>
-          {`${i18n.t('Subtotal')}: ${get(cart, 'subtotal_formatted.price', '')}`}
+          {`${i18n.t('Subtotal')}: ${get(
+            cart,
+            'subtotal_formatted.price',
+            '',
+          )}`}
         </Text>
         <Text style={styles.totalText}>
-          {`${i18n.t('Shipping')}: ${get(cart, 'shipping_cost_formatted.price', '')}`}
+          {`${i18n.t('Shipping')}: ${get(
+            cart,
+            'shipping_cost_formatted.price',
+            '',
+          )}`}
         </Text>
         <Text style={styles.totalText}>
-          {`${i18n.t('Taxes')}: ${get(cart, 'tax_subtotal_formatted.price', '')}`}
+          {`${i18n.t('Taxes')}: ${get(
+            cart,
+            'tax_subtotal_formatted.price',
+            '',
+          )}`}
         </Text>
       </View>
     );
-  }
+  };
 
   renderList() {
     const { products, fetching, refreshing } = this.state;
@@ -456,9 +417,7 @@ class Cart extends Component {
       return false;
     }
 
-    return (
-      <Spinner visible={cart.fetching} />
-    );
+    return <Spinner visible={cart.fetching} />;
   };
 
   render() {
@@ -472,11 +431,11 @@ class Cart extends Component {
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     auth: state.auth,
     cart: state.cart,
   }),
-  dispatch => ({
+  (dispatch) => ({
     cartActions: bindActionCreators(cartActions, dispatch),
-  })
+  }),
 )(Cart);
