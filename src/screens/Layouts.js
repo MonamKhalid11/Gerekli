@@ -143,6 +143,7 @@ class Layouts extends Component {
                   link: banner.url,
                   payload: {
                     ...banner,
+                    title: banner.banner,
                   },
                 },
                 this.props.componentId,
