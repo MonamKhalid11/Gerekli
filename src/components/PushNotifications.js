@@ -1,95 +1,103 @@
-import { Platform } from 'react-native';
-import firebase from 'react-native-firebase';
-import config from '../config';
-import { deviceLanguage } from '../utils/i18n';
+// import { Platform } from 'react-native';
+import messaging from '@react-native-firebase/messaging';
+// import config from '../config';
+// import { deviceLanguage } from '../utils/i18n';
 
-import store from '../store';
-import * as authActions from '../actions/authActions';
+// import store from '../store';
+// import * as authActions from '../actions/authActions';
 
-function RegisterPushListener() {
-  return firebase.notifications().onNotification((notif) => {
-    let notification = new firebase.notifications.Notification();
-    notification = notification
-      .setNotificationId(notif.notificationId)
-      .setTitle(notif.title)
-      .setBody(notif.body)
-      .setSound(notif.sound || 'bell.mp3')
-      .setData({
-        ...notif.data
-      });
+// function RegisterPushListener() {
+//   return firebase.notifications().onNotification((notif) => {
+//     let notification = new firebase.notifications.Notification();
+//     notification = notification
+//       .setNotificationId(notif.notificationId)
+//       .setTitle(notif.title)
+//       .setBody(notif.body)
+//       .setSound(notif.sound || 'bell.mp3')
+//       .setData({
+//         ...notif.data
+//       });
 
-    if (Platform.OS === 'android') {
-      notification.android.setAutoCancel(true);
-      notification.android.setColor(config.pushNotificationsColor);
-      notification.android.setColorized(true);
-      notification.android.setPriority(firebase.notifications.Android.Priority.High);
-      notification.android.setSmallIcon('ic_notification');
-      notification.android.setVibrate([300]);
-      notification.android.setOngoing(true);
-      notification.android.setClickAction('open');
-      notification.android.setChannelId(config.pushNotificationChannelId);
-    }
+//     if (Platform.OS === 'android') {
+//       notification.android.setAutoCancel(true);
+//       notification.android.setColor(config.pushNotificationsColor);
+//       notification.android.setColorized(true);
+//       notification.android.setPriority(firebase.notifications.Android.Priority.High);
+//       notification.android.setSmallIcon('ic_notification');
+//       notification.android.setVibrate([300]);
+//       notification.android.setOngoing(true);
+//       notification.android.setClickAction('open');
+//       notification.android.setChannelId(config.pushNotificationChannelId);
+//     }
 
-    firebase.notifications().displayNotification(notification);
-  });
-}
+//     firebase.notifications().displayNotification(notification);
+//   });
+// }
 
-function RegisterOpenListener(navigator) {
-  return firebase.notifications().onNotificationOpened((notificationOpen) => {
-    const notif = notificationOpen.notification;
-    if (notif.data && notif.data.targetScreen) {
-      navigator.handleDeepLink({
-        link: notif.data.targetScreen,
-        payload: notif.data.payload,
-      });
-    }
-  });
-}
+// function RegisterOpenListener(navigator) {
+//   return firebase.notifications().onNotificationOpened((notificationOpen) => {
+//     const notif = notificationOpen.notification;
+//     if (notif.data && notif.data.targetScreen) {
+//       navigator.handleDeepLink({
+//         link: notif.data.targetScreen,
+//         payload: notif.data.payload,
+//       });
+//     }
+//   });
+// }
 
-function Init(cb) {
-  firebase.messaging().requestPermission({
-    badge: true,
-    sound: true,
-    alert: true
-  }).then(() => {
-    firebase.messaging().getToken()
-      .then((token) => {
-        if (Platform.OS === 'android') {
-          const channel = new firebase.notifications.Android
-            .Channel(
-              config.pushNotificationChannelId,
-              config.pushNotificationChannelId,
-              firebase.notifications.Android.Importance.Max
-            );
-          firebase
-            .notifications()
-            .android
-            .createChannel(channel);
-        }
+async function Init() {
+  const authStatus = await messaging().requestPermission();
+  const enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-        console.log("TOKEN (getFCMToken)", token);
+  if (enabled) {
+    console.log('Authorization status:', authStatus);
+  }
+  // firebase.messaging().requestPermission({
+  //   badge: true,
+  //   sound: true,
+  //   alert: true
+  // }).then(() => {
+  //   firebase.messaging().getToken()
+  //     .then((token) => {
+  //       if (Platform.OS === 'android') {
+  //         const channel = new firebase.notifications.Android
+  //           .Channel(
+  //             config.pushNotificationChannelId,
+  //             config.pushNotificationChannelId,
+  //             firebase.notifications.Android.Importance.Max
+  //           );
+  //         firebase
+  //           .notifications()
+  //           .android
+  //           .createChannel(channel);
+  //       }
 
-        const { auth } = store.getState();
-        if (cb) {
-          setTimeout(() => cb(token), 2000);
-        }
+  //       console.log("TOKEN (getFCMToken)", token);
 
-        if (auth.deviceToken !== token) {
-          store.dispatch(authActions.deviceInfo({
-            token,
-            platform: Platform.OS,
-            locale: deviceLanguage,
-            device_id: auth.uuid,
-          }));
-        }
-      });
-  }).catch((err) => {
-    console.log(err, 'no perms');
-  });
+  //       const { auth } = store.getState();
+  //       if (cb) {
+  //         setTimeout(() => cb(token), 2000);
+  //       }
+
+  //       if (auth.deviceToken !== token) {
+  //         store.dispatch(authActions.deviceInfo({
+  //           token,
+  //           platform: Platform.OS,
+  //           locale: deviceLanguage,
+  //           device_id: auth.uuid,
+  //         }));
+  //       }
+  //     });
+  // }).catch((err) => {
+  //   console.log(err, 'no perms');
+  // });
 }
 
 export default {
   Init,
-  RegisterPushListener,
-  RegisterOpenListener,
+  // RegisterPushListener,
+  // RegisterOpenListener,
 };

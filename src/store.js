@@ -10,7 +10,7 @@ const middlewares = [thunk];
 
 // Apply logger if we are in debug mode.
 if (__DEV__) {
-  middlewares.push(logger);
+  // middlewares.push(logger);
 }
 
 const store = createStore(

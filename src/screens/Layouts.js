@@ -27,7 +27,7 @@ import VendorBlock from '../components/VendorBlock';
 import PageBlock from '../components/PageBlock';
 import ProductBlock from '../components/ProductBlock';
 import CategoryBlock from '../components/CategoryBlock';
-// import PushNotificaitons from '../components/PushNotifications';
+import PushNotificaitons from '../components/PushNotifications';
 import { toArray } from '../utils';
 import { registerDrawerDeepLinks } from '../utils/deepLinks';
 import config from '../config';
@@ -75,15 +75,15 @@ class Layouts extends Component {
 
     layoutsActions.fetch();
 
-    // if (config.pushNotifications) {
-    //   PushNotificaitons.Init();
-    //   this.pushNotificationListener = PushNotificaitons.RegisterPushListener(
-    //     navigator,
-    //   );
-    //   this.pushNotificationOpenListener = PushNotificaitons.RegisterOpenListener(
-    //     navigator,
-    //   );
-    // }
+    if (config.pushNotifications) {
+      PushNotificaitons.Init();
+      // this.pushNotificationListener = PushNotificaitons.RegisterPushListener(
+      //   navigator,
+      // );
+      // this.pushNotificationOpenListener = PushNotificaitons.RegisterOpenListener(
+      //   navigator,
+      // );
+    }
   }
 
   componentWillReceiveProps(nextProps) {
