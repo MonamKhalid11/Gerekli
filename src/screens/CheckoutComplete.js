@@ -102,7 +102,7 @@ class CheckoutComplete extends Component {
         title: {
           text: i18n.t('Checkout complete').toUpperCase(),
         },
-        leftButtons: [
+        rightButtons: [
           {
             id: 'close',
             icon: iconsMap.close,

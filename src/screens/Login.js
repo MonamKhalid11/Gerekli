@@ -67,7 +67,7 @@ class Login extends Component {
         title: {
           text: i18n.t('Login').toUpperCase(),
         },
-        leftButtons: [
+        rightButtons: [
           {
             id: 'close',
             icon: iconsMap.close,

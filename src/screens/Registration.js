@@ -53,7 +53,7 @@ class Registration extends Component {
         title: {
           text: i18n.t('Registration'),
         },
-        leftButtons: [
+        rightButtons: [
           {
             id: 'close',
             icon: iconsMap.close,

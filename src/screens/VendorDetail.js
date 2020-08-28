@@ -121,7 +121,7 @@ export class VendorDetail extends Component {
         title: {
           text: i18n.t('Vendor Detail').toUpperCase(),
         },
-        leftButtons: [
+        rightButtons: [
           {
             id: 'close',
             icon: iconsMap.close,

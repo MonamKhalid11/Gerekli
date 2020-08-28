@@ -28,7 +28,7 @@ class Page extends Component {
   componentDidMount() {
     Navigation.mergeOptions(this.props.componentId, {
       topBar: {
-        leftButtons: [
+        rightButtons: [
           {
             id: 'close',
             icon: iconsMap.close,

@@ -65,13 +65,11 @@ class Discussion extends Component {
     });
 
     const buttons = {
-      leftButtons: [
+      rightButtons: [
         {
           id: 'close',
           icon: iconsMap.close,
         },
-      ],
-      rightButtons: [
         {
           id: 'newComment',
           icon: iconsMap.create,

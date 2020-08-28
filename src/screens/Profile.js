@@ -43,7 +43,6 @@ const styles = EStyleSheet.create({
     justifyContent: 'center',
   },
   btnText: {
-    padding: 20,
     color: '#fff',
     fontSize: '1rem',
   },
@@ -145,20 +144,15 @@ class ProfileEdit extends Component {
     );
   };
 
-  render() {
-    const { authActions } = this.props;
+  renderSignedInMenu = () => {
+    const { authActions, auth } = this.props;
+
+    if (!auth.logged) {
+      return null;
+    }
 
     return (
-      <View style={styles.container}>
-        {this.renderSignedIn()}
-
-        {/* <TouchableOpacity onPress={() => nav.showLogin()}>
-          <Text style={styles.signInBtnText}>{i18n.t('Login')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => nav.showRegistration()}>
-          <Text style={styles.signInBtnText}>{i18n.t('Registration')}</Text>
-        </TouchableOpacity> */}
-
+      <>
         <TouchableOpacity
           onPress={() => nav.pushProfileEdit(this.props.componentId)}>
           <Text style={styles.signInBtnText}>{i18n.t('Profile')}</Text>
@@ -187,6 +181,16 @@ class ProfileEdit extends Component {
           onPress={() => nav.showVendorManageCategoriesPicker({ parent: 0 })}>
           <Text style={styles.signInBtnText}>{i18n.t('Add Products')}</Text>
         </TouchableOpacity>
+      </>
+    );
+  };
+
+  render() {
+    return (
+      <View style={styles.container}>
+        {this.renderSignedIn()}
+
+        {this.renderSignedInMenu()}
 
         {this.renderPages()}
       </View>

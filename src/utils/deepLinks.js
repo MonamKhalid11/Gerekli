@@ -13,6 +13,7 @@ export const registerDrawerDeepLinks = (event, componentId) => {
   const params = parseQueryString(link);
 
   if (params.dispatch === 'pages.view' && params.page_id) {
+    console.log(params);
     nav.showPage(componentId, {
       title: params.page,
       uri: `${config.siteUrl}index.php?dispatch=pages.view&page_id=${params.page_id}&s_layout=${config.layoutId}`,

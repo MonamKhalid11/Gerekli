@@ -166,7 +166,7 @@ class EditProduct extends Component {
     };
 
     if (showClose) {
-      buttons.leftButtons = [
+      buttons.rightButtons = [
         {
           id: 'close',
           icon: iconsMap.close,

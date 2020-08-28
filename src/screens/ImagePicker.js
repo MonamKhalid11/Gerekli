@@ -78,7 +78,7 @@ class AddProductStep1 extends Component {
 
     Navigation.mergeOptions(this.props.componentId, {
       topBar: {
-        leftButtons: [
+        rightButtons: [
           {
             id: 'close',
             icon: iconsMap.close,
