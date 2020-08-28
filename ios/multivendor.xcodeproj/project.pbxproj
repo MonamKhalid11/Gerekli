@@ -44,7 +44,7 @@
 		00E356EE1AD99517003FC87E /* multivendorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = multivendorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* multivendorTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = multivendorTests.m; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* multivendor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = multivendor.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* Multi-Vendor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Multi-Vendor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = multivendor/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = multivendor/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = multivendor/Images.xcassets; sourceTree = "<group>"; };
@@ -174,7 +174,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* multivendor.app */,
+				13B07F961A680F5B00A75B9A /* Multi-Vendor.app */,
 				00E356EE1AD99517003FC87E /* multivendorTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* multivendor-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* multivendor-tvOSTests.xctest */,
@@ -238,7 +238,7 @@
 			);
 			name = multivendor;
 			productName = multivendor;
-			productReference = 13B07F961A680F5B00A75B9A /* multivendor.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* Multi-Vendor.app */;
 			productType = "com.apple.product-type.application";
 		};
 		2D02E47A1E0B4A5D006451C7 /* multivendor-tvOS */ = {
@@ -729,8 +729,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = multivendor;
+				PRODUCT_BUNDLE_IDENTIFIER = com.simtech.native;
+				PRODUCT_NAME = "Multi-Vendor";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -752,8 +752,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = multivendor;
+				PRODUCT_BUNDLE_IDENTIFIER = com.simtech.native;
+				PRODUCT_NAME = "Multi-Vendor";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
