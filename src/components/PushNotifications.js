@@ -1,10 +1,10 @@
-// import { Platform } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
-// import config from '../config';
-// import { deviceLanguage } from '../utils/i18n';
+import { deviceLanguage } from '../utils/i18n';
 
-// import store from '../store';
-// import * as authActions from '../actions/authActions';
+import store from '../store';
+import * as authActions from '../actions/authActions';
+// import config from '../config';
 
 // function RegisterPushListener() {
 //   return firebase.notifications().onNotification((notif) => {
@@ -46,6 +46,27 @@ import messaging from '@react-native-firebase/messaging';
 //   });
 // }
 
+const getFcmToken = async () => {
+  const fcmToken = await messaging().getToken();
+  if (fcmToken) {
+    console.log('TOKEN (getFCMToken): ', fcmToken);
+
+    const { auth } = store.getState();
+    if (auth.deviceToken !== fcmToken) {
+      store.dispatch(
+        authActions.deviceInfo({
+          token: fcmToken,
+          platform: Platform.OS,
+          locale: deviceLanguage,
+          device_id: auth.uuid,
+        }),
+      );
+    }
+  } else {
+    console.log('Failed', 'No token received');
+  }
+};
+
 async function Init() {
   const authStatus = await messaging().requestPermission();
   const enabled =
@@ -53,47 +74,16 @@ async function Init() {
     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
   if (enabled) {
-    console.log('Authorization status:', authStatus);
+    getFcmToken();
   }
-  // firebase.messaging().requestPermission({
-  //   badge: true,
-  //   sound: true,
-  //   alert: true
-  // }).then(() => {
-  //   firebase.messaging().getToken()
-  //     .then((token) => {
-  //       if (Platform.OS === 'android') {
-  //         const channel = new firebase.notifications.Android
-  //           .Channel(
-  //             config.pushNotificationChannelId,
-  //             config.pushNotificationChannelId,
-  //             firebase.notifications.Android.Importance.Max
-  //           );
-  //         firebase
-  //           .notifications()
-  //           .android
-  //           .createChannel(channel);
-  //       }
 
-  //       console.log("TOKEN (getFCMToken)", token);
+  messaging().onMessage(async (remoteMessage) => {
+    Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+  });
 
-  //       const { auth } = store.getState();
-  //       if (cb) {
-  //         setTimeout(() => cb(token), 2000);
-  //       }
-
-  //       if (auth.deviceToken !== token) {
-  //         store.dispatch(authActions.deviceInfo({
-  //           token,
-  //           platform: Platform.OS,
-  //           locale: deviceLanguage,
-  //           device_id: auth.uuid,
-  //         }));
-  //       }
-  //     });
-  // }).catch((err) => {
-  //   console.log(err, 'no perms');
-  // });
+  messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+    console.log('Message handled in the background!', remoteMessage);
+  });
 }
 
 export default {
