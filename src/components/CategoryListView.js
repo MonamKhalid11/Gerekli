@@ -10,6 +10,16 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 import { getImagePath } from '../utils';
 
+/**
+ * Рендерит одну категорию
+ */
+
+/**
+ * props:
+ * category - описание категории
+ * onPress - функция нажатия
+ */
+
 const styles = EStyleSheet.create({
   container: {
     width: '33.33333%',

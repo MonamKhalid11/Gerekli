@@ -35,6 +35,18 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Рендерит блок с категориями товаров
+ */
+
+/**
+ * props:
+ * name - название блока
+ * wrapper - если передается, то рендерится name блока
+ * items - массив объектов, описывающих каждую категорию
+ * onPress - функция нажатия
+ */
+
 export default class CategoriesBlocks extends Component {
   static propTypes = {
     wrapper: PropTypes.string,

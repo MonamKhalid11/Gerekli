@@ -7,6 +7,25 @@ import {
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from './Icon';
 
+/**
+ * Кнопка
+ */
+
+/**
+ * props:
+ * style - стили кнопки
+ * children - дочерние элементы для рендера внутри компонента
+ * clear - задает наличие кнопки закрытия у компонента
+ * type - задает тип стилей
+ * disabled - определяет доступность нажатия
+ * onPress - функция нажатия
+ */
+
+/**
+ * methods:
+ * getStyleByType - задает стили в зависимости от type
+ */
+
 const styles = EStyleSheet.create({
   default: {
     backgroundColor: '$darkColor',

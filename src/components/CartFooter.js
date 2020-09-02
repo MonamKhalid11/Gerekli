@@ -10,6 +10,18 @@ import Button from './Button';
 import i18n from '../utils/i18n';
 import { formatPrice } from '../utils';
 
+/**
+ * Футер корзины
+ */
+
+/**
+ * props:
+ * totalPrice - общая сумма заказа
+ * btnText - текст на кнопке футера
+ * onBtnPress - функция нажатия
+ * isBtnDisabled - определяет доступность нажатия
+ */
+
 const styles = EStyleSheet.create({
   container: {
     backgroundColor: '#fff',

@@ -11,6 +11,22 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import Swiper from 'react-native-swiper';
 import { get } from 'lodash';
 
+/**
+ * Блок с баннерами внутри свайпера.
+ */
+
+/**
+ * props:
+ * items - массив объектов, описывающих каждый баннер
+ * name - название баннера
+ * wrapper - если передается, то рендерится name баннера
+ */
+
+/**
+  * methods:
+  * renderImage - рендерит картинки для баннера
+  */
+
 const styles = EStyleSheet.create({
   container: {
     marginTop: 5,
