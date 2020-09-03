@@ -1,31 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Text,
-  View,
-  Image,
-  I18nManager,
-  TouchableOpacity,
-} from 'react-native';
+import { I18nManager, Image, Text, TouchableOpacity, View, } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swiper from 'react-native-swiper';
 import { get } from 'lodash';
-
-/**
- * Блок с баннерами внутри свайпера.
- */
-
-/**
- * props:
- * items - массив объектов, описывающих каждый баннер
- * name - название баннера
- * wrapper - если передается, то рендерится name баннера
- */
-
-/**
-  * methods:
-  * renderImage - рендерит картинки для баннера
-  */
 
 const styles = EStyleSheet.create({
   container: {
@@ -49,6 +27,14 @@ const styles = EStyleSheet.create({
   }
 });
 
+/**
+ * Блок с баннерами внутри свайпера.
+ *
+ * @reactProps {string} name - название баннера
+ * @reactProps {string} wrapper - если передается, то рендерится name баннера
+ * @reactProps {array} items - массив объектов, описывающих каждый баннер
+ * @reactProps {callable} onPress - on press callback
+ */
 export default class BannerBlocks extends Component {
   static propTypes = {
     name: PropTypes.string,
@@ -74,6 +60,11 @@ export default class BannerBlocks extends Component {
     );
   }
 
+  /**
+   * Renders component.
+   *
+   * @returns {JSX.Element}
+   */
   render() {
     const { items, name, wrapper } = this.props;
     const itemsList = items.map((item, index) => this.renderImage(item, index));
