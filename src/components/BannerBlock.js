@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { I18nManager, Image, Text, TouchableOpacity, View, } from 'react-native';
+import {
+  I18nManager, Image, Text, TouchableOpacity, View
+} from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swiper from 'react-native-swiper';
 import { get } from 'lodash';

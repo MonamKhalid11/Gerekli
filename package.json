@@ -50,6 +50,11 @@
     "babel-preset-react-native": "4.0.1",
     "enzyme": "3.9.0",
     "enzyme-adapter-react-16": "1.13.1",
+    "esdoc": "^1.1.0",
+    "esdoc-ecmascript-proposal-plugin": "^1.0.0",
+    "esdoc-jsx-plugin": "^1.0.0",
+    "esdoc-react-plugin": "^1.0.1",
+    "esdoc-standard-plugin": "^1.0.0",
     "eslint": "5.16.0",
     "eslint-config-airbnb": "17.1.0",
     "eslint-plugin-import": "2.14.0",
@@ -62,12 +67,7 @@
     "react-native-mock": "0.3.1",
     "react-test-renderer": "16.8.3",
     "redux-mock-store": "1.5.3",
-    "webpack": "^4.44.1",
-    "esdoc": "^1.1.0",
-    "esdoc-ecmascript-proposal-plugin": "^1.0.0",
-    "esdoc-jsx-plugin": "^1.0.0",
-    "esdoc-react-plugin": "^1.0.1",
-    "esdoc-standard-plugin": "^1.0.0"
+    "webpack": "^4.44.1"
   },
   "jest": {
     "preset": "react-native",

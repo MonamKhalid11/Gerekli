@@ -45,6 +45,15 @@ const styles = EStyleSheet.create({
   }
 });
 
+/**
+ * Renders a block for increasing or decreasing the quantity of an item in an order.
+ *
+ * @param {number} step - Quantity change step.
+ * @param {number} min - Minimum order quantity.
+ * @param {number} initialValue - The initial quantity of items in the cart.
+ * @param {number} max - Maximum order quantity.
+ * @param {function} oChange - 
+ */
 export default class extends Component {
   static propTypes = {
     step: PropTypes.number,

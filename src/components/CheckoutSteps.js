@@ -10,7 +10,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import i18n from '../utils/i18n';
 
 // Component
-import Icon from '../components/Icon';
+import Icon from './Icon';
 
 const styles = EStyleSheet.create({
   container: {
@@ -96,6 +96,12 @@ const styles = EStyleSheet.create({
   }
 });
 
+/**
+ * Renders steps of the order checkout.
+ *
+ * @reactProps {string[]} steps - Steps to follow to place an order.
+ * @reactProps {number} step - Step number.
+ */
 export default class extends Component {
   static propTypes = {
     steps: PropTypes.arrayOf(PropTypes.string),
@@ -119,6 +125,9 @@ export default class extends Component {
     };
   }
 
+  /**
+   * Changes step number.
+   */
   componentDidMount() {
     const { step } = this.props;
     this.setState({
@@ -126,6 +135,11 @@ export default class extends Component {
     });
   }
 
+  /**
+   * Renders the step as an arrow.
+   *
+   * @return {JSX.Element}
+   */
   renderArrow = () => (
     <View style={styles.arrowContainer}>
       <View style={styles.arrowTop} />
@@ -133,6 +147,11 @@ export default class extends Component {
     </View>
   );
 
+  /**
+   * Renders completed steps.
+   *
+   * @return {JSX.Element[]}
+   */
   renderPassedSteps() {
     const { stepId } = this.state;
     const { steps } = this.props;
@@ -153,6 +172,11 @@ export default class extends Component {
     return stepsList;
   }
 
+  /**
+   * Renders the active step.
+   *
+   * @return {JSX.Element}
+   */
   renderActiveStep() {
     const { steps } = this.props;
     const { stepId } = this.state;
@@ -174,6 +198,11 @@ export default class extends Component {
     );
   }
 
+  /**
+   * Renders upcoming steps.
+   *
+   * @return {JSX.Element[]}
+   */
   renderNextSteps() {
     const { steps } = this.props;
     const { stepId } = this.state;
@@ -195,6 +224,11 @@ export default class extends Component {
     return stepsList;
   }
 
+  /**
+   * Renders component.
+   *
+   * @returns {JSX.Element}
+   */
   render() {
     return (
       <View style={styles.container}>

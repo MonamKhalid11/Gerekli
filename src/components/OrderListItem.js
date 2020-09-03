@@ -37,6 +37,13 @@ const styles = EStyleSheet.create({
   }
 });
 
+/**
+ * Renders an order.
+ *
+ * @param {function} onPress - Opens an order.
+ * @param {object} item - Order information.
+ * @return {JSX.Element}
+ */
 const OrderListItem = (props) => {
   const { onPress, item } = props;
   const status = getOrderStatus(item.status);

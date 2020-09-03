@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import {
   View,
   Text,
@@ -21,6 +20,10 @@ const styles = EStyleSheet.create({
   }
 });
 
+/**
+ * Renders a notification about no internet.
+ * @return {JSX.Element}
+ */
 export default class Offline extends Component {
   render() {
     return (

@@ -8,20 +8,6 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from './Icon';
 
 /**
- * Кнопка
- */
-
-/**
- * props:
- * style - стили кнопки
- * children - дочерние элементы для рендера внутри компонента
- * clear - задает наличие кнопки закрытия у компонента
- * type - задает тип стилей
- * disabled - определяет доступность нажатия
- * onPress - функция нажатия
- */
-
-/**
  * methods:
  * getStyleByType - задает стили в зависимости от type
  */
@@ -114,6 +100,16 @@ const styles = EStyleSheet.create({
   }
 });
 
+/**
+ * Кнопка
+ * 
+ * @reactProps style - стили кнопки
+ * @reactProps children - дочерние элементы для рендера внутри компонента
+ * @reactProps clear - задает наличие кнопки закрытия у компонента
+ * @reactProps type - задает тип стилей
+ * @reactProps disabled - определяет доступность нажатия
+ * @reactProps {callable} onPress - функция нажатия
+ */
 export default class extends PureComponent {
   static propTypes = {
     style: PropTypes.shape(),
