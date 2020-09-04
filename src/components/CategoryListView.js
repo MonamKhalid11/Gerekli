@@ -10,16 +10,6 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 import { getImagePath } from '../utils';
 
-/**
- * Рендерит одну категорию
- */
-
-/**
- * props:
- * category - описание категории
- * onPress - функция нажатия
- */
-
 const styles = EStyleSheet.create({
   container: {
     width: '33.33333%',
@@ -66,6 +56,15 @@ const styles = EStyleSheet.create({
   },
 });
 
+
+/**
+ * Renders a category.
+ *
+ * @param {string} category - Category description.
+ * @param {string} onPress - Push function.
+ *
+ * @return {JSX.Element}
+ */
 const CategoryListView = ({ category, onPress }) => {
   const imageUri = getImagePath(category);
 
@@ -86,6 +85,9 @@ const CategoryListView = ({ category, onPress }) => {
   );
 };
 
+/**
+ * @ignore
+ */
 CategoryListView.propTypes = {
   category: PropTypes.shape({}),
   onPress: PropTypes.func,

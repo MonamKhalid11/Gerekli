@@ -36,28 +36,35 @@ const styles = EStyleSheet.create({
 });
 
 /**
- * Рендерит блок с категориями товаров
+ * Renders a block with product categories.
+ *
+ * @reactProps {string} name - Block name.
+ * @reactProps {string} wrapper - If passed, then the block name is rendered.
+ * @reactProps {objects[]} items - An array of objects describing each category.
+ * @reactProps {function} onPress - Push function.
  */
-
-/**
- * props:
- * name - название блока
- * wrapper - если передается, то рендерится name блока
- * items - массив объектов, описывающих каждую категорию
- * onPress - функция нажатия
- */
-
 export default class CategoriesBlocks extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     wrapper: PropTypes.string,
     items: PropTypes.arrayOf(PropTypes.object),
     onPress: PropTypes.func,
   }
 
+  /**
+   * @ignore
+   */
   static defaultProps = {
     items: []
   }
 
+  /**
+   * Renders component.
+   *
+   * @returns {JSX.Element}
+   */
   render() {
     const { items, wrapper, onPress } = this.props;
 

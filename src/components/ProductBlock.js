@@ -45,6 +45,9 @@ const styles = EStyleSheet.create({
  * @param {function} onPress - Opens a product.
  */
 export default class ProductBlock extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     name: PropTypes.string,
     wrapper: PropTypes.string,

@@ -30,14 +30,17 @@ const styles = EStyleSheet.create({
 });
 
 /**
- * Блок с баннерами внутри свайпера.
+ * Block with banners inside the swiper.
  *
- * @reactProps {string} name - название баннера
- * @reactProps {string} wrapper - если передается, то рендерится name баннера
- * @reactProps {array} items - массив объектов, описывающих каждый баннер
- * @reactProps {callable} onPress - on press callback
+ * @reactProps {string} name - Block name.
+ * @reactProps {string} wrapper - If passed, then the block name is rendered.
+ * @reactProps {object[]} items - An array of objects describing each banner.
+ * @reactProps {function} onPress - Go to banner detail page.
  */
 export default class BannerBlocks extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     name: PropTypes.string,
     wrapper: PropTypes.string,
@@ -45,17 +48,26 @@ export default class BannerBlocks extends Component {
     onPress: PropTypes.func,
   }
 
+  /**
+   * @ignore
+   */
   static defaultProps = {
     items: []
   }
 
+  /**
+   * Renders image.
+   *
+   * @param {object} item - Banner information.
+   * @param {number} index - Banner index.
+   */
   renderImage = (item, index) => {
     const imageUri = get(item, 'main_pair.icon.http_image_path');
-
+    const { onPress } = this.props;
     return (
       <TouchableOpacity
         key={index}
-        onPress={() => this.props.onPress(item)}
+        onPress={() => onPress(item)}
       >
         <Image source={{ uri: imageUri }} style={styles.img} />
       </TouchableOpacity>

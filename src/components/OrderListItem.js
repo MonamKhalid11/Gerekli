@@ -42,6 +42,7 @@ const styles = EStyleSheet.create({
  *
  * @param {function} onPress - Opens an order.
  * @param {object} item - Order information.
+ *
  * @return {JSX.Element}
  */
 const OrderListItem = (props) => {
@@ -73,6 +74,9 @@ const OrderListItem = (props) => {
   );
 };
 
+/**
+ * @ignore
+ */
 OrderListItem.propTypes = {
   onPress: PropTypes.func.isRequired,
   item: PropTypes.shape({

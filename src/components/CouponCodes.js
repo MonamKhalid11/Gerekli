@@ -77,12 +77,18 @@ const styles = EStyleSheet.create({
  * @reactProps {string[]} items - Applied coupons.
  */
 class CouponCodes extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     onAddPress: PropTypes.func.isRequired,
     onRemovePress: PropTypes.func.isRequired,
     items: PropTypes.arrayOf(PropTypes.string),
   };
 
+  /**
+   * @ignore
+   */
   state = {
     value: '',
   };

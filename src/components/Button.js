@@ -7,11 +7,6 @@ import {
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from './Icon';
 
-/**
- * methods:
- * getStyleByType - задает стили в зависимости от type
- */
-
 const styles = EStyleSheet.create({
   default: {
     backgroundColor: '$darkColor',
@@ -101,16 +96,18 @@ const styles = EStyleSheet.create({
 });
 
 /**
- * Кнопка
- * 
- * @reactProps style - стили кнопки
- * @reactProps children - дочерние элементы для рендера внутри компонента
- * @reactProps clear - задает наличие кнопки закрытия у компонента
- * @reactProps type - задает тип стилей
- * @reactProps disabled - определяет доступность нажатия
- * @reactProps {callable} onPress - функция нажатия
+ * Button.
+ *
+ * @reactProps {object} style - Button styles.
+ * @reactProps {boolean} disabled - Button activity flag.
+ * @reactProps {function} onPress - Push function.
+ * @reactProps {string} type - Styles type.
+ * @reactProps {boolean} clear - Close button flag.
  */
 export default class extends PureComponent {
+  /**
+   * @ignore
+   */
   static propTypes = {
     style: PropTypes.shape(),
     children: PropTypes.oneOfType([
@@ -122,10 +119,16 @@ export default class extends PureComponent {
     type: PropTypes.string,
   };
 
+  /**
+   * @ignore
+   */
   static defaultProps = {
     clear: false,
   }
 
+  /**
+   * Sets styles depending on type.
+   */
   getStyleByType() {
     const { type, clear } = this.props;
     switch (type) {
@@ -175,6 +178,11 @@ export default class extends PureComponent {
     }
   }
 
+  /**
+   * Renders component.
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { style, children, clear } = this.props;
     return (

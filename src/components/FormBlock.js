@@ -40,13 +40,16 @@ const styles = EStyleSheet.create({
 /**
  * Renders a block of form
  *
- * @reactProps {sting} buttonText - Button text.
+ * @reactProps {string} buttonText - Button text.
  * @reactProps {string} title - Block title.
  * @reactProps {function} onShowMorePress - Opens or closes a block.
  * @reactProps {boolean} noContainerStyle - Block styles flag.
  * @reactProps {JSX.Element} simpleView - Standard form.
  */
 export default class FormBlock extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     children: PropTypes.oneOfType([
       PropTypes.object,
@@ -60,10 +63,16 @@ export default class FormBlock extends Component {
     simpleView: PropTypes.shape(),
   }
 
+  /**
+   * @ignore
+   */
   static defaultProps = {
     onShowMorePress: () => {},
   };
 
+  /**
+   * @ignore
+   */
   constructor(props) {
     super(props);
 

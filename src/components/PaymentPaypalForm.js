@@ -25,10 +25,14 @@ const formOptions = {};
 /**
  * Renders payment paypal form.
  *
- * @param {function} onInit - Determines which form should be rendered.
+ * @reactProps {function} onInit - Determines which form should be rendered.
+ *
  * @return {JSX.Element}
  */
 export default class PaymentPaypalForm extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     onInit: PropTypes.func,
   };

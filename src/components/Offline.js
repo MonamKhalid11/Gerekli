@@ -22,6 +22,7 @@ const styles = EStyleSheet.create({
 
 /**
  * Renders a notification about no internet.
+ *
  * @return {JSX.Element}
  */
 export default class Offline extends Component {

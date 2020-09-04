@@ -103,11 +103,17 @@ const styles = EStyleSheet.create({
  * @reactProps {number} step - Step number.
  */
 export default class extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     steps: PropTypes.arrayOf(PropTypes.string),
     step: PropTypes.number,
   }
 
+  /**
+   * @ignore
+   */
   static defaultProps = {
     steps: [
       i18n.t('Authentication'),
@@ -117,6 +123,9 @@ export default class extends Component {
     ]
   }
 
+  /**
+   * @ignore
+   */
   constructor(props) {
     super(props);
 
