@@ -61,7 +61,18 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders the option to select a product property.
+ *
+ * @reactProps {object} value - Information about the initial value of the select.
+ * @reactProps {object} option - Information about the option and its variants.
+ * @reactProps {boolean} multiply - You can choose several variants or not.
+ * @reactProps {function} onChange - Change function.
+ */
 export default class extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     value: PropTypes.shape({}),
     option: PropTypes.shape({}).isRequired,
@@ -84,20 +95,38 @@ export default class extends Component {
     };
   }
 
+  /**
+   * Sets initial value to state.
+   */
   componentDidMount() {
     const { value } = this.props;
     this.setState({ value });
   }
 
+  /**
+   * Re-renders the component if new props are received.
+   */
   componentWillReceiveProps(nextProps) {
     const { value } = nextProps;
     this.setState({ value });
   }
 
+  /**
+   * Changes option value.
+   *
+   * @param {object} value -  Selected value.
+   */
   handleChange(value) {
     this.props.onChange(value);
   }
 
+  /**
+   * Renders comment.
+   *
+   * @param {object} option - Comment information.
+   *
+   * @return {JSX.Element}
+   */
   renderComment = (option) => {
     if (option.comment) {
       return (<Text style={styles.commentText}>{option.comment}</Text>);
@@ -105,6 +134,11 @@ export default class extends Component {
     return null;
   };
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { option } = this.props;
     const { value } = this.state;

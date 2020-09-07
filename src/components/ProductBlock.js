@@ -39,10 +39,10 @@ const styles = EStyleSheet.create({
 /**
  * Renders product block.
  *
- * @param {string} name - Block name.
- * @param {string} wrapper - Renders name if exists.
- * @param {object[]} items - Products information.
- * @param {function} onPress - Opens a product.
+ * @reactProps {string} name - Block name.
+ * @reactProps {string} wrapper - Renders name if exists.
+ * @reactProps {object[]} items - Products information.
+ * @reactProps {function} onPress - Opens a product.
  */
 export default class ProductBlock extends Component {
   /**
@@ -60,7 +60,7 @@ export default class ProductBlock extends Component {
   }
 
   /**
-   * Renders product.
+   * Renders all products in the block.
    *
    * @return {JSX.Element}
    */
