@@ -34,7 +34,18 @@ const styles = EStyleSheet.create({
   }
 });
 
+/**
+ * Renders a block with a list of pages.
+ *
+ * @reactProps {string} name - Block name.
+ * @reactProps {string} wrapper - Renders name if exists.
+ * @reactProps {object[]} items - Pages information.
+ * @reactProps {function} onPress - Opens a page.
+ */
 export default class BannerBlocks extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     name: PropTypes.string,
     wrapper: PropTypes.string,
@@ -46,6 +57,12 @@ export default class BannerBlocks extends Component {
     items: []
   }
 
+  /**
+   * Renders item.
+   *
+   * @param {object} item - Page information.
+   * @param {number} index - Page index.
+   */
   renderItem = (item, index) => (
     <TouchableOpacity
       key={index}
@@ -58,6 +75,11 @@ export default class BannerBlocks extends Component {
     </TouchableOpacity>
   );
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { items, name, wrapper } = this.props;
     const itemsList = items.map((item, index) => this.renderItem(item, index));
