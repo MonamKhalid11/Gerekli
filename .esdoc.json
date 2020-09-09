@@ -1,5 +1,6 @@
 {
-  "source": "./src/components",
+  "source": "./src",
+  "includes": ["^components", "^screens"],
   "destination": "./docs/esdoc",
   "plugins": [
     {"name": "esdoc-standard-plugin"},
