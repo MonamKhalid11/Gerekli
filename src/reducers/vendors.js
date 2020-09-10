@@ -7,6 +7,7 @@ import {
 const initialState = {
   items: {},
   fetching: false,
+  currentVendor: null
 };
 
 export default function (state = initialState, action) {
@@ -25,6 +26,7 @@ export default function (state = initialState, action) {
           [action.payload.company_id]: action.payload,
         },
         fetching: false,
+        currentVendor: action.payload,
       };
 
     case FETCH_VENDOR_FAIL:

@@ -11,28 +11,47 @@ import {
   FETCH_PRODUCTS_SUCCESS,
   FETCH_PRODUCTS_FAIL,
 
+  FETCH_DISCUSSION_SUCCESS,
+  FETCH_DISCUSSION_FAIL
+
 } from '../constants';
 import Api from '../services/api';
 
-export function fetch(id) {
-  return (dispatch) => {
+export function fetch(id, type, params) {
+  return async (dispatch) => {
     dispatch({
       type: FETCH_VENDOR_REQUEST,
     });
 
-    return Api.get(`/sra_vendors/${id}/`)
-      .then((response) => {
-        dispatch({
-          type: FETCH_VENDOR_SUCCESS,
-          payload: response.data,
-        });
-      })
-      .catch((error) => {
-        dispatch({
-          type: FETCH_VENDOR_FAIL,
-          error,
-        });
+    try {
+      const result = await Api.get(`/sra_vendors/${id}/`);
+      dispatch({
+        type: FETCH_VENDOR_SUCCESS,
+        payload: result.data,
       });
+    } catch (error) {
+      dispatch({
+        type: FETCH_VENDOR_FAIL,
+        error,
+      });
+    }
+
+    try {
+      const discussionResult = await Api.get(`/sra_discussion/?object_type=${type}&object_id=${id}&params[page]=${params.page}`);
+      dispatch({
+        type: FETCH_DISCUSSION_SUCCESS,
+        payload: {
+          id: `${type.toLowerCase()}_${id}`,
+          page: params.page,
+          discussion: discussionResult.data,
+        },
+      });
+    } catch (error) {
+      dispatch({
+        type: FETCH_DISCUSSION_FAIL,
+        error,
+      });
+    }
   };
 }
 

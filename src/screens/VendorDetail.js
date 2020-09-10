@@ -15,6 +15,7 @@ import * as vendorActions from '../actions/vendorActions';
 import * as productsActions from '../actions/productsActions';
 
 // Components
+import Spinner from '../components/Spinner';
 import Rating from '../components/Rating';
 import Section from '../components/Section';
 import SectionRow from '../components/SectionRow';
@@ -110,7 +111,6 @@ export class VendorDetail extends Component {
 
     this.requestSent = true;
     this.state = {
-      vendor: {},
       discussion: {
         average_rating: 0,
         posts: [],
@@ -125,27 +125,7 @@ export class VendorDetail extends Component {
   }
 
   componentWillMount() {
-    const {
-      navigator,
-      vendorId,
-      vendors,
-      vendorActions,
-      productsActions
-    } = this.props;
-
-    if (!vendors.items[vendorId] && !vendors.fetching) {
-      vendorActions.fetch(vendorId);
-    } else {
-      this.setState({
-        vendor: vendors.items[vendorId],
-      }, () => {
-        productsActions.fetchDiscussion(
-          this.state.vendor.company_id,
-          { page: this.state.discussion.search.page },
-          'M'
-        );
-      });
-    }
+    const { navigator } = this.props;
 
     iconsLoaded.then(() => {
       navigator.setButtons({
@@ -163,24 +143,10 @@ export class VendorDetail extends Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
-    // Get active discussion.
-    let activeDiscussion = nextProps.discussion.items[`m_${this.state.vendor.company_id}`];
-    if (!activeDiscussion) {
-      activeDiscussion = {
-        average_rating: 0,
-        posts: [],
-        search: {
-          page: 1,
-          total_items: 0,
-        },
-      };
-    }
-
-    this.setState({
-      vendor: nextProps.vendors.items[nextProps.vendorId],
-      discussion: activeDiscussion,
-    });
+  componentDidMount() {
+    const { vendorId, vendorActions } = this.props;
+    const { discussion } = this.state;
+    vendorActions.fetch(vendorId, 'M', { page: discussion.search.page });
   }
 
   onNavigatorEvent(event) {
@@ -195,13 +161,14 @@ export class VendorDetail extends Component {
   }
 
   handleLoadMore() {
-    const { discussion, vendor } = this.state;
+    const { discussion } = this.state;
+    const { vendors } = this.props;
     const hasMore = discussion.search.total_items != discussion.posts.length; // eslint-disable-line
 
     if (hasMore && !this.requestSent && !this.props.discussion.fetching) {
       this.requestSent = true;
       this.props.productsActions.fetchDiscussion(
-        vendor.company_id,
+        vendors.currentVendor.company_id,
         {
           page: discussion.search.page + 1,
         },
@@ -211,12 +178,12 @@ export class VendorDetail extends Component {
   }
 
   renderLogo() {
-    const { vendor } = this.state;
+    const { vendors } = this.props;
     return (
       <Section>
         <View style={styles.logoWrapper}>
           <Image
-            source={{ uri: vendor.logo_url }}
+            source={{ uri: vendors.currentVendor.logo_url }}
             style={styles.logo}
           />
         </View>
@@ -225,19 +192,20 @@ export class VendorDetail extends Component {
   }
 
   renderDesc() {
-    const { vendor, discussion } = this.state;
+    const { discussion } = this.state;
+    const { vendors } = this.props;
     return (
       <Section>
         <View style={styles.vendorWrapper}>
           <Text style={styles.vendorName}>
-            {vendor.company}
+            {vendors.currentVendor.company}
           </Text>
           <Rating
             value={discussion.average_rating}
             count={discussion.search.total_items}
           />
           <Text style={styles.vendorDescription}>
-            {stripTags(vendor.description)}
+            {stripTags(vendors.currentVendor.description)}
           </Text>
         </View>
       </Section>
@@ -245,24 +213,24 @@ export class VendorDetail extends Component {
   }
 
   renderContacts() {
-    const { vendor } = this.state;
+    const { vendors } = this.props;
     return (
       <Section title={i18n.t('Contact Information')}>
         <SectionRow
           name={i18n.t('E-mail')}
-          value={vendor.contact_information.email}
+          value={vendors.currentVendor.contact_information.email}
         />
         <SectionRow
           name={i18n.t('Phone')}
-          value={vendor.contact_information.phone}
+          value={vendors.currentVendor.contact_information.phone}
         />
         <SectionRow
           name={i18n.t('Fax')}
-          value={vendor.contact_information.fax}
+          value={vendors.currentVendor.contact_information.fax}
         />
         <SectionRow
           name={i18n.t('Website')}
-          value={vendor.contact_information.url}
+          value={vendors.currentVendor.contact_information.url}
           last
         />
       </Section>
@@ -270,25 +238,28 @@ export class VendorDetail extends Component {
   }
 
   renderShipping() {
-    const { vendor } = this.state;
+    const { vendors } = this.props;
+
     return (
       <Section title={i18n.t('Shipping address')}>
         <Text style={styles.address}>
-          {vendor.shipping_address.address},
+          {vendors.currentVendor.shipping_address.address}
+          ,
         </Text>
         <Text style={styles.address}>
-          {vendor.shipping_address.state} {vendor.shipping_address.zipcode},
+          {vendors.currentVendor.shipping_address.state} {vendors.currentVendor.shipping_address.zipcode}
+          ,
         </Text>
         <Text style={styles.address}>
-          {vendor.shipping_address.country}
+          {vendors.currentVendor.shipping_address.country}
         </Text>
       </Section>
     );
   }
 
   renderDiscussion() {
-    const { discussion, vendor } = this.state;
-    const { auth, navigator } = this.props;
+    const { discussion } = this.state;
+    const { auth, navigator, vendors } = this.props;
 
     let title = i18n.t('Reviews');
     if (discussion.search.total_items != 0) { // eslint-disable-line
@@ -308,7 +279,7 @@ export class VendorDetail extends Component {
             passProps: {
               activeDiscussion: discussion,
               discussionType: 'M',
-              discussionId: vendor.company_id,
+              discussionId: vendors.currentVendor.company_id,
             }
           });
         }}
@@ -325,6 +296,12 @@ export class VendorDetail extends Component {
   }
 
   render() {
+    const { vendors } = this.props;
+
+    if (!vendors.currentVendor) {
+      return <Spinner visible />;
+    }
+
     return (
       <ScrollView style={styles.container}>
         {this.renderLogo()}
