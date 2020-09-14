@@ -49,7 +49,18 @@ const styles = EStyleSheet.create({
   }
 });
 
+/**
+ * Renders a gallery of product images.
+ *
+ * @reactProps {object} navigator - Navigator.
+ * @reactProps {function} onRemove - Remove function.
+ * @reactProps {string[]} images - Image links.
+ * @reactProps {number} activeIndex - Current image index.
+ */
 export default class Gallery extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     navigator: PropTypes.shape({
       dismissModal: PropTypes.func,
@@ -63,6 +74,11 @@ export default class Gallery extends Component {
     navBarHidden: true,
   };
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const {
       images,

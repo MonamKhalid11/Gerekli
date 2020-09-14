@@ -93,7 +93,17 @@ const PAYMENTS = [
   PAYMENT_PHONE
 ];
 
-class CheckoutStepThree extends Component {
+/**
+ * Checkout. Payment screen.
+ *
+ * @reactProps {object} cart - Cart information.
+ * @reactProps {object} cartActions - Cart actions.
+ * @reactProps {object} paymentsActions - Payments actions.
+ * @reactProps {object} ordersActions - Orders actions.
+ * @reactProps {string} shipping_id - Shipping id.
+ * @reactProps {object} navigator - Navigator.
+ */
+export class CheckoutStepThree extends Component {
   static navigatorStyle = {
     navBarBackgroundColor: theme.$navBarBackgroundColor,
     navBarButtonColor: theme.$navBarButtonColor,
@@ -102,6 +112,9 @@ class CheckoutStepThree extends Component {
     screenBackgroundColor: theme.$screenBackgroundColor,
   };
 
+  /**
+   * @ignore
+   */
   static propTypes = {
     cart: PropTypes.shape({
       items: PropTypes.arrayOf(PropTypes.object),
@@ -134,6 +147,9 @@ class CheckoutStepThree extends Component {
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
+  /**
+   * Defines the available payment methods.
+   */
   componentDidMount() {
     const { cart } = this.props;
     const items = Object.keys(cart.payments)
@@ -148,6 +164,11 @@ class CheckoutStepThree extends Component {
     });
   }
 
+  /**
+   * Payment screen navigation.
+   *
+   * @param {object} event - Information about the element on which the event occurred.
+   */
   onNavigatorEvent(event) {
     const { navigator } = this.props;
     if (event.type === 'NavBarButtonPress') {
@@ -157,6 +178,9 @@ class CheckoutStepThree extends Component {
     }
   }
 
+  /**
+   * Place order button.
+   */
   handlePlaceOrder() {
     const { selectedItem } = this.state;
     if (!selectedItem) {
@@ -173,6 +197,9 @@ class CheckoutStepThree extends Component {
     return this.placeOrderAndComplete();
   }
 
+  /**
+   * Redirects to CheckoutComplete.
+   */
   placeOrderAndComplete() {
     const {
       cart,
@@ -243,6 +270,9 @@ class CheckoutStepThree extends Component {
     return null;
   }
 
+  /**
+   * Redirects to SettlementsCompleteWebView.
+   */
   placeSettlements() {
     const {
       cart,
@@ -309,6 +339,13 @@ class CheckoutStepThree extends Component {
     return null;
   }
 
+  /**
+   * Renders payment methods.
+   *
+   * @param {object} item - Payment method information.
+   *
+   * @return {JSX.Element}
+   */
   renderItem = (item) => {
     const { payment } = this.state.selectedItem;
     // FIXME compare by name.
@@ -335,12 +372,22 @@ class CheckoutStepThree extends Component {
     );
   }
 
+  /**
+   * Renders header.
+   *
+   * @return {JSX.Element}
+   */
   renderHeader = () => (
     <View style={styles.stepsWrapper}>
       <CheckoutSteps step={3} />
     </View>
   );
 
+  /**
+   * Renders form fields.
+   *
+   * @return {JSX.Element}
+   */
   renderFooter() {
     const { cart, shipping_id, cartActions } = this.props;
     const { selectedItem } = this.state;
@@ -445,6 +492,11 @@ class CheckoutStepThree extends Component {
     );
   }
 
+  /**
+   * Renders spinner.
+   *
+   * @return {JSX.Element}
+   */
   renderSpinner = () => {
     const { fetching } = this.state;
     return (
@@ -452,6 +504,11 @@ class CheckoutStepThree extends Component {
     );
   };
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { cart } = this.props;
     return (
