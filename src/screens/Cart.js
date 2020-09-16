@@ -7,11 +7,9 @@ import {
   View,
   Text,
   Alert,
-  Image,
   FlatList,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import Swipeout from 'react-native-swipeout';
 import debounce from 'lodash/debounce';
 
 // Import actions.
@@ -20,8 +18,9 @@ import * as cartActions from '../actions/cartActions';
 // Components
 import Icon from '../components/Icon';
 import Spinner from '../components/Spinner';
-import QtyOption from '../components/QtyOption';
 import CartFooter from '../components/CartFooter';
+import VendorsCartsList from '../components/VendorsCartsList';
+import CartProductitem from '../components/CartProductItem';
 
 // theme
 import theme from '../config/theme';
@@ -29,7 +28,7 @@ import theme from '../config/theme';
 // links
 import { registerDrawerDeepLinks } from '../utils/deepLinks';
 import i18n from '../utils/i18n';
-import { formatPrice, getImagePath, isPriceIncludesTax } from '../utils';
+import { formatPrice } from '../utils';
 
 import {
   iconsMap,
@@ -49,41 +48,41 @@ const styles = EStyleSheet.create({
     height: 20,
     fontSize: 20,
   },
-  productItemWrapper: {
-    marginBottom: 15,
-  },
-  productItem: {
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#F1F1F1',
-    flexDirection: 'row',
-    paddingBottom: 8,
-    padding: 14,
-    width: '100%',
-    overflow: 'hidden',
-  },
-  productItemImage: {
-    width: 100,
-    height: 100,
-    resizeMode: 'contain',
-  },
-  productItemDetail: {
-    marginLeft: 14,
-    marginRight: 14,
-    width: '70%',
-  },
-  productItemName: {
-    fontSize: '0.9rem',
-    color: 'black',
-    marginBottom: 5,
-    textAlign: 'left',
-    fontWeight: 'bold',
-  },
-  productItemPrice: {
-    fontSize: '0.7rem',
-    color: 'black',
-    textAlign: 'left',
-  },
+  // productItemWrapper: {
+  //   marginBottom: 15,
+  // },
+  // productItem: {
+  //   backgroundColor: '#fff',
+  //   borderWidth: 1,
+  //   borderColor: '#F1F1F1',
+  //   flexDirection: 'row',
+  //   paddingBottom: 8,
+  //   padding: 14,
+  //   width: '100%',
+  //   overflow: 'hidden',
+  // },
+  // productItemImage: {
+  //   width: 100,
+  //   height: 100,
+  //   resizeMode: 'contain',
+  // },
+  // productItemDetail: {
+  //   marginLeft: 14,
+  //   marginRight: 14,
+  //   width: '70%',
+  // },
+  // productItemName: {
+  //   fontSize: '0.9rem',
+  //   color: 'black',
+  //   marginBottom: 5,
+  //   textAlign: 'left',
+  //   fontWeight: 'bold',
+  // },
+  // productItemPrice: {
+  //   fontSize: '0.7rem',
+  //   color: 'black',
+  //   textAlign: 'left',
+  // },
   emptyListContainer: {
     marginTop: '3rem',
     flexDirection: 'column',
@@ -114,11 +113,11 @@ const styles = EStyleSheet.create({
     color: '#24282b',
     marginTop: '0.5rem',
   },
-  qtyContainer: {
-    position: 'absolute',
-    right: 14,
-    bottom: 0,
-  },
+  // qtyContainer: {
+  //   position: 'absolute',
+  //   right: 14,
+  //   bottom: 0,
+  // },
   totalWrapper: {
     marginTop: 6,
     marginLeft: 20,
@@ -168,7 +167,6 @@ class Cart extends Component {
       refreshing: false,
     };
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
-    this.handleChangeAmountRequest = debounce(this.handleChangeAmountRequest, 2000);
   }
 
   componentWillMount() {
@@ -245,90 +243,6 @@ class Cart extends Component {
         );
       }
     }
-  }
-
-  handleRemoveProduct = (product) => {
-    const { cartActions } = this.props;
-    cartActions.remove(product.cartId);
-  };
-
-  handleChangeAmountRequest(item) {
-    const { cartActions } = this.props;
-    cartActions.change(item.cartId, item);
-  }
-
-  renderProductItem = (item) => {
-    const { cartActions } = this.props;
-    let productImage = null;
-    const imageUri = getImagePath(item);
-    if (imageUri) {
-      productImage = (
-        <Image
-          source={{ uri: imageUri }}
-          style={styles.productItemImage}
-        />);
-    }
-
-    const swipeoutBtns = [
-      {
-        text: i18n.t('Delete'),
-        type: 'delete',
-        onPress: () => this.handleRemoveProduct(item),
-      },
-    ];
-
-    const step = parseInt(item.qty_step, 10) || 1;
-    const max = parseInt(item.max_qty, 10) || parseInt(item.in_stock, 10);
-    const min = parseInt(item.min_qty, 10) || step;
-    const initialValue = parseInt(item.amount, 10);
-
-    const productTaxedPrice = get(item, 'taxed_price_formatted.price', '');
-    const productPrice = productTaxedPrice || get(item, 'price_formatted.price', '');
-    const showTaxedPrice = isPriceIncludesTax(item);
-
-    return (
-      <View style={styles.productItemWrapper}>
-        <Swipeout
-          autoClose
-          right={swipeoutBtns}
-          backgroundColor={theme.$navBarBackgroundColor}
-        >
-          <View style={styles.productItem}>
-            {productImage}
-            <View style={styles.productItemDetail}>
-              <Text
-                style={styles.productItemName}
-                numberOfLines={1}
-              >
-                {item.product}
-              </Text>
-              <Text style={styles.productItemPrice}>
-                {`${item.amount} x ${productPrice}`}
-                {showTaxedPrice && (
-                  <Text style={styles.smallText}>
-                    {` (${i18n.t('Including tax')})`}
-                  </Text>
-                )}
-              </Text>
-            </View>
-            <View style={styles.qtyContainer}>
-              <QtyOption
-                max={max}
-                min={min}
-                initialValue={initialValue}
-                step={step}
-                onChange={(val) => {
-                  if (val <= parseInt(item.in_stock, 10)) {
-                    cartActions.changeAmount(item.cartId, val);
-                    this.handleChangeAmountRequest(item);
-                  }
-                }}
-              />
-            </View>
-          </View>
-        </Swipeout>
-      </View>
-    );
   }
 
   handleRefresh() {
@@ -425,8 +339,9 @@ class Cart extends Component {
     );
   }
 
-  renderList() {
-    const { products, fetching, refreshing } = this.state;
+  renderList(products) {
+    const { fetching, refreshing } = this.state;
+    const { cartActions } = this.props;
 
     if (fetching) {
       return null;
@@ -437,7 +352,7 @@ class Cart extends Component {
         <FlatList
           data={products}
           keyExtractor={(item, index) => `${index}`}
-          renderItem={({ item }) => this.renderProductItem(item)}
+          renderItem={({ item }) => <CartProductitem item={item} cartActions={cartActions} />}
           onRefresh={() => this.handleRefresh()}
           refreshing={refreshing}
           ListEmptyComponent={() => this.renderEmptyList()}
@@ -445,6 +360,16 @@ class Cart extends Component {
         />
         {this.renderPlaceOrder()}
       </View>
+    );
+  }
+
+  renderVendorsList = () => {
+    const { cart } = this.props;
+    return (
+      <VendorsCartsList
+        renderProductList={this.renderList}
+        product_groups={cart.product_groups}
+      />
     );
   }
 
@@ -462,9 +387,11 @@ class Cart extends Component {
   };
 
   render() {
+    const { products } = this.state;
+
     return (
       <View style={styles.container}>
-        {this.renderList()}
+        {true ? this.renderList(products) : this.renderVendorsList()}
         {this.renderSpinner()}
       </View>
     );
