@@ -15,8 +15,6 @@ const styles = EStyleSheet.create({
 });
 
 const VendorsCartsItem = ({ renderProductList, item }) => {
-  console.log('VendorsCartsItem', item.products);
-
   const products = Object.keys(item.products).map((key) => {
     const result = item.products[key];
     result.cartId = key;
