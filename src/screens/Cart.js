@@ -69,6 +69,7 @@ class Cart extends Component {
       token: PropTypes.string,
     }),
     cart: PropTypes.shape({}),
+    vendorCarts: PropTypes.shape({})
   };
 
   constructor(props) {
@@ -107,8 +108,13 @@ class Cart extends Component {
   }
 
   componentDidMount() {
-    const { cartActions } = this.props;
+    const { cartActions, cart } = this.props;
     cartActions.fetch();
+
+    if (cart.all_vendor_ids) {
+      console.log('didMount: ', cart)
+      cart.all_vendor_ids.map(el => cartActions.fetch(true, 'A', el));
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -191,12 +197,28 @@ class Cart extends Component {
     );
   }
 
-  renderVendorsList = () => {
-    const { cart } = this.props;
+  renderVendorsList = (products) => {
+    const { fetching, refreshing } = this.state;
+    const {
+      cartActions, auth, navigator, cart
+    } = this.props;
+
+    console.log('vendorCarts', cart.vendorCarts)
+
+    if (fetching || !cart.vendorCarts) {
+      return null;
+    }
+
     return (
       <VendorsCartsList
-        renderProductList={this.renderList}
-        product_groups={cart.product_groups}
+        vendorCarts={cart.vendorCarts}
+        products={products}
+        fetching={fetching}
+        auth={auth}
+        navigator={navigator}
+        handleRefresh={this.handleRefresh}
+        refreshing={refreshing}
+        cartActions={cartActions}
       />
     );
   }
@@ -219,7 +241,7 @@ class Cart extends Component {
 
     return (
       <View style={styles.container}>
-        {true ? this.renderList(products) : this.renderVendorsList()}
+        {!true ? this.renderList(products) : this.renderVendorsList(products)}
         {this.renderSpinner()}
       </View>
     );

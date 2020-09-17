@@ -34,10 +34,12 @@ const initialState = {
   fetching: false,
   user_data: {},
   coupons: [],
+  vendorCarts: []
 };
 
 let newProducts = [];
 let newState = null;
+let newVendorCarts = [];
 
 export default function (state = initialState, action) {
   switch (action.type) {
@@ -72,6 +74,13 @@ export default function (state = initialState, action) {
       };
 
     case CART_SUCCESS:
+      newVendorCarts = JSON.parse(JSON.stringify(state.vendorCarts));
+      if (action.id) {
+        newVendorCarts.push(action.payload);
+      } else {
+        newVendorCarts = [action.payload];
+      }
+
       newState = action.payload;
       Object.keys(newState.payments).forEach((key) => {
         newState.payments[key].payment_id = key;
@@ -79,6 +88,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         ...newState,
+        vendorCarts: newVendorCarts,
         fetching: false,
         coupons: [],
       };
@@ -101,6 +111,7 @@ export default function (state = initialState, action) {
         amount: 0,
         products: {},
         coupons: [],
+        vendorCarts: [],
         fetching: false,
       };
 
