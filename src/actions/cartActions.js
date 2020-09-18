@@ -39,7 +39,7 @@ import i18n from '../utils/i18n';
 import Api from '../services/api';
 
 export function fetch(fetching = true, calculateShipping = 'A', id = '') {
-  console.log('fetch', id)
+  console.log(`fetch with id: ${id}`)
   return (dispatch) => {
     dispatch({
       type: CART_REQUEST,
@@ -49,7 +49,7 @@ export function fetch(fetching = true, calculateShipping = 'A', id = '') {
     });
     return Api.get(`/sra_cart_content/${id}`, { params: { calculate_shipping: calculateShipping } })
       .then((response) => {
-        console.log('get', id)
+        console.log(`get with id: ${id}`)
         dispatch({
           type: CART_SUCCESS,
           payload: response.data,

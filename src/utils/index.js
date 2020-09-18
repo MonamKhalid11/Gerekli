@@ -218,3 +218,7 @@ export const orderStatuses = [
 export function getOrderStatus(status) {
   return orderStatuses.find(item => item.code === status);
 }
+
+export function onlyUnique(value, index, self) {
+  return self.indexOf(value) === index;
+}

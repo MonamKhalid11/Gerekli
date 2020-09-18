@@ -18,7 +18,7 @@ const styles = EStyleSheet.create({
 });
 
 const VendorsCartsItem = ({
-  item, cart, fetching, auth, navigator, handleRefresh, refreshing, cartActions
+  item, fetching, auth, navigator, handleRefresh, refreshing, cartActions
 }) => {
   const products = Object.keys(item.products).map((key) => {
     const result = item.products[key];
@@ -27,7 +27,6 @@ const VendorsCartsItem = ({
   });
 
   console.log('item', item)
-  console.log('cart', cart)
 
   return (
     <View style={styles.container}>

@@ -21,6 +21,7 @@ import theme from '../config/theme';
 
 // links
 import { registerDrawerDeepLinks } from '../utils/deepLinks';
+import { onlyUnique } from '../utils/index';
 import i18n from '../utils/i18n';
 
 import {
@@ -107,13 +108,20 @@ class Cart extends Component {
     });
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { cartActions, cart } = this.props;
-    cartActions.fetch();
+    await cartActions.fetch();
 
     if (cart.all_vendor_ids) {
-      console.log('didMount: ', cart)
-      cart.all_vendor_ids.map(el => cartActions.fetch(true, 'A', el));
+      console.log('didMount: ', cart);
+      const uniqueVendorIds = cart.all_vendor_ids.filter(onlyUnique);
+      console.log('uniqueVendorIds', uniqueVendorIds)
+      uniqueVendorIds.map((el) => {
+        if (el !== cart.all_vendor_ids[0]) {
+          return cartActions.fetch(true, 'A', el);
+        }
+        return null;
+      });
     }
   }
 
@@ -166,6 +174,7 @@ class Cart extends Component {
   }
 
   handleRefresh() {
+    console.log('handleRefresh')
     const { cartActions } = this.props;
     this.setState(
       { refreshing: true },
