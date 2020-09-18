@@ -7,6 +7,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Components
 import VendorsCartsItem from './VendorsCartsItem';
+import EmptyCart from './EmptyCart';
 
 const styles = EStyleSheet.create({
   container: {
@@ -32,11 +33,11 @@ const VendorsCartsList = ({
         refreshing={refreshing}
         cartActions={cartActions}
       />)}
+    ListEmptyComponent={() => <EmptyCart fetching={fetching} />}
   />
 );
 
 VendorsCartsList.propTypes = {
-  products: PropTypes.arrayOf(PropTypes.shape({})),
   fetching: PropTypes.bool,
   cart: PropTypes.shape({}),
   auth: PropTypes.shape({

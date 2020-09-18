@@ -112,7 +112,7 @@ class Cart extends Component {
     const { cartActions, cart } = this.props;
     await cartActions.fetch();
 
-    if (cart.all_vendor_ids) {
+    if (cart.all_vendor_ids[0]) {
       console.log('didMount: ', cart);
       const uniqueVendorIds = cart.all_vendor_ids.filter(onlyUnique);
       console.log('uniqueVendorIds', uniqueVendorIds)
@@ -220,7 +220,7 @@ class Cart extends Component {
 
     return (
       <VendorsCartsList
-        vendorCarts={cart.vendorCarts}
+        vendorCarts={cart.vendorCarts[0].all_vendor_ids[0] ? cart.vendorCarts : []}
         products={products}
         fetching={fetching}
         auth={auth}

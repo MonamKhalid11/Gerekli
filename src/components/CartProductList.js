@@ -10,8 +10,8 @@ import { get } from 'lodash';
 
 // Components
 import CartProductitem from './CartProductItem';
-import Icon from './Icon';
 import CartFooter from './CartFooter';
+import EmptyCart from './EmptyCart';
 
 // Links
 import i18n from '../utils/i18n';
@@ -22,36 +22,6 @@ const styles = EStyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FAFAFA',
-  },
-  emptyListContainer: {
-    marginTop: '3rem',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  emptyListIconWrapper: {
-    backgroundColor: '#3FC9F6',
-    width: '12rem',
-    height: '12rem',
-    borderRadius: '6rem',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emptyListIcon: {
-    backgroundColor: 'transparent',
-    color: '#fff',
-    fontSize: '6rem',
-  },
-  emptyListHeader: {
-    fontSize: '1.2rem',
-    fontWeight: 'bold',
-    color: 'black',
-    marginTop: '1rem',
-  },
-  emptyListDesc: {
-    fontSize: '1rem',
-    color: '#24282b',
-    marginTop: '0.5rem',
   },
   totalWrapper: {
     marginTop: 6,
@@ -64,26 +34,6 @@ const styles = EStyleSheet.create({
     color: '#979797',
   }
 });
-
-const renderEmptyList = (fetching) => {
-  if (fetching) {
-    return null;
-  }
-
-  return (
-    <View style={styles.emptyListContainer}>
-      <View style={styles.emptyListIconWrapper}>
-        <Icon name="add-shopping-cart" style={styles.emptyListIcon} />
-      </View>
-      <Text style={styles.emptyListHeader}>
-        {i18n.t('Your shopping cart is empty.')}
-      </Text>
-      <Text style={styles.emptyListDesc}>
-        {i18n.t('Looking for ideas?')}
-      </Text>
-    </View>
-  );
-};
 
 const renderOrderDetail = (products, cart) => {
   if (!products.length) {
@@ -155,7 +105,7 @@ const CartProductList = ({
       renderItem={({ item }) => <CartProductitem item={item} cartActions={cartActions} />}
       onRefresh={() => handleRefresh()}
       refreshing={refreshing}
-      ListEmptyComponent={() => renderEmptyList(fetching)}
+      ListEmptyComponent={() => <EmptyCart fetching={fetching} />}
       ListFooterComponent={() => renderOrderDetail(products, cart)}
     />
     {renderPlaceOrder(cart, products, auth, navigator)}
