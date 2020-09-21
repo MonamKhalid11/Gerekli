@@ -19,6 +19,8 @@ import {
 
   CHANGE_AMOUNT,
 
+  CART_LOADING,
+
   CART_REMOVE_REQUEST,
   CART_REMOVE_SUCCESS,
   CART_REMOVE_FAIL,
@@ -35,35 +37,44 @@ import {
   CART_REMOVE_COUPON_CODE,
 } from '../constants';
 
+// links
+import { onlyUnique } from '../utils/index';
 import i18n from '../utils/i18n';
 import Api from '../services/api';
 
-export function fetch(fetching = true, calculateShipping = 'A', id = '') {
-  console.log(`fetch with id: ${id}`)
-  return (dispatch) => {
-    dispatch({
+export function fetch(fetching = true, calculateShipping = 'A') {
+  return async (dispatch) => {
+    await dispatch({
       type: CART_REQUEST,
       payload: {
         fetching,
       }
     });
-    return Api.get(`/sra_cart_content/${id}`, { params: { calculate_shipping: calculateShipping } })
-      .then((response) => {
-        console.log(`get with id: ${id}`)
-        dispatch({
-          type: CART_SUCCESS,
-          payload: response.data,
-          id
-        });
-        return response;
-      })
-      .catch((error) => {
-        dispatch({
-          type: CART_FAIL,
-          error,
-        });
-        return error;
+    try {
+      const res = await Api.get('/sra_cart_content', { params: { calculate_shipping: calculateShipping } });
+      await dispatch({
+        type: CART_SUCCESS,
+        payload: res.data
       });
+      if (res.data.all_vendor_ids) {
+        const uniqueVendorIds = res.data.all_vendor_ids.filter(onlyUnique);
+        uniqueVendorIds.map(async (el) => {
+          if (el !== res.data.all_vendor_ids[0]) {
+            const res = await Api.get(`/sra_cart_content/${el}`, { params: { calculate_shipping: calculateShipping } });
+            dispatch({
+              type: CART_SUCCESS,
+              payload: res.data
+            });
+          }
+          return null;
+        });
+      }
+    } catch (error) {
+      dispatch({
+        type: CART_FAIL,
+        error,
+      });
+    }
   };
 }
 
@@ -241,13 +252,16 @@ export function remove(id) {
   };
 }
 
-export function changeAmount(cid, amount) {
+export function changeAmount(cid, amount, id = '') {
+  console.log('1')
   return (dispatch) => {
+    dispatch({ type: CART_LOADING });
     dispatch({
       type: CHANGE_AMOUNT,
       payload: {
         cid,
         amount,
+        id
       },
     });
   };

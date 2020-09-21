@@ -18,7 +18,7 @@ const styles = EStyleSheet.create({
 });
 
 const VendorsCartsItem = ({
-  item, fetching, auth, navigator, handleRefresh, refreshing, cartActions
+  item, auth, navigator, handleRefresh, refreshing, cartActions
 }) => {
   const products = Object.keys(item.products).map((key) => {
     const result = item.products[key];
@@ -26,15 +26,13 @@ const VendorsCartsItem = ({
     return result;
   });
 
-  console.log('item', item)
-
   return (
     <View style={styles.container}>
-      <Text>{item.product_groups[0].name}</Text>
+      {/* <Text>{item.product_groups[0].name}</Text> */}
       <CartProductList
+        is
         cart={item}
         products={products}
-        fetching={fetching}
         auth={auth}
         navigator={navigator}
         handleRefresh={handleRefresh}
@@ -47,8 +45,6 @@ const VendorsCartsItem = ({
 
 VendorsCartsItem.propTypes = {
   item: PropTypes.shape({}),
-  fetching: PropTypes.bool,
-  cart: PropTypes.shape({}),
   auth: PropTypes.shape({
     token: PropTypes.string,
   }),

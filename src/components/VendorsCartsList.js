@@ -18,27 +18,25 @@ const styles = EStyleSheet.create({
 });
 
 const VendorsCartsList = ({
-  vendorCarts, fetching, auth, navigator, handleRefresh, refreshing, cartActions
+  carts, auth, navigator, handleRefresh, refreshing, cartActions
 }) => (
   <FlatList
-    data={vendorCarts}
+    data={carts}
     keyExtractor={(item, index) => `${index}`}
     renderItem={({ item }) => (
       <VendorsCartsItem
         item={item}
-        fetching={fetching}
         auth={auth}
         navigator={navigator}
         handleRefresh={handleRefresh}
         refreshing={refreshing}
         cartActions={cartActions}
       />)}
-    ListEmptyComponent={() => <EmptyCart fetching={fetching} />}
+    ListEmptyComponent={() => <EmptyCart />}
   />
 );
 
 VendorsCartsList.propTypes = {
-  fetching: PropTypes.bool,
   cart: PropTypes.shape({}),
   auth: PropTypes.shape({
     token: PropTypes.string,
@@ -51,7 +49,7 @@ VendorsCartsList.propTypes = {
   refreshing: PropTypes.bool,
   handleRefresh: PropTypes.func,
   cartActions: PropTypes.shape({}),
-  vendorCarts: PropTypes.arrayOf(PropTypes.shape({}))
+  carts: PropTypes.arrayOf(PropTypes.shape({}))
 };
 
 export default VendorsCartsList;

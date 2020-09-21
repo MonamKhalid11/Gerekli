@@ -65,6 +65,7 @@ const styles = EStyleSheet.create({
 
 const CartProductItem = ({ cartActions, item }) => {
   const handleChangeAmountRequest = (item) => {
+    console.log('4')
     cartActions.change(item.cartId, item);
   };
 
@@ -100,6 +101,8 @@ const CartProductItem = ({ cartActions, item }) => {
   const productPrice = productTaxedPrice || get(item, 'price_formatted.price', '');
   const showTaxedPrice = isPriceIncludesTax(item);
 
+  console.log('ITEM: ', item)
+
   return (
     <View style={styles.productItemWrapper}>
       <Swipeout
@@ -133,7 +136,7 @@ const CartProductItem = ({ cartActions, item }) => {
               step={step}
               onChange={(val) => {
                 if (val <= parseInt(item.in_stock, 10)) {
-                  cartActions.changeAmount(item.cartId, val);
+                  cartActions.changeAmount(item.cartId, val, item.company_id);
                   handleChangeAmountRequest(item);
                 }
               }}

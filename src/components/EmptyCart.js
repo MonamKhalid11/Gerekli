@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   View,
   Text
@@ -46,11 +45,7 @@ const styles = EStyleSheet.create({
   }
 });
 
-const renderEmptyList = ({ fetching }) => {
-  if (fetching) {
-    return null;
-  }
-
+const EmptyCart = () => {
   return (
     <View style={styles.emptyListContainer}>
       <View style={styles.emptyListIconWrapper}>
@@ -66,8 +61,4 @@ const renderEmptyList = ({ fetching }) => {
   );
 };
 
-renderEmptyList.propTypes = {
-  fetching: PropTypes.bool,
-};
-
-export default renderEmptyList;
+export default EmptyCart;

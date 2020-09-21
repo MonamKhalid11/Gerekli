@@ -96,25 +96,31 @@ const renderPlaceOrder = (cart, products, auth, navigator) => {
 };
 
 const CartProductList = ({
-  cart, products, fetching, auth, navigator, handleRefresh, refreshing, cartActions
-}) => (
-  <View style={styles.container}>
-    <FlatList
-      data={products}
-      keyExtractor={(item, index) => `${index}`}
-      renderItem={({ item }) => <CartProductitem item={item} cartActions={cartActions} />}
-      onRefresh={() => handleRefresh()}
-      refreshing={refreshing}
-      ListEmptyComponent={() => <EmptyCart fetching={fetching} />}
-      ListFooterComponent={() => renderOrderDetail(products, cart)}
-    />
-    {renderPlaceOrder(cart, products, auth, navigator)}
-  </View>
-);
+  cart, auth, navigator, handleRefresh, refreshing, cartActions
+}) => {
+  const newProducts = Object.keys(cart.products).map((key) => {
+    const result = cart.products[key];
+    result.cartId = key;
+    return result;
+  });
+
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={newProducts}
+        keyExtractor={(item, index) => `${index}`}
+        renderItem={({ item }) => <CartProductitem item={item} cartActions={cartActions} />}
+        onRefresh={() => handleRefresh()}
+        refreshing={refreshing}
+        ListEmptyComponent={() => <EmptyCart />}
+        ListFooterComponent={() => renderOrderDetail(newProducts, cart)}
+      />
+      {renderPlaceOrder(cart, newProducts, auth, navigator)}
+    </View>
+  );
+};
 
 CartProductList.propTypes = {
-  products: PropTypes.arrayOf(PropTypes.shape({})),
-  fetching: PropTypes.bool,
   cart: PropTypes.shape({}),
   auth: PropTypes.shape({
     token: PropTypes.string,

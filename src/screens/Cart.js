@@ -21,7 +21,6 @@ import theme from '../config/theme';
 
 // links
 import { registerDrawerDeepLinks } from '../utils/deepLinks';
-import { onlyUnique } from '../utils/index';
 import i18n from '../utils/i18n';
 
 import {
@@ -77,7 +76,6 @@ class Cart extends Component {
     super(props);
 
     this.state = {
-      products: [],
       fetching: true,
       refreshing: false,
     };
@@ -109,20 +107,8 @@ class Cart extends Component {
   }
 
   async componentDidMount() {
-    const { cartActions, cart } = this.props;
+    const { cartActions } = this.props;
     await cartActions.fetch();
-
-    if (cart.all_vendor_ids[0]) {
-      console.log('didMount: ', cart);
-      const uniqueVendorIds = cart.all_vendor_ids.filter(onlyUnique);
-      console.log('uniqueVendorIds', uniqueVendorIds)
-      uniqueVendorIds.map((el) => {
-        if (el !== cart.all_vendor_ids[0]) {
-          return cartActions.fetch(true, 'A', el);
-        }
-        return null;
-      });
-    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -132,14 +118,7 @@ class Cart extends Component {
       return;
     }
 
-    const products = Object.keys(cart.products).map((key) => {
-      const result = cart.products[key];
-      result.cartId = key;
-      return result;
-    });
-
     this.setState({
-      products,
       fetching: false,
       refreshing: false,
     });
@@ -174,7 +153,6 @@ class Cart extends Component {
   }
 
   handleRefresh() {
-    console.log('handleRefresh')
     const { cartActions } = this.props;
     this.setState(
       { refreshing: true },
@@ -182,21 +160,19 @@ class Cart extends Component {
     );
   }
 
-  renderList(products) {
-    const { fetching, refreshing } = this.state;
+  renderList() {
+    const { refreshing } = this.state;
     const {
       cartActions, cart, auth, navigator
     } = this.props;
 
-    if (fetching) {
+    if (cart.fetching) {
       return null;
     }
 
     return (
       <CartProductList
-        cart={cart}
-        products={products}
-        fetching={fetching}
+        cart={cart.carts.general}
         auth={auth}
         navigator={navigator}
         handleRefresh={this.handleRefresh}
@@ -206,23 +182,22 @@ class Cart extends Component {
     );
   }
 
-  renderVendorsList = (products) => {
+  renderVendorsList = () => {
     const { fetching, refreshing } = this.state;
     const {
       cartActions, auth, navigator, cart
     } = this.props;
 
-    console.log('vendorCarts', cart.vendorCarts)
-
-    if (fetching || !cart.vendorCarts) {
+    if (fetching) {
       return null;
     }
 
+    console.log('renderVendorsList', cart)
+    const newCarts = Object.keys(cart.carts).map(el => cart.carts[el]);
+    console.log('renderVendorsList', newCarts)
     return (
       <VendorsCartsList
-        vendorCarts={cart.vendorCarts[0].all_vendor_ids[0] ? cart.vendorCarts : []}
-        products={products}
-        fetching={fetching}
+        carts={newCarts}
         auth={auth}
         navigator={navigator}
         handleRefresh={this.handleRefresh}
@@ -236,7 +211,7 @@ class Cart extends Component {
     const { refreshing } = this.state;
     const { cart } = this.props;
 
-    if (refreshing) {
+    if (refreshing || !Object.keys(cart.carts).length) {
       return false;
     }
 
@@ -246,11 +221,9 @@ class Cart extends Component {
   };
 
   render() {
-    const { products } = this.state;
-
     return (
       <View style={styles.container}>
-        {!true ? this.renderList(products) : this.renderVendorsList(products)}
+        {!true ? this.renderList() : this.renderVendorsList()}
         {this.renderSpinner()}
       </View>
     );

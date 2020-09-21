@@ -25,6 +25,8 @@ import {
   AUTH_LOGOUT,
 
   RESTORE_STATE,
+
+  CART_LOADING
 } from '../constants';
 
 const initialState = {
@@ -34,15 +36,23 @@ const initialState = {
   fetching: false,
   user_data: {},
   coupons: [],
-  vendorCarts: []
+  vendorCarts: [],
+  carts: {}
 };
 
 let newProducts = [];
-let newState = null;
-let newVendorCarts = [];
+let newCart = null;
+let cartName = null;
+let newState = {};
 
 export default function (state = initialState, action) {
   switch (action.type) {
+    case CART_LOADING:
+      return {
+        ...state,
+        fetching: true
+      };
+
     case RESTORE_STATE:
       return {
         ...state,
@@ -74,21 +84,20 @@ export default function (state = initialState, action) {
       };
 
     case CART_SUCCESS:
-      newVendorCarts = JSON.parse(JSON.stringify(state.vendorCarts));
-      if (action.id) {
-        newVendorCarts.push(action.payload);
+      newCart = action.payload;
+      Object.keys(newCart.payments).forEach((key) => {
+        newCart.payments[key].payment_id = key;
+      });
+
+      if (newCart.vendor_id) {
+        cartName = newCart.vendor_id;
       } else {
-        newVendorCarts = [action.payload];
+        cartName = 'general';
       }
 
-      newState = action.payload;
-      Object.keys(newState.payments).forEach((key) => {
-        newState.payments[key].payment_id = key;
-      });
       return {
         ...state,
-        ...newState,
-        vendorCarts: newVendorCarts,
+        carts: { ...state.carts, [cartName]: newCart },
         fetching: false,
         coupons: [],
       };
@@ -111,7 +120,7 @@ export default function (state = initialState, action) {
         amount: 0,
         products: {},
         coupons: [],
-        vendorCarts: [],
+        carts: {},
         fetching: false,
       };
 
@@ -159,11 +168,25 @@ export default function (state = initialState, action) {
       return initialState;
 
     case CHANGE_AMOUNT:
-      newProducts = { ...state.products };
-      newProducts[action.payload.cid].amount = action.payload.amount;
+      newState = JSON.parse(JSON.stringify(state));
+
+      console.log('2')
+
+      if (state.carts.general) {
+        newProducts = { ...state.carts.general.products };
+        newProducts[action.payload.cid].amount = action.payload.amount;
+        newState.carts.general.products = newProducts;
+      } else {
+        newProducts = { ...state.carts[action.payload.id].products };
+        newProducts[action.payload.cid].amount = action.payload.amount;
+        newState.carts[action.payload.id].products = newProducts;
+      }
+
+      console.log('3')
+
       return {
-        ...state,
-        products: newProducts,
+        ...newState,
+        fetching: false
       };
 
     case CART_ADD_COUPON_CODE:
