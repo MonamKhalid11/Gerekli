@@ -170,8 +170,6 @@ export default function (state = initialState, action) {
     case CHANGE_AMOUNT:
       newState = JSON.parse(JSON.stringify(state));
 
-      console.log('2')
-
       if (state.carts.general) {
         newProducts = { ...state.carts.general.products };
         newProducts[action.payload.cid].amount = action.payload.amount;
@@ -181,8 +179,6 @@ export default function (state = initialState, action) {
         newProducts[action.payload.cid].amount = action.payload.amount;
         newState.carts[action.payload.id].products = newProducts;
       }
-
-      console.log('3')
 
       return {
         ...newState,

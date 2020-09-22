@@ -102,7 +102,10 @@ class CheckoutShipping extends Component {
     cart: PropTypes.shape({}),
     navigator: PropTypes.shape({
       push: PropTypes.func,
+      setOnNavigatorEvent: PropTypes.func
     }),
+    stateCart: PropTypes.shape({}),
+    cartActions: PropTypes.shape({})
   };
 
   constructor(props) {
@@ -212,13 +215,14 @@ class CheckoutShipping extends Component {
   }
 
   handleNextPress() {
-    const { navigator } = this.props;
+    const { navigator, cart } = this.props;
     navigator.push({
       screen: 'CheckoutPayment',
       title: i18n.t('Checkout').toUpperCase(),
       backButtonTitle: '',
       passProps: {
         shipping_id: this.state.shipping_id,
+        cart
       },
     });
   }
@@ -299,9 +303,9 @@ class CheckoutShipping extends Component {
 
   render() {
     const { items, isNextDisabled, total } = this.state;
-    const { cart } = this.props;
+    const { stateCart } = this.props;
 
-    if (cart.fetching) {
+    if (stateCart.fetching) {
       return (
         <Spinner visible />
       );
@@ -336,7 +340,7 @@ class CheckoutShipping extends Component {
 
 export default connect(
   state => ({
-    cart: state.cart,
+    stateCart: state.cart,
     shippings: state.shippings,
   }),
   dispatch => ({

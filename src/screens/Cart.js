@@ -192,9 +192,8 @@ class Cart extends Component {
       return null;
     }
 
-    console.log('renderVendorsList', cart)
     const newCarts = Object.keys(cart.carts).map(el => cart.carts[el]);
-    console.log('renderVendorsList', newCarts)
+
     return (
       <VendorsCartsList
         carts={newCarts}
@@ -223,7 +222,7 @@ class Cart extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {!true ? this.renderList() : this.renderVendorsList()}
+        {true ? this.renderList() : this.renderVendorsList()}
         {this.renderSpinner()}
       </View>
     );

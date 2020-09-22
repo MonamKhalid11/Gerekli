@@ -65,7 +65,6 @@ const styles = EStyleSheet.create({
 
 const CartProductItem = ({ cartActions, item }) => {
   const handleChangeAmountRequest = (item) => {
-    console.log('4')
     cartActions.change(item.cartId, item);
   };
 
@@ -100,8 +99,6 @@ const CartProductItem = ({ cartActions, item }) => {
   const productTaxedPrice = get(item, 'taxed_price_formatted.price', '');
   const productPrice = productTaxedPrice || get(item, 'price_formatted.price', '');
   const showTaxedPrice = isPriceIncludesTax(item);
-
-  console.log('ITEM: ', item)
 
   return (
     <View style={styles.productItemWrapper}>

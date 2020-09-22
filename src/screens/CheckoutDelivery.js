@@ -49,6 +49,8 @@ class Checkout extends Component {
       setOnNavigatorEvent: PropTypes.func,
     }),
     cart: PropTypes.shape(),
+    cartActions: PropTypes.shape(),
+    authActions: PropTypes.shape(),
   };
 
   constructor(props) {
@@ -104,6 +106,7 @@ class Checkout extends Component {
       title: i18n.t('Checkout').toUpperCase(),
       passProps: {
         total: cart.subtotal,
+        cart
       },
     });
   }
@@ -143,7 +146,6 @@ class Checkout extends Component {
 export default connect(
   state => ({
     auth: state.auth,
-    cart: state.cart,
     state,
   }),
   dispatch => ({

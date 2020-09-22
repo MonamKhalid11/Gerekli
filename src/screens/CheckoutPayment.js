@@ -492,7 +492,7 @@ class CheckoutStepThree extends Component {
 
 export default connect(
   state => ({
-    cart: state.cart,
+    // cart: state.cart,
     auth: state.auth,
   }),
   dispatch => ({

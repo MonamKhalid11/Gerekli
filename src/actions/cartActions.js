@@ -253,7 +253,6 @@ export function remove(id) {
 }
 
 export function changeAmount(cid, amount, id = '') {
-  console.log('1')
   return (dispatch) => {
     dispatch({ type: CART_LOADING });
     dispatch({

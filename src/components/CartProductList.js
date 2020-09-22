@@ -55,7 +55,7 @@ const renderOrderDetail = (products, cart) => {
   );
 };
 
-const handlePlaceOrder = (auth, navigator, products) => {
+const handlePlaceOrder = (auth, navigator, products, cart) => {
   const newProducts = {};
   products.forEach((p) => {
     newProducts[p.product_id] = {
@@ -77,6 +77,7 @@ const handlePlaceOrder = (auth, navigator, products) => {
       backButtonTitle: '',
       passProps: {
         newProducts,
+        cart
       },
     });
   }
@@ -90,7 +91,11 @@ const renderPlaceOrder = (cart, products, auth, navigator) => {
     <CartFooter
       totalPrice={formatPrice(cart.total_formatted.price)}
       btnText={i18n.t('Checkout').toUpperCase()}
-      onBtnPress={() => handlePlaceOrder(auth, navigator, products)}
+      onBtnPress={
+        () => handlePlaceOrder(
+          auth, navigator, products, cart
+        )
+      }
     />
   );
 };
@@ -98,11 +103,15 @@ const renderPlaceOrder = (cart, products, auth, navigator) => {
 const CartProductList = ({
   cart, auth, navigator, handleRefresh, refreshing, cartActions
 }) => {
-  const newProducts = Object.keys(cart.products).map((key) => {
-    const result = cart.products[key];
-    result.cartId = key;
-    return result;
-  });
+  let newProducts = [];
+  if (cart) {
+    newProducts = Object.keys(cart.products).map((key) => {
+      const result = { ...cart.products[key] };
+      result.cartId = key;
+      return result;
+    });
+  }
+
 
   return (
     <View style={styles.container}>
