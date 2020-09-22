@@ -26,7 +26,8 @@ import {
 
   RESTORE_STATE,
 
-  CART_LOADING
+  CART_LOADING,
+  CART_LOADED
 } from '../constants';
 
 const initialState = {
@@ -51,6 +52,12 @@ export default function (state = initialState, action) {
       return {
         ...state,
         fetching: true
+      };
+
+    case CART_LOADED:
+      return {
+        ...state,
+        fetching: false
       };
 
     case RESTORE_STATE:
@@ -168,20 +175,21 @@ export default function (state = initialState, action) {
       return initialState;
 
     case CHANGE_AMOUNT:
-      newState = JSON.parse(JSON.stringify(state));
+      newState = JSON.parse(JSON.stringify(state.carts));
 
       if (state.carts.general) {
         newProducts = { ...state.carts.general.products };
         newProducts[action.payload.cid].amount = action.payload.amount;
-        newState.carts.general.products = newProducts;
+        newState.general.products = newProducts;
       } else {
         newProducts = { ...state.carts[action.payload.id].products };
         newProducts[action.payload.cid].amount = action.payload.amount;
-        newState.carts[action.payload.id].products = newProducts;
+        newState[action.payload.id].products = newProducts;
       }
 
       return {
-        ...newState,
+        ...state,
+        carts: newState,
         fetching: false
       };
 

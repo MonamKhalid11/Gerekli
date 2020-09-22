@@ -20,19 +20,12 @@ const styles = EStyleSheet.create({
 const VendorsCartsItem = ({
   item, auth, navigator, handleRefresh, refreshing, cartActions
 }) => {
-  const products = Object.keys(item.products).map((key) => {
-    const result = item.products[key];
-    result.cartId = key;
-    return result;
-  });
-
   return (
     <View style={styles.container}>
-      {/* <Text>{item.product_groups[0].name}</Text> */}
+      <Text>{item.product_groups[0].name}</Text>
       <CartProductList
-        is
         cart={item}
-        products={products}
+        products={item.products}
         auth={auth}
         navigator={navigator}
         handleRefresh={handleRefresh}

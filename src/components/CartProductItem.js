@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { get } from 'lodash';
+// import { get } from 'lodash';
 import {
   View,
   Text,
@@ -64,8 +64,9 @@ const styles = EStyleSheet.create({
 });
 
 const CartProductItem = ({ cartActions, item }) => {
-  const handleChangeAmountRequest = (item) => {
-    cartActions.change(item.cartId, item);
+  const handleChangeAmountRequest = (item, amount) => {
+    const newItem = { ...item, amount };
+    cartActions.change(newItem.cartId, newItem);
   };
 
   const handleRemoveProduct = (product) => {
@@ -96,8 +97,9 @@ const CartProductItem = ({ cartActions, item }) => {
   const min = parseInt(item.min_qty, 10) || step;
   const initialValue = parseInt(item.amount, 10);
 
-  const productTaxedPrice = get(item, 'taxed_price_formatted.price', '');
-  const productPrice = productTaxedPrice || get(item, 'price_formatted.price', '');
+  // Зачем это нужно?
+  // const productTaxedPrice = get(item, 'taxed_price_formatted.price', '');
+  // const productPrice = productTaxedPrice || get(item, 'price_formatted.price', '');
   const showTaxedPrice = isPriceIncludesTax(item);
 
   return (
@@ -117,7 +119,7 @@ const CartProductItem = ({ cartActions, item }) => {
               {item.product}
             </Text>
             <Text style={styles.productItemPrice}>
-              {`${item.amount} x ${productPrice}`}
+              {`${item.amount} x ${item.base_price}`}
               {showTaxedPrice && (
                 <Text style={styles.smallText}>
                   {` (${i18n.t('Including tax')})`}
@@ -134,7 +136,7 @@ const CartProductItem = ({ cartActions, item }) => {
               onChange={(val) => {
                 if (val <= parseInt(item.in_stock, 10)) {
                   cartActions.changeAmount(item.cartId, val, item.company_id);
-                  handleChangeAmountRequest(item);
+                  handleChangeAmountRequest(item, val);
                 }
               }}
             />

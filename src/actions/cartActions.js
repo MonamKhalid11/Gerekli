@@ -20,6 +20,7 @@ import {
   CHANGE_AMOUNT,
 
   CART_LOADING,
+  CART_LOADED,
 
   CART_REMOVE_REQUEST,
   CART_REMOVE_SUCCESS,
@@ -52,21 +53,30 @@ export function fetch(fetching = true, calculateShipping = 'A') {
     });
     try {
       const res = await Api.get('/sra_cart_content', { params: { calculate_shipping: calculateShipping } });
-      await dispatch({
-        type: CART_SUCCESS,
-        payload: res.data
-      });
+      // await dispatch({
+      //   type: CART_SUCCESS,
+      //   payload: res.data
+      // });
       if (res.data.all_vendor_ids) {
         const uniqueVendorIds = res.data.all_vendor_ids.filter(onlyUnique);
         uniqueVendorIds.map(async (el) => {
-          if (el !== res.data.all_vendor_ids[0]) {
+          if (el) {
             const res = await Api.get(`/sra_cart_content/${el}`, { params: { calculate_shipping: calculateShipping } });
             dispatch({
               type: CART_SUCCESS,
               payload: res.data
             });
+          } else {
+            dispatch({
+              type: CART_LOADED,
+            });
           }
           return null;
+        });
+      } else {
+        await dispatch({
+          type: CART_SUCCESS,
+          payload: res.data
         });
       }
     } catch (error) {

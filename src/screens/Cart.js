@@ -192,7 +192,12 @@ class Cart extends Component {
       return null;
     }
 
-    const newCarts = Object.keys(cart.carts).map(el => cart.carts[el]);
+    const newCarts = Object.keys(cart.carts).reduce((result, el) => {
+      if (el !== 'general') {
+        result.push(cart.carts[el]);
+      }
+      return result;
+    }, []);
 
     return (
       <VendorsCartsList
