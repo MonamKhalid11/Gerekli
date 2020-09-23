@@ -40,14 +40,13 @@ import InputOption from '../components/InputOption';
 import QtyOption from '../components/QtyOption';
 import SwitchOption from '../components/SwitchOption';
 import SectionRow from '../components/SectionRow';
-import SectionButton from '../components/SectionButton';
 import Spinner from '../components/Spinner';
 import Section from '../components/Section';
 import Rating from '../components/Rating';
-import Icon from '../components/Icon';
 
 import i18n from '../utils/i18n';
 import config from '../config';
+import { iconsMap } from '../utils/navIcons';
 
 import {
   DISCUSSION_COMMUNICATION_AND_RATING,
@@ -58,6 +57,7 @@ import {
   FEATURE_TYPE_CHECKBOX,
 } from '../constants';
 import { Navigation } from 'react-native-navigation';
+import theme from '../config/theme';
 
 const styles = EStyleSheet.create({
   container: {
@@ -127,14 +127,23 @@ const styles = EStyleSheet.create({
   noFeaturesText: {
     textAlign: 'left',
   },
+  addToCartContainerWrapper: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.28,
+    shadowRadius: 16,
+    elevation: 24,
+  },
   addToCartContainer: {
     paddingLeft: 14,
     paddingRight: 14,
-    paddingBottom: 20,
+    paddingBottom: 16,
     paddingTop: 8,
+    backgroundColor: '#fff',
     flexDirection: 'row',
-    borderTopWidth: 1,
-    borderColor: '#F0F0F0',
   },
   addToCartBtn: {
     backgroundColor: '$primaryColor',
@@ -148,17 +157,6 @@ const styles = EStyleSheet.create({
     textAlign: 'center',
     color: '$primaryColorText',
     fontSize: 16,
-  },
-  addToWishList: {
-    backgroundColor: '$addToWishListColor',
-    width: 60,
-    marginRight: 10,
-    borderRadius: 4,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  addToWishListIcon: {
-    color: '#fff',
   },
   noPadding: {
     padding: 0,
@@ -285,6 +283,8 @@ class ProductDetail extends Component {
       canWriteComments: false,
       amount: 1,
     };
+
+    Navigation.events().bindComponent(this);
   }
 
   componentDidMount() {
@@ -308,10 +308,12 @@ class ProductDetail extends Component {
   componentWillReceiveProps(nextProps) {
     const {
       productDetail,
+      wishList,
       vendors,
       discussion,
       auth,
       vendorActions,
+      hideWishList,
     } = nextProps;
     const product = productDetail;
 
@@ -376,13 +378,44 @@ class ProductDetail extends Component {
         auth.logged,
     });
 
-    Navigation.mergeOptions(this.props.componentId, {
-      topBar: {
-        title: {
-          text: product.product,
-        },
+    const topBar = {
+      title: {
+        text: product.product,
       },
+    };
+
+    if (!hideWishList) {
+      const wishListActive = wishList.items.some(
+        (item) => parseInt(item.product_id, 10) === productDetail.product_id,
+      );
+      topBar.rightButtons = [
+        {
+          id: 'wishlist',
+          icon: iconsMap.favorite,
+          color: wishListActive
+            ? theme.$primaryColor
+            : theme.$navBarButtonColor,
+        },
+        {
+          id: 'share',
+          icon: iconsMap.share,
+        },
+      ];
+    }
+
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar,
     });
+  }
+
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'wishlist') {
+      this.handleAddToWishList();
+    }
+
+    if (buttonId === 'share') {
+      this.handleShare();
+    }
   }
 
   calculatePrice = () => {
@@ -391,6 +424,22 @@ class ProductDetail extends Component {
     productsActions
       .recalculatePrice(product.product_id, amount, selectedOptions)
       .then(() => this.setState({ fetching: false }));
+  };
+
+  handleShare = () => {
+    const { product } = this.state;
+    const url = `${config.siteUrl}index.php?dispatch=products.view&product_id=${product.product_id}`;
+    Share.share(
+      {
+        message: url,
+        title: product.product,
+        url,
+      },
+      {
+        dialogTitle: product.product,
+        tintColor: 'black',
+      },
+    );
   };
 
   handleApplePay = async (next) => {
@@ -820,43 +869,12 @@ class ProductDetail extends Component {
     );
   }
 
-  renderShare() {
-    const { product } = this.state;
-    const url = `${config.siteUrl}index.php?dispatch=products.view&product_id=${product.product_id}`;
-    return (
-      <SectionButton
-        text={i18n.t('Share product')}
-        onPress={() => {
-          Share.share(
-            {
-              message: url,
-              title: product.product,
-              url,
-            },
-            {
-              dialogTitle: product.product,
-              tintColor: 'black',
-            },
-          );
-        }}
-      />
-    );
-  }
-
   renderAddToCart() {
-    const { hideWishList } = this.props;
+    const canPayWithApplePay = Platform.OS === 'ios' && config.applePay;
 
     return (
       <View style={styles.addToCartContainer}>
-        {!hideWishList && (
-          <TouchableOpacity
-            style={styles.addToWishList}
-            onPress={() => this.handleAddToWishList()}>
-            <Icon name="favorite" size={24} style={styles.addToWishListIcon} />
-          </TouchableOpacity>
-        )}
-
-        {Platform.OS === 'ios' && config.applePay && (
+        {canPayWithApplePay && (
           <View style={styles.inAppPaymentWrapper}>
             {/* <InAppPayment
               navigator={navigator}
@@ -902,9 +920,10 @@ class ProductDetail extends Component {
             {this.renderDiscussion()}
             {this.renderFeatures()}
             {this.renderVendorInfo()}
-            {this.renderShare()}
           </ScrollView>
-          {this.renderAddToCart()}
+          <View style={styles.addToCartContainerWrapper}>
+            {this.renderAddToCart()}
+          </View>
         </KeyboardAvoidingView>
       </View>
     );

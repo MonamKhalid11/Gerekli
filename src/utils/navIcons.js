@@ -8,6 +8,7 @@ const preloadIcons = {
   'shopping-cart': [30, theme.$navBarButtonColor],
   menu: [30, theme.$navBarButtonColor],
   search: [30, theme.$navBarButtonColor],
+  share: [30, theme.$navBarButtonColor],
   close: [30, theme.$navBarButtonColor],
   delete: [30, theme.$navBarButtonColor],
   create: [30, theme.$navBarButtonColor],
