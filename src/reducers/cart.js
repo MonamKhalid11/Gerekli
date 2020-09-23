@@ -177,11 +177,11 @@ export default function (state = initialState, action) {
       newState = JSON.parse(JSON.stringify(state.carts));
 
       if (state.carts.general) {
-        newProducts = { ...state.carts.general.products };
+        newProducts = JSON.parse(JSON.stringify(state.carts.general.products));
         newProducts[action.payload.cid].amount = action.payload.amount;
         newState.general.products = newProducts;
       } else {
-        newProducts = { ...state.carts[action.payload.id].products };
+        newProducts = JSON.parse(JSON.stringify(state.carts[action.payload.id].products));
         newProducts[action.payload.cid].amount = action.payload.amount;
         newState[action.payload.id].products = newProducts;
       }
