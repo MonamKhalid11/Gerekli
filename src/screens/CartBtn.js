@@ -67,7 +67,12 @@ class CartBtn extends Component {
 
   renderBadge = () => {
     const { cart } = this.props;
-    if (!cart.amount) {
+
+    const amount = Object.keys(cart.carts).reduce(
+      (result, el) => result + cart.carts[el].amount, 0
+    );
+
+    if (!amount) {
       return null;
     }
 
@@ -81,7 +86,7 @@ class CartBtn extends Component {
         }}
       >
         <Text style={styles.badgeTextStyle}>
-          {cart.amount}
+          {amount}
         </Text>
       </TouchableOpacity>
     );
