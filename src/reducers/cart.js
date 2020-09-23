@@ -45,6 +45,7 @@ let newProducts = [];
 let newCart = null;
 let cartName = null;
 let newState = {};
+let newCarts = {};
 
 export default function (state = initialState, action) {
   switch (action.type) {
@@ -123,9 +124,6 @@ export default function (state = initialState, action) {
     case CART_CLEAR_SUCCESS:
       return {
         ...state,
-        amount: 0,
-        products: {},
-        coupons: [],
         carts: {},
         fetching: false,
       };

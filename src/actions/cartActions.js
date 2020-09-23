@@ -73,6 +73,10 @@ export function fetch(fetching = true, calculateShipping = 'A') {
           type: CART_SUCCESS,
           payload: res.data
         });
+      } else if (!res.data.amount) {
+        await dispatch({
+          type: CART_CLEAR_SUCCESS
+        });
       }
       await dispatch({
         type: CART_LOADED,
@@ -204,7 +208,7 @@ export function clear() {
       .then((response) => {
         dispatch({
           type: CART_CLEAR_SUCCESS,
-          payload: response.data,
+          payload: response.data
         });
         return response;
       })
