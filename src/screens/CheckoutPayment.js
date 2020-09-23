@@ -234,7 +234,6 @@ class CheckoutStepThree extends Component {
         if (!data) {
           return;
         }
-
         cartActions.clear();
         navigator.push({
           screen: 'CheckoutComplete',
@@ -492,7 +491,6 @@ class CheckoutStepThree extends Component {
 
 export default connect(
   state => ({
-    // cart: state.cart,
     auth: state.auth,
   }),
   dispatch => ({

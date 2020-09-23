@@ -105,7 +105,6 @@ export default function (state = initialState, action) {
       return {
         ...state,
         carts: { ...state.carts, [cartName]: newCart },
-        fetching: false,
         coupons: [],
       };
 

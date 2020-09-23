@@ -45,20 +45,19 @@ import Api from '../services/api';
 
 export function fetch(fetching = true, calculateShipping = 'A') {
   return async (dispatch) => {
-    await dispatch({
-      type: CART_REQUEST,
-      payload: {
-        fetching,
-      }
-    });
     try {
+      await dispatch({
+        type: CART_REQUEST,
+        payload: {
+          fetching,
+        }
+      });
       const res = await Api.get('/sra_cart_content', { params: { calculate_shipping: calculateShipping } });
-      // await dispatch({
-      //   type: CART_SUCCESS,
-      //   payload: res.data
-      // });
       if (res.data.all_vendor_ids) {
         const uniqueVendorIds = res.data.all_vendor_ids.filter(onlyUnique);
+        await dispatch({
+          type: CART_LOADING,
+        });
         uniqueVendorIds.map(async (el) => {
           if (el) {
             const res = await Api.get(`/sra_cart_content/${el}`, { params: { calculate_shipping: calculateShipping } });
@@ -66,19 +65,18 @@ export function fetch(fetching = true, calculateShipping = 'A') {
               type: CART_SUCCESS,
               payload: res.data
             });
-          } else {
-            dispatch({
-              type: CART_LOADED,
-            });
           }
           return null;
         });
-      } else {
+      } else if (res.data.amount) {
         await dispatch({
           type: CART_SUCCESS,
           payload: res.data
         });
       }
+      await dispatch({
+        type: CART_LOADED,
+      });
     } catch (error) {
       dispatch({
         type: CART_FAIL,
