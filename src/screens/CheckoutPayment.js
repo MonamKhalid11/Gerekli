@@ -234,7 +234,7 @@ class CheckoutStepThree extends Component {
         if (!data) {
           return;
         }
-        cartActions.clear();
+        cartActions.clear(cart);
         navigator.push({
           screen: 'CheckoutComplete',
           backButtonTitle: '',

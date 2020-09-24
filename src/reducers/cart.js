@@ -92,20 +92,9 @@ export default function (state = initialState, action) {
       };
 
     case CART_SUCCESS:
-      newCart = action.payload;
-      Object.keys(newCart.payments).forEach((key) => {
-        newCart.payments[key].payment_id = key;
-      });
-
-      if (newCart.vendor_id) {
-        cartName = newCart.vendor_id;
-      } else {
-        cartName = 'general';
-      }
-
       return {
         ...state,
-        carts: { ...state.carts, [cartName]: newCart },
+        carts: action.payload,
         coupons: [],
       };
 

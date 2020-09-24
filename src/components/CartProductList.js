@@ -112,7 +112,6 @@ const CartProductList = ({
     });
   }
 
-
   return (
     <View style={styles.container}>
       <FlatList

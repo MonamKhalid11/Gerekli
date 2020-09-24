@@ -227,7 +227,7 @@ class Cart extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {true ? this.renderList() : this.renderVendorsList()}
+        {!true ? this.renderList() : this.renderVendorsList()}
         {this.renderSpinner()}
       </View>
     );

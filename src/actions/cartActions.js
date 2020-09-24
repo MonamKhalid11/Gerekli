@@ -46,39 +46,47 @@ import Api from '../services/api';
 export function fetch(fetching = true, calculateShipping = 'A') {
   return async (dispatch) => {
     try {
-      await dispatch({
+      dispatch({
         type: CART_REQUEST,
         payload: {
           fetching,
         }
       });
       const res = await Api.get('/sra_cart_content', { params: { calculate_shipping: calculateShipping } });
+      const carts = {};
       if (res.data.all_vendor_ids) {
         const uniqueVendorIds = res.data.all_vendor_ids.filter(onlyUnique);
-        await dispatch({
+        dispatch({
           type: CART_LOADING,
         });
-        uniqueVendorIds.map(async (el) => {
-          if (el) {
-            const res = await Api.get(`/sra_cart_content/${el}`, { params: { calculate_shipping: calculateShipping } });
-            dispatch({
-              type: CART_SUCCESS,
-              payload: res.data
-            });
+        const result = await Promise.all(uniqueVendorIds.map(async (el) => {
+          const res = await Api.get(`/sra_cart_content/${el}`, { params: { calculate_shipping: calculateShipping } });
+          Object.keys(res.data.payments).forEach((key) => {
+            res.data.payments[key].payment_id = key;
+          });
+          return res;
+        }));
+        for (let i = 0; i < result.length; i += 1) {
+          if (result[i].data.vendor_id) {
+            carts[result[i].data.vendor_id] = result[i].data;
           }
-          return null;
+        }
+        dispatch({
+          type: CART_SUCCESS,
+          payload: carts
         });
       } else if (res.data.amount) {
-        await dispatch({
+        carts.general = res.data;
+        dispatch({
           type: CART_SUCCESS,
-          payload: res.data
+          payload: carts
         });
       } else if (!res.data.amount) {
-        await dispatch({
+        dispatch({
           type: CART_CLEAR_SUCCESS
         });
       }
-      await dispatch({
+      dispatch({
         type: CART_LOADED,
       });
     } catch (error) {
@@ -201,23 +209,31 @@ export function add(data, notify = true) {
   };
 }
 
-export function clear() {
-  return (dispatch) => {
-    dispatch({ type: CART_CLEAR_REQUEST });
-    return Api.delete('/sra_cart_content/', {})
-      .then((response) => {
+export function clear(cart = '') {
+  return async (dispatch) => {
+    try {
+      if (cart.vendor_id) {
+        await dispatch({ type: CART_CLEAR_REQUEST });
+        Object.keys(cart.products).map((el) => {
+          const id = el.toString();
+          Api.delete(`/sra_cart_content/${id}/`, {});
+          return null;
+        });
+        fetch()(dispatch);
+      } else {
+        await dispatch({ type: CART_CLEAR_REQUEST });
+        const response = Api.delete('/sra_cart_content/', {});
         dispatch({
           type: CART_CLEAR_SUCCESS,
           payload: response.data
         });
-        return response;
-      })
-      .catch((error) => {
-        dispatch({
-          type: CART_CLEAR_FAIL,
-          error,
-        });
+      }
+    } catch (error) {
+      dispatch({
+        type: CART_CLEAR_FAIL,
+        error,
       });
+    }
   };
 }
 
