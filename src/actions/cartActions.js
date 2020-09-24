@@ -73,13 +73,13 @@ export function fetch(fetching = true, calculateShipping = 'A') {
         }
         dispatch({
           type: CART_SUCCESS,
-          payload: carts
+          payload: { carts, isSeparateCart: true }
         });
       } else if (res.data.amount) {
         carts.general = res.data;
         dispatch({
           type: CART_SUCCESS,
-          payload: carts
+          payload: { carts, isSeparateCart: false }
         });
       } else if (!res.data.amount) {
         dispatch({
@@ -213,7 +213,7 @@ export function clear(cart = '') {
   return async (dispatch) => {
     try {
       if (cart.vendor_id) {
-        await dispatch({ type: CART_CLEAR_REQUEST });
+        dispatch({ type: CART_CLEAR_REQUEST });
         Object.keys(cart.products).map((el) => {
           const id = el.toString();
           Api.delete(`/sra_cart_content/${id}/`, {});

@@ -27,6 +27,7 @@ import {
   iconsMap,
   iconsLoaded,
 } from '../utils/navIcons';
+import cart from '../reducers/cart';
 
 // Styles
 const styles = EStyleSheet.create({
@@ -225,9 +226,10 @@ class Cart extends Component {
   };
 
   render() {
+    const { cart } = this.props;
     return (
       <View style={styles.container}>
-        {!true ? this.renderList() : this.renderVendorsList()}
+        {cart.isSeparateCart ? this.renderVendorsList() : this.renderList()}
         {this.renderSpinner()}
       </View>
     );

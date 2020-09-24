@@ -38,14 +38,12 @@ const initialState = {
   user_data: {},
   coupons: [],
   vendorCarts: [],
+  isSeparateCart: null,
   carts: {}
 };
 
 let newProducts = [];
-let newCart = null;
-let cartName = null;
 let newState = {};
-let newCarts = {};
 
 export default function (state = initialState, action) {
   switch (action.type) {
@@ -94,7 +92,8 @@ export default function (state = initialState, action) {
     case CART_SUCCESS:
       return {
         ...state,
-        carts: action.payload,
+        carts: action.payload.carts,
+        isSeparateCart: action.payload.isSeparateCart,
         coupons: [],
       };
 
