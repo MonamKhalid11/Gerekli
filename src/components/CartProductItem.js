@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import { get } from 'lodash';
 import {
   View,
   Text,
@@ -97,7 +96,7 @@ const CartProductItem = ({ cartActions, item }) => {
   const min = parseInt(item.min_qty, 10) || step;
   const initialValue = parseInt(item.amount, 10);
 
-  // Зачем это нужно?
+  // Why is this?
   // const productTaxedPrice = get(item, 'taxed_price_formatted.price', '');
   // const productPrice = productTaxedPrice || get(item, 'price_formatted.price', '');
   const showTaxedPrice = isPriceIncludesTax(item);

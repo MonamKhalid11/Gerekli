@@ -54,8 +54,18 @@ export function fetch(fetching = true, calculateShipping = 'A') {
       });
       const res = await Api.get('/sra_cart_content', { params: { calculate_shipping: calculateShipping } });
       const carts = {};
-      if (res.data.all_vendor_ids) {
-        const uniqueVendorIds = res.data.all_vendor_ids.filter(onlyUnique);
+      if (!res.data.amount) {
+        dispatch({
+          type: CART_CLEAR_SUCCESS
+        });
+      } else if (res.data.all_vendor_ids) {
+        Object.keys(res.data.payments).forEach((key) => {
+          res.data.payments[key].payment_id = key;
+        });
+        carts[res.data.vendor_id] = res.data;
+        const uniqueVendorIds = res.data.all_vendor_ids
+          .filter(onlyUnique)
+          .filter(el => el !== res.data.vendor_id && el !== 0);
         dispatch({
           type: CART_LOADING,
         });
@@ -80,10 +90,6 @@ export function fetch(fetching = true, calculateShipping = 'A') {
         dispatch({
           type: CART_SUCCESS,
           payload: { carts, isSeparateCart: false }
-        });
-      } else if (!res.data.amount) {
-        dispatch({
-          type: CART_CLEAR_SUCCESS
         });
       }
       dispatch({
@@ -214,12 +220,8 @@ export function clear(cart = '') {
     try {
       if (cart.vendor_id) {
         dispatch({ type: CART_CLEAR_REQUEST });
-        Object.keys(cart.products).map((el) => {
-          const id = el.toString();
-          Api.delete(`/sra_cart_content/${id}/`, {});
-          return null;
-        });
-        fetch()(dispatch);
+        await Promise.all(Object.keys(cart.products).map(async id => Api.delete(`/sra_cart_content/${id}/`, {})));
+        await fetch()(dispatch);
       } else {
         await dispatch({ type: CART_CLEAR_REQUEST });
         const response = Api.delete('/sra_cart_content/', {});
