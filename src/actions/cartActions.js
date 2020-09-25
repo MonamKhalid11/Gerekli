@@ -39,7 +39,6 @@ import {
 } from '../constants';
 
 // links
-import { onlyUnique } from '../utils/index';
 import i18n from '../utils/i18n';
 import Api from '../services/api';
 
@@ -64,7 +63,6 @@ export function fetch(fetching = true, calculateShipping = 'A') {
         });
         carts[res.data.vendor_id] = res.data;
         const uniqueVendorIds = res.data.all_vendor_ids
-          .filter(onlyUnique)
           .filter(el => el !== res.data.vendor_id && el !== 0);
         dispatch({
           type: CART_LOADING,
@@ -220,7 +218,9 @@ export function clear(cart = '') {
     try {
       if (cart.vendor_id) {
         dispatch({ type: CART_CLEAR_REQUEST });
-        await Promise.all(Object.keys(cart.products).map(async id => Api.delete(`/sra_cart_content/${id}/`, {})));
+        await Object.keys(cart.products).map(async (id) => {
+          await Api.delete(`/sra_cart_content/${id}/`, {});
+        });
         await fetch()(dispatch);
       } else {
         await dispatch({ type: CART_CLEAR_REQUEST });
