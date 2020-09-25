@@ -3,19 +3,10 @@ import PropTypes from 'prop-types';
 import {
   FlatList,
 } from 'react-native';
-import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Components
 import VendorsCartsItem from './VendorsCartsItem';
 import EmptyCart from './EmptyCart';
-
-const styles = EStyleSheet.create({
-  container: {
-    borderWidth: 1,
-    borderColor: 'red',
-    height: '100%'
-  }
-});
 
 const VendorsCartsList = ({
   carts, auth, navigator, handleRefresh, refreshing, cartActions

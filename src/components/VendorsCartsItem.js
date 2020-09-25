@@ -1,37 +1,67 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   View,
-  Text
+  Text,
+  TouchableOpacity
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import Icon from './Icon';
 
 // Components
 import CartProductList from './CartProductList';
 
+// Links
+import { formatPrice } from '../utils';
+
 const styles = EStyleSheet.create({
   container: {
-    borderWidth: 1,
-    borderColor: 'red',
-    height: 500
+    marginBottom: 20,
+  },
+  headerWrapper: {
+    padding: 10,
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  titleWrapper: {
+    flexDirection: 'row',
+  },
+  headerTitle: {
+    fontSize: 20
   }
 });
 
 const VendorsCartsItem = ({
   item, auth, navigator, handleRefresh, refreshing, cartActions
 }) => {
+  const [cartIsOpen, setCartIsOpen] = useState(true);
+
+  const renderHeader = title => (
+    <TouchableOpacity style={styles.headerWrapper} onPress={() => setCartIsOpen(!cartIsOpen)}>
+      <View style={styles.titleWrapper}>
+        <Text style={styles.headerTitle}>{title}</Text>
+        <Icon name={cartIsOpen ? 'arrow-drop-up' : 'arrow-drop-down'} style={styles.clearIcon} />
+      </View>
+      {!cartIsOpen && <Text>{formatPrice(item.total_formatted.price)}</Text>}
+    </TouchableOpacity>
+  );
+
   return (
     <View style={styles.container}>
-      <Text>{item.product_groups[0].name}</Text>
-      <CartProductList
-        cart={item}
-        products={item.products}
-        auth={auth}
-        navigator={navigator}
-        handleRefresh={handleRefresh}
-        refreshing={refreshing}
-        cartActions={cartActions}
-      />
+      {renderHeader(item.product_groups[0].name)}
+      {cartIsOpen && (
+        <CartProductList
+          cart={item}
+          products={item.products}
+          auth={auth}
+          navigator={navigator}
+          handleRefresh={handleRefresh}
+          refreshing={refreshing}
+          cartActions={cartActions}
+        />
+      )}
     </View>
   );
 };
