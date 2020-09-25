@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swipeout from 'react-native-swipeout';
+import { get } from 'lodash';
 
 // Components
 import QtyOption from './QtyOption';
@@ -96,9 +97,8 @@ const CartProductItem = ({ cartActions, item }) => {
   const min = parseInt(item.min_qty, 10) || step;
   const initialValue = parseInt(item.amount, 10);
 
-  // Why is this?
-  // const productTaxedPrice = get(item, 'taxed_price_formatted.price', '');
-  // const productPrice = productTaxedPrice || get(item, 'price_formatted.price', '');
+  const productTaxedPrice = get(item, 'base_price', '');
+  const productPrice = productTaxedPrice || get(item, 'base_price', '');
   const showTaxedPrice = isPriceIncludesTax(item);
 
   return (
@@ -118,7 +118,7 @@ const CartProductItem = ({ cartActions, item }) => {
               {item.product}
             </Text>
             <Text style={styles.productItemPrice}>
-              {`${item.amount} x ${item.base_price}`}
+              {`${item.amount} x ${productPrice}`}
               {showTaxedPrice && (
                 <Text style={styles.smallText}>
                   {` (${i18n.t('Including tax')})`}
