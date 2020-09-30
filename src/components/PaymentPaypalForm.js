@@ -22,7 +22,17 @@ const Form = t.form.Form;
 const formFields = t.struct({});
 const formOptions = {};
 
+/**
+ * Renders payment paypal form.
+ *
+ * @reactProps {function} onInit - Determines which form should be rendered.
+ *
+ * @return {JSX.Element}
+ */
 export default class PaymentPaypalForm extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     onInit: PropTypes.func,
   };

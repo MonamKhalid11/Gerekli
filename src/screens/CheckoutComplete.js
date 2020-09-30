@@ -86,12 +86,21 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders the screen after a successful checkout.
+ *
+ * @reactProps {number} orderId - Order id.
+ * @reactProps {object} navigator - Navigator.
+ */
 class CheckoutComplete extends Component {
   static navigatorStyle = {
     navBarBackgroundColor: '#FAFAFA',
     navBarButtonColor: '#989898',
   };
 
+  /**
+   * @ignore
+   */
   static propTypes = {
     orderId: PropTypes.number,
     navigator: PropTypes.shape({
@@ -114,6 +123,9 @@ class CheckoutComplete extends Component {
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
+  /**
+   * Sets title. Loads icons. Gets order data.
+   */
   componentWillMount() {
     const { orderId, navigator } = this.props;
     navigator.setTitle({
@@ -157,6 +169,11 @@ class CheckoutComplete extends Component {
       });
   }
 
+  /**
+   * Cart modal navigation.
+   *
+   * @param {object} event - Information about the element on which the event occurred.
+   */
   onNavigatorEvent(event) {
     const { navigator } = this.props;
     if (event.type === 'NavBarButtonPress') {
@@ -166,6 +183,12 @@ class CheckoutComplete extends Component {
     }
   }
 
+  /**
+   * Renders product.
+   *
+   * @param {object} item - Product information.
+   * @param {number} index - Product index.
+   */
   renderProduct = (item, index) => {
     let productImage = null;
     const imageUri = getImagePath(item);
@@ -194,6 +217,11 @@ class CheckoutComplete extends Component {
     );
   }
 
+  /**
+   * Renders general order information.
+   *
+   * @return {JSX.Element}
+   */
   renderFields() {
     const { orderDetail, fields } = this.state;
 
@@ -249,6 +277,11 @@ class CheckoutComplete extends Component {
     });
   }
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { orderDetail, fetching } = this.state;
     if (fetching) {

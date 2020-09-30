@@ -51,7 +51,18 @@ const styles = EStyleSheet.create({
   }
 });
 
+/**
+ * Renders vendor block.
+ *
+ * @reactProps {string} name - Block name.
+ * @reactProps {string} wrapper - Renders name if exists.
+ * @reactProps {object[]} items - Information about vendors.
+ * @reactProps {function} onPress - Opens a block.
+ */
 export default class VendorBlock extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     name: PropTypes.string,
     wrapper: PropTypes.string,
@@ -63,6 +74,14 @@ export default class VendorBlock extends Component {
     items: [],
   }
 
+  /**
+   * Renders image.
+   *
+   * @param {*} item - Vendor information.
+   * @param {*} index - Vendor index.
+   *
+   * @return {JSX.Element}
+   */
   renderImage = (item, index) => {
     const imageUri = get(item, 'logos.theme.image.http_image_path');
     return (
@@ -77,6 +96,11 @@ export default class VendorBlock extends Component {
     );
   }
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { items, name, wrapper } = this.props;
     return (

@@ -26,6 +26,15 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders row with name and value.
+ *
+ * @param {string} name - Row name.
+ * @param {string} value - Row value.
+ * @param {boolean} last - Last row in the list or not.
+ *
+ * @return {JSX.Element}
+ */
 const SectionRow = ({ name, value, last = false }) => (
   <View style={[styles.row, last && styles.lastRow]}>
     <View style={styles.name}>
@@ -41,6 +50,9 @@ const SectionRow = ({ name, value, last = false }) => (
   </View>
 );
 
+/**
+ * @ignore
+ */
 SectionRow.propTypes = {
   name: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
