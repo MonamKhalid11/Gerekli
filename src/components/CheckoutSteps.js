@@ -115,12 +115,7 @@ export default class extends Component {
    * @ignore
    */
   static defaultProps = {
-    steps: [
-      i18n.t('Authentication'),
-      i18n.t('Delivery'),
-      i18n.t('Shipping'),
-      i18n.t('Payment method'),
-    ]
+    steps: []
   }
 
   /**
@@ -144,6 +139,19 @@ export default class extends Component {
     });
   }
 
+  getSteps() {
+    const { steps } = this.props;
+    if (steps.length) {
+      return steps;
+    }
+    return [
+      i18n.t('Authentication'),
+      i18n.t('Delivery'),
+      i18n.t('Shipping'),
+      i18n.t('Payment method'),
+    ];
+  }
+
   /**
    * Renders the step as an arrow.
    *
@@ -163,7 +171,7 @@ export default class extends Component {
    */
   renderPassedSteps() {
     const { stepId } = this.state;
-    const { steps } = this.props;
+    const steps = this.getSteps();
     const stepsList = [];
     for (let i = 0; i < steps.length; i += 1) {
       if (i === stepId) {
@@ -187,7 +195,7 @@ export default class extends Component {
    * @return {JSX.Element}
    */
   renderActiveStep() {
-    const { steps } = this.props;
+    const steps = this.getSteps();
     const { stepId } = this.state;
     const activeStep = steps[stepId];
     return (
@@ -213,7 +221,7 @@ export default class extends Component {
    * @return {JSX.Element[]}
    */
   renderNextSteps() {
-    const { steps } = this.props;
+    const steps = this.getSteps();
     const { stepId } = this.state;
     const stepsList = [];
     for (let i = (stepId + 1); i < steps.length; i += 1) {
