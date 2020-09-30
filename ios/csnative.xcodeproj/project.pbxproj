@@ -7,20 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00E356F31AD99517003FC87E /* multivendorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* multivendorTests.m */; };
+		00E356F31AD99517003FC87E /* csnativeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* csnativeTests.m */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		2DCD954D1E0B4F2C00145EB5 /* multivendorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* multivendorTests.m */; };
-		45E017FD23072AA0D1748483 /* libPods-multivendor.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ED882A099A4542DBC7E67A6E /* libPods-multivendor.a */; };
+		2DCD954D1E0B4F2C00145EB5 /* csnativeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* csnativeTests.m */; };
+		45E017FD23072AA0D1748483 /* libPods-csnative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ED882A099A4542DBC7E67A6E /* libPods-csnative.a */; };
 		7D21EB7E251B87030062B24C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7D21EB7D251B87030062B24C /* GoogleService-Info.plist */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		8625DBD629410B4A005676C9 /* libPods-multivendor-multivendorTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AEDF7D727EDEB23748100809 /* libPods-multivendor-multivendorTests.a */; };
-		C7B696B9BDF5B78ECD18C491 /* libPods-multivendor-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 17D8F7A552A8A326A736115E /* libPods-multivendor-tvOSTests.a */; };
-		D982C08DE24BBD4E8CFCEC17 /* libPods-multivendor-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 79C22F520998C8DE88FFBA70 /* libPods-multivendor-tvOS.a */; };
+		8625DBD629410B4A005676C9 /* libPods-csnative-csnativeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AEDF7D727EDEB23748100809 /* libPods-csnative-csnativeTests.a */; };
+		C7B696B9BDF5B78ECD18C491 /* libPods-csnative-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 17D8F7A552A8A326A736115E /* libPods-csnative-tvOSTests.a */; };
+		D982C08DE24BBD4E8CFCEC17 /* libPods-csnative-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 79C22F520998C8DE88FFBA70 /* libPods-csnative-tvOS.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,47 +29,47 @@
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
-			remoteInfo = multivendor;
+			remoteInfo = csnative;
 		};
 		2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 2D02E47A1E0B4A5D006451C7;
-			remoteInfo = "multivendor-tvOS";
+			remoteInfo = "csnative-tvOS";
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
-		00E356EE1AD99517003FC87E /* multivendorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = multivendorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356EE1AD99517003FC87E /* csnativeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = csnativeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		00E356F21AD99517003FC87E /* multivendorTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = multivendorTests.m; sourceTree = "<group>"; };
+		00E356F21AD99517003FC87E /* csnativeTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = csnativeTests.m; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* Multi-Vendor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Multi-Vendor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = multivendor/AppDelegate.h; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = multivendor/AppDelegate.m; sourceTree = "<group>"; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = multivendor/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = multivendor/Info.plist; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = multivendor/main.m; sourceTree = "<group>"; };
-		17D8F7A552A8A326A736115E /* libPods-multivendor-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-multivendor-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2D02E47B1E0B4A5D006451C7 /* multivendor-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "multivendor-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2D02E4901E0B4A5D006451C7 /* multivendor-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "multivendor-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		3F840C6DDF0C23C74412BFB9 /* Pods-multivendor-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-multivendor-tvOS.release.xcconfig"; path = "Target Support Files/Pods-multivendor-tvOS/Pods-multivendor-tvOS.release.xcconfig"; sourceTree = "<group>"; };
-		408F514420EA9B9E978A2D00 /* Pods-multivendor.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-multivendor.debug.xcconfig"; path = "Target Support Files/Pods-multivendor/Pods-multivendor.debug.xcconfig"; sourceTree = "<group>"; };
-		79C22F520998C8DE88FFBA70 /* libPods-multivendor-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-multivendor-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		7D21EB7D251B87030062B24C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "multivendor/GoogleService-Info.plist"; sourceTree = "<group>"; };
-		7D43CCF1251B8E6800D52E98 /* Multi-Vendor.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "Multi-Vendor.entitlements"; path = "multivendor/Multi-Vendor.entitlements"; sourceTree = "<group>"; };
-		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = multivendor/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		83D9726AD16A594A77D80693 /* Pods-multivendor-multivendorTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-multivendor-multivendorTests.release.xcconfig"; path = "Target Support Files/Pods-multivendor-multivendorTests/Pods-multivendor-multivendorTests.release.xcconfig"; sourceTree = "<group>"; };
-		8CB455A3CD22879F575FFBE1 /* Pods-multivendor-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-multivendor-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-multivendor-tvOSTests/Pods-multivendor-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
-		992C8CBEE845AB70C56A71C5 /* Pods-multivendor-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-multivendor-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-multivendor-tvOS/Pods-multivendor-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
-		AEDF7D727EDEB23748100809 /* libPods-multivendor-multivendorTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-multivendor-multivendorTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		C80481144261ABC1C0C00B92 /* Pods-multivendor-multivendorTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-multivendor-multivendorTests.debug.xcconfig"; path = "Target Support Files/Pods-multivendor-multivendorTests/Pods-multivendor-multivendorTests.debug.xcconfig"; sourceTree = "<group>"; };
-		CA146E1CC5694BB829E544B9 /* Pods-multivendor-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-multivendor-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-multivendor-tvOSTests/Pods-multivendor-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
-		E85EE592AB6F18A26EC3FA77 /* Pods-multivendor.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-multivendor.release.xcconfig"; path = "Target Support Files/Pods-multivendor/Pods-multivendor.release.xcconfig"; sourceTree = "<group>"; };
+		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = csnative/AppDelegate.h; sourceTree = "<group>"; };
+		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = csnative/AppDelegate.m; sourceTree = "<group>"; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = csnative/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = csnative/Info.plist; sourceTree = "<group>"; };
+		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = csnative/main.m; sourceTree = "<group>"; };
+		17D8F7A552A8A326A736115E /* libPods-csnative-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-csnative-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D02E47B1E0B4A5D006451C7 /* csnative-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "csnative-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D02E4901E0B4A5D006451C7 /* csnative-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "csnative-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3F840C6DDF0C23C74412BFB9 /* Pods-csnative-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-csnative-tvOS.release.xcconfig"; path = "Target Support Files/Pods-csnative-tvOS/Pods-csnative-tvOS.release.xcconfig"; sourceTree = "<group>"; };
+		408F514420EA9B9E978A2D00 /* Pods-csnative.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-csnative.debug.xcconfig"; path = "Target Support Files/Pods-csnative/Pods-csnative.debug.xcconfig"; sourceTree = "<group>"; };
+		79C22F520998C8DE88FFBA70 /* libPods-csnative-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-csnative-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7D21EB7D251B87030062B24C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "csnative/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		7D43CCF1251B8E6800D52E98 /* Multi-Vendor.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "Multi-Vendor.entitlements"; path = "csnative/Multi-Vendor.entitlements"; sourceTree = "<group>"; };
+		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = csnative/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		83D9726AD16A594A77D80693 /* Pods-csnative-csnativeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-csnative-csnativeTests.release.xcconfig"; path = "Target Support Files/Pods-csnative-csnativeTests/Pods-csnative-csnativeTests.release.xcconfig"; sourceTree = "<group>"; };
+		8CB455A3CD22879F575FFBE1 /* Pods-csnative-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-csnative-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-csnative-tvOSTests/Pods-csnative-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		992C8CBEE845AB70C56A71C5 /* Pods-csnative-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-csnative-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-csnative-tvOS/Pods-csnative-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		AEDF7D727EDEB23748100809 /* libPods-csnative-csnativeTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-csnative-csnativeTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C80481144261ABC1C0C00B92 /* Pods-csnative-csnativeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-csnative-csnativeTests.debug.xcconfig"; path = "Target Support Files/Pods-csnative-csnativeTests/Pods-csnative-csnativeTests.debug.xcconfig"; sourceTree = "<group>"; };
+		CA146E1CC5694BB829E544B9 /* Pods-csnative-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-csnative-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-csnative-tvOSTests/Pods-csnative-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		E85EE592AB6F18A26EC3FA77 /* Pods-csnative.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-csnative.release.xcconfig"; path = "Target Support Files/Pods-csnative/Pods-csnative.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
-		ED882A099A4542DBC7E67A6E /* libPods-multivendor.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-multivendor.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		ED882A099A4542DBC7E67A6E /* libPods-csnative.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-csnative.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,7 +77,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8625DBD629410B4A005676C9 /* libPods-multivendor-multivendorTests.a in Frameworks */,
+				8625DBD629410B4A005676C9 /* libPods-csnative-csnativeTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,7 +85,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				45E017FD23072AA0D1748483 /* libPods-multivendor.a in Frameworks */,
+				45E017FD23072AA0D1748483 /* libPods-csnative.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,7 +93,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D982C08DE24BBD4E8CFCEC17 /* libPods-multivendor-tvOS.a in Frameworks */,
+				D982C08DE24BBD4E8CFCEC17 /* libPods-csnative-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -101,20 +101,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C7B696B9BDF5B78ECD18C491 /* libPods-multivendor-tvOSTests.a in Frameworks */,
+				C7B696B9BDF5B78ECD18C491 /* libPods-csnative-tvOSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		00E356EF1AD99517003FC87E /* multivendorTests */ = {
+		00E356EF1AD99517003FC87E /* csnativeTests */ = {
 			isa = PBXGroup;
 			children = (
-				00E356F21AD99517003FC87E /* multivendorTests.m */,
+				00E356F21AD99517003FC87E /* csnativeTests.m */,
 				00E356F01AD99517003FC87E /* Supporting Files */,
 			);
-			path = multivendorTests;
+			path = csnativeTests;
 			sourceTree = "<group>";
 		};
 		00E356F01AD99517003FC87E /* Supporting Files */ = {
@@ -125,7 +125,7 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		13B07FAE1A68108700A75B9A /* multivendor */ = {
+		13B07FAE1A68108700A75B9A /* csnative */ = {
 			isa = PBXGroup;
 			children = (
 				7D43CCF1251B8E6800D52E98 /* Multi-Vendor.entitlements */,
@@ -138,7 +138,7 @@
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
-			name = multivendor;
+			name = csnative;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
@@ -146,10 +146,10 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				ED882A099A4542DBC7E67A6E /* libPods-multivendor.a */,
-				AEDF7D727EDEB23748100809 /* libPods-multivendor-multivendorTests.a */,
-				79C22F520998C8DE88FFBA70 /* libPods-multivendor-tvOS.a */,
-				17D8F7A552A8A326A736115E /* libPods-multivendor-tvOSTests.a */,
+				ED882A099A4542DBC7E67A6E /* libPods-csnative.a */,
+				AEDF7D727EDEB23748100809 /* libPods-csnative-csnativeTests.a */,
+				79C22F520998C8DE88FFBA70 /* libPods-csnative-tvOS.a */,
+				17D8F7A552A8A326A736115E /* libPods-csnative-tvOSTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -164,9 +164,9 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				13B07FAE1A68108700A75B9A /* multivendor */,
+				13B07FAE1A68108700A75B9A /* csnative */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
-				00E356EF1AD99517003FC87E /* multivendorTests */,
+				00E356EF1AD99517003FC87E /* csnativeTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				C5E919AD2E87684CD515C744 /* Pods */,
@@ -180,9 +180,9 @@
 			isa = PBXGroup;
 			children = (
 				13B07F961A680F5B00A75B9A /* Multi-Vendor.app */,
-				00E356EE1AD99517003FC87E /* multivendorTests.xctest */,
-				2D02E47B1E0B4A5D006451C7 /* multivendor-tvOS.app */,
-				2D02E4901E0B4A5D006451C7 /* multivendor-tvOSTests.xctest */,
+				00E356EE1AD99517003FC87E /* csnativeTests.xctest */,
+				2D02E47B1E0B4A5D006451C7 /* csnative-tvOS.app */,
+				2D02E4901E0B4A5D006451C7 /* csnative-tvOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -190,14 +190,14 @@
 		C5E919AD2E87684CD515C744 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				408F514420EA9B9E978A2D00 /* Pods-multivendor.debug.xcconfig */,
-				E85EE592AB6F18A26EC3FA77 /* Pods-multivendor.release.xcconfig */,
-				C80481144261ABC1C0C00B92 /* Pods-multivendor-multivendorTests.debug.xcconfig */,
-				83D9726AD16A594A77D80693 /* Pods-multivendor-multivendorTests.release.xcconfig */,
-				992C8CBEE845AB70C56A71C5 /* Pods-multivendor-tvOS.debug.xcconfig */,
-				3F840C6DDF0C23C74412BFB9 /* Pods-multivendor-tvOS.release.xcconfig */,
-				8CB455A3CD22879F575FFBE1 /* Pods-multivendor-tvOSTests.debug.xcconfig */,
-				CA146E1CC5694BB829E544B9 /* Pods-multivendor-tvOSTests.release.xcconfig */,
+				408F514420EA9B9E978A2D00 /* Pods-csnative.debug.xcconfig */,
+				E85EE592AB6F18A26EC3FA77 /* Pods-csnative.release.xcconfig */,
+				C80481144261ABC1C0C00B92 /* Pods-csnative-csnativeTests.debug.xcconfig */,
+				83D9726AD16A594A77D80693 /* Pods-csnative-csnativeTests.release.xcconfig */,
+				992C8CBEE845AB70C56A71C5 /* Pods-csnative-tvOS.debug.xcconfig */,
+				3F840C6DDF0C23C74412BFB9 /* Pods-csnative-tvOS.release.xcconfig */,
+				8CB455A3CD22879F575FFBE1 /* Pods-csnative-tvOSTests.debug.xcconfig */,
+				CA146E1CC5694BB829E544B9 /* Pods-csnative-tvOSTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -205,9 +205,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00E356ED1AD99517003FC87E /* multivendorTests */ = {
+		00E356ED1AD99517003FC87E /* csnativeTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "multivendorTests" */;
+			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "csnativeTests" */;
 			buildPhases = (
 				1235CC36E43AA016E2ED63E6 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
@@ -220,14 +220,14 @@
 			dependencies = (
 				00E356F51AD99517003FC87E /* PBXTargetDependency */,
 			);
-			name = multivendorTests;
-			productName = multivendorTests;
-			productReference = 00E356EE1AD99517003FC87E /* multivendorTests.xctest */;
+			name = csnativeTests;
+			productName = csnativeTests;
+			productReference = 00E356EE1AD99517003FC87E /* csnativeTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		13B07F861A680F5B00A75B9A /* multivendor */ = {
+		13B07F861A680F5B00A75B9A /* csnative */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "multivendor" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "csnative" */;
 			buildPhases = (
 				A93DAF4F98DC078C0A6A7BFA /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
@@ -242,14 +242,14 @@
 			);
 			dependencies = (
 			);
-			name = multivendor;
-			productName = multivendor;
+			name = csnative;
+			productName = csnative;
 			productReference = 13B07F961A680F5B00A75B9A /* Multi-Vendor.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2D02E47A1E0B4A5D006451C7 /* multivendor-tvOS */ = {
+		2D02E47A1E0B4A5D006451C7 /* csnative-tvOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "multivendor-tvOS" */;
+			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "csnative-tvOS" */;
 			buildPhases = (
 				A0D6B9599EB3414FC24671C6 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F122414F3F0027D42C /* Start Packager */,
@@ -262,14 +262,14 @@
 			);
 			dependencies = (
 			);
-			name = "multivendor-tvOS";
-			productName = "multivendor-tvOS";
-			productReference = 2D02E47B1E0B4A5D006451C7 /* multivendor-tvOS.app */;
+			name = "csnative-tvOS";
+			productName = "csnative-tvOS";
+			productReference = 2D02E47B1E0B4A5D006451C7 /* csnative-tvOS.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2D02E48F1E0B4A5D006451C7 /* multivendor-tvOSTests */ = {
+		2D02E48F1E0B4A5D006451C7 /* csnative-tvOSTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "multivendor-tvOSTests" */;
+			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "csnative-tvOSTests" */;
 			buildPhases = (
 				078B7C180819B9A15014BBDD /* [CP] Check Pods Manifest.lock */,
 				2D02E48C1E0B4A5D006451C7 /* Sources */,
@@ -281,9 +281,9 @@
 			dependencies = (
 				2D02E4921E0B4A5D006451C7 /* PBXTargetDependency */,
 			);
-			name = "multivendor-tvOSTests";
-			productName = "multivendor-tvOSTests";
-			productReference = 2D02E4901E0B4A5D006451C7 /* multivendor-tvOSTests.xctest */;
+			name = "csnative-tvOSTests";
+			productName = "csnative-tvOSTests";
+			productReference = 2D02E4901E0B4A5D006451C7 /* csnative-tvOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -313,7 +313,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "multivendor" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "csnative" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -326,10 +326,10 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* multivendor */,
-				00E356ED1AD99517003FC87E /* multivendorTests */,
-				2D02E47A1E0B4A5D006451C7 /* multivendor-tvOS */,
-				2D02E48F1E0B4A5D006451C7 /* multivendor-tvOSTests */,
+				13B07F861A680F5B00A75B9A /* csnative */,
+				00E356ED1AD99517003FC87E /* csnativeTests */,
+				2D02E47A1E0B4A5D006451C7 /* csnative-tvOS */,
+				2D02E48F1E0B4A5D006451C7 /* csnative-tvOSTests */,
 			);
 		};
 /* End PBXProject section */
@@ -399,7 +399,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-multivendor-tvOSTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-csnative-tvOSTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -421,7 +421,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-multivendor-multivendorTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-csnative-csnativeTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -457,7 +457,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-multivendor-tvOS-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-csnative-tvOS-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -470,7 +470,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-multivendor/Pods-multivendor-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-csnative/Pods-csnative-resources.sh",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
@@ -511,7 +511,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-multivendor/Pods-multivendor-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-csnative/Pods-csnative-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A93DAF4F98DC078C0A6A7BFA /* [CP] Check Pods Manifest.lock */ = {
@@ -529,7 +529,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-multivendor-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-csnative-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -542,7 +542,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-multivendor-multivendorTests/Pods-multivendor-multivendorTests-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-csnative-csnativeTests/Pods-csnative-csnativeTests-resources.sh",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
@@ -583,7 +583,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-multivendor-multivendorTests/Pods-multivendor-multivendorTests-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-csnative-csnativeTests/Pods-csnative-csnativeTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		E0B94594CFE042A86056553E /* [CP-User] [RNFB] Core Configuration */ = {
@@ -641,7 +641,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00E356F31AD99517003FC87E /* multivendorTests.m in Sources */,
+				00E356F31AD99517003FC87E /* csnativeTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -667,7 +667,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2DCD954D1E0B4F2C00145EB5 /* multivendorTests.m in Sources */,
+				2DCD954D1E0B4F2C00145EB5 /* csnativeTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -676,12 +676,12 @@
 /* Begin PBXTargetDependency section */
 		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 13B07F861A680F5B00A75B9A /* multivendor */;
+			target = 13B07F861A680F5B00A75B9A /* csnative */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
 		2D02E4921E0B4A5D006451C7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 2D02E47A1E0B4A5D006451C7 /* multivendor-tvOS */;
+			target = 2D02E47A1E0B4A5D006451C7 /* csnative-tvOS */;
 			targetProxy = 2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -689,14 +689,14 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C80481144261ABC1C0C00B92 /* Pods-multivendor-multivendorTests.debug.xcconfig */;
+			baseConfigurationReference = C80481144261ABC1C0C00B92 /* Pods-csnative-csnativeTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = multivendorTests/Info.plist;
+				INFOPLIST_FILE = csnativeTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -706,17 +706,17 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/multivendor.app/multivendor";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/csnative.app/csnative";
 			};
 			name = Debug;
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 83D9726AD16A594A77D80693 /* Pods-multivendor-multivendorTests.release.xcconfig */;
+			baseConfigurationReference = 83D9726AD16A594A77D80693 /* Pods-csnative-csnativeTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
-				INFOPLIST_FILE = multivendorTests/Info.plist;
+				INFOPLIST_FILE = csnativeTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -726,21 +726,21 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/multivendor.app/multivendor";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/csnative.app/csnative";
 			};
 			name = Release;
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 408F514420EA9B9E978A2D00 /* Pods-multivendor.debug.xcconfig */;
+			baseConfigurationReference = 408F514420EA9B9E978A2D00 /* Pods-csnative.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "multivendor/Multi-Vendor.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "csnative/Multi-Vendor.entitlements";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = RGB4P2U4G8;
 				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = multivendor/Info.plist;
+				INFOPLIST_FILE = csnative/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -757,14 +757,14 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E85EE592AB6F18A26EC3FA77 /* Pods-multivendor.release.xcconfig */;
+			baseConfigurationReference = E85EE592AB6F18A26EC3FA77 /* Pods-csnative.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "multivendor/Multi-Vendor.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "csnative/Multi-Vendor.entitlements";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = RGB4P2U4G8;
-				INFOPLIST_FILE = multivendor/Info.plist;
+				INFOPLIST_FILE = csnative/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -780,7 +780,7 @@
 		};
 		2D02E4971E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 992C8CBEE845AB70C56A71C5 /* Pods-multivendor-tvOS.debug.xcconfig */;
+			baseConfigurationReference = 992C8CBEE845AB70C56A71C5 /* Pods-csnative-tvOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -791,14 +791,14 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "multivendor-tvOS/Info.plist";
+				INFOPLIST_FILE = "csnative-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.multivendor-tvOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.csnative-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -808,7 +808,7 @@
 		};
 		2D02E4981E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3F840C6DDF0C23C74412BFB9 /* Pods-multivendor-tvOS.release.xcconfig */;
+			baseConfigurationReference = 3F840C6DDF0C23C74412BFB9 /* Pods-csnative-tvOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -819,14 +819,14 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "multivendor-tvOS/Info.plist";
+				INFOPLIST_FILE = "csnative-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.multivendor-tvOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.csnative-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -836,7 +836,7 @@
 		};
 		2D02E4991E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8CB455A3CD22879F575FFBE1 /* Pods-multivendor-tvOSTests.debug.xcconfig */;
+			baseConfigurationReference = 8CB455A3CD22879F575FFBE1 /* Pods-csnative-tvOSTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -846,24 +846,24 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "multivendor-tvOSTests/Info.plist";
+				INFOPLIST_FILE = "csnative-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.multivendor-tvOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.csnative-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/multivendor-tvOS.app/multivendor-tvOS";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/csnative-tvOS.app/csnative-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 			};
 			name = Debug;
 		};
 		2D02E49A1E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CA146E1CC5694BB829E544B9 /* Pods-multivendor-tvOSTests.release.xcconfig */;
+			baseConfigurationReference = CA146E1CC5694BB829E544B9 /* Pods-csnative-tvOSTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -873,17 +873,17 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "multivendor-tvOSTests/Info.plist";
+				INFOPLIST_FILE = "csnative-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.multivendor-tvOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.csnative-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/multivendor-tvOS.app/multivendor-tvOS";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/csnative-tvOS.app/csnative-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 			};
 			name = Release;
@@ -1004,7 +1004,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "multivendorTests" */ = {
+		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "csnativeTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				00E356F61AD99517003FC87E /* Debug */,
@@ -1013,7 +1013,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "multivendor" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "csnative" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -1022,7 +1022,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "multivendor-tvOS" */ = {
+		2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "csnative-tvOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D02E4971E0B4A5E006451C7 /* Debug */,
@@ -1031,7 +1031,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "multivendor-tvOSTests" */ = {
+		2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "csnative-tvOSTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D02E4991E0B4A5E006451C7 /* Debug */,
@@ -1040,7 +1040,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "multivendor" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "csnative" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
