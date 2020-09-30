@@ -9,7 +9,8 @@
     "test:watch": "npm run test -- --watch",
     "extractLangs": "react-gettext-parser --output messages.pot 'src/**/*.js'",
     "styleguidist": "styleguidist server --config styleguidist.config.js",
-    "styleguidist-build": "styleguidist build --config styleguidist.config.js"
+    "styleguidist-build": "styleguidist build --config styleguidist.config.js",
+    "esdoc": "./node_modules/.bin/esdoc"
   },
   "dependencies": {
     "@ptomasroos/react-native-multi-slider": "^1.0.0",
