@@ -26,6 +26,7 @@
     "react-native-keyboard-aware-scroll-view": "^0.9.2",
     "react-native-navigation": "^6.11.0",
     "react-native-navigation-drawer-extension": "^3.0.0",
+    "react-native-notifications": "^3.3.4",
     "react-native-raw-bottom-sheet": "^2.2.0",
     "react-native-share": "^3.7.0",
     "react-native-swipeout": "^2.3.6",
