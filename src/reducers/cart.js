@@ -136,7 +136,6 @@ export default function (state = initialState, action) {
           ...state.user_data,
           ...action.payload,
         },
-        // fetching: false,
       };
 
     case CART_RECALCULATE_SUCCESS:
