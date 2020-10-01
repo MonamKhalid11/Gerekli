@@ -51,7 +51,16 @@ const styles = EStyleSheet.create({
   },
 });
 
-class Layouts extends Component {
+/**
+ * Renders main screen.
+ *
+ * @reactProps {object} layoutsActions - Layouts actions.
+ * @reactProps {object} notifications - Notifications information.
+ * @reactProps {object} notificationsActions - Notifications actions.
+ * @reactProps {object} navigator - Navigator.
+ * @reactProps {object} layouts - Information about blocks for rendering.
+ */
+export class Layouts extends Component {
   static navigatorStyle = {
     navBarBackgroundColor: theme.$navBarBackgroundColor,
     navBarButtonColor: theme.$navBarButtonColor,
@@ -61,6 +70,9 @@ class Layouts extends Component {
     navBarTextFontBold: false,
   }
 
+  /**
+   * @ignore
+   */
   static propTypes = {
     layoutsActions: PropTypes.shape({
       fetch: PropTypes.func,
@@ -86,6 +98,9 @@ class Layouts extends Component {
     this.pushNotificationOpenListener = null;
   }
 
+  /**
+   * Loads icons.
+   */
   componentWillMount() {
     iconsLoaded.then(() => {
       const { navigator } = this.props;
@@ -111,6 +126,11 @@ class Layouts extends Component {
     });
   }
 
+  /**
+   * Sets titles. Gets layouts. Registers 2 event listeners for notifications.
+   * 1. Shows notifications if they came.
+   * 2. Listens to click on notification.
+   */
   componentDidMount() {
     const { navigator, layoutsActions } = this.props;
     navigator.setTitle({
@@ -126,6 +146,9 @@ class Layouts extends Component {
     }
   }
 
+  /**
+   * Shows and hides notifications.
+   */
   componentWillReceiveProps(nextProps) {
     const { navigator } = nextProps;
     const { notificationsActions } = this.props;
@@ -149,6 +172,9 @@ class Layouts extends Component {
     }
   }
 
+  /**
+   * Removes event listeners for notifications.
+   */
   componentWillUnmount() {
     if (config.pushNotifications) {
       this.pushNotificationListener();
@@ -156,6 +182,11 @@ class Layouts extends Component {
     }
   }
 
+  /**
+   * Layouts navigation.
+   *
+   * @param {object} event - Information about the element on which the event occurred.
+   */
   onNavigatorEvent(event) {
     const { navigator } = this.props;
     registerDrawerDeepLinks(event, navigator);
@@ -171,6 +202,14 @@ class Layouts extends Component {
     }
   }
 
+  /**
+   * Renders layout.
+   *
+   * @param {object} block - Layout information.
+   * @param {number} index - Layout index.
+   *
+   * @return {JSX.Element}
+   */
   renderBlock = (block, index) => {
     const { navigator } = this.props;
 
@@ -280,6 +319,11 @@ class Layouts extends Component {
     }
   }
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { layouts } = this.props;
     const blocksList = layouts.blocks.map((block, index) => this.renderBlock(block, index));

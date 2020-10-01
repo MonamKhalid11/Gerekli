@@ -36,6 +36,15 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Section button.
+ *
+ * @param {string} text - Button text.
+ * @param {function} onPress - Push function.
+ * @param {string} icon - Icon name.
+ *
+ * @return {JSX.Element}
+ */
 const SectionButton = ({ text, onPress, icon = 'keyboard-arrow-right' }) => (
   <View style={styles.container}>
     <View style={styles.wrapper}>
@@ -52,6 +61,9 @@ const SectionButton = ({ text, onPress, icon = 'keyboard-arrow-right' }) => (
   </View>
 );
 
+/**
+ * @ignore
+ */
 SectionButton.propTypes = {
   text: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,

@@ -1,5 +1,4 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
 import {
   View,
   Text,
@@ -19,6 +18,11 @@ const styles = EStyleSheet.create({
   }
 });
 
+/**
+ * Renders empty information block.
+ *
+ * @return {JSX.Element}
+ */
 const EmptyList = () => (
   <View style={styles.container}>
     <Text style={styles.header}>

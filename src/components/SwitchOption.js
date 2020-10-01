@@ -22,7 +22,17 @@ const styles = EStyleSheet.create({
   }
 });
 
+/**
+ * Renders the option to switch product properties.
+ *
+ * @reactProps {object} value - Information about the initial value of the switch.
+ * @reactProps {object} option - Information about the option and its variants.
+ * @reactProps {function} onChange - Change function.
+ */
 export default class extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     value: PropTypes.shape({}),
     option: PropTypes.shape({
@@ -44,6 +54,10 @@ export default class extends Component {
     };
   }
 
+  /**
+   * Sets initial value to state.
+   * Sets title.
+   */
   componentDidMount() {
     const { value, option } = this.props;
     this.setState({
@@ -52,6 +66,9 @@ export default class extends Component {
     });
   }
 
+  /**
+   * Re-renders the component if new props are received.
+   */
   componentWillReceiveProps(nextProps) {
     const { value, option } = nextProps;
     this.setState({
@@ -60,11 +77,21 @@ export default class extends Component {
     });
   }
 
+  /**
+   * Switches option value.
+   *
+   * @param {object} value -  Selected value.
+   */
   handleChange(v) {
     const { option, onChange } = this.props;
     return onChange(option.variants[v ? 0 : 1]);
   }
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { value, title } = this.state;
     return (

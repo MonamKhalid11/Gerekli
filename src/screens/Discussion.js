@@ -26,7 +26,18 @@ const styles = EStyleSheet.create({
   },
 });
 
-class Discussion extends Component {
+/**
+ * Renders modal with discussions.
+ *
+ * @reactProps {object} navigator - Navigator.
+ * @reactProps {object} productDetail - Product detail.
+ * @reactProps {object} productActions - Product actions.
+ * @reactProps {object} discussion - Discussion information.
+ */
+export class Discussion extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     navigator: PropTypes.shape({
       push: PropTypes.func,
@@ -61,6 +72,10 @@ class Discussion extends Component {
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
+  /**
+   * Loads icons. Sets title.
+   * Removes the add button if comments are disabled.
+   */
   componentWillMount() {
     const { navigator, discussion, productDetail } = this.props;
     let activeDiscussion = discussion.items[`p_${productDetail.product_id}`];
@@ -109,6 +124,9 @@ class Discussion extends Component {
     });
   }
 
+  /**
+   * Updates active discussion.
+   */
   componentWillReceiveProps(nextProps) {
     const { productDetail } = this.props;
     const activeDiscussion = nextProps.discussion.items[`p_${productDetail.product_id}`];
@@ -119,6 +137,11 @@ class Discussion extends Component {
     });
   }
 
+  /**
+   * Discussion screen navigation.
+   *
+   * @param {object} event - Information about the element on which the event occurred.
+   */
   onNavigatorEvent(event) {
     const { discussion } = this.state;
     const { navigator } = this.props;
@@ -137,6 +160,9 @@ class Discussion extends Component {
     }
   }
 
+  /**
+   * Load more discussions.
+   */
   handleLoadMore() {
     const { productDetail } = this.props;
     const { discussion } = this.state;
@@ -153,6 +179,11 @@ class Discussion extends Component {
     }
   }
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { discussion } = this.state;
     return (

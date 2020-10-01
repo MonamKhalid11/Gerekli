@@ -66,7 +66,19 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders reviews.
+ *
+ * @reactProps {object[]} items - All reviews.
+ * @reactProps {boolean} infinite - Lazy pagination flag.
+ * @reactProps {function} onEndReached - Lazy pagination function.
+ * @reactProps {string} type - Review settings.
+ * @reactProps {boolean} fetching - Spinner display flag.
+ */
 export default class DiscussionList extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     items: PropTypes.arrayOf(PropTypes.object),
     infinite: PropTypes.bool,
@@ -75,20 +87,32 @@ export default class DiscussionList extends Component {
     fetching: PropTypes.bool,
   }
 
+  /**
+   * @ignore
+   */
   static defaultProps = {
     items: [],
     infinite: false,
   }
 
+  /**
+   * Renders a review.
+   *
+   * @param {object} item - Review information.
+   * @param {number} index - Review index.
+   *
+   * @return {JSX.Element}
+   */
   renderItem(item, index) {
-    const { type } = this.props;
+    const { type, items } = this.props;
     const showRating = (
       type === DISCUSSION_RATING || type === DISCUSSION_COMMUNICATION_AND_RATING
     );
     const showMessage = (
       type === DISCUSSION_COMMUNICATION_AND_RATING || type === DISCUSSION_COMMUNICATION
     );
-    const noUnderlineStyle = this.props.items.length === index + 1;
+
+    const noUnderlineStyle = items.length === index + 1;
 
     return (
       <View style={[styles.itemContainer, noUnderlineStyle && styles.itemContainerNoBorder]}>
@@ -101,8 +125,16 @@ export default class DiscussionList extends Component {
     );
   }
 
+  /**
+   * Renders a spinner.
+   *
+   * @return {null}
+   * @return {JSX.Element}
+   */
   renderFooter() {
-    if (!this.props.fetching) {
+    const { fetching } = this.props;
+
+    if (!fetching) {
       return null;
     }
 
@@ -111,6 +143,11 @@ export default class DiscussionList extends Component {
     );
   }
 
+  /**
+   * Renders a message if there are no reviews.
+   *
+   * @return {JSX.Element}
+   */
   renderEmpty = () => (
     <View style={styles.empty}>
       <Text style={styles.emptyText}>
@@ -119,6 +156,11 @@ export default class DiscussionList extends Component {
     </View>
   );
 
+  /**
+   * Renders component.
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { items, infinite, onEndReached } = this.props;
     return (
