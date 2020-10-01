@@ -13,7 +13,6 @@ import {
 
   NOTIFICATION_SHOW,
 
-  CART_REQUEST,
   CART_SUCCESS,
   CART_FAIL,
 
@@ -42,14 +41,11 @@ import {
 import i18n from '../utils/i18n';
 import Api from '../services/api';
 
-export function fetch(fetching = true, calculateShipping = 'A') {
+export function fetch(calculateShipping = 'A') {
   return async (dispatch) => {
     try {
       dispatch({
-        type: CART_REQUEST,
-        payload: {
-          fetching,
-        }
+        type: CART_LOADING,
       });
       const res = await Api.get('/sra_cart_content', { params: { calculate_shipping: calculateShipping } });
       const carts = {};
@@ -145,7 +141,7 @@ export function saveUserData(data) {
           type: CART_CONTENT_SAVE_SUCCESS,
           payload: data,
         });
-        fetch(false)(dispatch);
+        fetch()(dispatch);
       })
       .catch((error) => {
         dispatch({
@@ -190,7 +186,7 @@ export function add(data, notify = true) {
           });
         }
       })
-      .then(() => fetch(false)(dispatch))
+      .then(() => fetch()(dispatch))
       .catch((error) => {
         // Out of stock error
         if (error.response.data.status === 409) {
@@ -251,7 +247,7 @@ export function change(id, data) {
         });
         // Calculate cart
       })
-      .then(() => fetch(false)(dispatch))
+      .then(() => fetch()(dispatch))
       .catch((error) => {
         dispatch({
           type: CART_CHANGE_FAIL,

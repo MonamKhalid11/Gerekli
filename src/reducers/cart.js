@@ -1,5 +1,4 @@
 import {
-  CART_REQUEST,
   CART_SUCCESS,
   CART_FAIL,
 
@@ -83,12 +82,6 @@ export default function (state = initialState, action) {
         fetching: false,
       };
 
-    case CART_REQUEST:
-      return {
-        ...state,
-        fetching: action.payload.fetching,
-      };
-
     case CART_SUCCESS:
       return {
         ...state,
@@ -143,7 +136,7 @@ export default function (state = initialState, action) {
           ...state.user_data,
           ...action.payload,
         },
-        fetching: false,
+        // fetching: false,
       };
 
     case CART_RECALCULATE_SUCCESS:

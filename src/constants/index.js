@@ -52,7 +52,6 @@ export const REGISTER_DEVICE_FAIL = 'REGISTER_DEVICE_FAIL';
 export const CART_LOADING = 'CART_LOADING';
 export const CART_LOADED = 'CART_LOADED';
 
-export const CART_REQUEST = 'CART_REQUEST';
 export const CART_SUCCESS = 'CART_SUCCESS';
 export const CART_FAIL = 'CART_FAIL';
 
