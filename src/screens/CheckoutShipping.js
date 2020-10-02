@@ -89,7 +89,14 @@ const styles = EStyleSheet.create({
   },
 });
 
-class CheckoutShipping extends Component {
+/**
+ * Checkout. Shipping screen.
+ *
+ * @reactProps {object} navigator - Navigator.
+ * @reactProps {object} cart - Cart information.
+ * @reactProps {object} cartActions - Cart actions.
+ */
+export class CheckoutShipping extends Component {
   static navigatorStyle = {
     navBarBackgroundColor: theme.$navBarBackgroundColor,
     navBarButtonColor: theme.$navBarButtonColor,
@@ -98,6 +105,9 @@ class CheckoutShipping extends Component {
     screenBackgroundColor: theme.$screenBackgroundColor,
   };
 
+  /**
+   * @ignore
+   */
   static propTypes = {
     cart: PropTypes.shape({}),
     navigator: PropTypes.shape({
@@ -121,6 +131,9 @@ class CheckoutShipping extends Component {
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
+  /**
+   * Sets shipping methods.
+   */
   componentDidMount() {
     const { cart } = this.props;
     this.setDefaults(cart);
@@ -128,11 +141,19 @@ class CheckoutShipping extends Component {
     setTimeout(() => this.handleLoadInitial(), 500);
   }
 
+  /**
+   * Sets shipping methods.
+   */
   componentWillReceiveProps(nextProps) {
     const { cart } = nextProps;
     this.setDefaults(cart);
   }
 
+  /**
+   * Shipping screen navigation.
+   *
+   * @param {object} event - Information about the element on which the event occurred.
+   */
   onNavigatorEvent(event) {
     const { navigator } = this.props;
     if (event.type === 'NavBarButtonPress') {
@@ -142,6 +163,11 @@ class CheckoutShipping extends Component {
     }
   }
 
+  /**
+   * Set default shipping method.
+   *
+   * @param {object} cart - Cart information.
+   */
   setDefaults(cart) {
     const items = this.normalizeData(cart.product_groups);
     const shippings = [];
@@ -161,6 +187,11 @@ class CheckoutShipping extends Component {
     });
   }
 
+  /**
+   * Changes data format.
+   *
+   * @param {object} blobData - Company information.
+   */
   normalizeData = (blobData) => {
     const { shipping_id } = this.state;
 
@@ -185,6 +216,9 @@ class CheckoutShipping extends Component {
     });
   }
 
+  /**
+   * Calculates the cost including delivery.
+   */
   handleLoadInitial() {
     const { cartActions } = this.props;
     const { items } = this.state;
@@ -214,6 +248,9 @@ class CheckoutShipping extends Component {
       });
   }
 
+  /**
+   * Redirects to CheckoutPayment.
+   */
   handleNextPress() {
     const { navigator, cart } = this.props;
     navigator.push({
@@ -227,6 +264,13 @@ class CheckoutShipping extends Component {
     });
   }
 
+  /**
+   * Switches shipping method.
+   *
+   * @param {object} shipping - Shipping method information.
+   * @param {number} shippingIndex - Shipping index.
+   * @param {number} itemIndex - Index of the selected shipping method.
+   */
   handleSelect(shipping, shippingIndex, itemIndex) {
     const { cartActions } = this.props;
     if (shipping.isSelected) {
@@ -255,6 +299,15 @@ class CheckoutShipping extends Component {
     });
   }
 
+  /**
+   * Renders shipping options.
+   *
+   * @param {object} shipping - Shipping method information.
+   * @param {number} shippingIndex - Shipping index.
+   * @param {number} itemIndex - Index of the selected shipping method.
+   *
+   * @return {JSX.Element}
+   */
   renderItem = (shipping, shippingIndex, itemIndex) => {
     return (
       <TouchableOpacity
@@ -264,9 +317,9 @@ class CheckoutShipping extends Component {
       >
         <View style={styles.shippingItemTitleWrap}>
           <View style={styles.shippingItemTitle}>
-            {shipping.isSelected ?
-              <Icon name="radio-button-checked" style={styles.checkIcon} /> :
-              <Icon name="radio-button-unchecked" style={styles.uncheckIcon} />
+            {shipping.isSelected
+              ? <Icon name="radio-button-checked" style={styles.checkIcon} />
+              : <Icon name="radio-button-unchecked" style={styles.uncheckIcon} />
             }
             <Text style={styles.shippingItemText}>
               {shipping.shipping} {shipping.delivery_time}
@@ -284,14 +337,27 @@ class CheckoutShipping extends Component {
     );
   };
 
+  /**
+   * Renders checkout steps.
+   *
+   * @return {JSX.Element}
+   */
   renderSteps = () => (
     <View style={styles.stepsWrapper}>
       <CheckoutSteps step={2} />
     </View>
   );
 
+  /**
+   * Renders company title.
+   *
+   * @param {string} title - Company title.
+   *
+   * @return {JSX.Element}
+   */
   renderCompany = (title) => {
-    if (this.state.items.length === 1) {
+    const { items } = this.state;
+    if (items.length === 1) {
       return null;
     }
     return (
@@ -301,6 +367,11 @@ class CheckoutShipping extends Component {
     );
   };
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { items, isNextDisabled, total } = this.state;
     const { stateCart } = this.props;

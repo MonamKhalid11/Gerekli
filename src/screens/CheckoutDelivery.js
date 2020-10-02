@@ -33,7 +33,14 @@ const styles = EStyleSheet.create({
   },
 });
 
-class Checkout extends Component {
+/**
+ * Checkout. Delivery screen.
+ *
+ * @reactProps {object} navigator - Navigator.
+ * @reactProps {object} cart - Cart information.
+ * @reactProps {object} authActions - Auth actions.
+ */
+export class Checkout extends Component {
   static navigatorStyle = {
     navBarBackgroundColor: theme.$navBarBackgroundColor,
     navBarButtonColor: theme.$navBarButtonColor,
@@ -42,6 +49,9 @@ class Checkout extends Component {
     screenBackgroundColor: theme.$screenBackgroundColor,
   };
 
+  /**
+   * @ignore
+   */
   static propTypes = {
     navigator: PropTypes.shape({
       push: PropTypes.func,
@@ -61,6 +71,9 @@ class Checkout extends Component {
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
+  /**
+   * Gets fields and puts them in the state.
+   */
   componentDidMount() {
     const { authActions } = this.props;
     const { fieldsFetching } = this.state;
@@ -83,6 +96,11 @@ class Checkout extends Component {
     }
   }
 
+  /**
+   * Delivery screen navigation.
+   *
+   * @param {object} event - Information about the element on which the event occurred.
+   */
   onNavigatorEvent(event) {
     const { navigator } = this.props;
     if (event.type === 'NavBarButtonPress') {
@@ -92,6 +110,11 @@ class Checkout extends Component {
     }
   }
 
+  /**
+   * Saves user data, redirects to next screen.
+   *
+   * @param {object} values - Form data.
+   */
   handleNextPress(values) {
     const { navigator, cart, cartActions } = this.props;
 
@@ -111,6 +134,11 @@ class Checkout extends Component {
     });
   }
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { cart } = this.props;
     const { fieldsFetching, fields } = this.state;
@@ -131,8 +159,8 @@ class Checkout extends Component {
 
         <ProfileForm
           fields={fields}
-          cartFooterEnabled={true}
-          showTitles={true}
+          cartFooterEnabled
+          showTitles
           totalPrice={formatPrice(cart.total_formatted.price)}
           btnText={i18n.t('Next').toUpperCase()}
           onBtnPress={(values, validateCb) => { validateCb(); }}

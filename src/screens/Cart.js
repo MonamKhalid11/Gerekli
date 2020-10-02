@@ -44,7 +44,15 @@ const styles = EStyleSheet.create({
   }
 });
 
-class Cart extends Component {
+/**
+ * Renders the cart modal.
+ *
+ * @reactProps {object} navigator - Navigator.
+ * @reactProps {object} cartActions - Cart actions.
+ * @reactProps {object} auth - Authorization information.
+ * @reactProps {object} cart - Cart information.
+ */
+export class Cart extends Component {
   static navigatorStyle = {
     navBarBackgroundColor: theme.$navBarBackgroundColor,
     navBarButtonColor: theme.$navBarButtonColor,
@@ -53,6 +61,9 @@ class Cart extends Component {
     screenBackgroundColor: theme.$screenBackgroundColor,
   };
 
+  /**
+   * @ignore
+   */
   static propTypes = {
     navigator: PropTypes.shape({
       push: PropTypes.func,
@@ -83,6 +94,9 @@ class Cart extends Component {
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
+  /**
+   * Preloading icons. Sets title.
+   */
   componentWillMount() {
     const { navigator } = this.props;
     iconsLoaded.then(() => {
@@ -107,11 +121,19 @@ class Cart extends Component {
     });
   }
 
+  /**
+   * Gets cart data.
+   */
   async componentDidMount() {
     const { cartActions } = this.props;
     await cartActions.fetch();
   }
 
+  /**
+   * Updates the number of products in the state.
+   *
+   * @param {object} nextProps - Incoming props.
+   */
   componentWillReceiveProps(nextProps) {
     const { cart } = nextProps;
 
@@ -125,6 +147,11 @@ class Cart extends Component {
     });
   }
 
+  /**
+   * Cart modal navigation.
+   *
+   * @param {object} event - Information about the element on which the event occurred.
+   */
   onNavigatorEvent(event) {
     const { navigator, cartActions } = this.props;
     // handle a deep link
@@ -153,6 +180,9 @@ class Cart extends Component {
     }
   }
 
+  /**
+   * Refresh cart data.
+   */
   handleRefresh() {
     const { cartActions } = this.props;
     this.setState(
@@ -161,14 +191,19 @@ class Cart extends Component {
     );
   }
 
+  /**
+   * Renders a list of products.
+   *
+   * @return {JSX.Element}
+   */
   renderList() {
-    const { refreshing } = this.state;
+    const { refreshing, fetching } = this.state;
     const {
       cartActions, cart, auth, navigator
     } = this.props;
 
-    if (cart.fetching) {
-      return null;
+    if (fetching) {
+      return this.renderSpinner();
     }
 
     return (
@@ -183,6 +218,11 @@ class Cart extends Component {
     );
   }
 
+  /**
+   * Renders a list of vendor carts.
+   *
+   * @return {JSX.Element}
+   */
   renderVendorsList = () => {
     const { fetching, refreshing } = this.state;
     const {
@@ -190,7 +230,7 @@ class Cart extends Component {
     } = this.props;
 
     if (fetching) {
-      return null;
+      return this.renderSpinner();
     }
 
     const newCarts = Object.keys(cart.carts).reduce((result, el) => {
@@ -212,6 +252,11 @@ class Cart extends Component {
     );
   }
 
+  /**
+   * Renders spinner.
+   *
+   * @return {JSX.Element}
+   */
   renderSpinner = () => {
     const { refreshing } = this.state;
     const { cart } = this.props;
@@ -225,12 +270,16 @@ class Cart extends Component {
     );
   };
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { cart } = this.props;
     return (
       <View style={styles.container}>
         {cart.isSeparateCart ? this.renderVendorsList() : this.renderList()}
-        {this.renderSpinner()}
       </View>
     );
   }
