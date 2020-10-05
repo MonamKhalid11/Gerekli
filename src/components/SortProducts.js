@@ -176,59 +176,18 @@ const styles = EStyleSheet.create({
 const CANCEL_INDEX = 5;
 const DESTRUCTIVE_INDEX = 5;
 
-const itemsList = [
-  {
-    name: i18n.t('Sorting: Newest items first'),
-    params: {
-      sort_by: 'timestamp',
-      sort_order: 'desc'
-    },
-  },
-  {
-    name: i18n.t('Sorting: A to Z'),
-    params: {
-      sort_by: 'product',
-      sort_order: 'asc'
-    },
-  },
-  {
-    name: i18n.t('Sorting: Z to A'),
-    params: {
-      sort_by: 'product',
-      sort_order: 'desc'
-    },
-  },
-  {
-    name: i18n.t('Sorting: Lowest prices first'),
-    params: {
-      sort_by: 'price',
-      sort_order: 'asc'
-    },
-  },
-  {
-    name: i18n.t('Sorting: Highest prices first'),
-    params: {
-      sort_by: 'price',
-      sort_order: 'desc'
-    },
-  },
-  {
-    name: i18n.t('Sorting: Most popular first'),
-    params: {
-      sort_by: 'popularity',
-      sort_order: 'desc'
-    },
-  },
-  {
-    name: i18n.t('Cancel'),
-    params: {
-      sort_by: '',
-      sort_order: ''
-    },
-  }
-];
-
+/**
+ * Block with product filters.
+ *
+ * @reactProps {function} onChange - Selection of sorting type.
+ * @reactProps {function} onChangeFilter - Applies the selected filters.
+ * @reactProps {object} sortParams - Sorting options.
+ * @reactProps {object[]} filters - Filtering options.
+ */
 class SortProducts extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     onChange: PropTypes.func,
     onChangeFilter: PropTypes.func,
@@ -264,10 +223,16 @@ class SortProducts extends Component {
     this.handleCalculateActiveFilters();
   }
 
+  /**
+   * Shows a window with sorting options.
+   */
   showActionSheet = () => {
     this.ActionSheet.show();
   }
 
+  /**
+   * Sets the selected filters in the state.
+   */
   handleCalculateActiveFilters = () => {
     const { filters } = this.props;
     const selected = filters.filter(
@@ -299,9 +264,66 @@ class SortProducts extends Component {
     this.setState({ selectedFilters });
   }
 
+  getItemList = () => [
+    {
+      name: i18n.t('Sorting: Newest items first'),
+      params: {
+        sort_by: 'timestamp',
+        sort_order: 'desc'
+      },
+    },
+    {
+      name: i18n.t('Sorting: A to Z'),
+      params: {
+        sort_by: 'product',
+        sort_order: 'asc'
+      },
+    },
+    {
+      name: i18n.t('Sorting: Z to A'),
+      params: {
+        sort_by: 'product',
+        sort_order: 'desc'
+      },
+    },
+    {
+      name: i18n.t('Sorting: Lowest prices first'),
+      params: {
+        sort_by: 'price',
+        sort_order: 'asc'
+      },
+    },
+    {
+      name: i18n.t('Sorting: Highest prices first'),
+      params: {
+        sort_by: 'price',
+        sort_order: 'desc'
+      },
+    },
+    {
+      name: i18n.t('Sorting: Most popular first'),
+      params: {
+        sort_by: 'popularity',
+        sort_order: 'desc'
+      },
+    },
+    {
+      name: i18n.t('Cancel'),
+      params: {
+        sort_by: '',
+        sort_order: ''
+      },
+    }
+  ]
+
+  /**
+   * Selection of sorting type.
+   *
+   * @param {string} itemText - Sorting type.
+   */
   handleChange = (itemText) => {
     const { onChange } = this.props;
-    const items = itemsList.map(item => item.name);
+    const items = this.getItemList().map(item => item.name);
     const foundIndex = items.findIndex(item => item === itemText);
 
     if (foundIndex === CANCEL_INDEX + 1) {
@@ -309,11 +331,14 @@ class SortProducts extends Component {
     }
 
     onChange(
-      itemsList[foundIndex].params,
+      this.getItemList()[foundIndex].params,
       foundIndex,
     );
   };
 
+  /**
+   * Applies the selected filters.
+   */
   handleChangeFilter = () => {
     const { onChangeFilter } = this.props;
     const { selectedFilters } = this.state;
@@ -343,6 +368,11 @@ class SortProducts extends Component {
     onChangeFilter(filtersIds.join('_'));
   }
 
+  /**
+   * Opens, closes the filter section.
+   *
+   * @param {string} id - Filter section id.
+   */
   togglePicker = (id) => {
     const { openIDs } = this.state;
 
@@ -360,10 +390,18 @@ class SortProducts extends Component {
     });
   }
 
+  /**
+   * Resets all filters.
+   */
   clearAllFilter = () => {
     this.setState({ selectedFilters: [] });
   }
 
+  /**
+   * Removes a value from the filter.
+   *
+   * @param {string} id - Value id.
+   */
   removeByFilter(id) {
     const { selectedFilters } = this.state;
     this.setState({
@@ -371,6 +409,12 @@ class SortProducts extends Component {
     });
   }
 
+  /**
+   * Adds or removes a value from the filter.
+   *
+   * @param {object} filter - Selected filter.
+   * @param {object} variant - Selected option from filter.
+   */
   toggleVariant(filter, variant) {
     const { selectedFilters } = this.state;
     const selectedFilterItem = {
@@ -396,6 +440,13 @@ class SortProducts extends Component {
     }
   }
 
+  /**
+   * Renders a filter section with a picker type.
+   *
+   * @param {object} item - Filter section information.
+   *
+   * @return {JSX.Element}
+   */
   renderPicker = (item) => {
     const { filter_id, filter, selected_variants } = item;
     const { openIDs, selectedFilters } = this.state;
@@ -456,6 +507,11 @@ class SortProducts extends Component {
     );
   }
 
+  /**
+   * Renders a filter header with information about the selected options.
+   *
+   * @return {JSX.Element}
+   */
   renderHader = () => {
     const { selectedFilters } = this.state;
     const selectedItems = uniqBy(selectedFilters, 'filter_id');
@@ -491,6 +547,13 @@ class SortProducts extends Component {
     );
   }
 
+  /**
+   * Renders a section of a filter of type range.
+   *
+   * @param {object} item - Filter section information.
+   *
+   * @return {JSX.Element}
+   */
   renderRange = (item) => {
     const {
       feature_id,
@@ -542,6 +605,13 @@ class SortProducts extends Component {
     );
   }
 
+  /**
+   * Renders a section of a filter of type pick color.
+   *
+   * @param {object} item - Filter section information.
+   *
+   * @return {JSX.Element}
+   */
   renderColorPicker = (item) => {
     const {
       feature_id,
@@ -604,6 +674,11 @@ class SortProducts extends Component {
     );
   }
 
+  /**
+   * Renders footer.
+   *
+   * @return {JSX.Element}
+   */
   renderFooter = () => (
     <View style={styles.filterFooterSection}>
       <Button type="primary" onPress={this.handleChangeFilter}>
@@ -612,6 +687,11 @@ class SortProducts extends Component {
     </View>
   );
 
+  /**
+   * Renders all sections of the filter.
+   *
+   * @return {JSX.Element}
+   */
   renderFilters = () => {
     const { filters } = this.props;
 
@@ -640,16 +720,21 @@ class SortProducts extends Component {
     );
   }
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { sortParams, filters } = this.props;
     const { selectedFilters } = this.state;
-    const activeIndex = itemsList
+    const activeIndex = this.getItemList()
       .findIndex(item => (
         item.params.sort_by === sortParams.sort_by
         && item.params.sort_order === sortParams.sort_order
       ));
 
-    const items = itemsList.map(item => item.name);
+    const items = this.getItemList().map(item => item.name);
     const filteredItems = items.filter(item => item !== items[activeIndex]);
     const RBSheetHeight = Math.round(Dimensions.get('window').height) - 140;
     const activeFiltersCount = selectedFilters.length;

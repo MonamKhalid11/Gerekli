@@ -131,7 +131,15 @@ const styles = EStyleSheet.create({
   }
 });
 
-class Cart extends Component {
+/**
+ * Renders the cart modal.
+ *
+ * @reactProps {object} navigator - Navigator.
+ * @reactProps {object} cartActions - Cart actions.
+ * @reactProps {object} auth - Authorization information.
+ * @reactProps {object} cart - Cart information.
+ */
+export class Cart extends Component {
   static navigatorStyle = {
     navBarBackgroundColor: theme.$navBarBackgroundColor,
     navBarButtonColor: theme.$navBarButtonColor,
@@ -140,6 +148,9 @@ class Cart extends Component {
     screenBackgroundColor: theme.$screenBackgroundColor,
   };
 
+  /**
+   * @ignore
+   */
   static propTypes = {
     navigator: PropTypes.shape({
       push: PropTypes.func,
@@ -171,6 +182,9 @@ class Cart extends Component {
     this.handleChangeAmountRequest = debounce(this.handleChangeAmountRequest, 2000);
   }
 
+  /**
+   * Preloading icons. Sets title.
+   */
   componentWillMount() {
     const { navigator } = this.props;
     iconsLoaded.then(() => {
@@ -195,17 +209,24 @@ class Cart extends Component {
     });
   }
 
+  /**
+   * Gets cart data.
+   */
   componentDidMount() {
     const { cartActions } = this.props;
     cartActions.fetch();
   }
 
+  /**
+   * Updates the number of products in the state.
+   *
+   * @param {object} nextProps - Incoming props.
+   */
   componentWillReceiveProps(nextProps) {
     const { cart } = nextProps;
     if (cart.fetching) {
       return;
     }
-
     const products = Object.keys(cart.products).map((key) => {
       const result = cart.products[key];
       result.cartId = key;
@@ -219,6 +240,11 @@ class Cart extends Component {
     });
   }
 
+  /**
+   * Cart modal navigation.
+   *
+   * @param {object} event - Information about the element on which the event occurred.
+   */
   onNavigatorEvent(event) {
     const { navigator, cartActions } = this.props;
     // handle a deep link
@@ -247,16 +273,33 @@ class Cart extends Component {
     }
   }
 
+  /**
+   * Removes a product from the cart.
+   *
+   * @param {object} product - Product information.
+   */
   handleRemoveProduct = (product) => {
     const { cartActions } = this.props;
     cartActions.remove(product.cartId);
   };
 
+  /**
+   * Changes the quantity of products in the cart.
+   *
+   * @param {object} item - Product information.
+   */
   handleChangeAmountRequest(item) {
     const { cartActions } = this.props;
     cartActions.change(item.cartId, item);
   }
 
+  /**
+   * Renders product.
+   *
+   * @param {object} item - Product information.
+   *
+   * @return {JSX.Element}
+   */
   renderProductItem = (item) => {
     const { cartActions } = this.props;
     let productImage = null;
@@ -331,6 +374,9 @@ class Cart extends Component {
     );
   }
 
+  /**
+   * Refresh cart data.
+   */
   handleRefresh() {
     const { cartActions } = this.props;
     this.setState(
@@ -339,6 +385,9 @@ class Cart extends Component {
     );
   }
 
+  /**
+   * Redirects to checkout.
+   */
   handlePlaceOrder() {
     const { auth, navigator } = this.props;
     const products = {};
@@ -367,6 +416,11 @@ class Cart extends Component {
     }
   }
 
+  /**
+   * Renders cart footer.
+   *
+   * @return {JSX.Element}
+   */
   renderPlaceOrder() {
     const { cart } = this.props;
     const { products } = this.state;
@@ -382,6 +436,9 @@ class Cart extends Component {
     );
   }
 
+  /**
+   * Renders if the cart is empty.
+   */
   renderEmptyList = () => {
     const { fetching } = this.state;
     if (fetching) {
@@ -402,6 +459,11 @@ class Cart extends Component {
     );
   };
 
+  /**
+   * Renders order detail.
+   *
+   * @return {JSX.Element}
+   */
   renderOrderDetail = () => {
     const { products } = this.state;
     const { cart } = this.props;
@@ -425,6 +487,11 @@ class Cart extends Component {
     );
   }
 
+  /**
+   * Renders a list of products.
+   *
+   * @return {JSX.Element}
+   */
   renderList() {
     const { products, fetching, refreshing } = this.state;
 
@@ -448,6 +515,11 @@ class Cart extends Component {
     );
   }
 
+  /**
+   * Renders spinner.
+   *
+   * @return {JSX.Element}
+   */
   renderSpinner = () => {
     const { refreshing } = this.state;
     const { cart } = this.props;
@@ -461,6 +533,11 @@ class Cart extends Component {
     );
   };
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     return (
       <View style={styles.container}>

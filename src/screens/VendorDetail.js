@@ -72,7 +72,21 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders a modal window with vendor information.
+ *
+ * @reactProps {object} navigator - Navigator.
+ * @reactProps {object} discussion - User comments about the vendor.
+ * @reactProps {string} vendorId - Vendor id.
+ * @reactProps {object} auth - Authorization information.
+ * @reactProps {object} vendors - Vendors information.
+ * @reactProps {object} vendorActions - Vendor actions.
+ * @reactProps {object} productsActions - Products actions.
+ */
 export class VendorDetail extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     navigator: PropTypes.shape({
       push: PropTypes.func,
@@ -124,6 +138,10 @@ export class VendorDetail extends Component {
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
+  /**
+   * Gets the vendor if it is not already there. Gets discussions.
+   * Loads icons. Sets title.
+   */
   componentWillMount() {
     const { navigator } = this.props;
 
@@ -172,6 +190,11 @@ export class VendorDetail extends Component {
     }
   }
 
+  /**
+   * Vendor detail modal navigation.
+   *
+   * @param {object} event - Information about the element on which the event occurred.
+   */
   onNavigatorEvent(event) {
     // handle a deep link
     registerDrawerDeepLinks(event, this.props.navigator);
@@ -183,6 +206,9 @@ export class VendorDetail extends Component {
     }
   }
 
+  /**
+   * Gets more discussions.
+   */
   handleLoadMore() {
     const { discussion } = this.state;
     const { vendors } = this.props;
@@ -200,6 +226,11 @@ export class VendorDetail extends Component {
     }
   }
 
+  /**
+   * Renders logo.
+   *
+   * @return {JSX.Element}
+   */
   renderLogo() {
     const { vendors } = this.props;
     return (
@@ -214,6 +245,11 @@ export class VendorDetail extends Component {
     );
   }
 
+  /**
+   * Renders description.
+   *
+   * @return {JSX.Element}
+   */
   renderDesc() {
     const { discussion } = this.state;
     const { vendors } = this.props;
@@ -235,6 +271,11 @@ export class VendorDetail extends Component {
     );
   }
 
+  /**
+   * Renders contacts.
+   *
+   * @return {JSX.Element}
+   */
   renderContacts() {
     const { vendors } = this.props;
     return (
@@ -260,6 +301,11 @@ export class VendorDetail extends Component {
     );
   }
 
+  /**
+   * Renders shipping information.
+   *
+   * @return {JSX.Element}
+   */
   renderShipping() {
     const { vendors } = this.props;
 
@@ -280,6 +326,11 @@ export class VendorDetail extends Component {
     );
   }
 
+  /**
+   * Renders discussions.
+   *
+   * @return {JSX.Element}
+   */
   renderDiscussion() {
     const { discussion } = this.state;
     const { auth, navigator, vendors } = this.props;
@@ -318,6 +369,11 @@ export class VendorDetail extends Component {
     );
   }
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { vendors } = this.props;
 

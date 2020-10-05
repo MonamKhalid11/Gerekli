@@ -83,7 +83,17 @@ const formOptions = {
   }
 };
 
+/**
+ * Renders payment check form.
+ *
+ * @param {function} onInit - Determines which form should be rendered.
+ *
+ * @return {JSX.Element}
+ */
 export default class PaymentCheckForm extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     onInit: PropTypes.func,
   };

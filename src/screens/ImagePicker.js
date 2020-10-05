@@ -57,7 +57,16 @@ const styles = EStyleSheet.create({
 
 const IMAGE_NUM_COLUMNS = 4;
 
-class AddProductStep1 extends Component {
+/**
+ * Renders image picker modal.
+ *
+ * @reactProps {object} imagePickerActions - Image picker actions.
+ * @reactProps {object} navigator - Navigator.
+ */
+export class AddProductStep1 extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     imagePickerActions: PropTypes.shape({
       clear: PropTypes.func,
@@ -69,6 +78,7 @@ class AddProductStep1 extends Component {
       push: PropTypes.func,
       setOnNavigatorEvent: PropTypes.func,
     }),
+    selected: PropTypes.arrayOf(String)
   };
 
   static navigatorStyle = {
@@ -96,6 +106,9 @@ class AddProductStep1 extends Component {
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
+  /**
+   * Loads icons. Sets selected photos to state.
+   */
   componentWillMount() {
     const { navigator, selected } = this.props;
     iconsLoaded.then(() => {
@@ -113,6 +126,11 @@ class AddProductStep1 extends Component {
     }, () => this.getImages());
   }
 
+  /**
+   * ImagePicker modal navigation.
+   *
+   * @param {object} event - Information about the element on which the event occurred.
+   */
   onNavigatorEvent(event) {
     const { navigator } = this.props;
     if (event.type === 'NavBarButtonPress') {
@@ -122,6 +140,9 @@ class AddProductStep1 extends Component {
     }
   }
 
+  /**
+   * Gets permissions to phone photo gallery.
+   */
   getImages = async () => {
     const { navigator } = this.props;
     const { photos, hasMore, after } = this.state;
@@ -196,6 +217,11 @@ class AddProductStep1 extends Component {
     }
   }
 
+  /**
+   * Adds image to selected.
+   *
+   * @param {object} image - Image information.
+   */
   handleToggleImage = (image) => {
     const { selected } = this.state;
     let result = [...selected];
@@ -212,8 +238,18 @@ class AddProductStep1 extends Component {
     });
   }
 
+  /**
+   * Loads more images from phone photo gallery.
+   */
   handleLoadMore = () => this.getImages();
 
+  /**
+   * Renders images.
+   *
+   * @param {object} image - Image information.
+   *
+   * @return {JSX.Element}
+   */
   renderImage = (image) => {
     const { selected } = this.state;
     const isSelected = selected.some(item => item === image.item);
@@ -241,6 +277,11 @@ class AddProductStep1 extends Component {
     );
   }
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { navigator, imagePickerActions } = this.props;
     const { photos, selected } = this.state;

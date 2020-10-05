@@ -41,13 +41,28 @@ const styles = EStyleSheet.create({
   }
 });
 
+/**
+ * Renders a notification.
+ *
+ * @reactProps {string} type - Notification type.
+ * @reactProps {string} title - Notification title.
+ * @reactProps {string} text - Notification text.
+ */
 export default class extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     type: PropTypes.string,
     title: PropTypes.string,
     text: PropTypes.string,
   };
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const containerStyle = (type) => {
       const result = [styles.container];

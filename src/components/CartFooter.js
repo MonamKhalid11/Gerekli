@@ -29,7 +29,18 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Cart footer.
+ *
+ * @reactProps {string} totalPrice - The total amount of the order.
+ * @reactProps {string} btnText - Text on the footer button.
+ * @reactProps {function} onBtnPress - Push function.
+ * @reactProps {boolean} isBtnDisabled - Button activity flag.
+ */
 export default class extends PureComponent {
+  /**
+   * @ignore
+   */
   static propTypes = {
     totalPrice: PropTypes.string,
     btnText: PropTypes.string,
@@ -37,6 +48,11 @@ export default class extends PureComponent {
     isBtnDisabled: PropTypes.bool,
   };
 
+  /**
+   * Renders component.
+   *
+   * @returns {JSX.Element}
+   */
   render() {
     const {
       onBtnPress,

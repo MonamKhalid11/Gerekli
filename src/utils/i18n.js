@@ -14,6 +14,7 @@ i18n
   .init({
     debug: false,
     nsSeparator: ':::',
+    keySeparator: false,
     lng: deviceLanguage,
     fallbackLng: deviceLanguage,
   });

@@ -69,17 +69,35 @@ const styles = EStyleSheet.create({
   }
 });
 
+/**
+ * Renders the coupon input field and coupons.
+ *
+ * @reactProps {function} onAddPress - Adds a coupon.
+ * @reactProps {function} onRemovePress - Removes a coupon.
+ * @reactProps {string[]} items - Applied coupons.
+ */
 class CouponCodes extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     onAddPress: PropTypes.func.isRequired,
     onRemovePress: PropTypes.func.isRequired,
     items: PropTypes.arrayOf(PropTypes.string),
   };
 
+  /**
+   * @ignore
+   */
   state = {
     value: '',
   };
 
+  /**
+   * Condition for adding a coupon.
+   *
+   * @param {string} value - Coupon name.
+   */
   handleAddCoupon = () => {
     const { value } = this.state;
     const { onAddPress } = this.props;
@@ -92,6 +110,14 @@ class CouponCodes extends Component {
     }
   };
 
+  /**
+   * Renders coupon item.
+   *
+   * @param {string} item - Coupon name.
+   * @param {number} index - Coupon index.
+   *
+   * @return {JSX.Element}
+   */
   renderCouponItem = (item, index) => {
     const { onRemovePress } = this.props;
     return (
@@ -109,10 +135,14 @@ class CouponCodes extends Component {
     );
   }
 
+  /**
+   * Renders component.
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { items } = this.props;
     const { value } = this.state;
-
     return (
       <View style={styles.wrapper}>
         <FormBlock

@@ -146,7 +146,22 @@ const styles = EStyleSheet.create({
   }
 });
 
-class Drawer extends Component {
+/**
+ * Renders Drawer.
+ *
+ * @reactProps {object} navigator - Navigator.
+ * @reactProps {object} cart - Cart information.
+ * @reactProps {object} wishlist - Wish list information.
+ * @reactProps {object} pages - Links to pages at the bottom of the drawer.
+ * @reactProps {object} profile - Profile information.
+ * @reactProps {object} auth - Authentication data.
+ * @reactProps {object} authActions - Auth actions.
+ * @reactProps {object} pagesActions - Pages actions.
+ */
+export class Drawer extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     navigator: PropTypes.shape({
       resetTo: PropTypes.func,
@@ -177,11 +192,19 @@ class Drawer extends Component {
     }),
   };
 
+  /**
+   * Gets page data for link rendering.
+   */
   componentDidMount() {
     const { pagesActions } = this.props;
     pagesActions.fetch(config.layoutId);
   }
 
+  /**
+   * Opens a page.
+   *
+   * @param {object} page - Page information.
+   */
   handleOpenPage = (page) => {
     const { navigator } = this.props;
     navigator.handleDeepLink({
@@ -193,6 +216,9 @@ class Drawer extends Component {
     this.closeDrawer();
   }
 
+  /**
+   * Closes the drawer.
+   */
   closeDrawer() {
     const { navigator } = this.props;
     navigator.toggleDrawer({
@@ -200,6 +226,11 @@ class Drawer extends Component {
     });
   }
 
+  /**
+   * Renders header.
+   *
+   * @return {JSX.Element}
+   */
   renderHeader() {
     const {
       cart,
@@ -290,6 +321,16 @@ class Drawer extends Component {
     );
   }
 
+  /**
+   * Renders page links.
+   *
+   * @param {string} text - Page title.
+   * @param {function} onPress - onPress function.
+   * @param {number} badge - Number of new events.
+   * @param {string} type - Badge style.
+   *
+   * @return {JSX.Element}
+   */
   renderItem = (text, onPress, badge = 0, type = 'red') => {
     const renderBadge = () => {
       if (badge === 0) {
@@ -325,6 +366,14 @@ class Drawer extends Component {
     );
   };
 
+  /**
+   * Renders badge.
+   *
+   * @param {number} badge - Number of new events.
+   * @param {string} type - Badge style.
+   *
+   * @return {JSX.Element}
+   */
   renderBadge = (badge, type = null) => {
     if (badge === 0) {
       return null;
@@ -344,6 +393,11 @@ class Drawer extends Component {
     );
   }
 
+  /**
+   * Renders vendor menu.
+   *
+   * @return {JSX.Element}
+   */
   renderVendorMenu = () => {
     const { navigator, profile } = this.props;
 
@@ -386,6 +440,16 @@ class Drawer extends Component {
     );
   };
 
+  /**
+   * Renders the main items of the drawer.
+   *
+   * @param {string} icon - Item icon name.
+   * @param {string} text - Item title.
+   * @param {function} onPress - onPress function.
+   * @param {object} customStyle - Styles.
+   *
+   * @return {JSX.Element}
+   */
   renderMenuItem = (icon, text, onPress, customStyle = {}) => {
     return (
       <TouchableOpacity
@@ -402,6 +466,11 @@ class Drawer extends Component {
     );
   }
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const {
       navigator,
