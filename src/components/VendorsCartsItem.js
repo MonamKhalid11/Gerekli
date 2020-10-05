@@ -50,7 +50,7 @@ const VendorsCartsItem = ({
 
   return (
     <View style={styles.container}>
-      {renderHeader(item.product_groups[0].name)}
+      {item.product_groups[0] && renderHeader(item.product_groups[0].name)}
       {cartIsOpen && (
         <CartProductList
           cart={item}

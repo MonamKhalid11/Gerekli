@@ -335,6 +335,7 @@ export class CheckoutStepThree extends Component {
               title: this.state.selectedItem.payment,
               // backButtonHidden: true,
               passProps: {
+                cart,
                 orderId: data.order_id,
                 ...response.data.data,
               },

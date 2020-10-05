@@ -45,7 +45,7 @@ class SettlementsCompleteWebView extends Component {
     })
   };
 
-  onNavigationStateChange = ({ url }) => {
+  onNavigationStateChange = ({ url }, cart) => {
     const {
       return_url,
       cartActions,
@@ -55,7 +55,7 @@ class SettlementsCompleteWebView extends Component {
 
     if (url && return_url) {
       if (url.toLowerCase().startsWith(return_url.toLowerCase())) {
-        cartActions.clear();
+        cartActions.clear(cart);
         navigator.push({
           screen: 'CheckoutComplete',
           backButtonTitle: '',
@@ -69,7 +69,7 @@ class SettlementsCompleteWebView extends Component {
   }
 
   render() {
-    const { payment_url, query_parameters } = this.props;
+    const { payment_url, query_parameters, cart } = this.props;
     let url = payment_url;
 
     if (query_parameters) {
@@ -87,7 +87,7 @@ class SettlementsCompleteWebView extends Component {
           source={{
             uri: url,
           }}
-          onNavigationStateChange={e => this.onNavigationStateChange(e)}
+          onNavigationStateChange={e => this.onNavigationStateChange(e, cart)}
         />
       </View>
     );
