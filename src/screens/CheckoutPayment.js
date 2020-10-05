@@ -120,6 +120,7 @@ export class CheckoutStepThree extends Component {
       items: PropTypes.arrayOf(PropTypes.object),
       fetching: PropTypes.bool,
     }),
+    storeCart: PropTypes.shape({}),
     cartActions: PropTypes.shape({
       clear: PropTypes.func,
     }),
@@ -151,9 +152,9 @@ export class CheckoutStepThree extends Component {
    * Defines the available payment methods.
    */
   componentDidMount() {
-    const { cart } = this.props;
-    const items = Object.keys(cart.payments)
-      .map(k => cart.payments[k])
+    const { storeCart } = this.props;
+    const items = Object.keys(storeCart.payments)
+      .map(k => storeCart.payments[k])
       .filter(p => PAYMENTS.includes(p.template));
     // FIXME: Default selected payment method.
     const selectedItem = items[0];
@@ -549,6 +550,7 @@ export class CheckoutStepThree extends Component {
 export default connect(
   state => ({
     auth: state.auth,
+    storeCart: state.cart
   }),
   dispatch => ({
     ordersActions: bindActionCreators(ordersActions, dispatch),
