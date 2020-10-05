@@ -146,7 +146,30 @@ export class VendorDetail extends Component {
   componentDidMount() {
     const { vendorId, vendorActions } = this.props;
     const { discussion } = this.state;
-    vendorActions.fetch(vendorId, 'M', { page: discussion.search.page });
+    vendorActions.fetch(vendorId, undefined, { page: discussion.search.page });
+  }
+
+  componentDidUpdate() {
+    const { vendors, discussion } = this.props;
+
+    if (vendors.currentVendor && Object.keys(discussion.items).length) {
+      let activeDiscussion = discussion.items[`m_${vendors.currentVendor.company_id}`];
+      if (!activeDiscussion) {
+        activeDiscussion = {
+          average_rating: 0,
+          posts: [],
+          search: {
+            page: 1,
+            total_items: 0,
+          },
+        };
+      }
+      if (!this.state.discussion.posts.length) {
+        this.setState({
+          discussion: activeDiscussion,
+        });
+      }
+    }
   }
 
   onNavigatorEvent(event) {
