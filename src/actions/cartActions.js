@@ -209,14 +209,30 @@ export function add(data, notify = true) {
   };
 }
 
+async function deleteProduct(resolve, ids, index) {
+  const idNumber = Number(ids[index]);
+  await Api.delete(`/sra_cart_content/${idNumber}/`, {});
+  const newIndex = index + 1;
+  if (newIndex === ids.length) {
+    resolve();
+  } else {
+    deleteProduct(resolve, ids, newIndex);
+  }
+}
+
+async function deleteProducts(ids) {
+  return new Promise((resolve) => {
+    deleteProduct(resolve, ids, 0);
+  });
+}
+
 export function clear(cart = '') {
   return async (dispatch) => {
     try {
       if (cart.vendor_id) {
         dispatch({ type: CART_CLEAR_REQUEST });
-        await Object.keys(cart.products).map(async (id) => {
-          await Api.delete(`/sra_cart_content/${id}/`, {});
-        });
+        const productIds = Object.keys(cart.products);
+        await deleteProducts(productIds);
         await fetch()(dispatch);
       } else {
         await dispatch({ type: CART_CLEAR_REQUEST });
