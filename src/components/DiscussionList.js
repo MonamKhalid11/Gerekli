@@ -163,6 +163,7 @@ export default class DiscussionList extends Component {
    */
   render() {
     const { items, infinite, onEndReached } = this.props;
+
     return (
       <View style={styles.container}>
         <FlatList

@@ -11,7 +11,6 @@ import {
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { PRODUCT_NUM_COLUMNS } from '../utils';
 import i18n from '../utils/i18n';
-import Api from '../services/api';
 import { BLOCK_CATEGORIES } from '../constants';
 
 // Import actions.
@@ -141,9 +140,6 @@ export class Categories extends Component {
 
     let { category } = this.props;
 
-    if (!category) {
-      category = await Api.get('/categories/432?subcats=Y');
-    }
     if (categoryId) {
       const categories = layouts.blocks.find(b => b.type === BLOCK_CATEGORIES);
       const items = Object.keys(categories.content.items).map(k => categories.content.items[k]);

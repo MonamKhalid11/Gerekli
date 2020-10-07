@@ -11,28 +11,32 @@ import {
   FETCH_PRODUCTS_SUCCESS,
   FETCH_PRODUCTS_FAIL,
 
+  DISCUSSION_DISABLED
 } from '../constants';
 import Api from '../services/api';
+import * as productsActions from './productsActions';
 
-export function fetch(id) {
-  return (dispatch) => {
+export function fetch(id, type = 'M', params) {
+  return async (dispatch) => {
     dispatch({
       type: FETCH_VENDOR_REQUEST,
     });
 
-    return Api.get(`/sra_vendors/${id}/`)
-      .then((response) => {
-        dispatch({
-          type: FETCH_VENDOR_SUCCESS,
-          payload: response.data,
-        });
-      })
-      .catch((error) => {
-        dispatch({
-          type: FETCH_VENDOR_FAIL,
-          error,
-        });
+    try {
+      const result = await Api.get(`/sra_vendors/${id}/`);
+      dispatch({
+        type: FETCH_VENDOR_SUCCESS,
+        payload: result.data,
       });
+      if (result.data.discussion_type !== DISCUSSION_DISABLED) {
+        productsActions.fetchDiscussion(id, params, type)(dispatch);
+      }
+    } catch (error) {
+      dispatch({
+        type: FETCH_VENDOR_FAIL,
+        error,
+      });
+    }
   };
 }
 

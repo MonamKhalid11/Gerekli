@@ -53,6 +53,13 @@ export const registerDrawerDeepLinks = (event, navigator) => {
         companyId: params.company_id,
       },
     });
+  } else if (params.dispatch === 'companies.view' && params.company_id) {
+    navigator.showModal({
+      screen: 'VendorDetail',
+      passProps: {
+        vendorId: params.company_id,
+      },
+    });
   } else if (link === 'home/') {
     navigator.resetTo({
       screen: 'Layouts',
