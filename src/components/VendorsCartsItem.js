@@ -50,7 +50,10 @@ const VendorsCartsItem = ({
 
   return (
     <View style={styles.container}>
-      {item.cart_name && renderHeader(item.cart_name)}
+      {/* FIXME: Backward compatibility */}
+      {item.cart_name
+        ? renderHeader(item.cart_name)
+        : item.product_groups[0] && renderHeader(item.product_groups[0].name)}
       {cartIsOpen && (
         <CartProductList
           cart={item}

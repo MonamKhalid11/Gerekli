@@ -40,6 +40,7 @@ import {
 // links
 import i18n from '../utils/i18n';
 import Api from '../services/api';
+import { getPaymentId } from '../utils/index';
 
 export function fetch(calculateShipping = 'A') {
   return async (dispatch) => {
@@ -65,10 +66,7 @@ export function fetch(calculateShipping = 'A') {
         });
         const result = await Promise.all(uniqueVendorIds.map(async (el) => {
           const res = await Api.get(`/sra_cart_content/${el}`, { params: { calculate_shipping: calculateShipping } });
-          Object.keys(res.data.payments).forEach((key) => {
-            res.data.payments[key].payment_id = key;
-          });
-          return res;
+          return getPaymentId(res);
         }));
         for (let i = 0; i < result.length; i += 1) {
           if (result[i].data.vendor_id) {
@@ -80,6 +78,7 @@ export function fetch(calculateShipping = 'A') {
           payload: { carts, isSeparateCart: true }
         });
       } else if (res.data.amount) {
+        getPaymentId(res);
         carts.general = res.data;
         dispatch({
           type: CART_SUCCESS,
