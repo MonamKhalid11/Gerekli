@@ -59,7 +59,8 @@ export class Checkout extends Component {
       setOnNavigatorEvent: PropTypes.func,
     }),
     cart: PropTypes.shape(),
-    authActions: PropTypes.shape({})
+    cartActions: PropTypes.shape(),
+    authActions: PropTypes.shape(),
   };
 
   constructor(props) {
@@ -128,6 +129,7 @@ export class Checkout extends Component {
       title: i18n.t('Checkout').toUpperCase(),
       passProps: {
         total: cart.subtotal,
+        cart
       },
     });
   }
@@ -157,8 +159,8 @@ export class Checkout extends Component {
 
         <ProfileForm
           fields={fields}
-          cartFooterEnabled={true}
-          showTitles={true}
+          cartFooterEnabled
+          showTitles
           totalPrice={formatPrice(cart.total_formatted.price)}
           btnText={i18n.t('Next').toUpperCase()}
           onBtnPress={(values, validateCb) => { validateCb(); }}
@@ -172,7 +174,6 @@ export class Checkout extends Component {
 export default connect(
   state => ({
     auth: state.auth,
-    cart: state.cart,
     state,
   }),
   dispatch => ({

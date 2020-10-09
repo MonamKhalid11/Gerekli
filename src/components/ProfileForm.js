@@ -413,7 +413,6 @@ export default class ProfileForm extends Component {
       <Fragment>
         <KeyboardAwareScrollView contentContainerStyle={styles.contentContainer}>
           {forms.map((form, index) => {
-            console.log(isEdit, showTitles, form.description);
             return (
               <View key={form.type} style={styles.form}>
                 <FormBlock

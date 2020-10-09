@@ -120,9 +120,6 @@ export class CheckoutStepThree extends Component {
       items: PropTypes.arrayOf(PropTypes.object),
       fetching: PropTypes.bool,
     }),
-    cartActions: PropTypes.shape({
-      clear: PropTypes.func,
-    }),
     paymentsActions: PropTypes.shape({
       settlements: PropTypes.func,
     }),
@@ -261,8 +258,7 @@ export class CheckoutStepThree extends Component {
         if (!data) {
           return;
         }
-
-        cartActions.clear();
+        cartActions.clear(cart);
         navigator.push({
           screen: 'CheckoutComplete',
           backButtonTitle: '',
@@ -335,6 +331,7 @@ export class CheckoutStepThree extends Component {
               title: this.state.selectedItem.payment,
               // backButtonHidden: true,
               passProps: {
+                cart,
                 orderId: data.order_id,
                 ...response.data.data,
               },
@@ -549,7 +546,6 @@ export class CheckoutStepThree extends Component {
 
 export default connect(
   state => ({
-    cart: state.cart,
     auth: state.auth,
   }),
   dispatch => ({

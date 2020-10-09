@@ -112,7 +112,9 @@ export class CheckoutShipping extends Component {
     cart: PropTypes.shape({}),
     navigator: PropTypes.shape({
       push: PropTypes.func,
+      setOnNavigatorEvent: PropTypes.func
     }),
+    stateCart: PropTypes.shape({}),
     cartActions: PropTypes.shape({})
   };
 
@@ -250,13 +252,14 @@ export class CheckoutShipping extends Component {
    * Redirects to CheckoutPayment.
    */
   handleNextPress() {
-    const { navigator } = this.props;
+    const { navigator, cart } = this.props;
     navigator.push({
       screen: 'CheckoutPayment',
       title: i18n.t('Checkout').toUpperCase(),
       backButtonTitle: '',
       passProps: {
         shipping_id: this.state.shipping_id,
+        cart
       },
     });
   }
@@ -314,9 +317,9 @@ export class CheckoutShipping extends Component {
       >
         <View style={styles.shippingItemTitleWrap}>
           <View style={styles.shippingItemTitle}>
-            {shipping.isSelected ?
-              <Icon name="radio-button-checked" style={styles.checkIcon} /> :
-              <Icon name="radio-button-unchecked" style={styles.uncheckIcon} />
+            {shipping.isSelected
+              ? <Icon name="radio-button-checked" style={styles.checkIcon} />
+              : <Icon name="radio-button-unchecked" style={styles.uncheckIcon} />
             }
             <Text style={styles.shippingItemText}>
               {shipping.shipping} {shipping.delivery_time}
@@ -371,9 +374,9 @@ export class CheckoutShipping extends Component {
    */
   render() {
     const { items, isNextDisabled, total } = this.state;
-    const { cart } = this.props;
+    const { stateCart } = this.props;
 
-    if (cart.fetching) {
+    if (stateCart.fetching) {
       return (
         <Spinner visible />
       );
@@ -408,7 +411,7 @@ export class CheckoutShipping extends Component {
 
 export default connect(
   state => ({
-    cart: state.cart,
+    stateCart: state.cart,
     shippings: state.shippings,
   }),
   dispatch => ({
