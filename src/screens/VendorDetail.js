@@ -161,12 +161,18 @@ export class VendorDetail extends Component {
     });
   }
 
+  /**
+   * Gets vendor data.
+   */
   componentDidMount() {
     const { vendorId, vendorActions } = this.props;
     const { discussion } = this.state;
     vendorActions.fetch(vendorId, undefined, { page: discussion.search.page });
   }
 
+  /**
+   * Formats vendor comments.
+   */
   componentDidUpdate() {
     const { vendors, discussion } = this.props;
 
