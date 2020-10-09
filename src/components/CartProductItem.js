@@ -63,19 +63,40 @@ const styles = EStyleSheet.create({
   }
 });
 
+/**
+ * Renders a product.
+ *
+ * @param {object} cartActions - Cart actions.
+ * @param {object} item - Product infromation.
+ *
+ * @return {JSX.Element}
+ */
 const CartProductItem = ({ cartActions, item }) => {
+  /**
+   * Changes the quantity of product.
+   *
+   * @param {object} item - Product infromation.
+   * @param {number} amount - Amount of product.
+   */
   const handleChangeAmountRequest = (item, amount) => {
     const newItem = { ...item, amount };
     cartActions.change(newItem.cartId, newItem);
   };
 
+  /**
+   * Removes product.
+   *
+   * @param {object} product - Product infromation.
+   */
   const handleRemoveProduct = (product) => {
     cartActions.remove(product.cartId);
   };
 
+  /**
+   * Gets product image path. Creats image component.
+   */
   let productImage = null;
   const imageUri = getImagePath(item);
-
   if (imageUri) {
     productImage = (
       <Image
@@ -84,6 +105,9 @@ const CartProductItem = ({ cartActions, item }) => {
       />);
   }
 
+  /**
+   * Settings of swipeout.
+   */
   const swipeoutBtns = [
     {
       text: i18n.t('Delete'),
@@ -92,15 +116,26 @@ const CartProductItem = ({ cartActions, item }) => {
     },
   ];
 
+  /**
+   * Settings for choosing the quantity of product.
+   */
   const step = parseInt(item.qty_step, 10) || 1;
   const max = parseInt(item.max_qty, 10) || parseInt(item.in_stock, 10);
   const min = parseInt(item.min_qty, 10) || step;
   const initialValue = parseInt(item.amount, 10);
 
+  /**
+   * Calculates price of product including taxes.
+   */
   const productTaxedPrice = get(item, 'base_price', '');
   const productPrice = productTaxedPrice || get(item, 'base_price', '');
   const showTaxedPrice = isPriceIncludesTax(item);
 
+  /**
+   * Renders component.
+   *
+   * @return {JSX.Element}
+   */
   return (
     <View style={styles.productItemWrapper}>
       <Swipeout

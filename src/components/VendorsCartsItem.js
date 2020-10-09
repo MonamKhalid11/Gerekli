@@ -33,11 +33,28 @@ const styles = EStyleSheet.create({
   }
 });
 
+/**
+ * Renders the vendor's cart.
+ *
+ * @param {object} item - Cart information.
+ * @param {object} auth - Auth information.
+ * @param {object} navigator - Navigator.
+ * @param {func} handleRefresh - Refreshes cart state.
+ * @param {boolean} refreshing - Set this true while waiting for new data from a refresh.
+ * @param {object} cartActions - Cart actions.
+ *
+ * @return {JSX.Element}
+ */
 const VendorsCartsItem = ({
   item, auth, navigator, handleRefresh, refreshing, cartActions
 }) => {
   const [cartIsOpen, setCartIsOpen] = useState(true);
 
+  /**
+   * Renders header of cart.
+   *
+   * @param {string} title - Title of cart.
+   */
   const renderHeader = title => (
     <TouchableOpacity style={styles.headerWrapper} onPress={() => setCartIsOpen(!cartIsOpen)}>
       <View style={styles.titleWrapper}>

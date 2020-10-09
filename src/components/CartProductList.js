@@ -35,6 +35,11 @@ const styles = EStyleSheet.create({
   }
 });
 
+/**
+ * Renders order detail.
+ *
+ * @return {JSX.Element}
+ */
 const renderOrderDetail = (products, cart) => {
   if (!products.length) {
     return null;
@@ -55,6 +60,9 @@ const renderOrderDetail = (products, cart) => {
   );
 };
 
+/**
+ * Moves to the next page.
+ */
 const handlePlaceOrder = (auth, navigator, products, cart) => {
   const newProducts = {};
   products.forEach((p) => {
@@ -83,6 +91,11 @@ const handlePlaceOrder = (auth, navigator, products, cart) => {
   }
 };
 
+/**
+ * Renders cart footer.
+ *
+ * @return {JSX.Element}
+ */
 const renderPlaceOrder = (cart, products, auth, navigator) => {
   if (!products.length) {
     return null;
@@ -100,6 +113,18 @@ const renderPlaceOrder = (cart, products, auth, navigator) => {
   );
 };
 
+/**
+ * Renders component.
+ *
+ * @param {object} cart - Cart information.
+ * @param {object} auth - Auth information.
+ * @param {object} navigator - Navigator.
+ * @param {func} handleRefresh - Refreshes cart state.
+ * @param {boolean} refreshing - Set this true while waiting for new data from a refresh.
+ * @param {object} cartActions - Cart actions.
+ *
+ * @return {JSX.Element}
+ */
 const CartProductList = ({
   cart, auth, navigator, handleRefresh, refreshing, cartActions
 }) => {
