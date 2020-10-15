@@ -12,6 +12,8 @@
   "dependencies": {
     "@ptomasroos/react-native-multi-slider": "^2.2.2",
     "@react-native-community/async-storage": "^1.12.0",
+    "@react-native-firebase/app": "^8.4.5",
+    "@react-native-firebase/messaging": "^7.9.0",
     "axios": "^0.19.2",
     "base-64": "^0.1.0",
     "date-fns": "^2.15.0",

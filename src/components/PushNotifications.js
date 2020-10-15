@@ -1,95 +1,76 @@
 import { Platform } from 'react-native';
-import firebase from 'react-native-firebase';
-import config from '../config';
+import { get } from 'lodash';
+import messaging from '@react-native-firebase/messaging';
+import { Notifications } from 'react-native-notifications';
 import { deviceLanguage } from '../utils/i18n';
+import { registerDrawerDeepLinks } from '../utils/deepLinks';
 
 import store from '../store';
 import * as authActions from '../actions/authActions';
 
-function RegisterPushListener() {
-  return firebase.notifications().onNotification((notif) => {
-    let notification = new firebase.notifications.Notification();
-    notification = notification
-      .setNotificationId(notif.notificationId)
-      .setTitle(notif.title)
-      .setBody(notif.body)
-      .setSound(notif.sound || 'bell.mp3')
-      .setData({
-        ...notif.data
-      });
+function RegisterPushListener(componentId) {
+  Notifications.registerRemoteNotifications();
 
-    if (Platform.OS === 'android') {
-      notification.android.setAutoCancel(true);
-      notification.android.setColor(config.pushNotificationsColor);
-      notification.android.setColorized(true);
-      notification.android.setPriority(firebase.notifications.Android.Priority.High);
-      notification.android.setSmallIcon('ic_notification');
-      notification.android.setVibrate([300]);
-      notification.android.setOngoing(true);
-      notification.android.setClickAction('open');
-      notification.android.setChannelId(config.pushNotificationChannelId);
-    }
+  Notifications.events().registerNotificationReceivedForeground(
+    (notification, completion) => {
+      completion({ alert: true, sound: true, badge: true });
+    },
+  );
 
-    firebase.notifications().displayNotification(notification);
+  Notifications.events().registerNotificationOpened(
+    (notification, completion) => {
+      const targetScreen = get(
+        notification,
+        'payload.data.targetScreen',
+        false,
+      );
+      if (targetScreen) {
+        registerDrawerDeepLinks(
+          {
+            link: targetScreen,
+            payload: notification.payload,
+          },
+          componentId,
+        );
+      }
+      completion();
+    },
+  );
+
+  const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+    Notifications.postLocalNotification({
+      ...remoteMessage.notification,
+      data: remoteMessage.data,
+    });
   });
+
+  return unsubscribe;
 }
 
-function RegisterOpenListener(navigator) {
-  return firebase.notifications().onNotificationOpened((notificationOpen) => {
-    const notif = notificationOpen.notification;
-    if (notif.data && notif.data.targetScreen) {
-      navigator.handleDeepLink({
-        link: notif.data.targetScreen,
-        payload: notif.data.payload,
-      });
-    }
-  });
-}
-
-function Init(cb) {
-  firebase.messaging().requestPermission({
+async function Init() {
+  await messaging().requestPermission({
     badge: true,
     sound: true,
-    alert: true
-  }).then(() => {
-    firebase.messaging().getToken()
-      .then((token) => {
-        if (Platform.OS === 'android') {
-          const channel = new firebase.notifications.Android
-            .Channel(
-              config.pushNotificationChannelId,
-              config.pushNotificationChannelId,
-              firebase.notifications.Android.Importance.Max
-            );
-          firebase
-            .notifications()
-            .android
-            .createChannel(channel);
-        }
-
-        console.log("TOKEN (getFCMToken)", token);
-
-        const { auth } = store.getState();
-        if (cb) {
-          setTimeout(() => cb(token), 2000);
-        }
-
-        if (auth.deviceToken !== token) {
-          store.dispatch(authActions.deviceInfo({
-            token,
-            platform: Platform.OS,
-            locale: deviceLanguage,
-            device_id: auth.uuid,
-          }));
-        }
-      });
-  }).catch((err) => {
-    console.log(err, 'no perms');
+    alert: true,
   });
+
+  const token = await messaging().getToken();
+  console.log('TOKEN (getFCMToken)', token);
+
+  const { auth } = store.getState();
+  if (auth.deviceToken !== token) {
+    store.dispatch(
+      authActions.deviceInfo({
+        token,
+        platform: Platform.OS,
+        locale: deviceLanguage,
+        device_id: auth.uuid,
+      }),
+    );
+  }
 }
 
 export default {
   Init,
   RegisterPushListener,
-  RegisterOpenListener,
 };

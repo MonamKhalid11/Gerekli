@@ -27,12 +27,11 @@ import VendorBlock from '../components/VendorBlock';
 import PageBlock from '../components/PageBlock';
 import ProductBlock from '../components/ProductBlock';
 import CategoryBlock from '../components/CategoryBlock';
-// import PushNotificaitons from '../components/PushNotifications';
+import PushNotificaitons from '../components/PushNotifications';
 import { toArray } from '../utils';
 import { registerDrawerDeepLinks } from '../utils/deepLinks';
 import config from '../config';
 import * as nav from '../services/navigation';
-import { Notifications } from 'react-native-notifications';
 
 // Styles
 const styles = EStyleSheet.create({
@@ -62,32 +61,10 @@ class Layouts extends Component {
     this.isFetchBlocksSend = false;
     this.pushNotificationListener = null;
     this.pushNotificationOpenListener = null;
-
-    Notifications.registerRemoteNotifications();
-    Notifications.events().registerRemoteNotificationsRegistered((event) => {
-      // TODO: Send the token to my server so it could send back push notifications...
-      console.log("Device Token Received", event.deviceToken);
-    });
-
-    // Notifications.events().registerRemoteNotificationsRegistrationFailed((event) => {
-    //   console.error(event, 'asd');
-    // });
-
-    Notifications.events().registerNotificationReceivedForeground((notification, completion) => {
-      console.log(
-        `Notification received in foreground: ${notification.title} : ${notification.body}`,
-      );
-      completion({ alert: false, sound: false, badge: false });
-    });
-
-    Notifications.events().registerNotificationOpened((notification, completion) => {
-      console.log(`Notification opened: ${notification.payload}`);
-      completion();
-    });
   }
 
   componentDidMount() {
-    const { layoutsActions } = this.props;
+    const { layoutsActions, componentId } = this.props;
     Navigation.mergeOptions(this.props.componentId, {
       topBar: {
         title: {
@@ -98,15 +75,10 @@ class Layouts extends Component {
 
     layoutsActions.fetch();
 
-    // if (config.pushNotifications) {
-    //   PushNotificaitons.Init();
-    //   this.pushNotificationListener = PushNotificaitons.RegisterPushListener(
-    //     navigator,
-    //   );
-    //   this.pushNotificationOpenListener = PushNotificaitons.RegisterOpenListener(
-    //     navigator,
-    //   );
-    // }
+    if (config.pushNotifications) {
+      PushNotificaitons.Init();
+      this.pushNotificationListener = PushNotificaitons.RegisterPushListener(componentId);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -141,10 +113,9 @@ class Layouts extends Component {
   }
 
   componentWillUnmount() {
-    // if (config.pushNotifications) {
-    //   this.pushNotificationListener();
-    //   this.pushNotificationOpenListener();
-    // }
+    if (config.pushNotifications) {
+      this.pushNotificationListener();
+    }
   }
 
   renderBlock = (block, index) => {
