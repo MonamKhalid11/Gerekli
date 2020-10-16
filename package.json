@@ -37,7 +37,8 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "shitty-qs": "^1.0.1",
-    "tcomb-form-native": "^0.6.20"
+    "tcomb-form-native": "^0.6.20",
+    "tipsi-stripe": "^7.5.3"
   },
   "devDependencies": {
     "@babel/core": "^7.11.1",

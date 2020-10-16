@@ -34,7 +34,7 @@ import * as vendorActions from '../actions/vendorActions';
 
 // Components
 import DiscussionList from '../components/DiscussionList';
-// import InAppPayment from '../components/InAppPayment';
+import InAppPayment from '../components/InAppPayment';
 import SelectOption from '../components/SelectOption';
 import InputOption from '../components/InputOption';
 import QtyOption from '../components/QtyOption';
@@ -876,10 +876,7 @@ class ProductDetail extends Component {
       <View style={styles.addToCartContainer}>
         {canPayWithApplePay && (
           <View style={styles.inAppPaymentWrapper}>
-            {/* <InAppPayment
-              navigator={navigator}
-              onPress={this.handleApplePay}
-            /> */}
+            <InAppPayment onPress={this.handleApplePay} />
           </View>
         )}
 
