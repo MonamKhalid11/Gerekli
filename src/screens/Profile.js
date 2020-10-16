@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 import * as authActions from '../actions/authActions';
@@ -12,6 +12,7 @@ import config from '../config';
 import * as nav from '../services/navigation';
 import { registerDrawerDeepLinks } from '../utils/deepLinks';
 import * as pagesActions from '../actions/pagesActions';
+import Icon from '../components/Icon';
 
 const styles = EStyleSheet.create({
   container: {
@@ -27,23 +28,43 @@ const styles = EStyleSheet.create({
     paddingLeft: 14,
     paddingRight: 14,
     paddingTop: 10,
+    paddingBottom: 10,
   },
-  signInButtons: {
-    flex: 1,
+  signInSectionContainer: {
+    backgroundColor: theme.$grayColor,
+    width: '100%',
+    padding: 15,
+    borderBottomWidth: 1,
+    borderColor: '#e3e3e3',
     flexDirection: 'row',
-    paddingBottom: 70,
+    justifyContent: 'space-between',
+  },
+  signInSectionText: {
+    color: '#9c9c9c',
+    fontWeight: 'bold',
+    fontSize: '0.8rem',
+  },
+  signInBtnContainer: {
+    width: '100%',
+    padding: 15,
+    borderBottomWidth: 1,
+    borderColor: '$drawerHeaderBorderColor',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  signInBtnText: {
+    color: '#424040',
   },
   btn: {
-    backgroundColor: '#005bff',
+    borderRadius: '$borderRadius',
     height: 38,
-    borderRadius: 6,
-    marginRight: 12,
+    marginBottom: 10,
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   btnText: {
-    color: '#fff',
+    color: '#424040',
     fontSize: '1rem',
   },
   signInInfo: {
@@ -58,6 +79,10 @@ const styles = EStyleSheet.create({
   },
   userMailText: {
     fontSize: '1rem',
+  },
+  rightArrowIcon: {
+    fontSize: '1rem',
+    color: '$drawerHeaderBorderColor',
   },
 });
 
@@ -86,9 +111,13 @@ class ProfileEdit extends Component {
 
     return (
       <View>
+        <View style={styles.signInSectionContainer}>
+          <Text style={styles.signInSectionText}>VENDOR INFORMATION</Text>
+        </View>
         {pages.items.map((page) => {
           return (
             <TouchableOpacity
+              style={styles.signInBtnContainer}
               onPress={() =>
                 registerDrawerDeepLinks(
                   {
@@ -101,6 +130,7 @@ class ProfileEdit extends Component {
                 )
               }>
               <Text style={styles.signInBtnText}>{page.page}</Text>
+              <Icon name="chevron-right" style={styles.rightArrowIcon} />
             </TouchableOpacity>
           );
         })}
@@ -121,8 +151,10 @@ class ProfileEdit extends Component {
           <View style={styles.signInButtons}>
             <TouchableOpacity
               onPress={() => nav.showLogin()}
-              style={styles.btn}>
-              <Text style={styles.btnText}>{i18n.t('Login')}</Text>
+              style={{ ...styles.btn, backgroundColor: '#4fbe31' }}>
+              <Text style={{ ...styles.btnText, color: '#fff' }}>
+                {i18n.t('Login')}
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => nav.showRegistration()}
@@ -153,33 +185,50 @@ class ProfileEdit extends Component {
 
     return (
       <>
+        <View style={styles.signInSectionContainer}>
+          <Text style={styles.signInSectionText}>USER INFORMATION</Text>
+        </View>
+
         <TouchableOpacity
-          onPress={() => nav.pushProfileEdit(this.props.componentId)}>
+          onPress={() => nav.pushProfileEdit(this.props.componentId)}
+          style={styles.signInBtnContainer}>
           <Text style={styles.signInBtnText}>{i18n.t('Profile')}</Text>
+          <Icon name="chevron-right" style={styles.rightArrowIcon} />
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => nav.pushOrders(this.props.componentId)}>
+          onPress={() => nav.pushOrders(this.props.componentId)}
+          style={styles.signInBtnContainer}>
           <Text style={styles.signInBtnText}>{i18n.t('Orders')}</Text>
+          <Icon name="chevron-right" style={styles.rightArrowIcon} />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => authActions.logout()}>
+        <TouchableOpacity
+          onPress={() => authActions.logout()}
+          style={styles.signInBtnContainer}>
           <Text style={styles.signInBtnText}>{i18n.t('Logout')}</Text>
+          <Icon name="chevron-right" style={styles.rightArrowIcon} />
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => nav.pushVendorManageOrders(this.props.componentId)}>
+          onPress={() => nav.pushVendorManageOrders(this.props.componentId)}
+          style={styles.signInBtnContainer}>
           <Text style={styles.signInBtnText}>{i18n.t('Vendor Orders')}</Text>
+          <Icon name="chevron-right" style={styles.rightArrowIcon} />
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => nav.pushVendorManageProducts(this.props.componentId)}>
+          onPress={() => nav.pushVendorManageProducts(this.props.componentId)}
+          style={styles.signInBtnContainer}>
           <Text style={styles.signInBtnText}>{i18n.t('Vendor Products')}</Text>
+          <Icon name="chevron-right" style={styles.rightArrowIcon} />
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => nav.showVendorManageCategoriesPicker({ parent: 0 })}>
+          onPress={() => nav.showVendorManageCategoriesPicker({ parent: 0 })}
+          style={styles.signInBtnContainer}>
           <Text style={styles.signInBtnText}>{i18n.t('Add Products')}</Text>
+          <Icon name="chevron-right" style={styles.rightArrowIcon} />
         </TouchableOpacity>
       </>
     );
@@ -187,13 +236,13 @@ class ProfileEdit extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         {this.renderSignedIn()}
 
         {this.renderSignedInMenu()}
 
         {this.renderPages()}
-      </View>
+      </ScrollView>
     );
   }
 }
