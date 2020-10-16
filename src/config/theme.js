@@ -1,4 +1,3 @@
-
 export default {
   // Цвет статус бара (только андройд).
   $statusBarColor: '#c1c1c1',

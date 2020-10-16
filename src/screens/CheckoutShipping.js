@@ -2,7 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  SafeAreaView,
+} from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 import values from 'lodash/values';
@@ -275,7 +281,7 @@ class CheckoutShipping extends Component {
     const shippingsCount = flatten(items.map((s) => s.shippings)).length;
 
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.contentContainer}>
           {this.renderSteps()}
           {!shippingsCount && <EmptyList />}
@@ -294,7 +300,7 @@ class CheckoutShipping extends Component {
           isBtnDisabled={isNextDisabled}
           onBtnPress={() => this.handleNextPress()}
         />
-      </View>
+      </SafeAreaView>
     );
   }
 }

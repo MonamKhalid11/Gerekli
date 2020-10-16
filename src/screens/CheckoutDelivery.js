@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { View } from 'react-native';
+import { View, SafeAreaView } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { Navigation } from 'react-native-navigation';
 
@@ -17,6 +17,7 @@ import * as cartActions from '../actions/cartActions';
 import i18n from '../utils/i18n';
 import { formatPrice } from '../utils';
 import ProfileForm from '../components/ProfileForm';
+import { iconsMap } from '../utils/navIcons';
 import * as nav from '../services/navigation';
 
 const styles = EStyleSheet.create({
@@ -65,6 +66,23 @@ class Checkout extends Component {
           });
         });
     }
+
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        rightButtons: [
+          {
+            id: 'close',
+            icon: iconsMap.close,
+          },
+        ],
+      },
+    });
+  }
+
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'close') {
+      Navigation.dismissModal(this.props.componentId);
+    }
   }
 
   handleNextPress(values) {
@@ -91,7 +109,7 @@ class Checkout extends Component {
     }
 
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.contentContainer}>
           <CheckoutSteps step={1} />
         </View>
@@ -109,7 +127,7 @@ class Checkout extends Component {
             this.handleNextPress(values);
           }}
         />
-      </View>
+      </SafeAreaView>
     );
   }
 }

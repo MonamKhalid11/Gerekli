@@ -101,6 +101,12 @@ class InAppPayment extends React.Component {
       });
     }
 
+    displayItems.push({
+      label: 'Simtech',
+      amount: '10',
+      type: 'pending',
+    });
+
     const details = {
       id: vendorNames.join(', '),
       displayItems,

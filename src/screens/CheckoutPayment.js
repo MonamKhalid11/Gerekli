@@ -2,7 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  SafeAreaView,
+} from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
@@ -402,7 +408,7 @@ class CheckoutStepThree extends Component {
   render() {
     const { cart } = this.props;
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <KeyboardAwareScrollView>
           <FlatList
             ref={(ref) => {
@@ -424,7 +430,7 @@ class CheckoutStepThree extends Component {
           onBtnPress={() => this.handlePlaceOrder()}
         />
         {this.renderSpinner()}
-      </View>
+      </SafeAreaView>
     );
   }
 }
