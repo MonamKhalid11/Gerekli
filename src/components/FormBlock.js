@@ -62,7 +62,7 @@ export default class FormBlock extends Component {
 
   renderTitle() {
     const { title } = this.props;
-    console.log(title);
+
     if (!title) {
       return null;
     }

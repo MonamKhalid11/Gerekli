@@ -10,14 +10,28 @@ export function setRoot() {
         color: theme.$navBarButtonColor,
         showTitle: false,
       },
-      // background: {
-      //   translucent: true,
-      //   drawBehind: true,
-      // },
+      title: {
+        fontSize: theme.$navBarTitleFontSize,
+        color: theme.$navBarTextColor,
+      },
+      background: {
+        color: theme.$navBarBackgroundColor,
+      },
+    },
+    layout: {
+      backgroundColor: theme.$screenBackgroundColor,
     },
     bottomTabs: {
+      backgroundColor: theme.$bottomTabsBackgroundColor,
       // drawBehind: true,
       // translucent: true,
+    },
+    bottomTab: {
+      badgeColor: theme.$bottomTabsPrimaryBadgeColor,
+      textColor: theme.$bottomTabsTextColor,
+      selectedTextColor: theme.$bottomTabsSelectedTextColor,
+      iconColor: theme.$bottomTabsIconColor,
+      selectedIconColor: theme.$bottomTabsSelectedIconColor,
     },
   });
   return {

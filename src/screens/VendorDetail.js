@@ -281,8 +281,6 @@ export class VendorDetail extends Component {
   render() {
     const { vendor } = this.state;
 
-    console.log(this.props, this.state);
-
     if (!vendor.shipping_address) {
       return null;
     }

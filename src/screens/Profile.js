@@ -48,7 +48,7 @@ const styles = EStyleSheet.create({
     width: '100%',
     padding: 15,
     borderBottomWidth: 1,
-    borderColor: '$drawerHeaderBorderColor',
+    borderColor: '$grayColor',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
@@ -82,7 +82,7 @@ const styles = EStyleSheet.create({
   },
   rightArrowIcon: {
     fontSize: '1rem',
-    color: '$drawerHeaderBorderColor',
+    color: '$grayColor',
   },
 });
 
