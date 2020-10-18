@@ -9,7 +9,7 @@ export default {
   $navBarButtonColor: '#989898',
 
   // Размер текста заголовка.
-  $navBarTitleFontSize: 18,
+  $navBarTitleFontSize: 16,
 
   // Цвет текста кнопок.
   $navBarTextColor: '#242424',
