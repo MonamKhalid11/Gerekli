@@ -48,7 +48,7 @@ const styles = EStyleSheet.create({
     width: '100%',
     padding: 15,
     borderBottomWidth: 1,
-    borderColor: '$grayColor',
+    borderColor: '$menuItemsBorderColor',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
@@ -80,9 +80,18 @@ const styles = EStyleSheet.create({
   userMailText: {
     fontSize: '1rem',
   },
+  IconNameWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  menuItemIcon: {
+    fontSize: '1.2rem',
+    color: '$menuItemsBorderColor',
+    marginRight: 5,
+  },
   rightArrowIcon: {
     fontSize: '1rem',
-    color: '$grayColor',
+    color: '$menuItemsBorderColor',
   },
 });
 
@@ -106,14 +115,59 @@ class ProfileEdit extends Component {
     pagesActions.fetch(config.layoutId);
   }
 
+  renderAddVendorFields() {
+    const { profile } = this.props;
+
+    if (profile.user_type !== 'V') {
+      return null;
+    }
+
+    return (
+      <>
+        <TouchableOpacity
+          onPress={() => nav.pushVendorManageOrders(this.props.componentId)}
+          style={styles.signInBtnContainer}>
+          <View style={styles.IconNameWrapper}>
+            <Icon name="archive" style={styles.menuItemIcon} />
+            <Text style={styles.signInBtnText}>{i18n.t('Vendor Orders')}</Text>
+          </View>
+          <Icon name="chevron-right" style={styles.rightArrowIcon} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => nav.pushVendorManageProducts(this.props.componentId)}
+          style={styles.signInBtnContainer}>
+          <View style={styles.IconNameWrapper}>
+            <Icon name="pages" style={styles.menuItemIcon} />
+            <Text style={styles.signInBtnText}>{i18n.t('Vendor Products')}</Text>
+          </View>
+          <Icon name="chevron-right" style={styles.rightArrowIcon} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => nav.showVendorManageCategoriesPicker({ parent: 0 })}
+          style={styles.signInBtnContainer}>
+          <View style={styles.IconNameWrapper}>
+            <Icon name="add-circle" style={styles.menuItemIcon} />
+            <Text style={styles.signInBtnText}>{i18n.t('Add Products')}</Text>
+          </View>
+          <Icon name="chevron-right" style={styles.rightArrowIcon} />
+        </TouchableOpacity>
+      </>
+    );
+  }
+
   renderPages = () => {
     const { pages } = this.props;
 
     return (
       <View>
         <View style={styles.signInSectionContainer}>
-          <Text style={styles.signInSectionText}>VENDOR INFORMATION</Text>
+          <Text style={styles.signInSectionText}>
+            {i18n.t('Seller').toUpperCase()}
+          </Text>
         </View>
+        {this.renderAddVendorFields()}
         {pages.items.map((page) => {
           return (
             <TouchableOpacity
@@ -186,48 +240,38 @@ class ProfileEdit extends Component {
     return (
       <>
         <View style={styles.signInSectionContainer}>
-          <Text style={styles.signInSectionText}>USER INFORMATION</Text>
+          <Text style={styles.signInSectionText}>
+            {i18n.t('Buyer').toUpperCase()}
+          </Text>
         </View>
 
         <TouchableOpacity
           onPress={() => nav.pushProfileEdit(this.props.componentId)}
           style={styles.signInBtnContainer}>
-          <Text style={styles.signInBtnText}>{i18n.t('Profile')}</Text>
+          <View style={styles.IconNameWrapper}>
+            <Icon name="person" style={styles.menuItemIcon} />
+            <Text style={styles.signInBtnText}>{i18n.t('Profile')}</Text>
+          </View>
           <Icon name="chevron-right" style={styles.rightArrowIcon} />
         </TouchableOpacity>
 
         <TouchableOpacity
           onPress={() => nav.pushOrders(this.props.componentId)}
           style={styles.signInBtnContainer}>
-          <Text style={styles.signInBtnText}>{i18n.t('Orders')}</Text>
+          <View style={styles.IconNameWrapper}>
+            <Icon name="receipt" style={styles.menuItemIcon} />
+            <Text style={styles.signInBtnText}>{i18n.t('Orders')}</Text>
+          </View>
           <Icon name="chevron-right" style={styles.rightArrowIcon} />
         </TouchableOpacity>
 
         <TouchableOpacity
           onPress={() => authActions.logout()}
           style={styles.signInBtnContainer}>
-          <Text style={styles.signInBtnText}>{i18n.t('Logout')}</Text>
-          <Icon name="chevron-right" style={styles.rightArrowIcon} />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => nav.pushVendorManageOrders(this.props.componentId)}
-          style={styles.signInBtnContainer}>
-          <Text style={styles.signInBtnText}>{i18n.t('Vendor Orders')}</Text>
-          <Icon name="chevron-right" style={styles.rightArrowIcon} />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => nav.pushVendorManageProducts(this.props.componentId)}
-          style={styles.signInBtnContainer}>
-          <Text style={styles.signInBtnText}>{i18n.t('Vendor Products')}</Text>
-          <Icon name="chevron-right" style={styles.rightArrowIcon} />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => nav.showVendorManageCategoriesPicker({ parent: 0 })}
-          style={styles.signInBtnContainer}>
-          <Text style={styles.signInBtnText}>{i18n.t('Add Products')}</Text>
+          <View style={styles.IconNameWrapper}>
+            <Icon name="exit-to-app" style={styles.menuItemIcon} />
+            <Text style={styles.signInBtnText}>{i18n.t('Logout')}</Text>
+          </View>
           <Icon name="chevron-right" style={styles.rightArrowIcon} />
         </TouchableOpacity>
       </>
