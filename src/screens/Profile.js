@@ -112,7 +112,9 @@ class ProfileEdit extends Component {
     return (
       <View>
         <View style={styles.signInSectionContainer}>
-          <Text style={styles.signInSectionText}>VENDOR INFORMATION</Text>
+          <Text style={styles.signInSectionText}>
+            {i18n.t('Seller').toUpperCase()}
+          </Text>
         </View>
         {pages.items.map((page) => {
           return (
@@ -186,7 +188,9 @@ class ProfileEdit extends Component {
     return (
       <>
         <View style={styles.signInSectionContainer}>
-          <Text style={styles.signInSectionText}>USER INFORMATION</Text>
+          <Text style={styles.signInSectionText}>
+            {i18n.t('Buyer').toUpperCase()}
+          </Text>
         </View>
 
         <TouchableOpacity
