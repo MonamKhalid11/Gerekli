@@ -13,6 +13,7 @@ import * as nav from '../services/navigation';
 import { registerDrawerDeepLinks } from '../utils/deepLinks';
 import * as pagesActions from '../actions/pagesActions';
 import Icon from '../components/Icon';
+import { USER_TYPE_VENDOR } from '../constants/index';
 
 const styles = EStyleSheet.create({
   container: {
@@ -118,7 +119,7 @@ class ProfileEdit extends Component {
   renderAddVendorFields() {
     const { profile } = this.props;
 
-    if (profile.user_type !== 'V') {
+    if (profile.user_type !== USER_TYPE_VENDOR) {
       return null;
     }
 
