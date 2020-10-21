@@ -129,7 +129,9 @@ export class CheckoutStepThree extends Component {
     shipping_id: PropTypes.string,
     navigator: PropTypes.shape({
       push: PropTypes.func,
+      setOnNavigatorEvent: PropTypes.func
     }),
+    cartActions: PropTypes.shape({})
   };
 
   constructor(props) {

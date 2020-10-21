@@ -27,7 +27,6 @@ import {
   iconsMap,
   iconsLoaded,
 } from '../utils/navIcons';
-import cart from '../reducers/cart';
 
 // Styles
 const styles = EStyleSheet.create({

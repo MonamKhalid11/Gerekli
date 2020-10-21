@@ -8,6 +8,18 @@ import {
 import VendorsCartsItem from './VendorsCartsItem';
 import EmptyCart from './EmptyCart';
 
+/**
+ * Renders a list of vendor carts.
+ *
+ * @param {array} cart - Array of vendor carts.
+ * @param {object} auth - Auth information.
+ * @param {object} navigator - Navigator.
+ * @param {func} handleRefresh - Refreshes cart state.
+ * @param {boolean} refreshing - Set this true while waiting for new data from a refresh.
+ * @param {object} cartActions - Cart actions.
+ *
+ * @return {JSX.Element}
+ */
 const VendorsCartsList = ({
   carts, auth, navigator, handleRefresh, refreshing, cartActions
 }) => (

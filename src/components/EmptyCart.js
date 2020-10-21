@@ -45,20 +45,23 @@ const styles = EStyleSheet.create({
   }
 });
 
-const EmptyCart = () => {
-  return (
-    <View style={styles.emptyListContainer}>
-      <View style={styles.emptyListIconWrapper}>
-        <Icon name="add-shopping-cart" style={styles.emptyListIcon} />
-      </View>
-      <Text style={styles.emptyListHeader}>
-        {i18n.t('Your shopping cart is empty.')}
-      </Text>
-      <Text style={styles.emptyListDesc}>
-        {i18n.t('Looking for ideas?')}
-      </Text>
+/**
+ * Renders if cart is empty.
+ *
+ * @return {JSX.Element}
+ */
+const EmptyCart = () => (
+  <View style={styles.emptyListContainer}>
+    <View style={styles.emptyListIconWrapper}>
+      <Icon name="add-shopping-cart" style={styles.emptyListIcon} />
     </View>
-  );
-};
+    <Text style={styles.emptyListHeader}>
+      {i18n.t('Your shopping cart is empty.')}
+    </Text>
+    <Text style={styles.emptyListDesc}>
+      {i18n.t('Looking for ideas?')}
+    </Text>
+  </View>
+);
 
 export default EmptyCart;
