@@ -125,6 +125,7 @@ export class VendorDetail extends Component {
 
     this.requestSent = true;
     this.state = {
+      currentVendor: null,
       discussion: {
         average_rating: 0,
         posts: [],
@@ -175,21 +176,13 @@ export class VendorDetail extends Component {
    */
   componentDidUpdate() {
     const { vendors, discussion } = this.props;
+    const { currentVendor } = this.state;
 
     if (vendors.currentVendor && Object.keys(discussion.items).length) {
-      let activeDiscussion = discussion.items[`m_${vendors.currentVendor.company_id}`];
-      if (!activeDiscussion) {
-        activeDiscussion = {
-          average_rating: 0,
-          posts: [],
-          search: {
-            page: 1,
-            total_items: 0,
-          },
-        };
-      }
-      if (!this.state.discussion.posts.length) {
+      const activeDiscussion = discussion.items[`m_${vendors.currentVendor.company_id}`];
+      if (currentVendor !== vendors.currentVendor) {
         this.setState({
+          currentVendor: vendors.currentVendor,
           discussion: activeDiscussion,
         });
       }
@@ -383,7 +376,7 @@ export class VendorDetail extends Component {
   render() {
     const { vendors } = this.props;
 
-    if (!vendors.currentVendor) {
+    if (!vendors.currentVendor && vendors.fetching) {
       return <Spinner visible />;
     }
 
