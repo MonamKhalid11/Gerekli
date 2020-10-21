@@ -190,3 +190,5 @@ export const IMAGE_PICKER_CLEAR = 'IMAGE_PICKER_CLEAR';
 
 export const STORE_KEY = '@REDUX_STORE_AUTH_KEY';
 export const RESTORE_STATE = 'RESTORE_STATE';
+
+export const USER_TYPE_VENDOR = 'V';
