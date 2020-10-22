@@ -168,6 +168,7 @@ export class VendorDetail extends Component {
   componentDidMount() {
     const { vendorId, vendorActions } = this.props;
     const { discussion } = this.state;
+
     vendorActions.fetch(vendorId, undefined, { page: discussion.search.page });
   }
 
@@ -180,7 +181,7 @@ export class VendorDetail extends Component {
 
     if (vendors.currentVendor && Object.keys(discussion.items).length) {
       const activeDiscussion = discussion.items[`m_${vendors.currentVendor.company_id}`];
-      if (currentVendor !== vendors.currentVendor) {
+      if (currentVendor !== vendors.currentVendor && activeDiscussion) {
         this.setState({
           currentVendor: vendors.currentVendor,
           discussion: activeDiscussion,
