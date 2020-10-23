@@ -169,9 +169,10 @@ class ProfileEdit extends Component {
           </Text>
         </View>
         {this.renderAddVendorFields()}
-        {pages.items.map((page) => {
+        {pages.items.map((page, index) => {
           return (
             <TouchableOpacity
+              key={index}
               style={styles.signInBtnContainer}
               onPress={() =>
                 registerDrawerDeepLinks(

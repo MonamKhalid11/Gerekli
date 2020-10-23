@@ -82,26 +82,6 @@ export function setRoot() {
           },
           {
             stack: {
-              id: 'FAVORITE_TAB',
-              children: [
-                {
-                  component: {
-                    id: 'FAVORITE_SCREEN',
-                    name: 'WishList',
-                  },
-                },
-              ],
-              options: {
-                bottomTab: {
-                  icon: iconsMap.favorite,
-                  selectedIconColor: 'black',
-                  text: i18n.t('Favorite'),
-                },
-              },
-            },
-          },
-          {
-            stack: {
               id: 'CART_TAB',
               children: [
                 {
@@ -116,6 +96,26 @@ export function setRoot() {
                   icon: iconsMap['shopping-cart'],
                   selectedIconColor: 'black',
                   text: i18n.t('Cart'),
+                },
+              },
+            },
+          },
+          {
+            stack: {
+              id: 'FAVORITE_TAB',
+              children: [
+                {
+                  component: {
+                    id: 'FAVORITE_SCREEN',
+                    name: 'WishList',
+                  },
+                },
+              ],
+              options: {
+                bottomTab: {
+                  icon: iconsMap.favorite,
+                  selectedIconColor: 'black',
+                  text: i18n.t('Favorite'),
                 },
               },
             },
@@ -294,6 +294,7 @@ export function showGallery(params = {}) {
       options: {
         layout: {
           componentBackgroundColor: 'transparent',
+          backgroundColor: 'red',
         },
         overlay: {
           interceptTouchOutside: true,

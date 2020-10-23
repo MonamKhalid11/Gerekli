@@ -417,7 +417,7 @@ export default class ProfileForm extends Component {
           contentContainerStyle={styles.contentContainer}>
           {forms.map((form, index) => {
             return (
-              <View key={form.type} style={styles.form}>
+              <View key={index} style={styles.form}>
                 <FormBlock
                   title={isEdit || showTitles ? form.description : null}>
                   <Form

@@ -43,6 +43,10 @@ const styles = EStyleSheet.create({
   closeBtn: {
     color: 'black',
   },
+  wrapper: {
+    flex: 1,
+    backgroundColor: '#fff',
+  }
 });
 
 /**
@@ -80,7 +84,7 @@ export default class Gallery extends Component {
     ));
 
     return (
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={styles.wrapper}>
         <View style={styles.container}>
           <Swiper horizontal index={activeIndex}>
             {items}
