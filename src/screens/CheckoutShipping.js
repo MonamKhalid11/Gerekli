@@ -88,6 +88,13 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Checkout. Shipping screen.
+ *
+ * @reactProps {object} navigator - Navigator.
+ * @reactProps {object} cart - Cart information.
+ * @reactProps {object} cartActions - Cart actions.
+ */
 class CheckoutShipping extends Component {
   static propTypes = {
     cart: PropTypes.shape({}),
@@ -112,6 +119,9 @@ class CheckoutShipping extends Component {
     };
   }
 
+  /**
+   * Sets shipping methods.
+   */
   componentDidMount() {
     const { cart } = this.props;
     this.setDefaults(cart);
@@ -119,11 +129,19 @@ class CheckoutShipping extends Component {
     setTimeout(() => this.handleLoadInitial(), 500);
   }
 
+  /**
+   * Sets shipping methods.
+   */
   componentWillReceiveProps(nextProps) {
     const { cart } = nextProps;
     this.setDefaults(cart);
   }
 
+  /**
+   * Set default shipping method.
+   *
+   * @param {object} cart - Cart information.
+   */
   setDefaults(cart) {
     const items = this.normalizeData(cart.product_groups);
     const shippings = [];
@@ -143,6 +161,11 @@ class CheckoutShipping extends Component {
     });
   }
 
+  /**
+   * Changes data format.
+   *
+   * @param {object} blobData - Company information.
+   */
   normalizeData = (blobData) => {
     const { shipping_id } = this.state;
 
@@ -167,6 +190,9 @@ class CheckoutShipping extends Component {
     });
   };
 
+  /**
+   * Calculates the cost including delivery.
+   */
   handleLoadInitial() {
     const { cartActions } = this.props;
     const { items } = this.state;
@@ -194,12 +220,23 @@ class CheckoutShipping extends Component {
     });
   }
 
+  /**
+   * Redirects to CheckoutPayment.
+   */
   handleNextPress() {
     nav.pushCheckoutPayment(this.props.componentId, {
+      cart,
       shipping_id: this.state.shipping_id,
     });
   }
 
+  /**
+   * Switches shipping method.
+   *
+   * @param {object} shipping - Shipping method information.
+   * @param {number} shippingIndex - Shipping index.
+   * @param {number} itemIndex - Index of the selected shipping method.
+   */
   handleSelect(shipping, shippingIndex, itemIndex) {
     const { cartActions } = this.props;
     if (shipping.isSelected) {
@@ -228,6 +265,15 @@ class CheckoutShipping extends Component {
     });
   }
 
+  /**
+   * Renders shipping options.
+   *
+   * @param {object} shipping - Shipping method information.
+   * @param {number} shippingIndex - Shipping index.
+   * @param {number} itemIndex - Index of the selected shipping method.
+   *
+   * @return {JSX.Element}
+   */
   renderItem = (shipping, shippingIndex, itemIndex) => {
     return (
       <TouchableOpacity
@@ -236,11 +282,10 @@ class CheckoutShipping extends Component {
         onPress={() => this.handleSelect(shipping, shippingIndex, itemIndex)}>
         <View style={styles.shippingItemTitleWrap}>
           <View style={styles.shippingItemTitle}>
-            {shipping.isSelected ? (
-              <Icon name="radio-button-checked" style={styles.checkIcon} />
-            ) : (
-              <Icon name="radio-button-unchecked" style={styles.uncheckIcon} />
-            )}
+            {shipping.isSelected
+              ? <Icon name="radio-button-checked" style={styles.checkIcon} />
+              : <Icon name="radio-button-unchecked" style={styles.uncheckIcon} />
+            }
             <Text style={styles.shippingItemText}>
               {shipping.shipping} {shipping.delivery_time}
             </Text>
@@ -257,25 +302,45 @@ class CheckoutShipping extends Component {
     );
   };
 
+  /**
+   * Renders checkout steps.
+   *
+   * @return {JSX.Element}
+   */
   renderSteps = () => (
     <View style={styles.stepsWrapper}>
       <CheckoutSteps step={2} />
     </View>
   );
 
+  /**
+   * Renders company title.
+   *
+   * @param {string} title - Company title.
+   *
+   * @return {JSX.Element}
+   */
   renderCompany = (title) => {
-    if (this.state.items.length === 1) {
+    const { items } = this.state;
+    if (items.length === 1) {
       return null;
     }
     return <Text style={styles.shippingTitle}>{title}</Text>;
   };
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { items, isNextDisabled, total } = this.state;
-    const { cart } = this.props;
+    const { stateCart } = this.props;
 
-    if (cart.fetching) {
-      return <Spinner visible />;
+    if (stateCart.fetching) {
+      return (
+        <Spinner visible />
+      );
     }
 
     const shippingsCount = flatten(items.map((s) => s.shippings)).length;
@@ -306,8 +371,8 @@ class CheckoutShipping extends Component {
 }
 
 export default connect(
-  (state) => ({
-    cart: state.cart,
+  state => ({
+    stateCart: state.cart,
     shippings: state.shippings,
   }),
   (dispatch) => ({

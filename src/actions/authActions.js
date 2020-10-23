@@ -133,7 +133,7 @@ export function updateProfile(id, params) {
           },
         });
       })
-      .then(() => cartActions.fetch(false)(dispatch))
+      .then(() => cartActions.fetch()(dispatch))
       .catch((error) => {
         dispatch({
           type: UPDATE_PROFILE_FAIL,
@@ -186,7 +186,7 @@ export function createProfile(params) {
           },
         });
       })
-      .then(() => cartActions.fetch(false)(dispatch))
+      .then(() => cartActions.fetch()(dispatch))
       .catch((error) => {
         dispatch({
           type: AUTH_REGESTRATION_FAIL,
@@ -233,7 +233,7 @@ export function login(data) {
 
     return Api.post('/auth_tokens', data)
       .then((response) => {
-        cartActions.fetch(false)(dispatch);
+        cartActions.fetch()(dispatch);
         wishListActions.fetch(false)(dispatch);
         dispatch({
           type: AUTH_LOGIN_SUCCESS,
@@ -270,7 +270,7 @@ export function registration(token) {
         ttl: null,
       },
     });
-    cartActions.fetch(false)(dispatch);
+    cartActions.fetch()(dispatch);
     dispatch({
       type: NOTIFICATION_SHOW,
       payload: {

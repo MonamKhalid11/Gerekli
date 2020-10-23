@@ -46,7 +46,16 @@ const styles = EStyleSheet.create({
 
 const IMAGE_NUM_COLUMNS = 4;
 
-class AddProductStep1 extends Component {
+/**
+ * Renders image picker modal.
+ *
+ * @reactProps {object} imagePickerActions - Image picker actions.
+ * @reactProps {object} navigator - Navigator.
+ */
+export class AddProductStep1 extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     imagePickerActions: PropTypes.shape({
       clear: PropTypes.func,
@@ -67,6 +76,9 @@ class AddProductStep1 extends Component {
     Navigation.events().bindComponent(this);
   }
 
+  /**
+   * Loads icons. Sets selected photos to state.
+   */
   componentWillMount() {
     const { selected } = this.props;
     this.setState(
@@ -88,12 +100,20 @@ class AddProductStep1 extends Component {
     });
   }
 
+  /**
+   * ImagePicker modal navigation.
+   *
+   * @param {object} event - Information about the element on which the event occurred.
+   */
   navigationButtonPressed({ buttonId }) {
     if (buttonId === 'close') {
       Navigation.dismissModal(this.props.componentId);
     }
   }
 
+  /**
+   * Gets permissions to phone photo gallery.
+   */
   getImages = async () => {
     const { photos, hasMore, after } = this.state;
 
@@ -164,6 +184,11 @@ class AddProductStep1 extends Component {
     }
   };
 
+  /**
+   * Adds image to selected.
+   *
+   * @param {object} image - Image information.
+   */
   handleToggleImage = (image) => {
     const { selected } = this.state;
     let result = [...selected];
@@ -178,8 +203,18 @@ class AddProductStep1 extends Component {
     });
   };
 
+  /**
+   * Loads more images from phone photo gallery.
+   */
   handleLoadMore = () => this.getImages();
 
+  /**
+   * Renders images.
+   *
+   * @param {object} image - Image information.
+   *
+   * @return {JSX.Element}
+   */
   renderImage = (image) => {
     const { selected } = this.state;
     const isSelected = selected.some((item) => item === image.item);
@@ -206,6 +241,11 @@ class AddProductStep1 extends Component {
     );
   };
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { imagePickerActions } = this.props;
     const { photos, selected } = this.state;

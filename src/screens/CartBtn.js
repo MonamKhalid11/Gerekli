@@ -58,16 +58,34 @@ const styles = EStyleSheet.create({
   }
 });
 
-class CartBtn extends Component {
+/**
+ * Renders cart icon.
+ *
+ * @reactProps {object} cart - Cart information.
+ */
+export class CartBtn extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     cart: PropTypes.shape({
       amount: PropTypes.number,
     })
   };
 
+  /**
+   * Renders a badge with the number of products under cart icon.
+   *
+   * @return {JSX.Element}
+   */
   renderBadge = () => {
     const { cart } = this.props;
-    if (!cart.amount) {
+
+    const amount = Object.keys(cart.carts).reduce(
+      (result, el) => result + cart.carts[el].amount, 0
+    );
+
+    if (!amount) {
       return null;
     }
 
@@ -81,12 +99,17 @@ class CartBtn extends Component {
         }}
       >
         <Text style={styles.badgeTextStyle}>
-          {cart.amount}
+          {amount}
         </Text>
       </TouchableOpacity>
     );
   }
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     return (
       <TouchableOpacity

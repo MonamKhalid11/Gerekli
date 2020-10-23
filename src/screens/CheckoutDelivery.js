@@ -33,9 +33,20 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Checkout. Delivery screen.
+ *
+ * @reactProps {object} cart - Cart information.
+ * @reactProps {object} authActions - Auth actions.
+ */
 class Checkout extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     cart: PropTypes.shape(),
+    cartActions: PropTypes.shape(),
+    authActions: PropTypes.shape(),
   };
 
   constructor(props) {
@@ -46,6 +57,9 @@ class Checkout extends Component {
     Navigation.events().bindComponent(this);
   }
 
+  /**
+   * Gets fields and puts them in the state.
+   */
   componentDidMount() {
     const { authActions } = this.props;
     const { fieldsFetching } = this.state;
@@ -85,6 +99,11 @@ class Checkout extends Component {
     }
   }
 
+  /**
+   * Saves user data, redirects to next screen.
+   *
+   * @param {object} values - Form data.
+   */
   handleNextPress(values) {
     const { cart, cartActions } = this.props;
 
@@ -93,9 +112,14 @@ class Checkout extends Component {
       ...values,
     });
 
-    nav.pushCheckoutShipping(this.props.componentId, { total: cart.subtotal });
+    nav.pushCheckoutShipping(this.props.componentId, { cart, total: cart.subtotal });
   }
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { cart } = this.props;
     const { fieldsFetching, fields } = this.state;
@@ -116,8 +140,8 @@ class Checkout extends Component {
 
         <ProfileForm
           fields={fields}
-          cartFooterEnabled={true}
-          showTitles={true}
+          cartFooterEnabled
+          showTitles
           totalPrice={formatPrice(cart.total_formatted.price)}
           btnText={i18n.t('Next').toUpperCase()}
           onBtnPress={(values, validateCb) => {
@@ -135,7 +159,6 @@ class Checkout extends Component {
 export default connect(
   (state) => ({
     auth: state.auth,
-    cart: state.cart,
     state,
   }),
   (dispatch) => ({

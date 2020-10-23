@@ -72,7 +72,17 @@ const formOptions = {
   },
 };
 
+/**
+ * Renders payment phone form.
+ *
+ * @param {function} onInit - Determines which form should be rendered.
+ *
+ * @return {JSX.Element}
+ */
 export default class PaymentPhoneForm extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     onInit: PropTypes.func,
     value: PropTypes.shape({}),

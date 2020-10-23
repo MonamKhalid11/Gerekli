@@ -6,7 +6,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import i18n from '../utils/i18n';
 
 // Component
-import Icon from '../components/Icon';
+import Icon from './Icon';
 
 const styles = EStyleSheet.create({
   container: {
@@ -88,21 +88,31 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders steps of the order checkout.
+ *
+ * @reactProps {string[]} steps - Steps to follow to place an order.
+ * @reactProps {number} step - Step number.
+ */
 export default class extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     steps: PropTypes.arrayOf(PropTypes.string),
     step: PropTypes.number,
   };
 
+  /**
+   * @ignore
+   */
   static defaultProps = {
-    steps: [
-      i18n.t('Authentication'),
-      i18n.t('Delivery'),
-      i18n.t('Shipping'),
-      i18n.t('Payment method'),
-    ],
-  };
+    steps: []
+  }
 
+  /**
+   * @ignore
+   */
   constructor(props) {
     super(props);
 
@@ -111,6 +121,9 @@ export default class extends Component {
     };
   }
 
+  /**
+   * Changes step number.
+   */
   componentDidMount() {
     const { step } = this.props;
     this.setState({
@@ -118,6 +131,24 @@ export default class extends Component {
     });
   }
 
+  getSteps() {
+    const { steps } = this.props;
+    if (steps.length) {
+      return steps;
+    }
+    return [
+      i18n.t('Authentication'),
+      i18n.t('Delivery'),
+      i18n.t('Shipping'),
+      i18n.t('Payment method'),
+    ];
+  }
+
+  /**
+   * Renders the step as an arrow.
+   *
+   * @return {JSX.Element}
+   */
   renderArrow = () => (
     <View style={styles.arrowContainer}>
       <View style={styles.arrowTop} />
@@ -125,9 +156,14 @@ export default class extends Component {
     </View>
   );
 
+  /**
+   * Renders completed steps.
+   *
+   * @return {JSX.Element[]}
+   */
   renderPassedSteps() {
     const { stepId } = this.state;
-    const { steps } = this.props;
+    const steps = this.getSteps();
     const stepsList = [];
     for (let i = 0; i < steps.length; i += 1) {
       if (i === stepId) {
@@ -145,8 +181,13 @@ export default class extends Component {
     return stepsList;
   }
 
+  /**
+   * Renders the active step.
+   *
+   * @return {JSX.Element}
+   */
   renderActiveStep() {
-    const { steps } = this.props;
+    const steps = this.getSteps();
     const { stepId } = this.state;
     const activeStep = steps[stepId];
     return (
@@ -162,8 +203,13 @@ export default class extends Component {
     );
   }
 
+  /**
+   * Renders upcoming steps.
+   *
+   * @return {JSX.Element[]}
+   */
   renderNextSteps() {
-    const { steps } = this.props;
+    const steps = this.getSteps();
     const { stepId } = this.state;
     const stepsList = [];
     for (let i = stepId + 1; i < steps.length; i += 1) {
@@ -181,6 +227,11 @@ export default class extends Component {
     return stepsList;
   }
 
+  /**
+   * Renders component.
+   *
+   * @returns {JSX.Element}
+   */
   render() {
     return (
       <View style={styles.container}>

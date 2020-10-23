@@ -49,7 +49,22 @@ const styles = EStyleSheet.create({
 const t = require('tcomb-form-native');
 const { Form } = t.form;
 
+/**
+ * Gets and renders a list of forms.
+ *
+ * @reactProps {string} btnText - The button text in the footer.
+ * @reactProps {boolean} cartFooterEnabled - Show footer flag.
+ * @reactProps {object} fields - Fields information.
+ * @reactProps {boolean} isEdit - Edit mode flag.
+ * @reactProps {function} onBtnPress - Function for the button in the footer.
+ * @reactProps {function} onSubmit - Function for buttons 'Save' and 'Register'.
+ * @reactProps {boolean} showTitles - Titles flag.
+ * @reactProps {string} totalPrice - Total price.
+ */
 export default class ProfileForm extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     fields: PropTypes.shape().isRequired,
     onSubmit: PropTypes.func.isRequired,
@@ -70,6 +85,9 @@ export default class ProfileForm extends Component {
     };
   }
 
+  /**
+   * Puts information about forms and fields in the state.
+   */
   componentDidMount() {
     const { fields } = this.props;
     const forms = [];
@@ -93,6 +111,14 @@ export default class ProfileForm extends Component {
     });
   }
 
+  /**
+   * Defines the type of the field.
+   *
+   * @param {object} field - Field information.
+   * @param {object[]} allFields - All fields.
+   *
+   * @return {object}
+   */
   getFieldType = (field, allFields) => {
     const label = field.description || '';
     const help = !field.required ? `${i18n.t('(Optional)')}` : '';
@@ -249,6 +275,13 @@ export default class ProfileForm extends Component {
     };
   };
 
+  /**
+   * Converting fields for the Tcomb library.
+   *
+   * @param {object[]} fields - All fields.
+   *
+   * @return {object}
+   */
   convertFieldsToTcomb = (fields) => {
     const formValues = {};
     const formFields = {};
@@ -303,6 +336,9 @@ export default class ProfileForm extends Component {
     };
   };
 
+  /**
+   * Validation check.
+   */
   handleValidate = () => {
     const { onSubmit } = this.props;
     let formsValues = {};
@@ -326,6 +362,12 @@ export default class ProfileForm extends Component {
     }
   };
 
+  /**
+   * Changes the contents of the fields.
+   *
+   * @param {object} values - All field values of the current form.
+   * @param {number} index - Form index.
+   */
   handleChange(values, index) {
     const { forms } = this.state;
     const newForms = [...forms];
@@ -360,6 +402,11 @@ export default class ProfileForm extends Component {
     });
   }
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { forms } = this.state;
     const { isEdit, showTitles } = this.props;

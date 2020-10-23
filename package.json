@@ -7,7 +7,10 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "styleguidist": "styleguidist server --config styleguidist.config.js",
+    "styleguidist-build": "styleguidist build --config styleguidist.config.js",
+    "esdoc": "./node_modules/.bin/esdoc"
   },
   "dependencies": {
     "@ptomasroos/react-native-multi-slider": "^2.2.2",
@@ -48,7 +51,13 @@
     "eslint": "^7.7.0",
     "jest": "^26.4.0",
     "metro-react-native-babel-preset": "^0.59.0",
-    "react-test-renderer": "16.13.1"
+    "react-test-renderer": "16.13.1",
+    "esdoc": "^1.1.0",
+    "esdoc-ecmascript-proposal-plugin": "^1.0.0",
+    "esdoc-jsx-plugin": "^1.0.0",
+    "esdoc-react-plugin": "^1.0.1",
+    "esdoc-standard-plugin": "^1.0.0",
+    "webpack": "^4.44.1"
   },
   "jest": {
     "preset": "react-native"

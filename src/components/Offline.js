@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { View, Text } from 'react-native';
+import {
+  View,
+  Text,
+} from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 const styles = EStyleSheet.create({
@@ -18,6 +20,11 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders a notification about no internet.
+ *
+ * @return {JSX.Element}
+ */
 export default class Offline extends Component {
   render() {
     return (

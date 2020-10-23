@@ -92,7 +92,19 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Button.
+ *
+ * @reactProps {object} style - Button styles.
+ * @reactProps {boolean} disabled - Button activity flag.
+ * @reactProps {function} onPress - Push function.
+ * @reactProps {string} type - Styles type.
+ * @reactProps {boolean} clear - Close button flag.
+ */
 export default class extends PureComponent {
+  /**
+   * @ignore
+   */
   static propTypes = {
     style: PropTypes.shape(),
     children: PropTypes.oneOfType([
@@ -104,10 +116,16 @@ export default class extends PureComponent {
     type: PropTypes.string,
   };
 
+  /**
+   * @ignore
+   */
   static defaultProps = {
     clear: false,
   };
 
+  /**
+   * Sets styles depending on type.
+   */
   getStyleByType() {
     const { type, clear } = this.props;
     switch (type) {
@@ -157,6 +175,11 @@ export default class extends PureComponent {
     }
   }
 
+  /**
+   * Renders component.
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { style, children, clear } = this.props;
     return (

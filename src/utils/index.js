@@ -218,3 +218,10 @@ export const orderStatuses = [
 export function getOrderStatus(status) {
   return orderStatuses.find(item => item.code === status);
 }
+
+export const getPaymentId = (res) => {
+  Object.keys(res.data.payments).forEach((key) => {
+    res.data.payments[key].payment_id = key;
+  });
+  return res;
+};

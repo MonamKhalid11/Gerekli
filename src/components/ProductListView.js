@@ -73,7 +73,16 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders a product card.
+ *
+ * @reactProps {object} product - Product information.
+ * @reactProps {function} onPress - Opens product screen.
+ */
 class ProductListView extends PureComponent {
+  /**
+   * @ignore
+   */
   static propTypes = {
     product: PropTypes.shape({
       item: PropTypes.object,
@@ -81,6 +90,11 @@ class ProductListView extends PureComponent {
     onPress: PropTypes.func,
   };
 
+  /**
+   * Renders discount.
+   *
+   * @return {JSX.Element}
+   */
   renderDiscount = () => {
     const { product } = this.props;
     const { item } = product;
@@ -100,6 +114,11 @@ class ProductListView extends PureComponent {
     );
   };
 
+  /**
+   * Renders price.
+   *
+   * @return {JSX.Element}
+   */
   renderPrice = () => {
     const { product } = this.props;
     const { item } = product;
@@ -134,6 +153,11 @@ class ProductListView extends PureComponent {
     );
   };
 
+  /**
+   * Renders rating.
+   *
+   * @return {JSX.Element}
+   */
   renderRating = () => {
     const {
       product: { item },
@@ -143,6 +167,11 @@ class ProductListView extends PureComponent {
     );
   };
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { product, onPress } = this.props;
     const { item } = product;

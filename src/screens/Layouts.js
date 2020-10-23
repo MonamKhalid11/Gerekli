@@ -41,7 +41,19 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders main screen.
+ *
+ * @reactProps {object} layoutsActions - Layouts actions.
+ * @reactProps {object} notifications - Notifications information.
+ * @reactProps {object} notificationsActions - Notifications actions.
+ * @reactProps {object} navigator - Navigator.
+ * @reactProps {object} layouts - Information about blocks for rendering.
+ */
 class Layouts extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     layoutsActions: PropTypes.shape({
       fetch: PropTypes.func,
@@ -63,6 +75,11 @@ class Layouts extends Component {
     this.pushNotificationOpenListener = null;
   }
 
+  /**
+   * Sets titles. Gets layouts. Registers 2 event listeners for notifications.
+   * 1. Shows notifications if they came.
+   * 2. Listens to click on notification.
+   */
   componentDidMount() {
     const { layoutsActions, componentId } = this.props;
     Navigation.mergeOptions(this.props.componentId, {
@@ -81,6 +98,9 @@ class Layouts extends Component {
     }
   }
 
+  /**
+   * Shows and hides notifications.
+   */
   componentWillReceiveProps(nextProps) {
     const { notificationsActions } = this.props;
 
@@ -112,12 +132,23 @@ class Layouts extends Component {
     }
   }
 
+  /**
+   * Removes event listeners for notifications.
+   */
   componentWillUnmount() {
     if (config.pushNotifications) {
       this.pushNotificationListener();
     }
   }
 
+  /**
+   * Renders layout.
+   *
+   * @param {object} block - Layout information.
+   * @param {number} index - Layout index.
+   *
+   * @return {JSX.Element}
+   */
   renderBlock = (block, index) => {
     if (!get(block, 'content.items')) {
       return null;
@@ -212,6 +243,11 @@ class Layouts extends Component {
     }
   };
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { layouts } = this.props;
     const blocksList = layouts.blocks.map((block, index) =>

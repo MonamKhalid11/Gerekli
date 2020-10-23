@@ -33,6 +33,18 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Application section wrapper.
+ *
+ * @param {string} title - Section title.
+ * @param {object} wrapperStyle - Styles for children wrapper.
+ * @param {object} containerStyle - Styles for section wrapper.
+ * @param {boolean} showRightButton - Right button flag.
+ * @param {string} rightButtonText - Right button text.
+ * @param {function} onRightButtonPress - Right button onPress function.
+ *
+ * @return {JSX.Element}
+ */
 const Section = ({
   children,
   title = '',
@@ -55,6 +67,9 @@ const Section = ({
   </View>
 );
 
+/**
+ * @ignore
+ */
 Section.propTypes = {
   title: PropTypes.string,
   wrapperStyle: PropTypes.oneOfType([PropTypes.shape({}), PropTypes.number]),

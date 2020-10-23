@@ -7,7 +7,6 @@ import { Navigation } from 'react-native-navigation';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { PRODUCT_NUM_COLUMNS } from '../utils';
 import i18n from '../utils/i18n';
-import Api from '../services/api';
 import { BLOCK_CATEGORIES } from '../constants';
 
 // Import actions.
@@ -35,7 +34,22 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders categories screen.
+ *
+ * @reactProps {object} navigator - Navigator.
+ * @reactProps {number, string} categoryId - Category id.
+ * @reactProps {number, string} companyId - Company id.
+ * @reactProps {object} category - Category information.
+ * @reactProps {object} vendors - Vendors information.
+ * @reactProps {object} products - Products information.
+ * @reactProps {object} layouts - Information about all blocks from the main page.
+ * @reactProps {object} productsActions - Products actions.
+ */
 class Categories extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     categoryId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     companyId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -68,14 +82,13 @@ class Categories extends Component {
     };
   }
 
+  /**
+   * Collects the content of the selected category.
+   */
   async componentDidMount() {
     const { products, categoryId, layouts } = this.props;
 
     let { category } = this.props;
-
-    if (!category) {
-      category = await Api.get('/categories/432?subcats=Y');
-    }
 
     if (categoryId) {
       const categories = layouts.blocks.find(
@@ -116,6 +129,11 @@ class Categories extends Component {
     });
   }
 
+  /**
+   * Updates products in the state.
+   *
+   * @param {*} nextProps - Incoming props.
+   */
   componentWillReceiveProps(nextProps) {
     const { products } = nextProps;
     const categoryProducts = products.items[this.activeCategoryId];
@@ -128,6 +146,10 @@ class Categories extends Component {
     }
   }
 
+  /**
+   * Loads products with selected filters.
+   * @param {number} page - Number of pages.
+   */
   handleLoad = (page = 1) => {
     const { products, productsActions, companyId } = this.props;
     const { filters } = this.state;
@@ -143,6 +165,11 @@ class Categories extends Component {
     );
   };
 
+  /**
+   * Returns all products with the selected category id.
+   *
+   * @param {object[]} items - All product information.
+   */
   findCategoryById(items) {
     const { categoryId } = this.props;
     const flatten = [];
@@ -158,6 +185,9 @@ class Categories extends Component {
     return flatten.find((i) => i.category_id == categoryId) || null;
   }
 
+  /**
+   * Auto-pagination.
+   */
   handleLoadMore() {
     const { products } = this.props;
     const { isLoadMoreRequest } = this.state;
@@ -174,6 +204,9 @@ class Categories extends Component {
     }
   }
 
+  /**
+   * Refresh products data.
+   */
   handleRefresh() {
     this.setState(
       {
@@ -183,6 +216,11 @@ class Categories extends Component {
     );
   }
 
+  /**
+   * Renders a sorted section.
+   *
+   * @return {JSX.Element}
+   */
   renderSorting() {
     const { productsActions, products } = this.props;
 
@@ -201,6 +239,11 @@ class Categories extends Component {
     );
   }
 
+  /**
+   * Renders header.
+   *
+   * @return {JSX.Element}
+   */
   renderHeader() {
     const { companyId, vendors } = this.props;
 
@@ -232,14 +275,29 @@ class Categories extends Component {
     );
   }
 
-  renderSpinner = () => <Spinner visible />;
+  /**
+   * Renders spinner.
+   *
+   * @return {JSX.Element}
+   */
+  renderSpinner = () => (
+    <Spinner visible />
+  );
 
+  /**
+   * Renders if there are no products in this section.
+   */
   renderEmptyList = () => (
     <Text style={styles.emptyList}>
       {i18n.t('There are no products in this section')}
     </Text>
   );
 
+  /**
+   * Renders footer.
+   *
+   * @return {JSX.Element}
+   */
   renderFooter() {
     const { products } = this.props;
 
@@ -250,6 +308,11 @@ class Categories extends Component {
     return null;
   }
 
+  /**
+   * Renders products.
+   *
+   * @return {JSX.Element}
+   */
   renderList() {
     const { products, refreshing } = this.state;
     return (
@@ -278,6 +341,11 @@ class Categories extends Component {
     );
   }
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { products } = this.props;
     return (

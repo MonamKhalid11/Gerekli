@@ -38,6 +38,15 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders vendor information.
+ *
+ * @param {function} onViewDetailPress - Opens vendor detail page.
+ * @param {string} logoUrl - Logo url.
+ * @param {number} productsCount - Number of vendor products.
+ *
+ * @return {JSX.Element}
+ */
 const VendorInfo = ({ onViewDetailPress, logoUrl, productsCount }) => (
   <Section containerStyle={{ paddingTop: 0 }} wrapperStyle={{ padding: 0 }}>
     <View style={styles.logoWrapper}>
@@ -54,6 +63,9 @@ const VendorInfo = ({ onViewDetailPress, logoUrl, productsCount }) => (
   </Section>
 );
 
+/**
+ * @ignore
+ */
 VendorInfo.propTypes = {
   productsCount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   logoUrl: PropTypes.string,

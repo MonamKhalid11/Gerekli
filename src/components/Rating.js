@@ -24,6 +24,15 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders raiting stars.
+ *
+ * @param {number} value - Number of start.
+ * @param {number} count - Number of reviews.
+ * @param {object} containerStyle - Styles.
+ *
+ * @return {JSX.Element}
+ */
 const Rating = ({ value, count, containerStyle }) => {
   const stars = [];
   const currentRating = Math.round(value);
@@ -58,6 +67,9 @@ const Rating = ({ value, count, containerStyle }) => {
   );
 };
 
+/**
+ * @ignore
+ */
 Rating.propTypes = {
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   count: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),

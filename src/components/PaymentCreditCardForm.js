@@ -15,11 +15,15 @@ const styles = EStyleSheet.create({
 });
 
 const t = require('tcomb-form-native');
-const Form = t.form.Form;
+// Validating length
+const cardNumber = t.refinement(t.Number, cardNumber => String(cardNumber).length >= 13);
+const expiryYear = t.refinement(t.String, expiryYear => expiryYear.length >= 2);
+
+const { Form } = t.form;
 const formFields = t.struct({
-  cardNumber: t.Number,
+  cardNumber,
   expiryMonth: t.Number,
-  expiryYear: t.Number,
+  expiryYear,
   cardholderName: t.String,
   ccv: t.Number,
   notes: t.maybe(t.String),
@@ -99,7 +103,17 @@ const formOptions = {
   },
 };
 
+/**
+ * Renders payment credit card form.
+ *
+ * @param {function} onInit - Determines which form should be rendered.
+ *
+ * @return {JSX.Element}
+ */
 export default class PaymentCreditCardForm extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     onInit: PropTypes.func,
   };

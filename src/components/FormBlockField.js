@@ -26,7 +26,15 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders a field for the FormBlock.
+ *
+ * @reactProps {string} title - Field title.
+ */
 export default class extends PureComponent {
+  /**
+   * @ignore
+   */
   static propTypes = {
     title: PropTypes.string,
     children: PropTypes.oneOfType([
@@ -37,6 +45,11 @@ export default class extends PureComponent {
     ]),
   };
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { title, children } = this.props;
     return (

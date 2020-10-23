@@ -45,13 +45,29 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders a gallery of product images.
+ *
+ * @reactProps {object} navigator - Navigator.
+ * @reactProps {function} onRemove - Remove function.
+ * @reactProps {string[]} images - Image links.
+ * @reactProps {number} activeIndex - Current image index.
+ */
 export default class Gallery extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     onRemove: PropTypes.func,
     images: PropTypes.arrayOf(PropTypes.string),
     activeIndex: PropTypes.number,
   };
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { images, activeIndex, onRemove } = this.props;
     if (!images.length) {

@@ -3,27 +3,23 @@ import { Navigation } from 'react-native-navigation';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { get } from 'lodash';
-import { View, Text, Alert, Image, FlatList } from 'react-native';
+import { View, Alert } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import Swipeout from 'react-native-swipeout';
-import debounce from 'lodash/debounce';
+import { get } from 'lodash';
 
 // Import actions.
 import * as cartActions from '../actions/cartActions';
 
 // Components
-import Icon from '../components/Icon';
 import Spinner from '../components/Spinner';
-import QtyOption from '../components/QtyOption';
-import CartFooter from '../components/CartFooter';
+import VendorsCartsList from '../components/VendorsCartsList';
+import CartProductList from '../components/CartProductList';
 
 // theme
-import theme from '../config/theme';
 import i18n from '../utils/i18n';
-import * as nav from '../services/navigation';
-import { formatPrice, getImagePath, isPriceIncludesTax } from '../utils';
+
 import { iconsMap } from '../utils/navIcons';
+import * as nav from '../services/navigation';
 
 // Styles
 const styles = EStyleSheet.create({
@@ -38,89 +34,19 @@ const styles = EStyleSheet.create({
     height: 20,
     fontSize: 20,
   },
-  productItemWrapper: {
-    marginBottom: 15,
-  },
-  productItem: {
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#F1F1F1',
-    flexDirection: 'row',
-    paddingBottom: 8,
-    padding: 14,
-    width: '100%',
-    overflow: 'hidden',
-  },
-  productItemImage: {
-    width: 100,
-    height: 100,
-    resizeMode: 'contain',
-  },
-  productItemDetail: {
-    marginLeft: 14,
-    marginRight: 14,
-    width: '70%',
-  },
-  productItemName: {
-    fontSize: '0.9rem',
-    color: 'black',
-    marginBottom: 5,
-    textAlign: 'left',
-    fontWeight: 'bold',
-  },
-  productItemPrice: {
-    fontSize: '0.7rem',
-    color: 'black',
-    textAlign: 'left',
-  },
-  emptyListContainer: {
-    marginTop: '3rem',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  emptyListIconWrapper: {
-    backgroundColor: '#3FC9F6',
-    width: '12rem',
-    height: '12rem',
-    borderRadius: '6rem',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emptyListIcon: {
-    backgroundColor: 'transparent',
-    color: '#fff',
-    fontSize: '6rem',
-  },
-  emptyListHeader: {
-    fontSize: '1.2rem',
-    fontWeight: 'bold',
-    color: 'black',
-    marginTop: '1rem',
-  },
-  emptyListDesc: {
-    fontSize: '1rem',
-    color: '#24282b',
-    marginTop: '0.5rem',
-  },
-  qtyContainer: {
-    position: 'absolute',
-    right: 14,
-    bottom: 0,
-  },
-  totalWrapper: {
-    marginTop: 6,
-    marginLeft: 20,
-    marginRight: 20,
-  },
-  totalText: {
-    textAlign: 'right',
-    marginTop: 4,
-    color: '#979797',
-  },
 });
 
+/**
+ * Renders the cart modal.
+ *
+ * @reactProps {object} cartActions - Cart actions.
+ * @reactProps {object} auth - Authorization information.
+ * @reactProps {object} cart - Cart information.
+ */
 class Cart extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     cartActions: PropTypes.shape({
       fetch: PropTypes.func,
@@ -133,39 +59,42 @@ class Cart extends Component {
       token: PropTypes.string,
     }),
     cart: PropTypes.shape({}),
+    vendorCarts: PropTypes.shape({}),
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      products: [],
       fetching: true,
       refreshing: false,
     };
 
-    this.handleChangeAmountRequest = debounce(
-      this.handleChangeAmountRequest,
-      2000,
-    );
     Navigation.events().bindComponent(this);
   }
 
-  async componentDidMount() {
+  /**
+   * Gets cart data.
+   */
+  componentDidMount() {
     this.props.cartActions.fetch();
   }
 
+  /**
+   * Updates the number of products in the state.
+   *
+   * @param {object} nextProps - Incoming props.
+   */
   componentWillReceiveProps(nextProps) {
     const { cart, auth } = nextProps;
+
     if (cart.fetching) {
       return;
     }
 
-    const products = Object.keys(cart.products).map((key) => {
-      const result = cart.products[key];
-      result.cartId = key;
-      return result;
-    });
+    const products = Object.keys(get(cart, 'carts.general.products', {})).map(
+      (key) => cart.products[key],
+    );
 
     this.setState({
       products,
@@ -196,6 +125,11 @@ class Cart extends Component {
     });
   }
 
+  /**
+   * Cart modal navigation.
+   *
+   * @param {object} event - Information about the element on which the event occurred.
+   */
   navigationButtonPressed({ buttonId }) {
     const { cartActions } = this.props;
     if (buttonId === 'clearCart') {
@@ -218,213 +152,97 @@ class Cart extends Component {
     }
   }
 
-  handleRemoveProduct = (product) => {
-    const { cartActions } = this.props;
-    cartActions.remove(product.cartId);
-  };
-
-  handleChangeAmountRequest(item) {
-    const { cartActions } = this.props;
-    cartActions.change(item.cartId, item);
-  }
-
-  renderProductItem = (item) => {
-    const { cartActions } = this.props;
-    let productImage = null;
-    const imageUri = getImagePath(item);
-    if (imageUri) {
-      productImage = (
-        <Image source={{ uri: imageUri }} style={styles.productItemImage} />
-      );
-    }
-
-    const swipeoutBtns = [
-      {
-        text: i18n.t('Delete'),
-        type: 'delete',
-        onPress: () => this.handleRemoveProduct(item),
-      },
-    ];
-
-    const step = parseInt(item.qty_step, 10) || 1;
-    const max = parseInt(item.max_qty, 10) || parseInt(item.in_stock, 10);
-    const min = parseInt(item.min_qty, 10) || step;
-    const initialValue = parseInt(item.amount, 10);
-
-    const productTaxedPrice = get(item, 'taxed_price_formatted.price', '');
-    const productPrice =
-      productTaxedPrice || get(item, 'price_formatted.price', '');
-    const showTaxedPrice = isPriceIncludesTax(item);
-
-    return (
-      <View style={styles.productItemWrapper}>
-        <Swipeout
-          autoClose
-          right={swipeoutBtns}
-          backgroundColor={theme.$navBarBackgroundColor}>
-          <View style={styles.productItem}>
-            {productImage}
-            <View style={styles.productItemDetail}>
-              <Text style={styles.productItemName} numberOfLines={1}>
-                {item.product}
-              </Text>
-              <Text style={styles.productItemPrice}>
-                {`${item.amount} x ${productPrice}`}
-                {showTaxedPrice && (
-                  <Text style={styles.smallText}>
-                    {` (${i18n.t('Including tax')})`}
-                  </Text>
-                )}
-              </Text>
-            </View>
-            <View style={styles.qtyContainer}>
-              <QtyOption
-                max={max}
-                min={min}
-                initialValue={initialValue}
-                step={step}
-                onChange={(val) => {
-                  if (val <= parseInt(item.in_stock, 10)) {
-                    cartActions.changeAmount(item.cartId, val);
-                    this.handleChangeAmountRequest(item);
-                  }
-                }}
-              />
-            </View>
-          </View>
-        </Swipeout>
-      </View>
-    );
-  };
-
+  /**
+   * Refresh cart data.
+   */
   handleRefresh() {
     const { cartActions } = this.props;
     this.setState({ refreshing: true }, () => cartActions.fetch());
   }
 
-  handlePlaceOrder() {
-    const { auth } = this.props;
-    const products = {};
-    this.state.products.forEach((p) => {
-      products[p.product_id] = {
-        product_id: p.product_id,
-        amount: p.amount,
-      };
-    });
-    if (!auth.logged) {
-      nav.pushCheckoutAuth(this.props.componentId, { products });
-    } else {
-      nav.showCheckoutDelivery({ products });
-    }
-  }
+  /**
+   * Renders a list of products.
+   *
+   * @return {JSX.Element}
+   */
+  renderList() {
+    const { refreshing, fetching } = this.state;
+    const { cartActions, cart, auth, componentId } = this.props;
 
-  renderPlaceOrder() {
-    const { cart } = this.props;
-    const { products } = this.state;
-    if (!products.length) {
-      return null;
+    if (fetching) {
+      return this.renderSpinner();
     }
+
     return (
-      <CartFooter
-        totalPrice={formatPrice(cart.total_formatted.price)}
-        btnText={i18n.t('Checkout').toUpperCase()}
-        onBtnPress={() => this.handlePlaceOrder()}
+      <CartProductList
+        cart={cart.carts.general}
+        auth={auth}
+        componentId={componentId}
+        handleRefresh={this.handleRefresh}
+        refreshing={refreshing}
+        cartActions={cartActions}
       />
     );
   }
 
-  renderEmptyList = () => {
-    const { fetching } = this.state;
+  /**
+   * Renders a list of vendor carts.
+   *
+   * @return {JSX.Element}
+   */
+  renderVendorsList = () => {
+    const { fetching, refreshing } = this.state;
+    const { cartActions, auth, componentId, cart } = this.props;
+
     if (fetching) {
-      return null;
+      return this.renderSpinner();
     }
+
+    const newCarts = Object.keys(cart.carts).reduce((result, el) => {
+      if (el !== 'general') {
+        result.push(cart.carts[el]);
+      }
+      return result;
+    }, []);
+
     return (
-      <View style={styles.emptyListContainer}>
-        <View style={styles.emptyListIconWrapper}>
-          <Icon name="add-shopping-cart" style={styles.emptyListIcon} />
-        </View>
-        <Text style={styles.emptyListHeader}>
-          {i18n.t('Your shopping cart is empty.')}
-        </Text>
-        <Text style={styles.emptyListDesc}>{i18n.t('Looking for ideas?')}</Text>
-      </View>
+      <VendorsCartsList
+        carts={newCarts}
+        auth={auth}
+        componentId={componentId}
+        handleRefresh={this.handleRefresh}
+        refreshing={refreshing}
+        cartActions={cartActions}
+      />
     );
   };
 
-  renderOrderDetail = () => {
-    const { products } = this.state;
-    const { cart } = this.props;
-
-    if (!products.length) {
-      return null;
-    }
-
-    return (
-      <View style={styles.totalWrapper}>
-        <Text style={styles.totalText}>
-          {`${i18n.t('Subtotal')}: ${get(
-            cart,
-            'subtotal_formatted.price',
-            '',
-          )}`}
-        </Text>
-        <Text style={styles.totalText}>
-          {`${i18n.t('Shipping')}: ${get(
-            cart,
-            'shipping_cost_formatted.price',
-            '',
-          )}`}
-        </Text>
-        <Text style={styles.totalText}>
-          {`${i18n.t('Taxes')}: ${get(
-            cart,
-            'tax_subtotal_formatted.price',
-            '',
-          )}`}
-        </Text>
-      </View>
-    );
-  };
-
-  renderList() {
-    const { products, fetching, refreshing } = this.state;
-
-    if (fetching) {
-      return null;
-    }
-
-    return (
-      <View style={styles.container}>
-        <FlatList
-          data={products}
-          keyExtractor={(item, index) => `${index}`}
-          renderItem={({ item }) => this.renderProductItem(item)}
-          onRefresh={() => this.handleRefresh()}
-          refreshing={refreshing}
-          ListEmptyComponent={() => this.renderEmptyList()}
-          ListFooterComponent={this.renderOrderDetail}
-        />
-        {this.renderPlaceOrder()}
-      </View>
-    );
-  }
-
+  /**
+   * Renders spinner.
+   *
+   * @return {JSX.Element}
+   */
   renderSpinner = () => {
     const { refreshing } = this.state;
     const { cart } = this.props;
 
-    if (refreshing) {
+    if (refreshing || !Object.keys(cart.carts).length) {
       return false;
     }
 
     return <Spinner visible={cart.fetching} />;
   };
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
+    const { cart } = this.props;
     return (
       <View style={styles.container}>
-        {this.renderList()}
-        {this.renderSpinner()}
+        {cart.isSeparateCart ? this.renderVendorsList() : this.renderList()}
       </View>
     );
   }

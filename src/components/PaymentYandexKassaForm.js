@@ -18,7 +18,17 @@ const Form = t.form.Form;
 const formFields = t.struct({});
 const formOptions = {};
 
+/**
+ * Renders payment yandex kassa form.
+ *
+ * @param {function} onInit - Determines which form should be rendered.
+ *
+ * @return {JSX.Element}
+ */
 export default class PaymentYandexKassaForm extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     onInit: PropTypes.func,
   };

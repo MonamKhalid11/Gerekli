@@ -22,7 +22,18 @@ const styles = EStyleSheet.create({
   },
 });
 
-class Discussion extends Component {
+/**
+ * Renders modal with discussions.
+ *
+ * @reactProps {object} navigator - Navigator.
+ * @reactProps {object} productDetail - Product detail.
+ * @reactProps {object} productActions - Product actions.
+ * @reactProps {object} discussion - Discussion information.
+ */
+export class Discussion extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     productDetail: PropTypes.shape({}),
     productsActions: PropTypes.shape({
@@ -44,6 +55,10 @@ class Discussion extends Component {
     Navigation.events().bindComponent(this);
   }
 
+  /**
+   * Loads icons. Sets title.
+   * Removes the add button if comments are disabled.
+   */
   componentWillMount() {
     const { discussion, productDetail } = this.props;
     let activeDiscussion = discussion.items[`p_${productDetail.product_id}`];
@@ -91,6 +106,9 @@ class Discussion extends Component {
     });
   }
 
+  /**
+   * Updates active discussion.
+   */
   componentWillReceiveProps(nextProps) {
     const { productDetail } = this.props;
     const activeDiscussion =
@@ -116,6 +134,9 @@ class Discussion extends Component {
     }
   }
 
+  /**
+   * Load more discussions.
+   */
   handleLoadMore() {
     const { productDetail } = this.props;
     const { discussion } = this.state;
@@ -129,6 +150,11 @@ class Discussion extends Component {
     }
   }
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { discussion } = this.state;
     return (

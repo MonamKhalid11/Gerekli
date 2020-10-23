@@ -94,14 +94,20 @@ const PAYMENTS = [
   PAYMENT_PHONE,
 ];
 
-class CheckoutStepThree extends Component {
+/**
+ * Checkout. Payment screen.
+ *
+ * @reactProps {object} cart - Cart information.
+ * @reactProps {object} cartActions - Cart actions.
+ * @reactProps {object} paymentsActions - Payments actions.
+ * @reactProps {object} ordersActions - Orders actions.
+ * @reactProps {string} shipping_id - Shipping id.
+ */
+class CheckoutPayment extends Component {
   static propTypes = {
     cart: PropTypes.shape({
       items: PropTypes.arrayOf(PropTypes.object),
       fetching: PropTypes.bool,
-    }),
-    cartActions: PropTypes.shape({
-      clear: PropTypes.func,
     }),
     paymentsActions: PropTypes.shape({
       settlements: PropTypes.func,
@@ -110,6 +116,7 @@ class CheckoutStepThree extends Component {
       create: PropTypes.func,
     }),
     shipping_id: PropTypes.string,
+    cartActions: PropTypes.shape({}),
   };
 
   constructor(props) {
@@ -122,6 +129,9 @@ class CheckoutStepThree extends Component {
     };
   }
 
+  /**
+   * Defines the available payment methods.
+   */
   componentDidMount() {
     const { cart } = this.props;
     const items = Object.keys(cart.payments)
@@ -136,6 +146,9 @@ class CheckoutStepThree extends Component {
     });
   }
 
+  /**
+   * Place order button.
+   */
   handlePlaceOrder() {
     const { selectedItem } = this.state;
     if (!selectedItem) {
@@ -152,6 +165,9 @@ class CheckoutStepThree extends Component {
     return this.placeOrderAndComplete();
   }
 
+  /**
+   * Redirects to CheckoutComplete.
+   */
   placeOrderAndComplete() {
     const { cart, shipping_id, ordersActions, cartActions } = this.props;
     const values = this.paymentFormRef.getValue();
@@ -187,6 +203,15 @@ class CheckoutStepThree extends Component {
         ...orderInfo.payment_info,
         customer_phone: values.phone,
       };
+    } else if (values.cardNumber) {
+      orderInfo.payment_info = {
+        ...orderInfo.payment_info,
+        card_number: values.cardNumber,
+        expiry_month: values.expiryMonth,
+        expiry_year: values.expiryYear,
+        cardholder_name: values.cardholderName,
+        cvv2: values.ccv,
+      };
     }
 
     ordersActions
@@ -211,6 +236,9 @@ class CheckoutStepThree extends Component {
     return null;
   }
 
+  /**
+   * Redirects to SettlementsCompleteWebView.
+   */
   placeSettlements() {
     const { cart, shipping_id, ordersActions, paymentsActions } = this.props;
 
@@ -253,6 +281,7 @@ class CheckoutStepThree extends Component {
           nav.pushSettlementsCompleteWebView(this.props.componentId, {
             title: this.state.selectedItem.payment,
             orderId: data.order_id,
+            cart,
             ...response.data.data,
           });
         });
@@ -265,6 +294,13 @@ class CheckoutStepThree extends Component {
     return null;
   }
 
+  /**
+   * Renders payment methods.
+   *
+   * @param {object} item - Payment method information.
+   *
+   * @return {JSX.Element}
+   */
   renderItem = (item) => {
     const { payment } = this.state.selectedItem;
     // FIXME compare by name.
@@ -292,12 +328,22 @@ class CheckoutStepThree extends Component {
     );
   };
 
+  /**
+   * Renders header.
+   *
+   * @return {JSX.Element}
+   */
   renderHeader = () => (
     <View style={styles.stepsWrapper}>
       <CheckoutSteps step={3} />
     </View>
   );
 
+  /**
+   * Renders form fields.
+   *
+   * @return {JSX.Element}
+   */
   renderFooter() {
     const { cart, shipping_id, cartActions } = this.props;
     const { selectedItem } = this.state;
@@ -400,11 +446,21 @@ class CheckoutStepThree extends Component {
     );
   }
 
+  /**
+   * Renders spinner.
+   *
+   * @return {JSX.Element}
+   */
   renderSpinner = () => {
     const { fetching } = this.state;
     return <Spinner visible={fetching} mode="modal" />;
   };
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { cart } = this.props;
     return (
@@ -437,12 +493,12 @@ class CheckoutStepThree extends Component {
 
 export default connect(
   (state) => ({
-    cart: state.cart,
     auth: state.auth,
+    cart: state.cart,
   }),
   (dispatch) => ({
     ordersActions: bindActionCreators(ordersActions, dispatch),
     cartActions: bindActionCreators(cartActions, dispatch),
     paymentsActions: bindActionCreators(paymentsActions, dispatch),
   }),
-)(CheckoutStepThree);
+)(CheckoutPayment);

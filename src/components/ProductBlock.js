@@ -32,7 +32,18 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders product block.
+ *
+ * @reactProps {string} name - Block name.
+ * @reactProps {string} wrapper - Renders name if exists.
+ * @reactProps {object[]} items - Products information.
+ * @reactProps {function} onPress - Opens a product.
+ */
 export default class ProductBlock extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     name: PropTypes.string,
     wrapper: PropTypes.string,
@@ -44,6 +55,11 @@ export default class ProductBlock extends Component {
     items: [],
   };
 
+  /**
+   * Renders all products in the block.
+   *
+   * @return {JSX.Element}
+   */
   renderProduct = (items, index) => (
     <View style={styles.chunk} key={index}>
       {items.map((item, chunkIndex) => (
@@ -56,6 +72,11 @@ export default class ProductBlock extends Component {
     </View>
   );
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { items, name, wrapper } = this.props;
     const itemsList = chunk(items, PRODUCT_NUM_COLUMNS).map((items, index) =>

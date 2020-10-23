@@ -1,5 +1,4 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
 import { View, Text } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -16,6 +15,11 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders empty information block.
+ *
+ * @return {JSX.Element}
+ */
 const EmptyList = () => (
   <View style={styles.container}>
     <Text style={styles.header}>{i18n.t('List is empty')}.</Text>

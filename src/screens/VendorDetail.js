@@ -11,6 +11,7 @@ import * as vendorActions from '../actions/vendorActions';
 import * as productsActions from '../actions/productsActions';
 
 // Components
+import Spinner from '../components/Spinner';
 import Rating from '../components/Rating';
 import Section from '../components/Section';
 import SectionRow from '../components/SectionRow';
@@ -59,7 +60,21 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders a modal window with vendor information.
+ *
+ * @reactProps {object} navigator - Navigator.
+ * @reactProps {object} discussion - User comments about the vendor.
+ * @reactProps {string} vendorId - Vendor id.
+ * @reactProps {object} auth - Authorization information.
+ * @reactProps {object} vendors - Vendors information.
+ * @reactProps {object} vendorActions - Vendor actions.
+ * @reactProps {object} productsActions - Products actions.
+ */
 export class VendorDetail extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     discussion: PropTypes.shape({
       items: PropTypes.shape({}),
@@ -85,9 +100,7 @@ export class VendorDetail extends Component {
 
     this.requestSent = true;
     this.state = {
-      vendor: {
-        company_id: '',
-      },
+      currentVendor: null,
       discussion: {
         average_rating: 0,
         posts: [],
@@ -101,21 +114,11 @@ export class VendorDetail extends Component {
     Navigation.events().bindComponent(this);
   }
 
+  /**
+   * Gets the vendor if it is not already there. Gets discussions.
+   * Loads icons. Sets title.
+   */
   componentWillMount() {
-    const { vendorId, vendors, vendorActions, productsActions } = this.props;
-
-    if (!vendors.items[vendorId] && !vendors.fetching) {
-      vendorActions.fetch(vendorId);
-    } else {
-      this.setState({ vendor: vendors.items[vendorId] }, () => {
-        productsActions.fetchDiscussion(
-          this.state.vendor.company_id,
-          { page: this.state.discussion.search.page },
-          'M',
-        );
-      });
-    }
-
     Navigation.mergeOptions(this.props.componentId, {
       topBar: {
         title: {
@@ -131,42 +134,57 @@ export class VendorDetail extends Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
-    // Get active discussion.
-    const id = get(this.state.vendor, 'company_id', '0');
-    let activeDiscussion = nextProps.discussion.items[`m_${id}`];
-    if (!activeDiscussion) {
-      activeDiscussion = {
-        average_rating: 0,
-        posts: [],
-        search: {
-          page: 1,
-          total_items: 0,
-        },
-      };
-    }
+  /**
+   * Gets vendor data.
+   */
+  componentDidMount() {
+    const { vendorId, vendorActions } = this.props;
+    const { discussion } = this.state;
 
-    this.setState({
-      vendor: nextProps.vendors.items[nextProps.vendorId],
-      discussion: activeDiscussion,
-    });
+    vendorActions.fetch(vendorId, undefined, { page: discussion.search.page });
   }
 
+  /**
+   * Formats vendor comments.
+   */
+  componentDidUpdate() {
+    const { vendors, discussion } = this.props;
+    const { currentVendor } = this.state;
+
+    if (vendors.currentVendor && Object.keys(discussion.items).length) {
+      const activeDiscussion = discussion.items[`m_${vendors.currentVendor.company_id}`];
+      if (currentVendor !== vendors.currentVendor && activeDiscussion) {
+        this.setState({
+          currentVendor: vendors.currentVendor,
+          discussion: activeDiscussion,
+        });
+      }
+    }
+  }
+
+  /**
+   * Vendor detail modal navigation.
+   *
+   * @param {object} event - Information about the element on which the event occurred.
+   */
   navigationButtonPressed({ buttonId }) {
     if (buttonId === 'close') {
       Navigation.dismissModal(this.props.componentId);
     }
   }
 
+  /**
+   * Gets more discussions.
+   */
   handleLoadMore() {
-    const { discussion, vendor } = this.state;
-    // eslint-disable-next-line eqeqeq
-    const hasMore = discussion.search.total_items != discussion.posts.length;
+    const { discussion } = this.state;
+    const { vendors } = this.props;
+    const hasMore = discussion.search.total_items != discussion.posts.length; // eslint-disable-line
 
     if (hasMore && !this.requestSent && !this.props.discussion.fetching) {
       this.requestSent = true;
       this.props.productsActions.fetchDiscussion(
-        vendor.company_id,
+        vendors.currentVendor.company_id,
         {
           page: discussion.search.page + 1,
         },
@@ -175,76 +193,114 @@ export class VendorDetail extends Component {
     }
   }
 
+  /**
+   * Renders logo.
+   *
+   * @return {JSX.Element}
+   */
   renderLogo() {
-    const { vendor } = this.state;
+    const { vendors } = this.props;
     return (
       <Section>
         <View style={styles.logoWrapper}>
-          <Image source={{ uri: vendor.logo_url }} style={styles.logo} />
+          <Image
+            source={{ uri: vendors.currentVendor.logo_url }}
+            style={styles.logo}
+          />
         </View>
       </Section>
     );
   }
 
+  /**
+   * Renders description.
+   *
+   * @return {JSX.Element}
+   */
   renderDesc() {
-    const { vendor, discussion } = this.state;
+    const { discussion } = this.state;
+    const { vendors } = this.props;
     return (
       <Section>
         <View style={styles.vendorWrapper}>
-          <Text style={styles.vendorName}>{vendor.company}</Text>
+          <Text style={styles.vendorName}>
+            {vendors.currentVendor.company}
+          </Text>
           <Rating
             value={discussion.average_rating}
             count={discussion.search.total_items}
           />
           <Text style={styles.vendorDescription}>
-            {stripTags(vendor.description)}
+            {stripTags(vendors.currentVendor.description)}
           </Text>
         </View>
       </Section>
     );
   }
 
+  /**
+   * Renders contacts.
+   *
+   * @return {JSX.Element}
+   */
   renderContacts() {
-    const { vendor } = this.state;
+    const { vendors } = this.props;
     return (
       <Section title={i18n.t('Contact Information')}>
         <SectionRow
           name={i18n.t('E-mail')}
-          value={get(vendor.contact_information, 'email', '')}
+          value={vendors.currentVendor.contact_information.email}
         />
         <SectionRow
           name={i18n.t('Phone')}
-          value={get(vendor.contact_information, 'phone', '')}
+          value={vendors.currentVendor.contact_information.phone}
         />
         <SectionRow
           name={i18n.t('Fax')}
-          value={get(vendor.contact_information, 'fax', '')}
+          value={vendors.currentVendor.contact_information.fax}
         />
         <SectionRow
           name={i18n.t('Website')}
-          value={get(vendor.contact_information, 'url', '')}
+          value={vendors.currentVendor.contact_information.url}
           last
         />
       </Section>
     );
   }
 
+  /**
+   * Renders shipping information.
+   *
+   * @return {JSX.Element}
+   */
   renderShipping() {
-    const { vendor } = this.state;
+    const { vendors } = this.props;
+
     return (
       <Section title={i18n.t('Shipping address')}>
-        <Text style={styles.address}>{vendor.shipping_address.address},</Text>
         <Text style={styles.address}>
-          {vendor.shipping_address.state} {vendor.shipping_address.zipcode},
+          {vendors.currentVendor.shipping_address.address}
+          ,
         </Text>
-        <Text style={styles.address}>{vendor.shipping_address.country}</Text>
+        <Text style={styles.address}>
+          {vendors.currentVendor.shipping_address.state} {vendors.currentVendor.shipping_address.zipcode}
+          ,
+        </Text>
+        <Text style={styles.address}>
+          {vendors.currentVendor.shipping_address.country}
+        </Text>
       </Section>
     );
   }
 
+  /**
+   * Renders discussions.
+   *
+   * @return {JSX.Element}
+   */
   renderDiscussion() {
-    const { discussion, vendor } = this.state;
-    const { auth } = this.props;
+    const { discussion } = this.state;
+    const { auth, vendors } = this.props;
 
     let title = i18n.t('Reviews');
     // eslint-disable-next-line eqeqeq
@@ -264,7 +320,7 @@ export class VendorDetail extends Component {
           nav.pushWriteReview(this.props.componentId, {
             activeDiscussion: discussion,
             discussionType: 'M',
-            discussionId: vendor.company_id,
+            discussionId: vendors.currentVendor.company_id,
           });
         }}>
         <DiscussionList
@@ -278,11 +334,16 @@ export class VendorDetail extends Component {
     );
   }
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
-    const { vendor } = this.state;
+    const { vendors } = this.props;
 
-    if (!vendor.shipping_address) {
-      return null;
+    if (!vendors.currentVendor && vendors.fetching) {
+      return <Spinner visible />;
     }
 
     return (

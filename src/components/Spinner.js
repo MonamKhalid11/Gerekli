@@ -23,7 +23,15 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders spinner.
+ *
+ * @reactProps {boolean} visible -
+ */
 class Spinner extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     visible: PropTypes.bool,
     mode: PropTypes.string,
@@ -34,6 +42,11 @@ class Spinner extends Component {
     visible: false,
   };
 
+  /**
+   * Render the spinner as a modal.
+   *
+   * @return {JSX.Element}
+   */
   renderAsModal = () => {
     const { visible } = this.props;
     return (
@@ -53,6 +66,11 @@ class Spinner extends Component {
     );
   };
 
+  /**
+   * Render the spinner as a content.
+   *
+   * @return {JSX.Element}
+   */
   renderAsContent = () => {
     const { visible } = this.props;
     if (!visible) {
@@ -69,6 +87,11 @@ class Spinner extends Component {
     );
   };
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { mode } = this.props;
     if (mode === 'content') {

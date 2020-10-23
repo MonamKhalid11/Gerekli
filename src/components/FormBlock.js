@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { View, Text } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
-import Button from '../components/Button';
+import Button from './Button';
 
 const styles = EStyleSheet.create({
   container: {
@@ -34,7 +34,19 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders a block of form
+ *
+ * @reactProps {string} buttonText - Button text.
+ * @reactProps {string} title - Block title.
+ * @reactProps {function} onShowMorePress - Opens or closes a block.
+ * @reactProps {boolean} noContainerStyle - Block styles flag.
+ * @reactProps {JSX.Element} simpleView - Standard form.
+ */
 export default class FormBlock extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     children: PropTypes.oneOfType([
       PropTypes.object,
@@ -48,10 +60,16 @@ export default class FormBlock extends Component {
     simpleView: PropTypes.shape(),
   };
 
+  /**
+   * @ignore
+   */
   static defaultProps = {
     onShowMorePress: () => {},
   };
 
+  /**
+   * @ignore
+   */
   constructor(props) {
     super(props);
 
@@ -60,9 +78,14 @@ export default class FormBlock extends Component {
     };
   }
 
+  /**
+   * Renders Title
+   *
+   * @return {JSX.Element}
+   * @return {null}
+   */
   renderTitle() {
     const { title } = this.props;
-
     if (!title) {
       return null;
     }
@@ -70,6 +93,11 @@ export default class FormBlock extends Component {
     return <Text style={styles.header}>{title.toUpperCase()}</Text>;
   }
 
+  /**
+   * Renders the content of the block.
+   *
+   * @return {JSX.Element}
+   */
   renderContent() {
     const { buttonText, children, simpleView, onShowMorePress } = this.props;
     const { showMore } = this.state;
@@ -95,6 +123,11 @@ export default class FormBlock extends Component {
     return <View>{children}</View>;
   }
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { noContainerStyle } = this.props;
     return (

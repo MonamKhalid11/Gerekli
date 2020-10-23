@@ -13,11 +13,13 @@ import {
 
   NOTIFICATION_SHOW,
 
-  CART_REQUEST,
   CART_SUCCESS,
   CART_FAIL,
 
   CHANGE_AMOUNT,
+
+  CART_LOADING,
+  CART_LOADED,
 
   CART_REMOVE_REQUEST,
   CART_REMOVE_SUCCESS,
@@ -35,32 +37,63 @@ import {
   CART_REMOVE_COUPON_CODE,
 } from '../constants';
 
+// links
 import i18n from '../utils/i18n';
 import Api from '../services/api';
+import { getPaymentId } from '../utils/index';
 
-export function fetch(fetching = true, calculateShipping = 'A') {
-  return (dispatch) => {
-    dispatch({
-      type: CART_REQUEST,
-      payload: {
-        fetching,
-      }
-    });
-    return Api.get('/sra_cart_content/', { params: { calculate_shipping: calculateShipping } })
-      .then((response) => {
+export function fetch(calculateShipping = 'A') {
+  return async (dispatch) => {
+    try {
+      dispatch({
+        type: CART_LOADING,
+      });
+      const res = await Api.get('/sra_cart_content', { params: { calculate_shipping: calculateShipping } });
+      const carts = {};
+      if (!res.data.amount) {
+        dispatch({
+          type: CART_CLEAR_SUCCESS
+        });
+      } else if (res.data.all_vendor_ids) {
+        Object.keys(res.data.payments).forEach((key) => {
+          res.data.payments[key].payment_id = key;
+        });
+        carts[res.data.vendor_id] = res.data;
+        const uniqueVendorIds = res.data.all_vendor_ids
+          .filter(el => el !== res.data.vendor_id && el !== 0);
+        dispatch({
+          type: CART_LOADING,
+        });
+        const result = await Promise.all(uniqueVendorIds.map(async (el) => {
+          const res = await Api.get(`/sra_cart_content/${el}`, { params: { calculate_shipping: calculateShipping } });
+          return getPaymentId(res);
+        }));
+        for (let i = 0; i < result.length; i += 1) {
+          if (result[i].data.vendor_id) {
+            carts[result[i].data.vendor_id] = result[i].data;
+          }
+        }
         dispatch({
           type: CART_SUCCESS,
-          payload: response.data,
+          payload: { carts, isSeparateCart: true }
         });
-        return response;
-      })
-      .catch((error) => {
+      } else if (res.data.amount) {
+        getPaymentId(res);
+        carts.general = res.data;
         dispatch({
-          type: CART_FAIL,
-          error,
+          type: CART_SUCCESS,
+          payload: { carts, isSeparateCart: false }
         });
-        return error;
+      }
+      dispatch({
+        type: CART_LOADED,
       });
+    } catch (error) {
+      dispatch({
+        type: CART_FAIL,
+        error,
+      });
+    }
   };
 }
 
@@ -107,7 +140,7 @@ export function saveUserData(data) {
           type: CART_CONTENT_SAVE_SUCCESS,
           payload: data,
         });
-        fetch(false)(dispatch);
+        fetch()(dispatch);
       })
       .catch((error) => {
         dispatch({
@@ -152,7 +185,7 @@ export function add(data, notify = true) {
           });
         }
       })
-      .then(() => fetch(false)(dispatch))
+      .then(() => fetch()(dispatch))
       .catch((error) => {
         // Out of stock error
         if (error.response.data.status === 409) {
@@ -175,23 +208,45 @@ export function add(data, notify = true) {
   };
 }
 
-export function clear() {
-  return (dispatch) => {
-    dispatch({ type: CART_CLEAR_REQUEST });
-    return Api.delete('/sra_cart_content/', {})
-      .then((response) => {
+async function deleteProduct(resolve, ids, index) {
+  const idNumber = Number(ids[index]);
+  await Api.delete(`/sra_cart_content/${idNumber}/`, {});
+  const newIndex = index + 1;
+  if (newIndex === ids.length) {
+    resolve();
+  } else {
+    deleteProduct(resolve, ids, newIndex);
+  }
+}
+
+async function deleteProducts(ids) {
+  return new Promise((resolve) => {
+    deleteProduct(resolve, ids, 0);
+  });
+}
+
+export function clear(cart = '') {
+  return async (dispatch) => {
+    try {
+      if (cart.vendor_id) {
+        dispatch({ type: CART_CLEAR_REQUEST });
+        const productIds = Object.keys(cart.products);
+        await deleteProducts(productIds);
+        await fetch()(dispatch);
+      } else {
+        await dispatch({ type: CART_CLEAR_REQUEST });
+        const response = Api.delete('/sra_cart_content/', {});
         dispatch({
           type: CART_CLEAR_SUCCESS,
-          payload: response.data,
+          payload: response.data
         });
-        return response;
-      })
-      .catch((error) => {
-        dispatch({
-          type: CART_CLEAR_FAIL,
-          error,
-        });
+      }
+    } catch (error) {
+      dispatch({
+        type: CART_CLEAR_FAIL,
+        error,
       });
+    }
   };
 }
 
@@ -207,7 +262,7 @@ export function change(id, data) {
         });
         // Calculate cart
       })
-      .then(() => fetch(false)(dispatch))
+      .then(() => fetch()(dispatch))
       .catch((error) => {
         dispatch({
           type: CART_CHANGE_FAIL,
@@ -238,13 +293,15 @@ export function remove(id) {
   };
 }
 
-export function changeAmount(cid, amount) {
+export function changeAmount(cid, amount, id = '') {
   return (dispatch) => {
+    dispatch({ type: CART_LOADING });
     dispatch({
       type: CHANGE_AMOUNT,
       payload: {
         cid,
         amount,
+        id
       },
     });
   };

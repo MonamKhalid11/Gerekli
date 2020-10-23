@@ -51,6 +51,15 @@ const styles = EStyleSheet.create({
   },
 });
 
+
+/**
+ * Renders a category.
+ *
+ * @param {string} category - Category description.
+ * @param {string} onPress - Push function.
+ *
+ * @return {JSX.Element}
+ */
 const CategoryListView = ({ category, onPress }) => {
   const imageUri = getImagePath(category);
 
@@ -72,6 +81,9 @@ const CategoryListView = ({ category, onPress }) => {
   );
 };
 
+/**
+ * @ignore
+ */
 CategoryListView.propTypes = {
   category: PropTypes.shape({}),
   onPress: PropTypes.func,

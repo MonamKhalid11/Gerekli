@@ -41,7 +41,19 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders the option to select the quantity of products.
+ *
+ * @reactProps {number} step - Quantity change step.
+ * @reactProps {number} min - Minimum order quantity.
+ * @reactProps {number} initialValue - The initial quantity of items in the cart.
+ * @reactProps {number} max - Maximum order quantity.
+ * @reactProps {function} oChange - Changes the quantity of products.
+ */
 export default class extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     step: PropTypes.number,
     min: PropTypes.number,
@@ -62,6 +74,9 @@ export default class extends Component {
     total: 1,
   };
 
+  /**
+   * Sets the initial quantity of items in the cart.
+   */
   componentDidMount() {
     const { initialValue } = this.props;
     this.setState({
@@ -69,6 +84,9 @@ export default class extends Component {
     });
   }
 
+  /**
+   * Increases the quantity of products.
+   */
   increment = () => {
     const { total } = this.state;
     const { step, onChange, max } = this.props;
@@ -84,6 +102,9 @@ export default class extends Component {
     onChange(newTotal);
   };
 
+  /**
+   * Reduces the quantity of products.
+   */
   dicrement = () => {
     const { total } = this.state;
     const { step, onChange, min } = this.props;
@@ -99,6 +120,11 @@ export default class extends Component {
     onChange(newTotal);
   };
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { total } = this.state;
 

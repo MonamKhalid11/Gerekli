@@ -12,7 +12,19 @@ import * as ordersActions from '../actions/ordersActions';
 import * as cartActions from '../actions/cartActions';
 import * as paymentsActions from '../actions/paymentsActions';
 
+/**
+ * Renders Apple pay button.
+ *
+ * @reactProps {object} cart - Cart information.
+ * @reactProps {object} cartActions - Cart actions.
+ * @reactProps {function} onPress - Push function.
+ * @reactProps {object} orderActions - Order actions.
+ * @reactProps {object} paymentsActions - Payment actions.
+ */
 class InAppPayment extends React.Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     cartActions: PropTypes.shape({
       getUpdatedDetailsForShippingAddress: PropTypes.func,
@@ -26,6 +38,22 @@ class InAppPayment extends React.Component {
   };
 
   static defaultProps = {};
+
+  handleShippingOptionChange = throttle((event) => {
+    const { cartActions } = this.props;
+    const { shippingOption } = this.paymentRequest;
+
+    this.setState({
+      shippingId: shippingOption,
+    });
+
+    cartActions.getUpdatedDetailsForShippingOption([shippingOption])
+      .then((result) => {
+        const updatedDetail = this.getPaymentData(result).details;
+        event.updateWith(updatedDetail);
+      })
+      .catch(() => this.paymentRequest.fail());
+  }, 1000, { 'trailing': false });
 
   constructor(props) {
     super(props);
@@ -43,6 +71,13 @@ class InAppPayment extends React.Component {
     });
   }
 
+  /**
+   * Generates payment data.
+   *
+   * @param {object} cart - Cart information.
+   *
+   * @return {object}
+   */
   getPaymentData = (cart) => {
     const vendorNames = [];
     const methodData = [];
@@ -131,6 +166,9 @@ class InAppPayment extends React.Component {
     };
   };
 
+  /**
+   * Creates a payment request.
+   */
   initPaymentRequest = async () => {
     const { cart } = this.props;
     const { methodData, details, options } = this.getPaymentData(cart);
@@ -146,6 +184,9 @@ class InAppPayment extends React.Component {
     stripe.completeApplePayRequest();
   };
 
+  /**
+   * Works when the delivery address changes.
+   */
   handleShippingAddressChange = (event) => {
     const { cart, cartActions } = this.props;
     const { shippingAddress } = this.paymentRequest;
@@ -174,27 +215,9 @@ class InAppPayment extends React.Component {
       });
   };
 
-  handleShippingOptionChange = throttle(
-    (event) => {
-      const { cartActions } = this.props;
-      const { shippingOption } = this.paymentRequest;
-
-      this.setState({
-        shippingId: shippingOption,
-      });
-
-      cartActions
-        .getUpdatedDetailsForShippingOption([shippingOption])
-        .then((result) => {
-          const updatedDetail = this.getPaymentData(result).details;
-          event.updateWith(updatedDetail);
-        })
-        .catch(() => this.paymentRequest.fail());
-    },
-    1000,
-    { trailing: false },
-  );
-
+  /**
+   * Cancels the payment request on error.
+   */
   handleShowError = () => {
     this.paymentRequest.removeEventListener(
       'shippingaddresschange',
@@ -208,6 +231,11 @@ class InAppPayment extends React.Component {
     this.paymentRequest.abort();
   };
 
+  /**
+   * Saves the order, makes a request for payment.
+   *
+   * @param {string} paymentID - Payment ID.
+   */
   handleApplePay = (paymentID) => {
     const {
       ordersActions,
@@ -278,6 +306,9 @@ class InAppPayment extends React.Component {
       .catch((error) => this.handleShowError(error));
   };
 
+  /**
+   * Pressing the pay button.
+   */
   handlePayPresed = () => {
     const { cart } = this.props;
     let paymentID = null;
@@ -298,6 +329,11 @@ class InAppPayment extends React.Component {
     // this.handleApplePay(paymentID);
   };
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { onPress } = this.props;
     if (Platform.OS === 'ios' && config.applePay) {

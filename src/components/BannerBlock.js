@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Text, View, Image, I18nManager, TouchableOpacity } from 'react-native';
+import {
+  I18nManager, Image, Text, TouchableOpacity, View
+} from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swiper from 'react-native-swiper';
 import { get } from 'lodash';
+import { stripTags } from '../utils';
 
 const styles = EStyleSheet.create({
   container: {
@@ -14,6 +17,15 @@ const styles = EStyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'contain',
+  },
+  textBannerWrapper: {
+    height: '100%',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  textBanner: {
+    textAlign: 'center',
+    fontSize: '1.3rem',
   },
   header: {
     fontWeight: 'bold',
@@ -27,7 +39,18 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Block with banners inside the swiper.
+ *
+ * @reactProps {string} name - Block name.
+ * @reactProps {string} wrapper - If passed, then the block name is rendered.
+ * @reactProps {object[]} items - An array of objects describing each banner.
+ * @reactProps {function} onPress - Go to banner detail page.
+ */
 export default class BannerBlocks extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     name: PropTypes.string,
     wrapper: PropTypes.string,
@@ -35,20 +58,39 @@ export default class BannerBlocks extends Component {
     onPress: PropTypes.func,
   };
 
+  /**
+   * @ignore
+   */
   static defaultProps = {
     items: [],
   };
 
+  /**
+   * Renders image.
+   *
+   * @param {object} item - Banner information.
+   * @param {number} index - Banner index.
+   */
   renderImage = (item, index) => {
     const imageUri = get(item, 'main_pair.icon.http_image_path');
-
+    const { onPress } = this.props;
     return (
-      <TouchableOpacity key={index} onPress={() => this.props.onPress(item)}>
-        <Image source={{ uri: imageUri }} style={styles.img} />
+      <TouchableOpacity
+        key={index}
+        onPress={() => onPress(item)}
+      >
+        {imageUri
+          ? <Image source={{ uri: imageUri }} style={styles.img} />
+          : <View style={styles.textBannerWrapper}><Text style={styles.textBanner}>{stripTags(item.description)}</Text></View>}
       </TouchableOpacity>
     );
   };
 
+  /**
+   * Renders component.
+   *
+   * @returns {JSX.Element}
+   */
   render() {
     const { items, name, wrapper } = this.props;
     const itemsList = items.map((item, index) => this.renderImage(item, index));
