@@ -1,10 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  View,
-  Text,
-  FlatList,
-} from 'react-native';
+import { View, Text, FlatList } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { get } from 'lodash';
 
@@ -33,7 +29,7 @@ const styles = EStyleSheet.create({
     textAlign: 'right',
     marginTop: 4,
     color: '#979797',
-  }
+  },
 });
 
 /**
@@ -52,7 +48,11 @@ const renderOrderDetail = (products, cart) => {
         {`${i18n.t('Subtotal')}: ${get(cart, 'subtotal_formatted.price', '')}`}
       </Text>
       <Text style={styles.totalText}>
-        {`${i18n.t('Shipping')}: ${get(cart, 'shipping_cost_formatted.price', '')}`}
+        {`${i18n.t('Shipping')}: ${get(
+          cart,
+          'shipping_cost_formatted.price',
+          '',
+        )}`}
       </Text>
       <Text style={styles.totalText}>
         {`${i18n.t('Taxes')}: ${get(cart, 'tax_subtotal_formatted.price', '')}`}
@@ -74,7 +74,12 @@ const renderOrderDetail = (products, cart) => {
  * @return {JSX.Element}
  */
 const CartProductList = ({
-  cart, auth, componentId, handleRefresh, refreshing, cartActions
+  cart,
+  auth,
+  componentId,
+  handleRefresh,
+  refreshing,
+  cartActions,
 }) => {
   let newProducts = [];
   if (cart) {
@@ -111,30 +116,28 @@ const CartProductList = ({
    *
    * @return {JSX.Element}
    */
-    const renderPlaceOrder = (cart, products, auth) => {
-      if (!products.length) {
-        return null;
-      }
-      return (
-        <CartFooter
-          totalPrice={formatPrice(cart.total_formatted.price)}
-          btnText={i18n.t('Checkout').toUpperCase()}
-          onBtnPress={
-            () => handlePlaceOrder(
-              auth, products, cart
-            )
-          }
-        />
-      );
-    };
+  const renderPlaceOrder = (cart, products, auth) => {
+    if (!products.length) {
+      return null;
+    }
+    return (
+      <CartFooter
+        totalPrice={formatPrice(cart.total_formatted.price)}
+        btnText={i18n.t('Checkout').toUpperCase()}
+        onBtnPress={() => handlePlaceOrder(auth, products, cart)}
+      />
+    );
+  };
 
   return (
     <View style={styles.container}>
       <FlatList
         data={newProducts}
         keyExtractor={(item, index) => `${index}`}
-        renderItem={({ item }) => <CartProductitem item={item} cartActions={cartActions} />}
-        onRefresh={() => handleRefresh()}
+        renderItem={({ item }) => (
+          <CartProductitem item={item} cartActions={cartActions} />
+        )}
+        onRefresh={handleRefresh}
         refreshing={refreshing}
         ListEmptyComponent={() => <EmptyCart />}
         ListFooterComponent={() => renderOrderDetail(newProducts, cart)}
@@ -151,7 +154,7 @@ CartProductList.propTypes = {
   }),
   refreshing: PropTypes.bool,
   handleRefresh: PropTypes.func,
-  cartActions: PropTypes.shape({})
+  cartActions: PropTypes.shape({}),
 };
 
 export default CartProductList;

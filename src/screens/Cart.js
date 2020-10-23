@@ -19,7 +19,6 @@ import CartProductList from '../components/CartProductList';
 import i18n from '../utils/i18n';
 
 import { iconsMap } from '../utils/navIcons';
-import * as nav from '../services/navigation';
 
 // Styles
 const styles = EStyleSheet.create({
@@ -155,10 +154,10 @@ class Cart extends Component {
   /**
    * Refresh cart data.
    */
-  handleRefresh() {
+  handleRefresh = () => {
     const { cartActions } = this.props;
     this.setState({ refreshing: true }, () => cartActions.fetch());
-  }
+  };
 
   /**
    * Renders a list of products.
