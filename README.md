@@ -14,3 +14,16 @@ A mobile application based on React Native
 * [Android Studio](https://developer.android.com/studio/index.html)
 * [Testflight](https://developer.apple.com/testflight/)
 * [ItunesConnect](http://itunesconnect.apple.com)
+
+### Documentation
+
+The documentation is based on the [esdoc](https://esdoc.org/) library.
+
+Run the command below to generate documentation:
+```
+npm run esdoc
+```
+To view the documentation, open the generated file in a browser:
+```
+./docs/esdoc/index.html
+```
