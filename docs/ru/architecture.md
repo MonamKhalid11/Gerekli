@@ -1,3 +1,4 @@
+```
 root/
 ├── tests/
 │    ├── actions/             <- Тесты на обработку запросов
@@ -27,3 +28,4 @@ root/
 ├── index.android.js          <- Файл запуска приложения
 ├── metro.config.js           <- Инструкции для metro
 └── postinstall.sh            <- Скрипт для удаления старых зависимостей из node_modules
+```
