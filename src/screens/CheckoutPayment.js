@@ -494,7 +494,6 @@ class CheckoutPayment extends Component {
 export default connect(
   (state) => ({
     auth: state.auth,
-    cart: state.cart,
   }),
   (dispatch) => ({
     ordersActions: bindActionCreators(ordersActions, dispatch),

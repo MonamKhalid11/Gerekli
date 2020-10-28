@@ -112,7 +112,10 @@ class Checkout extends Component {
       ...values,
     });
 
-    nav.pushCheckoutShipping(this.props.componentId, { cart, total: cart.subtotal });
+    nav.pushCheckoutShipping(this.props.componentId, {
+      cart,
+      total: cart.subtotal,
+    });
   }
 
   /**

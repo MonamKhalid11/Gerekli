@@ -224,6 +224,8 @@ class CheckoutShipping extends Component {
    * Redirects to CheckoutPayment.
    */
   handleNextPress() {
+    const { cart } = this.props;
+
     nav.pushCheckoutPayment(this.props.componentId, {
       cart,
       shipping_id: this.state.shipping_id,
