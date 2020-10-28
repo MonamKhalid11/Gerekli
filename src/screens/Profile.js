@@ -116,15 +116,15 @@ class ProfileEdit extends Component {
     pagesActions.fetch(config.layoutId);
   }
 
-  renderAddVendorFields() {
-    const { profile } = this.props;
-
-    if (profile.user_type !== USER_TYPE_VENDOR) {
-      return null;
-    }
-
+  renderVendorFields() {
     return (
       <>
+        <View style={styles.signInSectionContainer}>
+          <Text style={styles.signInSectionText}>
+            {i18n.t('Seller').toUpperCase()}
+          </Text>
+        </View>
+
         <TouchableOpacity
           onPress={() => nav.pushVendorManageOrders(this.props.componentId)}
           style={styles.signInBtnContainer}>
@@ -158,21 +158,17 @@ class ProfileEdit extends Component {
     );
   }
 
-  renderPages = () => {
-    const { pages } = this.props;
-
+  renderPages = (pages) => {
     return (
       <View>
         <View style={styles.signInSectionContainer}>
           <Text style={styles.signInSectionText}>
-            {i18n.t('Seller').toUpperCase()}
+            {i18n.t('Pages').toUpperCase()}
           </Text>
         </View>
-        {this.renderAddVendorFields()}
-        {pages.items.map((page, index) => {
+        {pages.items.map((page) => {
           return (
             <TouchableOpacity
-              key={index}
               style={styles.signInBtnContainer}
               onPress={() =>
                 registerDrawerDeepLinks(
@@ -194,8 +190,7 @@ class ProfileEdit extends Component {
     );
   };
 
-  renderSignedIn = () => {
-    const { auth, cart } = this.props;
+  renderSignedIn = (auth, cart) => {
     return (
       <View style={styles.signInWrapper}>
         <View>
@@ -232,13 +227,7 @@ class ProfileEdit extends Component {
     );
   };
 
-  renderSignedInMenu = () => {
-    const { authActions, auth } = this.props;
-
-    if (!auth.logged) {
-      return null;
-    }
-
+  renderSignedInMenu = (authActions) => {
     return (
       <>
         <View style={styles.signInSectionContainer}>
@@ -281,13 +270,17 @@ class ProfileEdit extends Component {
   };
 
   render() {
+    const { profile, pages, auth, cart, authActions } = this.props;
+
     return (
       <ScrollView style={styles.container}>
-        {this.renderSignedIn()}
+        {this.renderSignedIn(auth, cart)}
 
-        {this.renderSignedInMenu()}
+        {auth.logged && this.renderSignedInMenu(authActions)}
 
-        {this.renderPages()}
+        {profile.user_type === USER_TYPE_VENDOR && this.renderVendorFields()}
+
+        {this.renderPages(pages)}
       </ScrollView>
     );
   }
