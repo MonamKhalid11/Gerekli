@@ -24,13 +24,6 @@ const styles = EStyleSheet.create({
     width: '100%',
     height: 130,
   },
-  signInWrapper: {
-    backgroundColor: '#e5efff',
-    paddingLeft: 14,
-    paddingRight: 14,
-    paddingTop: 10,
-    paddingBottom: 10,
-  },
   signInSectionContainer: {
     backgroundColor: theme.$grayColor,
     width: '100%',
@@ -53,6 +46,10 @@ const styles = EStyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  signInButtons: {
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
   signInBtnText: {
     color: '#424040',
   },
@@ -69,16 +66,20 @@ const styles = EStyleSheet.create({
     fontSize: '1rem',
   },
   signInInfo: {
+    paddingHorizontal: 14,
+    paddingTop: 10,
     paddingBottom: 30,
   },
   signOut: {
     paddingBottom: 30,
   },
   userNameText: {
+    color: '#424040',
     fontSize: '1rem',
     fontWeight: 'bold',
   },
   userMailText: {
+    color: '#424040',
     fontSize: '1rem',
   },
   IconNameWrapper: {
@@ -190,9 +191,33 @@ class ProfileEdit extends Component {
     );
   };
 
+  renderUserInformation = (cart) => {
+    if (
+      cart.user_data.b_firstname ||
+      cart.user_data.b_lastname ||
+      cart.user_data.email
+    ) {
+      return (
+        <>
+          {(cart.user_data.b_firstname ||
+            cart.user_data.b_lastname ||
+            cart.user_data.email) && (
+            <View style={styles.signInInfo}>
+              <Text style={styles.userNameText} numberOfLines={2}>
+                {cart.user_data.b_firstname} {cart.user_data.b_lastname}
+              </Text>
+              <Text style={styles.userMailText}>{cart.user_data.email}</Text>
+            </View>
+          )}
+        </>
+      );
+    }
+    return null;
+  };
+
   renderSignedIn = (auth, cart) => {
     return (
-      <View style={styles.signInWrapper}>
+      <>
         <View>
           {theme.$logoUrl !== '' && (
             <Image source={{ uri: theme.$logoUrl }} style={styles.logo} />
@@ -214,16 +239,9 @@ class ProfileEdit extends Component {
             </TouchableOpacity>
           </View>
         ) : (
-          <>
-            <View style={styles.signInInfo}>
-              <Text style={styles.userNameText} numberOfLines={2}>
-                {cart.user_data.b_firstname} {cart.user_data.b_lastname}
-              </Text>
-              <Text style={styles.userMailText}>{cart.user_data.email}</Text>
-            </View>
-          </>
+          this.renderUserInformation(cart)
         )}
-      </View>
+      </>
     );
   };
 
