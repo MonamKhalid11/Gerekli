@@ -6,7 +6,7 @@ import Swipeout from 'react-native-swipeout';
 import { get } from 'lodash';
 
 // Components
-import QtyOption from './QtyOption';
+import { QtyOption } from './QtyOption';
 
 // Links
 import i18n from '../utils/i18n';

@@ -5,7 +5,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { View, Alert } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { get } from 'lodash';
 
 // Import actions.
 import * as cartActions from '../actions/cartActions';

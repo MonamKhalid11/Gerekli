@@ -37,7 +37,7 @@ import DiscussionList from '../components/DiscussionList';
 import InAppPayment from '../components/InAppPayment';
 import SelectOption from '../components/SelectOption';
 import InputOption from '../components/InputOption';
-import QtyOption from '../components/QtyOption';
+import { QtyOption } from '../components/QtyOption';
 import SwitchOption from '../components/SwitchOption';
 import SectionRow from '../components/SectionRow';
 import Spinner from '../components/Spinner';
