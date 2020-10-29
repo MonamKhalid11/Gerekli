@@ -91,12 +91,20 @@ class Cart extends Component {
       return;
     }
 
-    const products = Object.keys(get(cart, 'carts.general.products', {})).map(
-      (key) => cart.products[key],
-    );
+    let productsAmount;
+    if (Object.keys(cart.carts).length) {
+      if (cart.isSeparateCart) {
+        productsAmount = Object.keys(cart.carts).reduce((accumulator, el) => {
+          return el !== 'general'
+            ? accumulator + cart.carts[el].amount
+            : accumulator;
+        }, 0);
+      } else {
+        productsAmount = cart.carts.general.amount;
+      }
+    }
 
     this.setState({
-      products,
       fetching: false,
       refreshing: false,
     });
@@ -119,7 +127,7 @@ class Cart extends Component {
         ...buttons,
       },
       bottomTab: {
-        badge: products.length ? `${products.length}` : null,
+        badge: productsAmount ? `${productsAmount}` : null,
       },
     });
   }

@@ -882,9 +882,7 @@ class ProductDetail extends Component {
 
         <TouchableOpacity
           style={styles.addToCartBtn}
-          onPress={() => {
-            this.handleAddToCart();
-          }}>
+          onPress={() => this.handleAddToCart()}>
           <Text style={styles.addToCartBtnText}>
             {i18n.t('Add to cart').toUpperCase()}
           </Text>

@@ -168,10 +168,9 @@ export function add(data, notify = true) {
   return (dispatch) => {
     dispatch({ type: ADD_TO_CART_REQUEST });
     return Api.post('/sra_cart_content/', data)
-      .then((response) => {
+      .then(() => {
         dispatch({
           type: ADD_TO_CART_SUCCESS,
-          payload: response.data,
         });
         if (notify) {
           dispatch({
