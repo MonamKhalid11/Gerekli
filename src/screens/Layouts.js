@@ -94,7 +94,9 @@ class Layouts extends Component {
 
     if (config.pushNotifications) {
       PushNotificaitons.Init();
-      this.pushNotificationListener = PushNotificaitons.RegisterPushListener(componentId);
+      this.pushNotificationListener = PushNotificaitons.RegisterPushListener(
+        componentId,
+      );
     }
   }
 
@@ -107,9 +109,6 @@ class Layouts extends Component {
     if (nextProps.notifications.items.length) {
       const notify =
         nextProps.notifications.items[nextProps.notifications.items.length - 1];
-      if (notify.closeLastModal) {
-        Navigation.dismissModal(this.props.componentId);
-      }
       Navigation.showOverlay({
         component: {
           name: 'Notification',

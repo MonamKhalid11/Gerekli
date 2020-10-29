@@ -16,7 +16,7 @@ export function hide(id) {
 }
 
 export function show(params = {
-  type: 'success', title: '', text: '', closeLastModal: false
+  type: 'success', title: '', text: '',
 }) {
   return (dispatch) => {
     setTimeout(() => {

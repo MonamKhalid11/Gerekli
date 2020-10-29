@@ -16,6 +16,7 @@ import {
   NOTIFICATION_SHOW,
 } from '../constants';
 
+import { Navigation } from 'react-native-navigation';
 import i18n from '../utils/i18n';
 import Api from '../services/api';
 
@@ -43,7 +44,7 @@ export function fetch(fetching = true) {
   };
 }
 
-export function add(data) {
+export function add(data, componentId) {
   return (dispatch) => {
     dispatch({
       type: WISH_LIST_ADD_REQUEST,
@@ -54,26 +55,26 @@ export function add(data) {
           type: WISH_LIST_ADD_SUCCESS,
           payload: response.data,
         });
+        Navigation.dismissModal(componentId);
         dispatch({
           type: NOTIFICATION_SHOW,
           payload: {
             type: 'success',
             title: i18n.t('Success'),
             text: i18n.t('The product was added to your Wish list.'),
-            closeLastModal: true,
           },
         });
         // Calculate cart
         fetch(false)(dispatch);
       })
       .catch((error) => {
+        Navigation.dismissModal(componentId);
         dispatch({
           type: NOTIFICATION_SHOW,
           payload: {
             type: 'error',
             title: i18n.t('Error'),
             text: i18n.t('This product is already in the wish list.'),
-            closeLastModal: true,
           },
         });
         dispatch({

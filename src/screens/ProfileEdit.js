@@ -51,9 +51,9 @@ class ProfileEdit extends Component {
 
   handleSave = (values) => {
     const { profile } = this.state;
-    const { authActions } = this.props;
+    const { authActions, componentId } = this.props;
     if (values) {
-      authActions.updateProfile(profile.user_id, values);
+      authActions.updateProfile(profile.user_id, values, componentId);
     }
   };
 

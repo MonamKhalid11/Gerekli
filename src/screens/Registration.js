@@ -69,10 +69,10 @@ class Registration extends Component {
     }
   }
 
-  handleRegister = (values) => {
-    const { authActions } = this.props;
+  handleRegister = async (values) => {
+    const { authActions, componentId } = this.props;
     if (values) {
-      authActions.createProfile(values);
+      authActions.createProfile(values, componentId);
     }
   };
 

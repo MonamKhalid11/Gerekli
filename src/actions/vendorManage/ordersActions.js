@@ -59,7 +59,6 @@ export function fetchOrder(id) {
             type: 'info',
             title: i18n.t('Information'),
             text: i18n.t('Order not found.'),
-            closeLastModal: false,
           },
         });
         return null;
@@ -76,7 +75,6 @@ export function fetchOrder(id) {
           type: 'info',
           title: i18n.t('Error'),
           text: i18n.t(error.errors.join('\n')),
-          closeLastModal: false,
         },
       });
 
@@ -112,7 +110,6 @@ export function updateStatus(id, status) {
           type: 'success',
           title: i18n.t('Success'),
           text: i18n.t('Status has been changed.'),
-          closeLastModal: false,
         },
       });
     } catch (error) {
@@ -122,7 +119,6 @@ export function updateStatus(id, status) {
           type: 'info',
           title: i18n.t('Error'),
           text: i18n.t(error.errors.join('\n')),
-          closeLastModal: false,
         },
       });
 

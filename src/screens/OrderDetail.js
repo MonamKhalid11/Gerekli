@@ -142,7 +142,6 @@ class OrderDetail extends Component {
           type: 'info',
           title: i18n.t('Information'),
           text: i18n.t('Order not found.'),
-          closeLastModal: false,
         });
         setTimeout(() => {
           nav.selectTab('profile');

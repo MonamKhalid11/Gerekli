@@ -488,7 +488,7 @@ class ProductDetail extends Component {
   handleAddToWishList() {
     const productOptions = {};
     const { product, selectedOptions } = this.state;
-    const { auth, wishListActions } = this.props;
+    const { auth, wishListActions, componentId } = this.props;
 
     if (!auth.logged) {
       return nav.showLogin();
@@ -509,7 +509,7 @@ class ProductDetail extends Component {
         product_options: productOptions,
       },
     };
-    return wishListActions.add({ products });
+    return wishListActions.add({ products }, componentId);
   }
 
   handleOptionChange(name, val) {
