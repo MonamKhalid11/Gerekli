@@ -11,7 +11,7 @@ import Spinner from '../components/Spinner';
 
 import i18n from '../utils/i18n';
 import Api from '../services/api';
-import { formatPrice, getImagePath, getCountryByCode } from '../utils';
+import { formatPrice, getImagePath } from '../utils';
 
 import { iconsMap } from '../utils/navIcons';
 import { Navigation } from 'react-native-navigation';
@@ -113,6 +113,9 @@ class CheckoutComplete extends Component {
       topBar: {
         title: {
           text: i18n.t('Checkout complete').toUpperCase(),
+        },
+        backButton: {
+          visible: false,
         },
         rightButtons: [
           {
@@ -270,41 +273,6 @@ class CheckoutComplete extends Component {
     });
 
     const date = new Date(orderDetail.timestamp * 1000);
-
-    let state;
-    const foundCountry = {
-      name: orderDetail.b_country,
-      states: [],
-      ...getCountryByCode(orderDetail.b_country),
-    };
-    state = foundCountry.states.filter((s) => s.code === orderDetail.b_state);
-    let foundState = {
-      name: orderDetail.b_state,
-    };
-    if (state.length) {
-      foundState = {
-        ...foundState,
-        ...state[0],
-      };
-    }
-
-    const foundCountryShipping = {
-      name: orderDetail.s_country,
-      states: [],
-      ...getCountryByCode(orderDetail.s_country),
-    };
-    state = foundCountryShipping.states.filter(
-      (s) => s.code === orderDetail.s_state,
-    );
-    let foundStateShipping = {
-      name: orderDetail.s_state,
-    };
-    if (state.length) {
-      foundStateShipping = {
-        ...foundState,
-        ...state[0],
-      };
-    }
 
     return (
       <View style={styles.container}>
