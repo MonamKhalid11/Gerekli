@@ -260,28 +260,6 @@ export function login(data) {
   };
 }
 
-// export function registration(token) {
-//   return (dispatch) => {
-//     dispatch({
-//       type: AUTH_REGESTRATION_SUCCESS,
-//       payload: {
-//         token,
-//         ttl: null,
-//       },
-//     });
-//     cartActions.fetch()(dispatch);
-//     dispatch({
-//       type: NOTIFICATION_SHOW,
-//       payload: {
-//         type: 'success',
-//         title: i18n.t('Registration'),
-//         text: i18n.t('Registration complete.'),
-//         closeLastModal: true,
-//       },
-//     });
-//   };
-// }
-
 export function logout() {
   return (dispatch) => {
     dispatch({
