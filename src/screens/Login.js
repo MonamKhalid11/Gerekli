@@ -81,16 +81,6 @@ class Login extends Component {
     if (nextProps.auth.logged) {
       setTimeout(() => Navigation.dismissModal(this.props.componentId), 1500);
     }
-    if (nextProps.auth.error && !nextProps.auth.fetching) {
-      navigator.showInAppNotification({
-        screen: 'Notification',
-        passProps: {
-          type: 'warning',
-          title: i18n.t('Error'),
-          text: i18n.t('Wrong password.'),
-        },
-      });
-    }
   }
 
   navigationButtonPressed({ buttonId }) {

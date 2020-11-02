@@ -124,7 +124,7 @@ export function updateProfile(id, params, componentId) {
           type: UPDATE_PROFILE_SUCCESS,
           payload: {},
         });
-        Navigation.dismissModal(componentId);
+        Navigation.dismissModal(componentId); // TODO
         dispatch({
           type: NOTIFICATION_SHOW,
           payload: {
@@ -255,6 +255,14 @@ export function login(data) {
         dispatch({
           type: AUTH_LOGIN_FAIL,
           payload: error.response.data,
+        });
+        dispatch({
+          type: NOTIFICATION_SHOW,
+          payload: {
+            type: 'warning',
+            title: i18n.t('Error'),
+            text: i18n.t('Wrong password.'),
+          },
         });
       });
   };
