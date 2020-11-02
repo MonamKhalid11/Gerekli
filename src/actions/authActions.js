@@ -124,7 +124,7 @@ export function updateProfile(id, params, componentId) {
           type: UPDATE_PROFILE_SUCCESS,
           payload: {},
         });
-        Navigation.dismissModal(componentId); // TODO
+        Navigation.pop(componentId);
         dispatch({
           type: NOTIFICATION_SHOW,
           payload: {
