@@ -223,7 +223,7 @@ class CheckoutPayment extends Component {
         if (!data) {
           return;
         }
-        cartActions.clear();
+        cartActions.clear(cart);
         nav.pushCheckoutComplete(this.props.componentId, {
           orderId: data.order_id,
         });

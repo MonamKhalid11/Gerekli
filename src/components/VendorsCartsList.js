@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  FlatList,
-} from 'react-native';
+import { FlatList } from 'react-native';
 
 // Components
 import VendorsCartsItem from './VendorsCartsItem';
@@ -20,7 +18,12 @@ import EmptyCart from './EmptyCart';
  * @return {JSX.Element}
  */
 const VendorsCartsList = ({
-  carts, auth, componentId, handleRefresh, refreshing, cartActions
+  carts,
+  auth,
+  componentId,
+  handleRefresh,
+  refreshing,
+  cartActions,
 }) => (
   <FlatList
     data={carts}
@@ -33,7 +36,8 @@ const VendorsCartsList = ({
         handleRefresh={handleRefresh}
         refreshing={refreshing}
         cartActions={cartActions}
-      />)}
+      />
+    )}
     ListEmptyComponent={() => <EmptyCart />}
   />
 );
@@ -46,7 +50,7 @@ VendorsCartsList.propTypes = {
   refreshing: PropTypes.bool,
   handleRefresh: PropTypes.func,
   cartActions: PropTypes.shape({}),
-  carts: PropTypes.arrayOf(PropTypes.shape({}))
+  carts: PropTypes.arrayOf(PropTypes.shape({})),
 };
 
 export default VendorsCartsList;

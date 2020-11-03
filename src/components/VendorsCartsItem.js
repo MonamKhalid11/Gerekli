@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import {
-  View,
-  Text,
-  TouchableOpacity
-} from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from './Icon';
 
@@ -23,14 +19,14 @@ const styles = EStyleSheet.create({
     backgroundColor: '#fff',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   titleWrapper: {
     flexDirection: 'row',
   },
   headerTitle: {
-    fontSize: 20
-  }
+    fontSize: 20,
+  },
 });
 
 /**
@@ -45,7 +41,12 @@ const styles = EStyleSheet.create({
  * @return {JSX.Element}
  */
 const VendorsCartsItem = ({
-  item, auth, componentId, handleRefresh, refreshing, cartActions
+  item,
+  auth,
+  componentId,
+  handleRefresh,
+  refreshing,
+  cartActions,
 }) => {
   const [cartIsOpen, setCartIsOpen] = useState(true);
 
@@ -54,11 +55,16 @@ const VendorsCartsItem = ({
    *
    * @param {string} title - Title of cart.
    */
-  const renderHeader = title => (
-    <TouchableOpacity style={styles.headerWrapper} onPress={() => setCartIsOpen(!cartIsOpen)}>
+  const renderHeader = (title) => (
+    <TouchableOpacity
+      style={styles.headerWrapper}
+      onPress={() => setCartIsOpen(!cartIsOpen)}>
       <View style={styles.titleWrapper}>
         <Text style={styles.headerTitle}>{title}</Text>
-        <Icon name={cartIsOpen ? 'arrow-drop-up' : 'arrow-drop-down'} style={styles.clearIcon} />
+        <Icon
+          name={cartIsOpen ? 'arrow-drop-up' : 'arrow-drop-down'}
+          style={styles.clearIcon}
+        />
       </View>
       {!cartIsOpen && <Text>{formatPrice(item.total_formatted.price)}</Text>}
     </TouchableOpacity>
@@ -97,7 +103,7 @@ VendorsCartsItem.propTypes = {
   }),
   refreshing: PropTypes.bool,
   handleRefresh: PropTypes.func,
-  cartActions: PropTypes.shape({})
+  cartActions: PropTypes.shape({}),
 };
 
 export default VendorsCartsItem;
