@@ -420,26 +420,10 @@ class ProductDetail extends Component {
 
   calculatePrice = () => {
     const { productsActions } = this.props;
-    const { product, amount, selectedOptions } = this.state;
+    const { product, selectedOptions } = this.state;
     productsActions
-      .recalculatePrice(product.product_id, amount, selectedOptions)
+      .recalculatePrice(product.product_id, selectedOptions)
       .then(() => this.setState({ fetching: false }));
-  };
-
-  handleShare = () => {
-    const { product } = this.state;
-    const url = `${config.siteUrl}index.php?dispatch=products.view&product_id=${product.product_id}`;
-    Share.share(
-      {
-        message: url,
-        title: product.product,
-        url,
-      },
-      {
-        dialogTitle: product.product,
-        tintColor: 'black',
-      },
-    );
   };
 
   handleApplePay = async (next) => {

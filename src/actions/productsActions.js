@@ -90,7 +90,7 @@ export function postDiscussion(data) {
   };
 }
 
-export function recalculatePrice(pid, amount, options) {
+export function recalculatePrice(pid, options) {
   function formatOptionsToUrl(selectedOptions) {
     const options = [];
     Object.keys(selectedOptions).forEach(
@@ -104,7 +104,7 @@ export function recalculatePrice(pid, amount, options) {
   return (dispatch) => {
     dispatch({ type: RECALCULATE_PRODUCT_PRICE_REQUEST });
 
-    return Api.get(`sra_products/${pid}/?${formatOptionsToUrl(options)}&amount=${amount}`)
+    return Api.get(`sra_products/${pid}/?${formatOptionsToUrl(options)}`)
       .then((response) => {
         dispatch({
           type: RECALCULATE_PRODUCT_PRICE_SUCCESS,
