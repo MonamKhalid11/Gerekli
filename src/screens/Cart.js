@@ -126,7 +126,7 @@ class Cart extends Component {
         ...buttons,
       },
       bottomTab: {
-        badge: productsAmount ? `${productsAmount}` : null,
+        badge: productsAmount !== undefined ? `${productsAmount}` : '',
       },
     });
   }

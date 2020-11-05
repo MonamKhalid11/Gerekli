@@ -86,8 +86,8 @@ class Layouts extends Component {
     // Listener for bottom tabs.
     // Removes last screen from navigation stack
     this.bottomTabEventListener = Navigation.events().registerBottomTabSelectedListener(
-      ({ selectedTabIndex }) => {
-        if (selectedTabIndex === 0) {
+      ({ selectedTabIndex, unselectedTabIndex }) => {
+        if (selectedTabIndex === 0 && unselectedTabIndex === 0) {
           Navigation.pop(componentId);
         }
       },

@@ -154,7 +154,7 @@ export class WishList extends Component {
 
     Navigation.mergeOptions(this.props.componentId, {
       bottomTab: {
-        badge: wishList.items.length ? `${wishList.items.length}` : null,
+        badge: wishList.items.length ? `${wishList.items.length}` : '',
       },
     });
   }
