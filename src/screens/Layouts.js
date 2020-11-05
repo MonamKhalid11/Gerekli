@@ -73,6 +73,7 @@ class Layouts extends Component {
     this.isFetchBlocksSend = false;
     this.pushNotificationListener = null;
     this.pushNotificationOpenListener = null;
+    this.bottomTabEventListener = null;
   }
 
   /**
@@ -82,6 +83,15 @@ class Layouts extends Component {
    */
   componentDidMount() {
     const { layoutsActions, componentId } = this.props;
+    // Listener for bottom tabs.
+    // Removes last screen from navigation stack
+    this.bottomTabEventListener = Navigation.events().registerBottomTabSelectedListener(
+      ({ selectedTabIndex }) => {
+        if (selectedTabIndex === 0) {
+          Navigation.pop(componentId);
+        }
+      },
+    );
     Navigation.mergeOptions(this.props.componentId, {
       topBar: {
         title: {
@@ -138,6 +148,7 @@ class Layouts extends Component {
     if (config.pushNotifications) {
       this.pushNotificationListener();
     }
+    this.bottomTabEventListener.remove();
   }
 
   /**
