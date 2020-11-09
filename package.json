@@ -8,9 +8,7 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "postinstall": "./postinstall.sh",
     "test:watch": "npm run test -- --watch",
-    "extractLangs": "react-gettext-parser --output messages.pot 'src/**/*.js'",
     "styleguidist": "styleguidist server --config styleguidist.config.js",
     "styleguidist-build": "styleguidist build --config styleguidist.config.js",
     "esdoc": "./node_modules/.bin/esdoc"
@@ -43,7 +41,6 @@
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
-    "shitty-qs": "^1.0.1",
     "tcomb-form-native": "^0.6.20",
     "tipsi-stripe": "^7.5.3"
   },
