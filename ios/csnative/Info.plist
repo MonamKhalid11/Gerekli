@@ -4,8 +4,6 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
-  <key>NSPhotoLibraryUsageDescription</key>
-  <string>Photo Library Access Warning</string>
 	<key>CFBundleDisplayName</key>
 	<string>Multivendor</string>
 	<key>CFBundleExecutable</key>
@@ -41,6 +39,8 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Photo Library Access Warning</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>MaterialIcons.ttf</string>
