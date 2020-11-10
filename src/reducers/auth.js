@@ -1,3 +1,4 @@
+import { get } from 'lodash';
 import {
   AUTH_LOGIN_REQUEST,
   AUTH_LOGIN_SUCCESS,
@@ -68,6 +69,9 @@ export default function (state = initialState, action) {
       return {
         ...state,
         ...action.payload.auth,
+        uuid: get(action.payload, 'auth.uuid', null)
+          ? action.payload.auth.uuid
+          : (+new Date()).toString(16),
       };
 
     default:
