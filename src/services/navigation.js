@@ -486,6 +486,22 @@ export function pushVendorManageEditProduct(componentId, params = {}) {
   });
 }
 
+export function setStackVendorManageEditProduct(componentId, params = {}) {
+  Navigation.setStackRoot(componentId, {
+    component: {
+      name: 'VendorManageEditProduct',
+      passProps: params,
+      options: {
+        topBar: {
+          title: {
+            text: params.title || '',
+          },
+        },
+      },
+    },
+  });
+}
+
 export function showVendorManageCategoriesPicker(params = {}) {
   Navigation.showModal({
     stack: {

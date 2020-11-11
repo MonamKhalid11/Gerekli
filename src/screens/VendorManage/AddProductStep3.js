@@ -86,7 +86,7 @@ class AddProductStep4 extends Component {
         if (newProductID) {
           imagePickerActions.clear();
           this.setState({ loading: false });
-          nav.pushVendorManageEditProduct(this.props.componentId, {
+          nav.setStackVendorManageEditProduct(this.props.componentId, {
             productID: newProductID,
             showClose: true,
           });
