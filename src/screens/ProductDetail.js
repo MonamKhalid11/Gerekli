@@ -431,6 +431,22 @@ class ProductDetail extends Component {
       .then(() => this.setState({ fetching: false }));
   };
 
+  handleShare = () => {
+    const { product } = this.state;
+    const url = `${config.siteUrl}index.php?dispatch=products.view&product_id=${product.product_id}`;
+    Share.share(
+      {
+        message: url,
+        title: product.product,
+        url,
+      },
+      {
+        dialogTitle: product.product,
+        tintColor: 'black',
+      },
+    );
+  };
+
   handleApplePay = async (next) => {
     const { cartActions } = this.props;
 

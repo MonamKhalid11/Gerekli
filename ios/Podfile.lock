@@ -294,6 +294,8 @@ PODS:
     - React-cxxreact (= 0.63.3)
     - React-jsi (= 0.63.3)
   - React-jsinspector (0.63.3)
+  - react-native-cameraroll (4.0.1):
+    - React
   - react-native-notifications (3.3.4):
     - React
   - react-native-webview (10.8.0):
@@ -423,6 +425,7 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
+  - "react-native-cameraroll (from `../node_modules/@react-native-community/cameraroll`)"
   - react-native-notifications (from `../node_modules/react-native-notifications`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -501,6 +504,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
+  react-native-cameraroll:
+    :path: "../node_modules/@react-native-community/cameraroll"
   react-native-notifications:
     :path: "../node_modules/react-native-notifications"
   react-native-webview:
@@ -578,6 +583,7 @@ SPEC CHECKSUMS:
   React-jsi: df07aa95b39c5be3e41199921509bfa929ed2b9d
   React-jsiexecutor: b56c03e61c0dd5f5801255f2160a815f4a53d451
   React-jsinspector: 8e68ffbfe23880d3ee9bafa8be2777f60b25cbe2
+  react-native-cameraroll: 9d2b7c1707204d2040d2812f960c6cebdbd9f670
   react-native-notifications: 91aec52880382b03be8618139eced1c76091e3ab
   react-native-webview: ef1778d6fa0dbce8d137e059fd06c57e380e5e26
   React-RCTActionSheet: 53ea72699698b0b47a6421cb1c8b4ab215a774aa
@@ -600,6 +606,6 @@ SPEC CHECKSUMS:
   Yoga: 7d13633d129fd179e01b8953d38d47be90db185a
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 25db684a8e1b3278f9501b86a5af1d0fae69cd6d
+PODFILE CHECKSUM: e1c779d9967d742678b878b33d41864ea0bcc55d
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.10.0

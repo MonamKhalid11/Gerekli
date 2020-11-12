@@ -150,10 +150,18 @@ class EditProduct extends Component {
     super(props);
 
     this.formRef = React.createRef();
+    Navigation.events().bindComponent(this);
   }
 
-  componentWillMount() {
-    const { productID, productsActions, showClose } = this.props;
+  componentDidMount() {
+    const {
+      imagePickerActions,
+      productID,
+      productsActions,
+      showClose,
+      componentId,
+    } = this.props;
+    imagePickerActions.clear();
     productsActions.fetchProduct(productID);
 
     const buttons = {
@@ -166,7 +174,7 @@ class EditProduct extends Component {
     };
 
     if (showClose) {
-      buttons.rightButtons = [
+      buttons.leftButtons = [
         {
           id: 'close',
           icon: iconsMap.close,
@@ -174,32 +182,33 @@ class EditProduct extends Component {
       ];
     }
 
-    Navigation.mergeOptions(this.props.componenId, {
+    Navigation.mergeOptions(componentId, {
       topBar: {
-        title: {
-          text: '',
-        },
         ...buttons,
       },
     });
-  }
-
-  componentDidMount() {
-    const { imagePickerActions } = this.props;
-    imagePickerActions.clear();
   }
 
   navigationButtonPressed({ buttonId }) {
     if (buttonId === 'more') {
       this.ActionSheet.show();
     }
+
+    if (buttonId === 'close') {
+      Navigation.dismissAllModals();
+    }
   }
 
   handleMoreActionSheet = (index) => {
-    const { product, productsActions } = this.props;
+    const { product, productsActions, componentId, showClose } = this.props;
     if (index === 0) {
       productsActions.deleteProduct(product.product_id);
-      Navigation.pop(this.props.componenId);
+
+      if (showClose) {
+        Navigation.dismissAllModals();
+      } else {
+        Navigation.pop(componentId);
+      }
     }
   };
 

@@ -5,7 +5,6 @@ import {
   View,
   Image,
   TouchableOpacity,
-  CameraRoll,
   FlatList,
   Dimensions,
   Alert,
@@ -13,6 +12,7 @@ import {
   PermissionsAndroid,
 } from 'react-native';
 import { bindActionCreators } from 'redux';
+import CameraRoll from '@react-native-community/cameraroll';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import * as imagePickerActions from '../actions/imagePickerActions';
 import Icon from '../components/Icon';
