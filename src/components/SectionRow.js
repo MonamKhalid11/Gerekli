@@ -31,11 +31,24 @@ const styles = EStyleSheet.create({
  *
  * @return {JSX.Element}
  */
-const SectionRow = ({ name, value, last = false, onPress, isVariation = true }) => {
+const SectionRow = ({
+  name,
+  value,
+  last = false,
+  onPress,
+  isVariation = true,
+}) => {
   if (isVariation) {
     return (
-      <TouchableOpacity onPress={onPress}>
-        <Text>test</Text>
+      <TouchableOpacity
+        onPress={onPress}
+        style={[styles.row, last && styles.lastRow]}>
+        <View style={styles.name}>
+          <Text style={styles.nameText}>{name}</Text>
+        </View>
+        <View style={styles.value}>
+          <Text style={styles.valueText}>{value}</Text>
+        </View>
       </TouchableOpacity>
     );
   } else {

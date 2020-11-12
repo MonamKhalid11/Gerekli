@@ -792,7 +792,7 @@ class ProductDetail extends Component {
     );
   }
 
-  renderFeatureItem = (feature, index) => {
+  renderFeatureItem = (feature, index, last = false) => {
     const { description, feature_type, value_int, value, variant } = feature;
 
     let newValue = null;
@@ -807,7 +807,15 @@ class ProductDetail extends Component {
         newValue = value || variant;
     }
 
-    return <SectionRow name={description} value={newValue} key={index} onPress={this.showActionSheet}/>;
+    return (
+      <SectionRow
+        name={description}
+        value={newValue}
+        last={last}
+        key={index}
+        onPress={this.showActionSheet}
+      />
+    );
   };
 
   renderFeatures() {
@@ -815,11 +823,14 @@ class ProductDetail extends Component {
     const features = Object.keys(product.product_features).map(
       (k) => product.product_features[k],
     );
+    const lastElement = features.length - 1;
 
     return (
       <Section title={i18n.t('Features')}>
         {features.length !== 0 ? (
-          features.map((item, index) => this.renderFeatureItem(item, index))
+          features.map((item, index) =>
+            this.renderFeatureItem(item, index, index === lastElement && true),
+          )
         ) : (
           <Text style={styles.noFeaturesText}>
             {` ${i18n.t('There are no features.')} `}
@@ -897,16 +908,23 @@ class ProductDetail extends Component {
   }
 
   showActionSheet = () => {
-    console.log('im here')
     this.ActionSheet.show();
   };
 
   render() {
-    const { fetching } = this.state;
+    const { fetching, product } = this.state;
 
     if (fetching) {
       return <Spinner visible />;
     }
+
+    console.log('product: ', product);
+
+    const features = Object.keys(product.product_features).map(
+      (el) => product.product_features[el].description,
+    );
+
+    console.log('features: ', features);
 
     return (
       <View style={styles.container}>
@@ -934,7 +952,7 @@ class ProductDetail extends Component {
           ref={(ref) => {
             this.ActionSheet = ref;
           }}
-          options={['Apple', 'Banana', 'cancel']}
+          options={[...features, 'cancel']}
           cancelButtonIndex={DESTRUCTIVE_INDEX}
           destructiveButtonIndex={CANCEL_INDEX}
           onPress={() => console.log('works')}
