@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 import format from 'date-fns/format';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import ActionSheet from 'react-native-actionsheet';
 import Swiper from 'react-native-swiper';
 import get from 'lodash/get';
 import {
@@ -237,6 +238,9 @@ const styles = EStyleSheet.create({
   },
 });
 
+const CANCEL_INDEX = 5;
+const DESTRUCTIVE_INDEX = 5;
+
 class ProductDetail extends Component {
   static propTypes = {
     wishListActions: PropTypes.shape({
@@ -290,6 +294,7 @@ class ProductDetail extends Component {
   componentDidMount() {
     const { productsActions, pid } = this.props;
     productsActions.fetch(pid).then((product) => {
+      console.log('product: ', product)
       const minQty = parseInt(get(product.data, 'min_qty', 0), 10);
       this.setState(
         {
@@ -786,7 +791,7 @@ class ProductDetail extends Component {
         newValue = value || variant;
     }
 
-    return <SectionRow name={description} value={newValue} key={index} />;
+    return <SectionRow name={description} value={newValue} key={index} onPress={this.showActionSheet}/>;
   };
 
   renderFeatures() {
@@ -875,6 +880,11 @@ class ProductDetail extends Component {
     );
   }
 
+  showActionSheet = () => {
+    console.log('im here')
+    this.ActionSheet.show();
+  };
+
   render() {
     const { fetching } = this.state;
 
@@ -904,6 +914,15 @@ class ProductDetail extends Component {
             {this.renderAddToCart()}
           </View>
         </KeyboardAvoidingView>
+        <ActionSheet
+          ref={(ref) => {
+            this.ActionSheet = ref;
+          }}
+          options={['Apple', 'Banana', 'cancel']}
+          cancelButtonIndex={DESTRUCTIVE_INDEX}
+          destructiveButtonIndex={CANCEL_INDEX}
+          onPress={() => console.log('works')}
+        />
       </View>
     );
   }

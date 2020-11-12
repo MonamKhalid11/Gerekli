@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 const styles = EStyleSheet.create({
@@ -31,16 +31,26 @@ const styles = EStyleSheet.create({
  *
  * @return {JSX.Element}
  */
-const SectionRow = ({ name, value, last = false }) => (
-  <View style={[styles.row, last && styles.lastRow]}>
-    <View style={styles.name}>
-      <Text style={styles.nameText}>{name}</Text>
-    </View>
-    <View style={styles.value}>
-      <Text style={styles.valueText}>{value}</Text>
-    </View>
-  </View>
-);
+const SectionRow = ({ name, value, last = false, onPress, isVariation = true }) => {
+  if (isVariation) {
+    return (
+      <TouchableOpacity onPress={onPress}>
+        <Text>test</Text>
+      </TouchableOpacity>
+    );
+  } else {
+    return (
+      <View style={[styles.row, last && styles.lastRow]}>
+        <View style={styles.name}>
+          <Text style={styles.nameText}>{name}</Text>
+        </View>
+        <View style={styles.value}>
+          <Text style={styles.valueText}>{value}</Text>
+        </View>
+      </View>
+    );
+  }
+};
 
 /**
  * @ignore
