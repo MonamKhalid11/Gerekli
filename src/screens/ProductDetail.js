@@ -293,21 +293,7 @@ class ProductDetail extends Component {
   }
 
   componentDidMount() {
-    const { productsActions, pid } = this.props;
-    productsActions.fetch(pid).then((product) => {
-      const minQty = parseInt(get(product.data, 'min_qty', 0), 10);
-      this.setState(
-        {
-          amount: minQty || 1,
-          fetching: minQty !== 0,
-        },
-        () => {
-          if (minQty !== 0) {
-            this.calculatePrice();
-          }
-        },
-      );
-    });
+    this.productInit();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -410,6 +396,25 @@ class ProductDetail extends Component {
 
     Navigation.mergeOptions(this.props.componentId, {
       topBar,
+    });
+  }
+
+  productInit(productId = false) {
+    const { productsActions, pid } = this.props;
+
+    productsActions.fetch(productId || pid).then((product) => {
+      const minQty = parseInt(get(product.data, 'min_qty', 0), 10);
+      this.setState(
+        {
+          amount: minQty || 1,
+          fetching: minQty !== 0,
+        },
+        () => {
+          if (minQty !== 0) {
+            this.calculatePrice();
+          }
+        },
+      );
     });
   }
 
@@ -792,7 +797,7 @@ class ProductDetail extends Component {
     );
   }
 
-  renderFeatureItem = (feature, index, last = false) => {
+  renderFeatureItem = (feature, index, last, isVariation) => {
     const { description, feature_type, value_int, value, variant } = feature;
 
     let newValue = null;
@@ -814,6 +819,7 @@ class ProductDetail extends Component {
         last={last}
         key={index}
         onPress={this.showActionSheet}
+        isVariation={isVariation}
       />
     );
   };
@@ -824,12 +830,18 @@ class ProductDetail extends Component {
       (k) => product.product_features[k],
     );
     const lastElement = features.length - 1;
+    const isVariation = product.variation_features_variants ? true : false;
 
     return (
       <Section title={i18n.t('Features')}>
         {features.length !== 0 ? (
           features.map((item, index) =>
-            this.renderFeatureItem(item, index, index === lastElement && true),
+            this.renderFeatureItem(
+              item,
+              index,
+              index === lastElement && true,
+              isVariation,
+            ),
           )
         ) : (
           <Text style={styles.noFeaturesText}>
@@ -910,15 +922,17 @@ class ProductDetail extends Component {
   showActionSheet = async (value) => {
     const { product } = this.state;
 
-    // Gets all the variations for the selected feature.
-    // {white: "1234", black: "1235"}
+    // Gets all variations and product_ids for the selected feature.
+    // {white: "123", black: "124"}
     const featureVariants = {};
     Object.keys(product.variation_features_variants).forEach((feature) => {
       const currentFeature = product.variation_features_variants[feature];
       if (currentFeature.description === value) {
         Object.keys(currentFeature.variants).forEach((variant) => {
           const currentVariant = currentFeature.variants[variant];
-          featureVariants[currentVariant.variant] = currentVariant.variant_id;
+          if (currentVariant.product) {
+            featureVariants[currentVariant.variant] = currentVariant.product_id;
+          }
         });
       }
     });
@@ -928,14 +942,20 @@ class ProductDetail extends Component {
     this.ActionSheet.show();
   };
 
+  variationChangeHandler(index) {
+    const { currentFeatureVariants } = this.state;
+    const pid =
+      currentFeatureVariants[Object.keys(currentFeatureVariants)[index]];
+
+    this.productInit(pid);
+  }
+
   render() {
-    const { fetching, product } = this.state;
+    const { fetching } = this.state;
 
     if (fetching) {
       return <Spinner visible />;
     }
-
-    console.log('product: ', product)
 
     return (
       <View style={styles.container}>
@@ -969,7 +989,7 @@ class ProductDetail extends Component {
           ]}
           cancelButtonIndex={DESTRUCTIVE_INDEX}
           destructiveButtonIndex={CANCEL_INDEX}
-          onPress={(el) => console.log(el)}
+          onPress={(index) => this.variationChangeHandler(index)}
         />
       </View>
     );

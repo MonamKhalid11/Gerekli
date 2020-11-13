@@ -36,7 +36,7 @@ const SectionRow = ({
   value,
   last = false,
   onPress,
-  isVariation = true,
+  isVariation = false,
 }) => {
   if (isVariation) {
     return (
