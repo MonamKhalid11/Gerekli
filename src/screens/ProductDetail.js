@@ -280,6 +280,7 @@ class ProductDetail extends Component {
     this.state = {
       images: [],
       product: {},
+      currentFeatureVariants: {},
       discussion: {},
       vendor: null,
       fetching: true,
@@ -294,7 +295,6 @@ class ProductDetail extends Component {
   componentDidMount() {
     const { productsActions, pid } = this.props;
     productsActions.fetch(pid).then((product) => {
-      console.log('product: ', product)
       const minQty = parseInt(get(product.data, 'min_qty', 0), 10);
       this.setState(
         {
@@ -907,7 +907,24 @@ class ProductDetail extends Component {
     );
   }
 
-  showActionSheet = () => {
+  showActionSheet = async (value) => {
+    const { product } = this.state;
+
+    // Gets all the variations for the selected feature.
+    // {white: "1234", black: "1235"}
+    const featureVariants = {};
+    Object.keys(product.variation_features_variants).forEach((feature) => {
+      const currentFeature = product.variation_features_variants[feature];
+      if (currentFeature.description === value) {
+        Object.keys(currentFeature.variants).forEach((variant) => {
+          const currentVariant = currentFeature.variants[variant];
+          featureVariants[currentVariant.variant] = currentVariant.variant_id;
+        });
+      }
+    });
+
+    await this.setState({ currentFeatureVariants: featureVariants });
+
     this.ActionSheet.show();
   };
 
@@ -918,13 +935,7 @@ class ProductDetail extends Component {
       return <Spinner visible />;
     }
 
-    console.log('product: ', product);
-
-    const features = Object.keys(product.product_features).map(
-      (el) => product.product_features[el].description,
-    );
-
-    console.log('features: ', features);
+    console.log('product: ', product)
 
     return (
       <View style={styles.container}>
@@ -952,10 +963,13 @@ class ProductDetail extends Component {
           ref={(ref) => {
             this.ActionSheet = ref;
           }}
-          options={[...features, 'cancel']}
+          options={[
+            ...Object.keys(this.state.currentFeatureVariants),
+            'cancel',
+          ]}
           cancelButtonIndex={DESTRUCTIVE_INDEX}
           destructiveButtonIndex={CANCEL_INDEX}
-          onPress={() => console.log('works')}
+          onPress={(el) => console.log(el)}
         />
       </View>
     );

@@ -41,7 +41,7 @@ const SectionRow = ({
   if (isVariation) {
     return (
       <TouchableOpacity
-        onPress={onPress}
+        onPress={() => onPress(name)}
         style={[styles.row, last && styles.lastRow]}>
         <View style={styles.name}>
           <Text style={styles.nameText}>{name}</Text>
