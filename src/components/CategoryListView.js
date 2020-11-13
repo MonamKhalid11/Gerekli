@@ -1,11 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 import { getImagePath } from '../utils';
@@ -71,10 +66,11 @@ const CategoryListView = ({ category, onPress }) => {
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={() => onPress(category)}
-    >
+      onPress={() => onPress(category)}>
       <View style={styles.wrapper}>
-        {imageUri ? (<Image source={{ uri: imageUri }} style={styles.categoryImage} />) : null}
+        {imageUri ? (
+          <Image source={{ uri: imageUri }} style={styles.categoryImage} />
+        ) : null}
         <View style={styles.categoryTitleWrapper}>
           <Text numberOfLines={2} style={styles.categoryTitle}>
             {category.category}

@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-  View,
-} from 'react-native';
+import { View } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 import DiscussionList from '../components/DiscussionList';
@@ -12,12 +10,10 @@ import DiscussionList from '../components/DiscussionList';
 // Import actions.
 import * as productsActions from '../actions/productsActions';
 
-import theme from '../config/theme';
+import * as nav from '../services/navigation';
 import i18n from '../utils/i18n';
-import {
-  iconsMap,
-  iconsLoaded,
-} from '../utils/navIcons';
+import { iconsMap } from '../utils/navIcons';
+import { Navigation } from 'react-native-navigation';
 
 const styles = EStyleSheet.create({
   container: {
@@ -39,11 +35,6 @@ export class Discussion extends Component {
    * @ignore
    */
   static propTypes = {
-    navigator: PropTypes.shape({
-      push: PropTypes.func,
-      dismissModal: PropTypes.func,
-      setOnNavigatorEvent: PropTypes.func,
-    }),
     productDetail: PropTypes.shape({}),
     productsActions: PropTypes.shape({
       fetchDiscussion: PropTypes.func,
@@ -54,14 +45,6 @@ export class Discussion extends Component {
     }),
   };
 
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
-  };
-
   constructor(props) {
     super(props);
     this.requestSent = false;
@@ -69,7 +52,7 @@ export class Discussion extends Component {
     this.state = {
       discussion: {},
     };
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+    Navigation.events().bindComponent(this);
   }
 
   /**
@@ -77,7 +60,7 @@ export class Discussion extends Component {
    * Removes the add button if comments are disabled.
    */
   componentWillMount() {
-    const { navigator, discussion, productDetail } = this.props;
+    const { discussion, productDetail } = this.props;
     let activeDiscussion = discussion.items[`p_${productDetail.product_id}`];
 
     if (!activeDiscussion) {
@@ -92,35 +75,34 @@ export class Discussion extends Component {
       };
     }
 
-    iconsLoaded.then(() => {
-      const buttons = {
-        leftButtons: [
-          {
-            id: 'close',
-            icon: iconsMap.close,
-          },
-        ],
-        rightButtons: [
-          {
-            id: 'newComment',
-            icon: iconsMap.create,
-          },
-        ],
-      };
-      // Remove add comment btn.
-      if (activeDiscussion.disable_adding) {
-        buttons.rightButtons = [];
-      }
-
-      navigator.setButtons(buttons);
-    });
-
     this.setState({
       discussion: activeDiscussion,
     });
 
-    navigator.setTitle({
-      title: i18n.t('Comments & Reviews').toUpperCase(),
+    const buttons = {
+      rightButtons: [
+        {
+          id: 'close',
+          icon: iconsMap.close,
+        },
+        {
+          id: 'newComment',
+          icon: iconsMap.create,
+        },
+      ],
+    };
+    // Remove add comment btn.
+    if (activeDiscussion.disable_adding) {
+      buttons.rightButtons = [];
+    }
+
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        title: {
+          text: i18n.t('Comments & Reviews').toUpperCase(),
+        },
+        ...buttons,
+      },
     });
   }
 
@@ -129,34 +111,26 @@ export class Discussion extends Component {
    */
   componentWillReceiveProps(nextProps) {
     const { productDetail } = this.props;
-    const activeDiscussion = nextProps.discussion.items[`p_${productDetail.product_id}`];
-    this.setState({
-      discussion: activeDiscussion,
-    }, () => {
-      this.requestSent = false;
-    });
+    const activeDiscussion =
+      nextProps.discussion.items[`p_${productDetail.product_id}`];
+    this.setState(
+      {
+        discussion: activeDiscussion,
+      },
+      () => {
+        this.requestSent = false;
+      },
+    );
   }
 
-  /**
-   * Discussion screen navigation.
-   *
-   * @param {object} event - Information about the element on which the event occurred.
-   */
-  onNavigatorEvent(event) {
+  navigationButtonPressed({ buttonId }) {
     const { discussion } = this.state;
-    const { navigator } = this.props;
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'close') {
-        navigator.dismissModal();
-      } else if (event.id === 'newComment') {
-        navigator.push({
-          screen: 'WriteReview',
-          backButtonTitle: '',
-          passProps: {
-            activeDiscussion: discussion,
-          },
-        });
-      }
+    if (buttonId === 'close') {
+      Navigation.dismissModal(this.props.componentId);
+    } else if (buttonId === 'newComment') {
+      nav.pushWriteReview(this.props.componentId, {
+        activeDiscussion: discussion,
+      });
     }
   }
 
@@ -166,16 +140,13 @@ export class Discussion extends Component {
   handleLoadMore() {
     const { productDetail } = this.props;
     const { discussion } = this.state;
-    const hasMore = discussion.search.total_items != discussion.posts.length; // eslint-disable-line
+    const hasMore = discussion.search.total_items != discussion.posts.length;
 
     if (hasMore && !this.requestSent && !this.props.discussion.fetching) {
       this.requestSent = true;
-      this.props.productsActions.fetchDiscussion(
-        productDetail.product_id,
-        {
-          page: discussion.search.page + 1,
-        },
-      );
+      this.props.productsActions.fetchDiscussion(productDetail.product_id, {
+        page: discussion.search.page + 1,
+      });
     }
   }
 
@@ -201,11 +172,11 @@ export class Discussion extends Component {
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     productDetail: state.productDetail,
     discussion: state.discussion,
   }),
-  dispatch => ({
+  (dispatch) => ({
     productsActions: bindActionCreators(productsActions, dispatch),
-  })
+  }),
 )(Discussion);

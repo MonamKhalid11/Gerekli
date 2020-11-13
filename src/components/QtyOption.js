@@ -1,10 +1,5 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 const styles = EStyleSheet.create({
@@ -42,7 +37,7 @@ const styles = EStyleSheet.create({
     fontWeight: 'bold',
     width: 36,
     textAlign: 'center',
-  }
+  },
 });
 
 /**
@@ -52,106 +47,54 @@ const styles = EStyleSheet.create({
  * @reactProps {number} min - Minimum order quantity.
  * @reactProps {number} initialValue - The initial quantity of items in the cart.
  * @reactProps {number} max - Maximum order quantity.
- * @reactProps {function} oChange - Changes the quantity of products.
+ * @reactProps {function} onChange - Changes the quantity of products.
  */
-export default class extends Component {
-  /**
-   * @ignore
-   */
-  static propTypes = {
-    step: PropTypes.number,
-    min: PropTypes.number,
-    initialValue: PropTypes.number,
-    max: PropTypes.number,
-    onChange: PropTypes.func,
-  };
+export const QtyOption = ({ initialValue, step, onChange, max, min }) => {
+  const [productsAmount, setProductsAmount] = useState(0);
 
-  static defaultProps = {
-    step: 1,
-    min: 1,
-    max: 1,
-    initialValue: 1,
-    onChange() {},
-  };
-
-  state = {
-    total: 1,
-  };
-
-  /**
-   * Sets the initial quantity of items in the cart.
-   */
-  componentDidMount() {
-    const { initialValue } = this.props;
-    this.setState({
-      total: initialValue,
-    });
-  }
-
-  /**
-   * Increases the quantity of products.
-   */
-  increment = () => {
-    const { total } = this.state;
-    const { step, onChange, max } = this.props;
-    const newTotal = total + step;
-
-    if (max !== 1 && newTotal > max) {
-      return;
-    }
-
-    this.setState({
-      total: newTotal,
-    });
-    onChange(newTotal);
-  }
+  useEffect(() => {
+    setProductsAmount(initialValue);
+  }, [initialValue]);
 
   /**
    * Reduces the quantity of products.
    */
-  dicrement = () => {
-    const { total } = this.state;
-    const { step, onChange, min } = this.props;
-    const newTotal = total - step;
+  const dicrement = () => {
+    const newProductsAmount = productsAmount - step;
 
-    if (min !== 0 && newTotal < min) {
+    if (min !== 0 && newProductsAmount < min) {
       return;
     }
 
-    this.setState({
-      total: newTotal,
-    });
-    onChange(newTotal);
-  }
+    setProductsAmount(newProductsAmount);
+    onChange(newProductsAmount);
+  };
 
   /**
-   * Renders component
-   *
-   * @return {JSX.Element}
+   * Increases the quantity of products.
    */
-  render() {
-    const { total } = this.state;
+  const increment = () => {
+    const newProductsAmount = productsAmount + step;
 
-    return (
-      <View style={styles.container}>
-        <View style={styles.btnGroup}>
-          <TouchableOpacity
-            style={styles.btn}
-            onPress={this.dicrement}
-          >
-            <Text style={styles.btnText}>-</Text>
-          </TouchableOpacity>
-          <Text style={styles.valueText}>
-            {total}
-          </Text>
-          <TouchableOpacity
-            style={styles.btn}
-            onPress={this.increment}
-          >
-            <Text style={styles.btnText}>+</Text>
-          </TouchableOpacity>
-        </View>
+    if (max !== 1 && newProductsAmount > max) {
+      return;
+    }
+
+    setProductsAmount(newProductsAmount);
+    onChange(newProductsAmount);
+  };
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.btnGroup}>
+        <TouchableOpacity style={styles.btn} onPress={dicrement}>
+          <Text style={styles.btnText}>-</Text>
+        </TouchableOpacity>
+        <Text style={styles.valueText}>{productsAmount}</Text>
+        <TouchableOpacity style={styles.btn} onPress={increment}>
+          <Text style={styles.btnText}>+</Text>
+        </TouchableOpacity>
       </View>
-    );
-  }
-}
+    </View>
+  );
+};

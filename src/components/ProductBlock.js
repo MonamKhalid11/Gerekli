@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  View,
-  Text,
-  I18nManager,
-} from 'react-native';
+import { View, Text, I18nManager } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swiper from 'react-native-swiper';
 import chunk from 'lodash/chunk';
@@ -18,7 +14,7 @@ const styles = EStyleSheet.create({
   img: {
     width: '100%',
     height: '100%',
-    resizeMode: 'contain'
+    resizeMode: 'contain',
   },
   header: {
     fontWeight: 'bold',
@@ -33,7 +29,7 @@ const styles = EStyleSheet.create({
   chunk: {
     flex: 1,
     flexDirection: 'row',
-  }
+  },
 });
 
 /**
@@ -53,11 +49,11 @@ export default class ProductBlock extends Component {
     wrapper: PropTypes.string,
     items: PropTypes.arrayOf(PropTypes.object),
     onPress: PropTypes.func,
-  }
+  };
 
   static defaultProps = {
-    items: []
-  }
+    items: [],
+  };
 
   /**
    * Renders all products in the block.
@@ -69,7 +65,7 @@ export default class ProductBlock extends Component {
       {items.map((item, chunkIndex) => (
         <ProductListView
           key={chunkIndex}
-          product={{ item, }}
+          product={{ item }}
           onPress={() => this.props.onPress(item)}
         />
       ))}
@@ -83,17 +79,14 @@ export default class ProductBlock extends Component {
    */
   render() {
     const { items, name, wrapper } = this.props;
-    const itemsList = chunk(items, PRODUCT_NUM_COLUMNS)
-      .map((items, index) => this.renderProduct(items, index));
+    const itemsList = chunk(items, PRODUCT_NUM_COLUMNS).map((items, index) =>
+      this.renderProduct(items, index),
+    );
 
     return (
       <View style={styles.container}>
         {wrapper !== '' && <Text style={styles.header}>{name}</Text>}
-        <Swiper
-          horizontal
-          height={300}
-          style={styles.container}
-        >
+        <Swiper horizontal height={300} style={styles.container}>
           {itemsList}
         </Swiper>
       </View>

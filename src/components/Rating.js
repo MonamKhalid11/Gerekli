@@ -1,10 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  View,
-  Text,
-  ViewPropTypes,
-} from 'react-native';
+import { View, Text, ViewPropTypes } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 import i18n from '../utils/i18n';
@@ -50,19 +46,23 @@ const Rating = ({ value, count, containerStyle }) => {
   }
 
   for (let r = stars.length; r <= 4; r += 1) {
-    stars.push(<Icon key={`star_border_${r}`} name="star-border" style={styles.checkIcon} />);
+    stars.push(
+      <Icon
+        key={`star_border_${r}`}
+        name="star-border"
+        style={styles.checkIcon}
+      />,
+    );
   }
 
   return (
-    <View
-      style={[styles.container, containerStyle]}
-    >
+    <View style={[styles.container, containerStyle]}>
       {stars}
-      {count &&
+      {count && (
         <Text style={styles.countText}>
           {count ? i18n.t('{{count}} reviews', { count }) : ''}
         </Text>
-      }
+      )}
     </View>
   );
 };
@@ -71,14 +71,8 @@ const Rating = ({ value, count, containerStyle }) => {
  * @ignore
  */
 Rating.propTypes = {
-  value: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ]),
-  count: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ]),
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  count: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   containerStyle: ViewPropTypes.style,
 };
 

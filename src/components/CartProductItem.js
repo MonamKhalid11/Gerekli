@@ -1,16 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  View,
-  Text,
-  Image,
-} from 'react-native';
+import { View, Text, Image } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swipeout from 'react-native-swipeout';
 import { get } from 'lodash';
 
 // Components
-import QtyOption from './QtyOption';
+import { QtyOption } from './QtyOption';
 
 // Links
 import i18n from '../utils/i18n';
@@ -60,7 +56,7 @@ const styles = EStyleSheet.create({
     position: 'absolute',
     right: 14,
     bottom: 0,
-  }
+  },
 });
 
 /**
@@ -99,10 +95,8 @@ const CartProductItem = ({ cartActions, item }) => {
   const imageUri = getImagePath(item);
   if (imageUri) {
     productImage = (
-      <Image
-        source={{ uri: imageUri }}
-        style={styles.productItemImage}
-      />);
+      <Image source={{ uri: imageUri }} style={styles.productItemImage} />
+    );
   }
 
   /**
@@ -141,15 +135,11 @@ const CartProductItem = ({ cartActions, item }) => {
       <Swipeout
         autoClose
         right={swipeoutBtns}
-        backgroundColor={theme.$navBarBackgroundColor}
-      >
+        backgroundColor={theme.$navBarBackgroundColor}>
         <View style={styles.productItem}>
           {productImage}
           <View style={styles.productItemDetail}>
-            <Text
-              style={styles.productItemName}
-              numberOfLines={1}
-            >
+            <Text style={styles.productItemName} numberOfLines={1}>
               {item.product}
             </Text>
             <Text style={styles.productItemPrice}>

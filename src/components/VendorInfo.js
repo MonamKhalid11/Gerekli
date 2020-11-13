@@ -1,12 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity
-} from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Components
@@ -40,7 +35,7 @@ const styles = EStyleSheet.create({
   vendorDetailBtnText: {
     color: '$primaryColor',
     fontSize: '0.9rem',
-  }
+  },
 });
 
 /**
@@ -55,21 +50,14 @@ const styles = EStyleSheet.create({
 const VendorInfo = ({ onViewDetailPress, logoUrl, productsCount }) => (
   <Section containerStyle={{ paddingTop: 0 }} wrapperStyle={{ padding: 0 }}>
     <View style={styles.logoWrapper}>
-      <Image
-        source={{ uri: logoUrl }}
-        style={styles.logo}
-      />
+      <Image source={{ uri: logoUrl }} style={styles.logo} />
     </View>
     <View style={styles.vendorWrapper}>
       <Text style={styles.vendorTotalItemsText}>
         {i18n.t('Products found: {{count}}', { count: productsCount })}
       </Text>
-      <TouchableOpacity
-        onPress={() => onViewDetailPress()}
-      >
-        <Text style={styles.vendorDetailBtnText}>
-          {i18n.t('View Detail')}
-        </Text>
+      <TouchableOpacity onPress={() => onViewDetailPress()}>
+        <Text style={styles.vendorDetailBtnText}>{i18n.t('View Detail')}</Text>
       </TouchableOpacity>
     </View>
   </Section>

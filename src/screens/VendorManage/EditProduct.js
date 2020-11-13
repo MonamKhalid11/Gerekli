@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as t from 'tcomb-form-native';
 import ActionSheet from 'react-native-actionsheet';
 import {
   View,
@@ -26,14 +25,11 @@ import * as productsActions from '../../actions/vendorManage/productsActions';
 import * as imagePickerActions from '../../actions/imagePickerActions';
 
 import i18n from '../../utils/i18n';
-import theme from '../../config/theme';
-import { registerDrawerDeepLinks } from '../../utils/deepLinks';
 import { getProductStatus } from '../../utils';
+import * as nav from '../../services/navigation';
 
-import {
-  iconsMap,
-  iconsLoaded,
-} from '../../utils/navIcons';
+import { iconsMap } from '../../utils/navIcons';
+import { Navigation } from 'react-native-navigation';
 
 const styles = EStyleSheet.create({
   container: {
@@ -93,6 +89,7 @@ const styles = EStyleSheet.create({
   },
 });
 
+const t = require('tcomb-form-native');
 const Form = t.form.Form;
 const formFields = t.struct({
   product: t.String,
@@ -116,18 +113,15 @@ const formOptions = {
           normal: {
             ...Form.stylesheet.textbox.normal,
             height: 130,
-          }
-        }
+          },
+        },
       },
       clearButtonMode: 'while-editing',
-    }
+    },
   },
 };
 
-const MORE_ACTIONS_LIST = [
-  i18n.t('Delete This Product'),
-  i18n.t('Cancel'),
-];
+const MORE_ACTIONS_LIST = [i18n.t('Delete This Product'), i18n.t('Cancel')];
 
 const STATUS_ACTIONS_LIST = [
   i18n.t('Make Product Active'),
@@ -150,112 +144,85 @@ class EditProduct extends Component {
     imagePickerActions: PropTypes.shape({
       clear: PropTypes.func,
     }),
-    navigator: PropTypes.shape({
-      setTitle: PropTypes.func,
-      setButtons: PropTypes.func,
-      push: PropTypes.func,
-      setOnNavigatorEvent: PropTypes.func,
-    }),
-  };
-
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
   };
 
   constructor(props) {
     super(props);
 
     this.formRef = React.createRef();
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
-  }
-
-  componentWillMount() {
-    const {
-      navigator,
-      productID,
-      productsActions,
-      showClose,
-    } = this.props;
-    productsActions.fetchProduct(productID);
-
-    iconsLoaded.then(() => {
-      const buttons = {
-        rightButtons: [
-          {
-            id: 'more',
-            icon: iconsMap['more-horiz'],
-          },
-        ],
-      };
-
-      if (showClose) {
-        buttons.leftButtons = [
-          {
-            id: 'close',
-            icon: iconsMap.close,
-          }
-        ];
-      }
-
-      navigator.setButtons(buttons);
-    });
+    Navigation.events().bindComponent(this);
   }
 
   componentDidMount() {
-    const { imagePickerActions } = this.props;
+    const {
+      imagePickerActions,
+      productID,
+      productsActions,
+      showClose,
+      componentId,
+    } = this.props;
     imagePickerActions.clear();
-  }
+    productsActions.fetchProduct(productID);
 
-  componentWillReceiveProps() {
-    const { navigator, product } = this.props;
-    navigator.setTitle({
-      title: i18n.t(product.product || '').toUpperCase(),
+    const buttons = {
+      rightButtons: [
+        {
+          id: 'more',
+          icon: iconsMap['more-horiz'],
+        },
+      ],
+    };
+
+    if (showClose) {
+      buttons.leftButtons = [
+        {
+          id: 'close',
+          icon: iconsMap.close,
+        },
+      ];
+    }
+
+    Navigation.mergeOptions(componentId, {
+      topBar: {
+        ...buttons,
+      },
     });
   }
 
-  onNavigatorEvent(event) {
-    const { navigator } = this.props;
-    registerDrawerDeepLinks(event, navigator);
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'more') {
-        this.ActionSheet.show();
-      }
-      if (event.id === 'close') {
-        navigator.dismissAllModals();
-      }
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'more') {
+      this.ActionSheet.show();
+    }
+
+    if (buttonId === 'close') {
+      Navigation.dismissAllModals();
     }
   }
 
   handleMoreActionSheet = (index) => {
-    const { navigator, product, productsActions } = this.props;
+    const { product, productsActions, componentId, showClose } = this.props;
     if (index === 0) {
       productsActions.deleteProduct(product.product_id);
-      navigator.pop();
+
+      if (showClose) {
+        Navigation.dismissAllModals();
+      } else {
+        Navigation.pop(componentId);
+      }
     }
-  }
+  };
 
   handleStatusActionSheet = (index) => {
     const { product, productsActions } = this.props;
-    const statuses = [
-      'A',
-      'H',
-      'D',
-    ];
+    const statuses = ['A', 'H', 'D'];
     const activeStatus = statuses[index];
 
     if (activeStatus) {
-      productsActions.updateProduct(
-        product.product_id,
-        {
-          status: activeStatus,
-        }
-      );
+      productsActions.updateProduct(product.product_id, {
+        status: activeStatus,
+      });
     }
-  }
+  };
 
   handleSave = () => {
     const {
@@ -268,7 +235,9 @@ class EditProduct extends Component {
     } = this.props;
     const values = this.formRef.current.getValue();
 
-    if (!values) { return; }
+    if (!values) {
+      return;
+    }
 
     const data = {
       images: selectedImages,
@@ -279,23 +248,22 @@ class EditProduct extends Component {
       data.category_ids = categories[0].category_id;
     }
 
-    productsActions.updateProduct(product.product_id, data)
+    productsActions
+      .updateProduct(product.product_id, data)
       .then(() => productsActions.fetchProduct(productID, false))
       .then(() => imagePickerActions.clear());
   };
 
   handleRemoveImage = (imageIndex) => {
-    const { imagePickerActions, navigator, selectedImages } = this.props;
-    const newImages = [
-      ...selectedImages,
-    ];
+    const { imagePickerActions, selectedImages } = this.props;
+    const newImages = [...selectedImages];
     newImages.splice(imageIndex, 1);
     imagePickerActions.toggle(newImages);
-    navigator.dismissModal();
-  }
+    Navigation.dismissModal(this.props.componenId);
+  };
 
   renderImages = () => {
-    const { product, navigator, selectedImages } = this.props;
+    const { product, selectedImages } = this.props;
     const images = [];
 
     if (product.main_pair) {
@@ -313,34 +281,22 @@ class EditProduct extends Component {
         <View style={styles.imgWrapper}>
           <TouchableOpacity
             onPress={() => {
-              navigator.showModal({
-                screen: 'ImagePicker',
-                passProps: {},
-              });
-            }}
-          >
+              nav.showImagePicker({});
+            }}>
             <Icon name="add" style={styles.addImageIcon} />
           </TouchableOpacity>
         </View>
-        {selectedImages.map(image => (
+        {selectedImages.map((image) => (
           <View style={styles.imgWrapper} key={uniqueId('image-')}>
             <TouchableOpacity
               onPress={() => {
-                navigator.showModal({
-                  screen: 'Gallery',
-                  animationType: 'fade',
-                  passProps: {
-                    images: [image],
-                    activeIndex: 1,
-                    onRemove: () => this.handleRemoveImage(image),
-                  },
+                nav.showGallery({
+                  images: [image],
+                  activeIndex: 1,
+                  onRemove: () => this.handleRemoveImage(image),
                 });
-              }}
-            >
-              <Image
-                style={styles.img}
-                source={{ uri: image }}
-              />
+              }}>
+              <Image style={styles.img} source={{ uri: image }} />
             </TouchableOpacity>
           </View>
         ))}
@@ -348,51 +304,34 @@ class EditProduct extends Component {
           <View style={styles.imgWrapper} key={index}>
             <TouchableOpacity
               onPress={() => {
-                navigator.showModal({
-                  screen: 'Gallery',
-                  animationType: 'fade',
-                  passProps: {
-                    images: [...images],
-                    activeIndex: index,
-                  },
+                nav.showGallery({
+                  images: [...images],
+                  activeIndex: index,
                 });
-              }}
-            >
+              }}>
               <Image source={{ uri: item }} style={styles.img} />
             </TouchableOpacity>
           </View>
         ))}
       </ScrollView>
     );
-  }
+  };
 
   renderMenuItem = (title, subTitle, fn = () => {}) => (
     <TouchableOpacity style={styles.menuItem} onPress={fn}>
       <View style={styles.menuItemText}>
         <Text style={styles.menuItemTitle}>{title}</Text>
-        <Text
-          style={styles.menuItemSubTitle}
-        >
-          {subTitle}
-        </Text>
+        <Text style={styles.menuItemSubTitle}>{subTitle}</Text>
       </View>
       <Icon name="keyboard-arrow-right" style={styles.btnIcon} />
     </TouchableOpacity>
   );
 
   render() {
-    const {
-      navigator,
-      loading,
-      product,
-      productsActions,
-      isUpdating,
-    } = this.props;
+    const { loading, product, productsActions, isUpdating } = this.props;
 
     if (loading) {
-      return (
-        <Spinner visible />
-      );
+      return <Spinner visible />;
     }
 
     return (
@@ -414,85 +353,86 @@ class EditProduct extends Component {
                 getProductStatus(product.status).text,
                 () => {
                   this.StatusActionSheet.show();
-                }
+                },
               )}
               {this.renderMenuItem(
                 i18n.t('Pricing / Inventory'),
-                i18n.t('{{code}}, List price: {{list}}, In stock: {{stock}}', { code: product.product_code, list: product.list_price, stock: product.amount }),
+                i18n.t('{{code}}, List price: {{list}}, In stock: {{stock}}', {
+                  code: product.product_code,
+                  list: product.list_price,
+                  stock: product.amount,
+                }),
                 () => {
-                  navigator.push({
-                    screen: 'VendorManagePricingInventory',
-                    backButtonTitle: '',
-                  });
-                }
+                  nav.pushVendorManagePricingInventory(this.props.componentId);
+                },
               )}
               {this.renderMenuItem(
                 i18n.t('Categories'),
-                product.categories.map(item => item.category).join(', '),
+                product.categories.map((item) => item.category).join(', '),
                 () => {
-                  navigator.showModal({
-                    screen: 'VendorManageCategoriesPicker',
-                    backButtonTitle: '',
-                    title: i18n.t('Categories').toUpperCase(),
-                    passProps: {
-                      selected: product.categories,
-                      parent: 0,
-                      onCategoryPress: (item) => {
-                        productsActions.changeProductCategory(item);
-                      }
+                  nav.showVendorManageCategoriesPicker({
+                    selected: product.categories,
+                    parent: 0,
+                    onCategoryPress: (item) => {
+                      productsActions.changeProductCategory(item);
                     },
                   });
-                }
+                },
               )}
               {this.renderMenuItem(
                 i18n.t('Shipping properties'),
-                `${i18n.t('Weight: {{count}} ', { count: product.weight })} ${product.free_shipping ? i18n.t('Free shipping') : ''}`,
+                `${i18n.t('Weight: {{count}} ', { count: product.weight })} ${
+                  product.free_shipping ? i18n.t('Free shipping') : ''
+                }`,
                 () => {
-                  navigator.push({
-                    screen: 'VendorManageShippingProperties',
-                    backButtonTitle: '',
-                    passProps: {
+                  nav.pushVendorManageShippingProperties(
+                    this.props.componentId,
+                    {
                       values: {
-                        ...product
-                      }
+                        ...product,
+                      },
                     },
-                  });
-                }
+                  );
+                },
               )}
             </Section>
           </ScrollView>
           <BottomActions onBtnPress={this.handleSave} />
           <ActionSheet
-            ref={(ref) => { this.ActionSheet = ref; }}
+            ref={(ref) => {
+              this.ActionSheet = ref;
+            }}
             options={MORE_ACTIONS_LIST}
             cancelButtonIndex={1}
             destructiveButtonIndex={0}
             onPress={this.handleMoreActionSheet}
           />
           <ActionSheet
-            ref={(ref) => { this.StatusActionSheet = ref; }}
+            ref={(ref) => {
+              this.StatusActionSheet = ref;
+            }}
             options={STATUS_ACTIONS_LIST}
             cancelButtonIndex={3}
             destructiveButtonIndex={2}
             onPress={this.handleStatusActionSheet}
           />
         </View>
-        {isUpdating && (<Spinner visible mode="modal" />)}
+        {isUpdating && <Spinner visible mode="modal" />}
       </SafeAreaView>
     );
   }
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     loading: state.vendorManageProducts.loadingCurrent,
     isUpdating: state.vendorManageProducts.loading,
     product: state.vendorManageProducts.current,
     categories: state.vendorManageCategories.selected,
     selectedImages: state.imagePicker.selected,
   }),
-  dispatch => ({
+  (dispatch) => ({
     productsActions: bindActionCreators(productsActions, dispatch),
     imagePickerActions: bindActionCreators(imagePickerActions, dispatch),
-  })
+  }),
 )(EditProduct);

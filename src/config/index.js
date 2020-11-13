@@ -22,7 +22,7 @@ export default {
   demoPassword: 'vendor',
 
   // Apple pay payments
-  applePay: true,
+  applePay: false,
   applePayMerchantIdentifier: 'merchant.com.cscart',
   applePayMerchantName: 'CSCartmultivendor',
   applePaySupportedNetworks: ['visa'],

@@ -2,37 +2,27 @@ import {
   ADD_TO_CART_REQUEST,
   ADD_TO_CART_SUCCESS,
   ADD_TO_CART_FAIL,
-
   CART_CHANGE_REQUEST,
   CART_CHANGE_SUCCESS,
   CART_CHANGE_FAIL,
-
   CART_CONTENT_SAVE_REQUEST,
   CART_CONTENT_SAVE_SUCCESS,
   CART_CONTENT_SAVE_FAIL,
-
   NOTIFICATION_SHOW,
-
   CART_SUCCESS,
   CART_FAIL,
-
   CHANGE_AMOUNT,
-
   CART_LOADING,
   CART_LOADED,
-
   CART_REMOVE_REQUEST,
   CART_REMOVE_SUCCESS,
   CART_REMOVE_FAIL,
-
   CART_CLEAR_REQUEST,
   CART_CLEAR_SUCCESS,
   CART_CLEAR_FAIL,
-
   CART_RECALCULATE_REQUEST,
   CART_RECALCULATE_SUCCESS,
   CART_RECALCULATE_FAIL,
-
   CART_ADD_COUPON_CODE,
   CART_REMOVE_COUPON_CODE,
 } from '../constants';
@@ -48,26 +38,33 @@ export function fetch(calculateShipping = 'A') {
       dispatch({
         type: CART_LOADING,
       });
-      const res = await Api.get('/sra_cart_content', { params: { calculate_shipping: calculateShipping } });
+      const res = await Api.get('/sra_cart_content', {
+        params: { calculate_shipping: calculateShipping },
+      });
       const carts = {};
       if (!res.data.amount) {
         dispatch({
-          type: CART_CLEAR_SUCCESS
+          type: CART_CLEAR_SUCCESS,
         });
       } else if (res.data.all_vendor_ids) {
         Object.keys(res.data.payments).forEach((key) => {
           res.data.payments[key].payment_id = key;
         });
         carts[res.data.vendor_id] = res.data;
-        const uniqueVendorIds = res.data.all_vendor_ids
-          .filter(el => el !== res.data.vendor_id && el !== 0);
+        const uniqueVendorIds = res.data.all_vendor_ids.filter(
+          (el) => el !== res.data.vendor_id && el !== 0,
+        );
         dispatch({
           type: CART_LOADING,
         });
-        const result = await Promise.all(uniqueVendorIds.map(async (el) => {
-          const res = await Api.get(`/sra_cart_content/${el}`, { params: { calculate_shipping: calculateShipping } });
-          return getPaymentId(res);
-        }));
+        const result = await Promise.all(
+          uniqueVendorIds.map(async (el) => {
+            const res = await Api.get(`/sra_cart_content/${el}`, {
+              params: { calculate_shipping: calculateShipping },
+            });
+            return getPaymentId(res);
+          }),
+        );
         for (let i = 0; i < result.length; i += 1) {
           if (result[i].data.vendor_id) {
             carts[result[i].data.vendor_id] = result[i].data;
@@ -75,14 +72,14 @@ export function fetch(calculateShipping = 'A') {
         }
         dispatch({
           type: CART_SUCCESS,
-          payload: { carts, isSeparateCart: true }
+          payload: { carts, isSeparateCart: true },
         });
       } else if (res.data.amount) {
         getPaymentId(res);
         carts.general = res.data;
         dispatch({
           type: CART_SUCCESS,
-          payload: { carts, isSeparateCart: false }
+          payload: { carts, isSeparateCart: false },
         });
       }
       dispatch({
@@ -109,7 +106,7 @@ export function recalculateTotal(ids, coupons = []) {
         shipping_ids: shippingIds,
         calculate_shipping: 'E',
         coupon_codes: coupons,
-      }
+      },
     })
       .then((response) => {
         dispatch({
@@ -168,10 +165,9 @@ export function add(data, notify = true) {
   return (dispatch) => {
     dispatch({ type: ADD_TO_CART_REQUEST });
     return Api.post('/sra_cart_content/', data)
-      .then((response) => {
+      .then(() => {
         dispatch({
           type: ADD_TO_CART_SUCCESS,
-          payload: response.data,
         });
         if (notify) {
           dispatch({
@@ -180,7 +176,6 @@ export function add(data, notify = true) {
               type: 'success',
               title: i18n.t('Success'),
               text: i18n.t('The product was added to your cart.'),
-              closeLastModal: false,
             },
           });
         }
@@ -194,8 +189,9 @@ export function add(data, notify = true) {
             payload: {
               type: 'warning',
               title: i18n.t('Notice'),
-              text: i18n.t('Product has zero inventory and cannot be added to the cart.'),
-              closeLastModal: false,
+              text: i18n.t(
+                'Product has zero inventory and cannot be added to the cart.',
+              ),
             },
           });
         }
@@ -238,7 +234,7 @@ export function clear(cart = '') {
         const response = Api.delete('/sra_cart_content/', {});
         dispatch({
           type: CART_CLEAR_SUCCESS,
-          payload: response.data
+          payload: response.data,
         });
       }
     } catch (error) {
@@ -301,7 +297,7 @@ export function changeAmount(cid, amount, id = '') {
       payload: {
         cid,
         amount,
-        id
+        id,
       },
     });
   };
@@ -311,7 +307,7 @@ export function addCoupon(coupon) {
   return (dispatch) => {
     dispatch({
       type: CART_ADD_COUPON_CODE,
-      payload: coupon
+      payload: coupon,
     });
   };
 }
@@ -320,7 +316,7 @@ export function removeCoupon(coupon) {
   return (dispatch) => {
     dispatch({
       type: CART_REMOVE_COUPON_CODE,
-      payload: coupon
+      payload: coupon,
     });
   };
 }

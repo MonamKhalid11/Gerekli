@@ -1,5 +1,5 @@
-/* eslint-disable global-require */
-import { AsyncStorage, I18nManager } from 'react-native';
+import { I18nManager } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { STORE_KEY, RESTORE_STATE } from '../constants';
 import API from '../services/api';
 import store from '../store';
@@ -47,7 +47,6 @@ const getLocalTranslations = () => {
   return translation;
 };
 
-// eslint-disable-next-line import/prefer-default-export
 export async function initApp() {
   I18nManager.allowRTL(true);
   I18nManager.forceRTL(['ar', 'he'].includes(deviceLanguage));
@@ -62,22 +61,19 @@ export async function initApp() {
 
   try {
     // Load remote lang variables
-    const transResult = await API.get(`/sra_translations/?name=mobile_app.mobile_&lang_code=${deviceLanguage}`);
-    i18n.addResourceBundle(
-      deviceLanguage,
-      'translation',
-      {
-        ...getLocalTranslations(),
-        ...covertLangCodes(transResult.data.langvars),
-      }
+    const transResult = await API.get(
+      `/sra_translations/?name=mobile_app.mobile_&lang_code=${deviceLanguage}`,
     );
+    i18n.addResourceBundle(deviceLanguage, 'translation', {
+      ...getLocalTranslations(),
+      ...covertLangCodes(transResult.data.langvars),
+    });
   } catch (error) {
     i18n.addResourceBundle(
       deviceLanguage,
       'translation',
       getLocalTranslations(),
     );
-    // eslint-disable-next-line no-console
     console.log('Error loading translations', error);
   }
 }

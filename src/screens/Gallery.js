@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  TouchableOpacity,
-  View,
-  SafeAreaView,
-  Image,
-} from 'react-native';
+import { TouchableOpacity, View, SafeAreaView, Image } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swiper from 'react-native-swiper';
 
 // Components
 import Icon from '../components/Icon';
+import { Navigation } from 'react-native-navigation';
 
 const styles = EStyleSheet.create({
   container: {
@@ -46,6 +42,10 @@ const styles = EStyleSheet.create({
   },
   closeBtn: {
     color: 'black',
+  },
+  wrapper: {
+    flex: 1,
+    backgroundColor: '#fff',
   }
 });
 
@@ -62,16 +62,9 @@ export default class Gallery extends Component {
    * @ignore
    */
   static propTypes = {
-    navigator: PropTypes.shape({
-      dismissModal: PropTypes.func,
-    }),
     onRemove: PropTypes.func,
     images: PropTypes.arrayOf(PropTypes.string),
     activeIndex: PropTypes.number,
-  };
-
-  static navigatorStyle = {
-    navBarHidden: true,
   };
 
   /**
@@ -80,52 +73,31 @@ export default class Gallery extends Component {
    * @return {JSX.Element}
    */
   render() {
-    const {
-      images,
-      navigator,
-      activeIndex,
-      onRemove,
-    } = this.props;
+    const { images, activeIndex, onRemove } = this.props;
     if (!images.length) {
       return null;
     }
     const items = images.map((href, index) => (
       <View style={styles.slide} key={index}>
-        <Image
-          style={styles.img}
-          source={{ uri: href }}
-        />
+        <Image style={styles.img} source={{ uri: href }} />
       </View>
     ));
 
     return (
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={styles.wrapper}>
         <View style={styles.container}>
-          <Swiper
-            horizontal
-            index={activeIndex}
-          >
+          <Swiper horizontal index={activeIndex}>
             {items}
           </Swiper>
           <TouchableOpacity
             style={styles.closeBtnContainer}
-            onPress={() => navigator.dismissModal({ animationType: 'fade' })}
-          >
-            <Icon
-              name="close"
-              style={styles.closeBtn}
-            />
+            onPress={() => Navigation.dismissOverlay(this.props.componentId)}>
+            <Icon name="close" style={styles.closeBtn} />
           </TouchableOpacity>
           {onRemove && (
             <View style={styles.removeBtnContainer}>
-              <TouchableOpacity
-                style={styles.removeBtn}
-                onPress={onRemove}
-              >
-                <Icon
-                  name="delete"
-                  style={styles.closeBtn}
-                />
+              <TouchableOpacity style={styles.removeBtn} onPress={onRemove}>
+                <Icon name="delete" style={styles.closeBtn} />
               </TouchableOpacity>
             </View>
           )}

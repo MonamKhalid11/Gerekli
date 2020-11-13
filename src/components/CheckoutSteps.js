@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  View,
-  Text,
-  I18nManager,
-} from 'react-native';
+import { View, Text, I18nManager } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 import i18n from '../utils/i18n';
@@ -59,9 +55,7 @@ const styles = EStyleSheet.create({
     right: 0,
     position: 'absolute',
     top: -0,
-    transform: [
-      { rotate: I18nManager.isRTL ? '30deg' : '-30deg' },
-    ],
+    transform: [{ rotate: I18nManager.isRTL ? '30deg' : '-30deg' }],
   },
   arrowBottom: {
     borderRightWidth: 1,
@@ -70,9 +64,7 @@ const styles = EStyleSheet.create({
     right: 0,
     position: 'absolute',
     bottom: -6,
-    transform: [
-      { rotate: I18nManager.isRTL ? '-30deg' : '30deg' },
-    ],
+    transform: [{ rotate: I18nManager.isRTL ? '-30deg' : '30deg' }],
   },
   roundNumber: {
     minWidth: 20,
@@ -92,8 +84,8 @@ const styles = EStyleSheet.create({
   },
   roundNumberGray: {
     backgroundColor: '#989898',
-    [I18nManager.isRTL ? 'marginRight' : 'marginLeft']: 6
-  }
+    [I18nManager.isRTL ? 'marginRight' : 'marginLeft']: 6,
+  },
 });
 
 /**
@@ -109,7 +101,7 @@ export default class extends Component {
   static propTypes = {
     steps: PropTypes.arrayOf(PropTypes.string),
     step: PropTypes.number,
-  }
+  };
 
   /**
    * @ignore
@@ -183,7 +175,7 @@ export default class extends Component {
             <Icon name="check" style={styles.checkIcon} />
           </View>
           {this.renderArrow()}
-        </View>
+        </View>,
       );
     }
     return stepsList;
@@ -202,13 +194,9 @@ export default class extends Component {
       <View style={styles.stepContainer}>
         <View style={styles.stepContent}>
           <View style={styles.roundNumber}>
-            <Text style={styles.roundNumberText}>
-              {stepId + 1}
-            </Text>
+            <Text style={styles.roundNumberText}>{stepId + 1}</Text>
           </View>
-          <Text>
-            {activeStep}
-          </Text>
+          <Text>{activeStep}</Text>
         </View>
         {this.renderArrow()}
       </View>
@@ -224,18 +212,16 @@ export default class extends Component {
     const steps = this.getSteps();
     const { stepId } = this.state;
     const stepsList = [];
-    for (let i = (stepId + 1); i < steps.length; i += 1) {
+    for (let i = stepId + 1; i < steps.length; i += 1) {
       stepsList.push(
         <View style={styles.stepContainer} key={i}>
           <View style={styles.stepContent}>
             <View style={[styles.roundNumber, styles.roundNumberGray]}>
-              <Text style={styles.roundNumberText}>
-                {i + 1}
-              </Text>
+              <Text style={styles.roundNumberText}>{i + 1}</Text>
             </View>
           </View>
           {this.renderArrow()}
-        </View>
+        </View>,
       );
     }
     return stepsList;

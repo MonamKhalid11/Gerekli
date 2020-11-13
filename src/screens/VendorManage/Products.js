@@ -2,13 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-  View,
-  Text,
-  Image,
-  FlatList,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, Image, FlatList, TouchableOpacity } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import ActionSheet from 'react-native-actionsheet';
@@ -27,12 +21,10 @@ import EmptyList from '../../components/EmptyList';
 import { getImagePath, getProductStatus } from '../../utils';
 
 import i18n from '../../utils/i18n';
-import { registerDrawerDeepLinks } from '../../utils/deepLinks';
+import * as nav from '../../services/navigation';
 
-import {
-  iconsMap,
-  iconsLoaded,
-} from '../../utils/navIcons';
+import { iconsMap } from '../../utils/navIcons';
+import { Navigation } from 'react-native-navigation';
 
 const STATUS_ACTIONS_LIST = [
   i18n.t('Make Product Active'),
@@ -75,17 +67,11 @@ const styles = EStyleSheet.create({
     position: 'absolute',
     right: 10,
     top: 10,
-  }
+  },
 });
 
 class Products extends Component {
   static propTypes = {
-    navigator: PropTypes.shape({
-      setTitle: PropTypes.func,
-      setButtons: PropTypes.func,
-      push: PropTypes.func,
-      setOnNavigatorEvent: PropTypes.func,
-    }),
     notifications: PropTypes.shape({
       items: PropTypes.arrayOf(PropTypes.object),
     }),
@@ -99,12 +85,12 @@ class Products extends Component {
     products: PropTypes.arrayOf(PropTypes.shape({})),
   };
 
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
+  static options = {
+    topBar: {
+      title: {
+        text: i18n.t('Vendor products').toUpperCase(),
+      },
+    },
   };
 
   constructor(props) {
@@ -114,81 +100,36 @@ class Products extends Component {
       refreshing: false,
     };
 
-    props.navigator.setTitle({
-      title: i18n.t('Vendor products').toUpperCase(),
-    });
-
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
-  }
-
-  componentWillMount() {
-    const { navigator } = this.props;
-    iconsLoaded.then(() => {
-      navigator.setButtons({
-        leftButtons: [
-          {
-            id: 'sideMenu',
-            icon: iconsMap.menu,
-          },
-        ],
-        rightButtons: [
-          {
-            id: 'add',
-            icon: iconsMap.add,
-          }
-        ],
-      });
-    });
+    Navigation.events().bindComponent(this);
   }
 
   componentDidMount() {
     this.handleLoadMore();
+
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        rightButtons: [
+          {
+            id: 'add',
+            icon: iconsMap.add,
+          },
+        ],
+      },
+    });
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { notificationsActions } = this.props;
-    const { navigator } = nextProps;
-
-    if (nextProps.notifications.items.length) {
-      const notify = nextProps.notifications.items[nextProps.notifications.items.length - 1];
-      if (notify.closeLastModal) {
-        navigator.dismissModal();
-      }
-      navigator.showInAppNotification({
-        screen: 'Notification',
-        autoDismissTimerSec: 1,
-        passProps: {
-          dismissWithSwipe: true,
-          title: notify.title,
-          type: notify.type,
-          text: notify.text,
-        },
-      });
-      notificationsActions.hide(notify.id);
-    }
-
+  componentWillReceiveProps() {
     this.setState({
       refreshing: false,
     });
   }
 
-  onNavigatorEvent(event) {
-    const { navigator } = this.props;
-    registerDrawerDeepLinks(event, navigator);
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'sideMenu') {
-        navigator.toggleDrawer({ side: 'left' });
-      }
-      if (event.id === 'add') {
-        navigator.showModal({
-          screen: 'VendorManageCategoriesPicker',
-          backButtonTitle: '',
-          title: i18n.t('Categories').toUpperCase(),
-          passProps: {
-            parent: 0,
-          },
-        });
-      }
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'add') {
+      nav.showVendorManageCategoriesPicker({
+        parent: 0,
+        title: i18n.t('Categories'),
+      });
     }
   }
 
@@ -199,7 +140,7 @@ class Products extends Component {
     }
 
     productsActions.fetchProducts(page);
-  }
+  };
 
   handleRefresh = () => {
     const { productsActions } = this.props;
@@ -208,25 +149,19 @@ class Products extends Component {
     });
 
     productsActions.fetchProducts(0);
-  }
+  };
 
   handleStatusActionSheet = (index) => {
     const { productsActions } = this.props;
-    const statuses = [
-      'A',
-      'H',
-      'D',
-    ];
+    const statuses = ['A', 'H', 'D'];
     const activeStatus = statuses[index];
-    productsActions.updateProduct(
-      this.product_id, {
-        status: activeStatus,
-      }
-    );
-  }
+    productsActions.updateProduct(this.product_id, {
+      status: activeStatus,
+    });
+  };
 
   renderItem = (item) => {
-    const { navigator, productsActions } = this.props;
+    const { productsActions } = this.props;
     const swipeoutBtns = [
       {
         text: i18n.t('Status'),
@@ -251,25 +186,21 @@ class Products extends Component {
       <Swipeout
         autoClose
         right={swipeoutBtns}
-        backgroundColor={theme.$navBarBackgroundColor}
-      >
+        backgroundColor={theme.$navBarBackgroundColor}>
         <TouchableOpacity
-          onPress={() => navigator.push({
-            screen: 'VendorManageEditProduct',
-            backButtonTitle: '',
-            passProps: {
+          onPress={() =>
+            nav.pushVendorManageEditProduct(this.props.componentId, {
               productID: item.product_id,
+              title: i18n.t(item.product || '').toUpperCase(),
               showBack: true,
-            },
-          })}
-        >
+            })
+          }>
           <View style={styles.listItem}>
             <Text
               style={{
                 ...styles.listItemStatus,
-                ...status.style
-              }}
-            >
+                ...status.style,
+              }}>
               {status.text}
             </Text>
             <View style={styles.listItemImage}>
@@ -284,16 +215,19 @@ class Products extends Component {
             </View>
             <View style={styles.listItemContent}>
               <View style={styles.listItemHeader}>
-                <Text style={styles.listItemHeaderText} numberOfLines={1} ellipsizeMode="tail">
+                <Text
+                  style={styles.listItemHeaderText}
+                  numberOfLines={1}
+                  ellipsizeMode="tail">
                   {item.product}
                 </Text>
               </View>
               <View>
+                <Text style={styles.listItemText}>{item.product_code}</Text>
                 <Text style={styles.listItemText}>
-                  {item.product_code}
-                </Text>
-                <Text style={styles.listItemText}>
-                  {`${i18n.t('Price')}: ${item.price} ${item.amount !== 0 && '|'} ${i18n.t('In stock')}: ${item.amount}`}
+                  {`${i18n.t('Price')}: ${item.price} ${
+                    item.amount !== 0 && '|'
+                  } ${i18n.t('In stock')}: ${item.amount}`}
                 </Text>
               </View>
             </View>
@@ -308,9 +242,7 @@ class Products extends Component {
     const { refreshing } = this.state;
 
     if (loading) {
-      return (
-        <Spinner visible />
-      );
+      return <Spinner visible />;
     }
 
     return (
@@ -325,7 +257,9 @@ class Products extends Component {
           onRefresh={() => this.handleRefresh()}
         />
         <ActionSheet
-          ref={(ref) => { this.StatusActionSheet = ref; }}
+          ref={(ref) => {
+            this.StatusActionSheet = ref;
+          }}
           options={STATUS_ACTIONS_LIST}
           cancelButtonIndex={3}
           destructiveButtonIndex={2}
@@ -337,15 +271,15 @@ class Products extends Component {
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     notifications: state.notifications,
     products: state.vendorManageProducts.items,
     hasMore: state.vendorManageProducts.hasMore,
     loading: state.vendorManageProducts.loading,
     page: state.vendorManageProducts.page,
   }),
-  dispatch => ({
+  (dispatch) => ({
     productsActions: bindActionCreators(productsActions, dispatch),
     notificationsActions: bindActionCreators(notificationsActions, dispatch),
-  })
+  }),
 )(Products);

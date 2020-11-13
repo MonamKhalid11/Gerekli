@@ -6,7 +6,7 @@ import {
   TextInput,
   Platform,
   TouchableOpacity,
-  I18nManager
+  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -27,11 +27,11 @@ const styles = EStyleSheet.create({
   },
   itemText: {
     paddingTop: 4,
-    fontSize: '1rem'
+    fontSize: '1rem',
   },
   itemBtn: {
     width: 30,
-    height: 30
+    height: 30,
   },
   input: {
     color: '#000000',
@@ -44,10 +44,10 @@ const styles = EStyleSheet.create({
     borderWidth: 1,
     marginBottom: 5,
     textAlign: I18nManager.isRTL ? 'right' : 'left',
-    writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr'
+    writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
   },
   inputWrapper: {
-    position: 'relative'
+    position: 'relative',
   },
   inputBtn: {
     backgroundColor: '$darkColor',
@@ -66,7 +66,7 @@ const styles = EStyleSheet.create({
   },
   removeBtn: {
     padding: 2,
-  }
+  },
 });
 
 /**
@@ -122,18 +122,15 @@ class CouponCodes extends Component {
     const { onRemovePress } = this.props;
     return (
       <View style={styles.itemContainer} key={index}>
-        <Text style={styles.itemText}>
-          {item}
-        </Text>
+        <Text style={styles.itemText}>{item}</Text>
         <TouchableOpacity
           style={styles.removeBtn}
-          onPress={() => onRemovePress(item)}
-        >
+          onPress={() => onRemovePress(item)}>
           <Icon name="clear" style={styles.removeBtnIcon} />
         </TouchableOpacity>
       </View>
     );
-  }
+  };
 
   /**
    * Renders component.
@@ -145,22 +142,17 @@ class CouponCodes extends Component {
     const { value } = this.state;
     return (
       <View style={styles.wrapper}>
-        <FormBlock
-          title={i18n.t('Coupon code')}
-        >
+        <FormBlock title={i18n.t('Coupon code')}>
           <View style={styles.inputWrapper}>
             <TextInput
               style={styles.input}
-              onChangeText={text => this.setState({ value: text })}
+              onChangeText={(text) => this.setState({ value: text })}
               value={value}
             />
             <TouchableOpacity
               onPress={this.handleAddCoupon}
-              style={styles.inputBtn}
-            >
-              <Text style={styles.inputBtnText}>
-                {i18n.t('Add')}
-              </Text>
+              style={styles.inputBtn}>
+              <Text style={styles.inputBtnText}>{i18n.t('Add')}</Text>
             </TouchableOpacity>
           </View>
           {items.map((item, index) => this.renderCouponItem(item, index))}

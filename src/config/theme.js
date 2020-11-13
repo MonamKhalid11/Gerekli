@@ -1,4 +1,3 @@
-
 export default {
   // Цвет статус бара (только андройд).
   $statusBarColor: '#c1c1c1',
@@ -9,32 +8,24 @@ export default {
   // Цвет кнопок верхней панели навигации.
   $navBarButtonColor: '#989898',
 
-  // Размер текста кнопок.
-  $navBarButtonFontSize: 10,
+  // Размер текста заголовка.
+  $navBarTitleFontSize: 16,
 
-  // Размер текста кнопок.
+  // Цвет текста кнопок.
   $navBarTextColor: '#242424',
 
   // Основной фон
   $screenBackgroundColor: '#fff',
 
-  // Фон слоя перекрытия при открытом меню.
-  $contentOverlayColor: 'rgba(0, 0, 0, 0.70)',
-
-  // Фон бокового меню.
-  $drawerBgColor: '#fff',
-
-  // Фон верхней части меню.
-  // С аватаркой и инфо. о пользователе.
-  $drawerHeaderBackgroundColor: '#F2F2F2',
-  $drawerHeaderBorderColor: '#D6D6D6',
-  $drawerHeaderTextColor: '#7C7C7C',
-  $drawerHeaderButtonColor: '#888888',
+  // Фон и цвет нижнего таб меню.
+  $bottomTabsBackgroundColor: '#fff',
+  $bottomTabsTextColor: '#888888',
+  $bottomTabsSelectedTextColor: '#000',
+  $bottomTabsIconColor: '#888888',
+  $bottomTabsSelectedIconColor: '#000',
 
   // Цвет значка с кол-во товаров
-  $drawerPrimaryBadgeColor: '#FD542A',
-  // Цвет значка с кол-во товаров
-  $drawerSecondaryBadgeColor: '#808080',
+  $bottomTabsPrimaryBadgeColor: '#FD542A',
 
   // Основной цвет используется для кнопок действия.
   // Например добавить в корзину.
@@ -60,6 +51,9 @@ export default {
   // Цвет бордера на списке продукта.
   // По умолчанию его не видно.
   $productBorderColor: '#FFF',
+
+  // Цвет бордера для пунктов меню
+  $menuItemsBorderColor: '#D6D6D6',
 
   // Цвет фона категорий
   $categoriesBackgroundColor: '#FAFAFA',

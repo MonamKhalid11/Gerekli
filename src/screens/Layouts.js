@@ -2,10 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-  View,
-  ScrollView,
-} from 'react-native';
+import { ScrollView, View } from 'react-native';
+import { Navigation } from 'react-native-navigation';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import get from 'lodash/get';
 
@@ -30,18 +28,10 @@ import PageBlock from '../components/PageBlock';
 import ProductBlock from '../components/ProductBlock';
 import CategoryBlock from '../components/CategoryBlock';
 import PushNotificaitons from '../components/PushNotifications';
-
-// links
-import { registerDrawerDeepLinks } from '../utils/deepLinks';
-import i18n from '../utils/i18n';
 import { toArray } from '../utils';
+import { registerDrawerDeepLinks } from '../utils/deepLinks';
 import config from '../config';
-import theme from '../config/theme';
-
-import {
-  iconsMap,
-  iconsLoaded,
-} from '../utils/navIcons';
+import * as nav from '../services/navigation';
 
 // Styles
 const styles = EStyleSheet.create({
@@ -60,16 +50,7 @@ const styles = EStyleSheet.create({
  * @reactProps {object} navigator - Navigator.
  * @reactProps {object} layouts - Information about blocks for rendering.
  */
-export class Layouts extends Component {
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
-    navBarTextFontBold: false,
-  }
-
+class Layouts extends Component {
   /**
    * @ignore
    */
@@ -83,10 +64,6 @@ export class Layouts extends Component {
     notificationsActions: PropTypes.shape({
       hide: PropTypes.func,
     }),
-    navigator: PropTypes.shape({
-      setOnNavigatorEvent: PropTypes.func,
-      setButtons: PropTypes.func,
-    }),
     layouts: PropTypes.shape({}),
   };
 
@@ -96,34 +73,7 @@ export class Layouts extends Component {
     this.isFetchBlocksSend = false;
     this.pushNotificationListener = null;
     this.pushNotificationOpenListener = null;
-  }
-
-  /**
-   * Loads icons.
-   */
-  componentWillMount() {
-    iconsLoaded.then(() => {
-      const { navigator } = this.props;
-      navigator.setButtons({
-        leftButtons: [
-          {
-            id: 'sideMenu',
-            icon: iconsMap.menu,
-          },
-        ],
-        rightButtons: [
-          {
-            id: 'cart',
-            component: 'CartBtn',
-            passProps: {},
-          },
-          {
-            id: 'search',
-            icon: iconsMap.search,
-          },
-        ],
-      });
-    });
+    this.bottomTabEventListener = null;
   }
 
   /**
@@ -132,17 +82,31 @@ export class Layouts extends Component {
    * 2. Listens to click on notification.
    */
   componentDidMount() {
-    const { navigator, layoutsActions } = this.props;
-    navigator.setTitle({
-      title: config.shopName.toUpperCase(),
+    const { layoutsActions, componentId } = this.props;
+    // Listener for bottom tabs.
+    // Removes last screen from navigation stack
+    this.bottomTabEventListener = Navigation.events().registerBottomTabSelectedListener(
+      ({ selectedTabIndex, unselectedTabIndex }) => {
+        if (selectedTabIndex === 0 && unselectedTabIndex === 0) {
+          Navigation.pop(componentId);
+        }
+      },
+    );
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        title: {
+          text: config.shopName.toUpperCase(),
+        },
+      },
     });
+
     layoutsActions.fetch();
-    navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
 
     if (config.pushNotifications) {
       PushNotificaitons.Init();
-      this.pushNotificationListener = PushNotificaitons.RegisterPushListener(navigator);
-      this.pushNotificationOpenListener = PushNotificaitons.RegisterOpenListener(navigator);
+      this.pushNotificationListener = PushNotificaitons.RegisterPushListener(
+        componentId,
+      );
     }
   }
 
@@ -150,22 +114,27 @@ export class Layouts extends Component {
    * Shows and hides notifications.
    */
   componentWillReceiveProps(nextProps) {
-    const { navigator } = nextProps;
     const { notificationsActions } = this.props;
 
     if (nextProps.notifications.items.length) {
-      const notify = nextProps.notifications.items[nextProps.notifications.items.length - 1];
-      if (notify.closeLastModal) {
-        navigator.dismissModal();
-      }
-      navigator.showInAppNotification({
-        screen: 'Notification',
-        autoDismissTimerSec: 3,
-        passProps: {
-          dismissWithSwipe: true,
-          title: notify.title,
-          type: notify.type,
-          text: notify.text,
+      const notify =
+        nextProps.notifications.items[nextProps.notifications.items.length - 1];
+      Navigation.showOverlay({
+        component: {
+          name: 'Notification',
+          passProps: {
+            title: notify.title,
+            type: notify.type,
+            text: notify.text,
+          },
+          options: {
+            layout: {
+              componentBackgroundColor: 'transparent',
+            },
+            overlay: {
+              interceptTouchOutside: false,
+            },
+          },
         },
       });
       notificationsActions.hide(notify.id);
@@ -178,28 +147,8 @@ export class Layouts extends Component {
   componentWillUnmount() {
     if (config.pushNotifications) {
       this.pushNotificationListener();
-      this.pushNotificationOpenListener();
     }
-  }
-
-  /**
-   * Layouts navigation.
-   *
-   * @param {object} event - Information about the element on which the event occurred.
-   */
-  onNavigatorEvent(event) {
-    const { navigator } = this.props;
-    registerDrawerDeepLinks(event, navigator);
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'sideMenu') {
-        navigator.toggleDrawer({ side: 'left' });
-      } else if (event.id === 'search') {
-        navigator.showModal({
-          screen: 'Search',
-          title: i18n.t('Search'),
-        });
-      }
-    }
+    this.bottomTabEventListener.remove();
   }
 
   /**
@@ -211,8 +160,6 @@ export class Layouts extends Component {
    * @return {JSX.Element}
    */
   renderBlock = (block, index) => {
-    const { navigator } = this.props;
-
     if (!get(block, 'content.items')) {
       return null;
     }
@@ -226,12 +173,16 @@ export class Layouts extends Component {
             wrapper={block.wrapper}
             items={items}
             onPress={(banner) => {
-              navigator.handleDeepLink({
-                link: banner.url,
-                payload: {
-                  ...banner,
-                }
-              });
+              registerDrawerDeepLinks(
+                {
+                  link: banner.url,
+                  payload: {
+                    ...banner,
+                    title: banner.banner,
+                  },
+                },
+                this.props.componentId,
+              );
             }}
             key={index}
           />
@@ -244,12 +195,8 @@ export class Layouts extends Component {
             wrapper={block.wrapper}
             items={items}
             onPress={(product) => {
-              navigator.push({
-                screen: 'ProductDetail',
-                backButtonTitle: '',
-                passProps: {
-                  pid: product.product_id,
-                }
+              nav.pushProductDetail(this.props.componentId, {
+                pid: product.product_id,
               });
             }}
             key={index}
@@ -263,13 +210,7 @@ export class Layouts extends Component {
             wrapper={block.wrapper}
             items={items}
             onPress={(category) => {
-              navigator.push({
-                screen: 'Categories',
-                backButtonTitle: '',
-                passProps: {
-                  category,
-                }
-              });
+              nav.pushCategory(this.props.componentId, { category });
             }}
             key={index}
           />
@@ -282,13 +223,9 @@ export class Layouts extends Component {
             wrapper={block.wrapper}
             items={items}
             onPress={(page) => {
-              navigator.push({
-                screen: 'Page',
+              nav.showPage(this.props.componentId, {
+                uri: `${config.siteUrl}index.php?dispatch=pages.view&page_id=${page.page_id}`,
                 title: page.page,
-                backButtonTitle: '',
-                passProps: {
-                  uri: `${config.siteUrl}index.php?dispatch=pages.view&page_id=${page.page_id}`,
-                },
               });
             }}
             key={index}
@@ -302,12 +239,9 @@ export class Layouts extends Component {
             wrapper={block.wrapper}
             items={items}
             onPress={(vendor) => {
-              navigator.showModal({
-                screen: 'Vendor',
-                title: vendor.company,
-                passProps: {
-                  companyId: vendor.company_id,
-                },
+              nav.showModalVendor({
+                companyId: vendor.company_id,
+                company: vendor.company,
               });
             }}
             key={index}
@@ -317,7 +251,7 @@ export class Layouts extends Component {
       default:
         return null;
     }
-  }
+  };
 
   /**
    * Renders component
@@ -326,10 +260,12 @@ export class Layouts extends Component {
    */
   render() {
     const { layouts } = this.props;
-    const blocksList = layouts.blocks.map((block, index) => this.renderBlock(block, index));
+    const blocksList = layouts.blocks.map((block, index) =>
+      this.renderBlock(block, index),
+    );
 
     if (layouts.fetching) {
-      return (<Spinner visible />);
+      return <Spinner visible />;
     }
 
     return (
@@ -343,12 +279,12 @@ export class Layouts extends Component {
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     notifications: state.notifications,
     layouts: state.layouts,
   }),
-  dispatch => ({
+  (dispatch) => ({
     layoutsActions: bindActionCreators(layoutsActions, dispatch),
     notificationsActions: bindActionCreators(notificationsActions, dispatch),
-  })
+  }),
 )(Layouts);

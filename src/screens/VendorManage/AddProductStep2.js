@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import * as t from 'tcomb-form-native';
-import {
-  View,
-  ScrollView,
-} from 'react-native';
+import { View, ScrollView } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Components
@@ -15,8 +11,8 @@ import BottomActions from '../../components/BottomActions';
 import { steps } from '../../services/vendors';
 
 import i18n from '../../utils/i18n';
-import theme from '../../config/theme';
-import { registerDrawerDeepLinks } from '../../utils/deepLinks';
+import * as nav from '../../services/navigation';
+import { Navigation } from 'react-native-navigation';
 
 const styles = EStyleSheet.create({
   container: {
@@ -32,6 +28,7 @@ const styles = EStyleSheet.create({
   },
 });
 
+const t = require('tcomb-form-native');
 const Form = t.form.Form;
 const formFields = t.struct({
   name: t.String,
@@ -54,66 +51,38 @@ const formOptions = {
             ...Form.stylesheet.textbox.normal,
             height: 150,
           },
-        }
+        },
       },
     },
-  }
+  },
 };
 
 class AddProductStep2 extends Component {
   static propTypes = {
     stepsData: PropTypes.shape({}),
-    navigator: PropTypes.shape({
-      setTitle: PropTypes.func,
-      setButtons: PropTypes.func,
-      push: PropTypes.func,
-      setOnNavigatorEvent: PropTypes.func,
-    }),
-  };
-
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
   };
 
   constructor(props) {
     super(props);
-
-    props.navigator.setTitle({
-      title: i18n.t('Enter the name').toUpperCase(),
-    });
-
     this.formRef = React.createRef();
 
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
-  }
-
-  onNavigatorEvent(event) {
-    const { navigator } = this.props;
-    registerDrawerDeepLinks(event, navigator);
+    Navigation.events().bindComponent(this);
   }
 
   handleGoNext = () => {
-    const { navigator, stepsData } = this.props;
+    const { stepsData } = this.props;
 
     const value = this.formRef.current.getValue();
     if (value) {
-      navigator.push({
-        screen: 'VendorManageAddProductStep3',
-        backButtonTitle: '',
-        passProps: {
-          stepsData: {
-            ...stepsData,
-            name: value.name,
-            description: value.description,
-          },
+      nav.pushVendorManageAddProductStep3(this.props.componentId, {
+        stepsData: {
+          ...stepsData,
+          name: value.name,
+          description: value.description,
         },
       });
     }
-  }
+  };
 
   renderHeader = () => (
     <View style={styles.header}>
@@ -127,11 +96,7 @@ class AddProductStep2 extends Component {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {this.renderHeader()}
           <Section>
-            <Form
-              ref={this.formRef}
-              type={formFields}
-              options={formOptions}
-            />
+            <Form ref={this.formRef} type={formFields} options={formOptions} />
           </Section>
         </ScrollView>
         <BottomActions
@@ -143,8 +108,4 @@ class AddProductStep2 extends Component {
   }
 }
 
-export default connect(
-  state => ({
-    nav: state.nav,
-  }),
-)(AddProductStep2);
+export default connect(() => ({}))(AddProductStep2);

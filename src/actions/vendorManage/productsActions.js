@@ -93,7 +93,6 @@ export function deleteProduct(id = null) {
           type: 'success',
           title: i18n.t('Success'),
           text: i18n.t('The product was deleted.'),
-          closeLastModal: false,
         },
       });
     } catch (error) {
@@ -130,7 +129,6 @@ export function updateProduct(id = null, product = {}) {
           type: 'success',
           title: i18n.t('Success'),
           text: i18n.t('The product was updated.'),
-          closeLastModal: false,
         },
       });
     } catch (error) {
@@ -158,7 +156,6 @@ export function createProduct(product) {
             type: 'info',
             title: i18n.t('Error'),
             text: i18n.t(result.errors.join('\n')),
-            closeLastModal: false,
           },
         });
         return null;
@@ -170,7 +167,6 @@ export function createProduct(product) {
           type: 'success',
           title: i18n.t('Success'),
           text: i18n.t('The product was created.'),
-          closeLastModal: false,
         },
       });
 

@@ -2,30 +2,21 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  FlatList,
-} from 'react-native';
+import { View, Text, TouchableOpacity, FlatList } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Components
 import Spinner from '../../components/Spinner';
-
-// Styles
-import theme from '../../config/theme';
 
 // Action
 import * as categoriesActions from '../../actions/vendorManage/categoriesActions';
 import { getCategoriesList } from '../../services/vendors';
 
 import i18n from '../../utils/i18n';
+import * as nav from '../../services/navigation';
 
-import {
-  iconsMap,
-  iconsLoaded,
-} from '../../utils/navIcons';
+import { iconsMap } from '../../utils/navIcons';
+import { Navigation } from 'react-native-navigation';
 
 const styles = EStyleSheet.create({
   container: {
@@ -49,7 +40,7 @@ const styles = EStyleSheet.create({
   selectedIcon: {
     color: '#fff',
     marginRight: 10,
-  }
+  },
 });
 
 class CategoriesPicker extends Component {
@@ -60,20 +51,6 @@ class CategoriesPicker extends Component {
       clear: PropTypes.func,
     }),
     categories: PropTypes.arrayOf(PropTypes.shape({})),
-    navigator: PropTypes.shape({
-      setTitle: PropTypes.func,
-      setButtons: PropTypes.func,
-      push: PropTypes.func,
-      setOnNavigatorEvent: PropTypes.func,
-    }),
-  };
-
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
   };
 
   static defaultProps = {
@@ -88,27 +65,11 @@ class CategoriesPicker extends Component {
       categories: [],
     };
 
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+    Navigation.events().bindComponent(this);
   }
 
-  async componentWillMount() {
-    const {
-      categoriesActions,
-      categories,
-      parent,
-      navigator,
-    } = this.props;
-
-    iconsLoaded.then(() => {
-      navigator.setButtons({
-        rightButtons: [
-          {
-            id: 'close',
-            icon: iconsMap.close,
-          },
-        ],
-      });
-    });
+  async componentDidMount() {
+    const { categoriesActions, categories, parent } = this.props;
 
     if (parent === 0) {
       categoriesActions.clear();
@@ -122,12 +83,25 @@ class CategoriesPicker extends Component {
     });
   }
 
-  onNavigatorEvent(event) {
-    const { navigator } = this.props;
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'close') {
-        navigator.dismissModal();
-      }
+  componentWillReceiveProps() {
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        title: {
+          text: i18n.t('Categories'),
+        },
+        rightButtons: [
+          {
+            id: 'close',
+            icon: iconsMap.close,
+          },
+        ],
+      },
+    });
+  }
+
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'close') {
+      Navigation.dismissModal(this.props.componentId);
     }
   }
 
@@ -147,19 +121,15 @@ class CategoriesPicker extends Component {
   };
 
   handleToggle = async (item) => {
-    const { categoriesActions, navigator, onCategoryPress } = this.props;
+    const { categoriesActions, onCategoryPress } = this.props;
     try {
       const response = await getCategoriesList(item.category_id);
       if (response.data.categories.length) {
-        navigator.push({
-          screen: 'VendorManageCategoriesPicker',
-          backButtonTitle: '',
-          title: i18n.t(item.category).toUpperCase(),
-          passProps: {
-            parent: item.category_id,
-            categories: response.data.categories,
-            onCategoryPress,
-          },
+        nav.pushVendorManageCategoriesPicker(this.props.componentId, {
+          title: i18n.t(item.category),
+          parent: item.category_id,
+          categories: response.data.categories,
+          onCategoryPress,
         });
         return;
       }
@@ -168,39 +138,29 @@ class CategoriesPicker extends Component {
 
       if (onCategoryPress) {
         onCategoryPress(item);
-        navigator.dismissModal();
+        Navigation.dismissModal(this.props.componentId);
         return;
       }
 
-      navigator.push({
-        screen: 'VendorManageAddProductStep1',
-        animated: false,
-        backButtonTitle: '',
-        passProps: {
-          category_ids: [item.category_id],
-        }
+      nav.pushVendorManageAddProductStep1(this.props.componentId, {
+        category_ids: [item.category_id],
       });
     } catch (error) {
       this.setState({ loading: false });
     }
-  }
+  };
 
   handleLoadMore = () => {};
 
   renderEmptyList = () => (
-    <Text style={styles.emptyList}>
-      {i18n.t('There are no categories')}
-    </Text>
+    <Text style={styles.emptyList}>{i18n.t('There are no categories')}</Text>
   );
 
   renderCategoryItem = ({ item }) => (
     <TouchableOpacity
       style={styles.itemWrapper}
-      onPress={() => this.handleToggle(item)}
-    >
-      <Text style={styles.itemText}>
-        {item.category}
-      </Text>
+      onPress={() => this.handleToggle(item)}>
+      <Text style={styles.itemText}>{item.category}</Text>
     </TouchableOpacity>
   );
 
@@ -208,9 +168,7 @@ class CategoriesPicker extends Component {
     const { categories, loading } = this.state;
 
     if (loading) {
-      return (
-        <Spinner visible />
-      );
+      return <Spinner visible />;
     }
 
     return (
@@ -218,7 +176,7 @@ class CategoriesPicker extends Component {
         <FlatList
           contentContainerStyle={styles.scrollContainer}
           data={categories}
-          keyExtractor={item => `${item.category_id}`}
+          keyExtractor={(item) => `${item.category_id}`}
           numColumns={1}
           renderItem={this.renderCategoryItem}
           onEndReachedThreshold={1}
@@ -231,10 +189,10 @@ class CategoriesPicker extends Component {
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     selected: state.vendorManageCategories.selected,
   }),
-  dispatch => ({
-    categoriesActions: bindActionCreators(categoriesActions, dispatch)
-  })
+  (dispatch) => ({
+    categoriesActions: bindActionCreators(categoriesActions, dispatch),
+  }),
 )(CategoriesPicker);

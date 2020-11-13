@@ -1,6 +1,7 @@
-import { Platform, AsyncStorage } from 'react-native';
-import isDate from 'date-fns/is_date';
-import format from 'date-fns/format';
+import { Platform } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
+import { Navigation } from 'react-native-navigation';
+import { format, isDate } from 'date-fns';
 import pickBy from 'lodash/pickBy';
 import identity from 'lodash/identity';
 
@@ -9,30 +10,23 @@ import {
   AUTH_LOGIN_SUCCESS,
   AUTH_LOGIN_FAIL,
   AUTH_RESET_STATE,
-
   AUTH_REGESTRATION_REQUEST,
   AUTH_REGESTRATION_SUCCESS,
   AUTH_REGESTRATION_FAIL,
-
   NOTIFICATION_SHOW,
-
   REGISTER_DEVICE_REQUEST,
   REGISTER_DEVICE_SUCCESS,
   REGISTER_DEVICE_FAIL,
-
   FETCH_PROFILE_FIELDS_REQUEST,
   FETCH_PROFILE_FIELDS_SUCCESS,
   FETCH_PROFILE_FIELDS_FAIL,
-
   FETCH_PROFILE_REQUEST,
   FETCH_PROFILE_SUCCESS,
   FETCH_PROFILE_FAIL,
-
   UPDATE_PROFILE_REQUEST,
   UPDATE_PROFILE_SUCCESS,
   UPDATE_PROFILE_FAIL,
   STORE_KEY,
-
   AUTH_LOGOUT,
 } from '../constants';
 import Api from '../services/api';
@@ -104,7 +98,7 @@ export function profileFields(data = {}) {
   };
 }
 
-export function updateProfile(id, params) {
+export function updateProfile(id, params, componentId) {
   const data = { ...params };
   Object.keys(data).forEach((key) => {
     if (isDate(data[key])) {
@@ -130,13 +124,13 @@ export function updateProfile(id, params) {
           type: UPDATE_PROFILE_SUCCESS,
           payload: {},
         });
+        Navigation.pop(componentId);
         dispatch({
           type: NOTIFICATION_SHOW,
           payload: {
             type: 'success',
             title: i18n.t('Profile'),
             text: i18n.t('The profile data has been updated successfully'),
-            closeLastModal: true,
           },
         });
       })
@@ -152,14 +146,13 @@ export function updateProfile(id, params) {
             type: 'warning',
             title: i18n.t('Profile update fail'),
             text: error.response.data.message,
-            closeLastModal: false,
           },
         });
       });
   };
 }
 
-export function createProfile(params) {
+export function createProfile(params, componentId) {
   let data = { ...params };
   Object.keys(data).forEach((key) => {
     if (isDate(data[key])) {
@@ -183,13 +176,13 @@ export function createProfile(params) {
             user_id: response.data.user_id,
           },
         });
+        Navigation.dismissModal(componentId);
         dispatch({
           type: NOTIFICATION_SHOW,
           payload: {
             type: 'success',
             title: i18n.t('Registration'),
             text: i18n.t('Registration complete.'),
-            closeLastModal: true,
           },
         });
       })
@@ -205,7 +198,6 @@ export function createProfile(params) {
             type: 'warning',
             title: i18n.t('Registration fail'),
             text: error.response.data.message,
-            closeLastModal: false,
           },
         });
       });
@@ -264,29 +256,15 @@ export function login(data) {
           type: AUTH_LOGIN_FAIL,
           payload: error.response.data,
         });
+        dispatch({
+          type: NOTIFICATION_SHOW,
+          payload: {
+            type: 'warning',
+            title: i18n.t('Error'),
+            text: i18n.t('Wrong password.'),
+          },
+        });
       });
-  };
-}
-
-export function registration(token) {
-  return (dispatch) => {
-    dispatch({
-      type: AUTH_REGESTRATION_SUCCESS,
-      payload: {
-        token,
-        ttl: null,
-      }
-    });
-    cartActions.fetch()(dispatch);
-    dispatch({
-      type: NOTIFICATION_SHOW,
-      payload: {
-        type: 'success',
-        title: i18n.t('Registration'),
-        text: i18n.t('Registration complete.'),
-        closeLastModal: true,
-      },
-    });
   };
 }
 
@@ -301,5 +279,5 @@ export function logout() {
 }
 
 export function resetState() {
-  return dispatch => dispatch({ type: AUTH_RESET_STATE });
+  return (dispatch) => dispatch({ type: AUTH_RESET_STATE });
 }

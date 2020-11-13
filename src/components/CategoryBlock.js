@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  View,
-  Text,
-} from 'react-native';
+import { View, Text } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import orderBy from 'lodash/orderBy';
 
@@ -51,14 +48,14 @@ export default class CategoriesBlocks extends Component {
     wrapper: PropTypes.string,
     items: PropTypes.arrayOf(PropTypes.object),
     onPress: PropTypes.func,
-  }
+  };
 
   /**
    * @ignore
    */
   static defaultProps = {
-    items: []
-  }
+    items: [],
+  };
 
   /**
    * Renders component.
@@ -72,25 +69,22 @@ export default class CategoriesBlocks extends Component {
       return null;
     }
 
-    const itemsList = orderBy(items, (i => parseInt(i.position, 10)), ['asc'])
-      .map((item, index) => (
-        <CategoryListView
-          category={item}
-          onPress={() => onPress(item)}
-          key={index}
-        />
-      ));
+    const itemsList = orderBy(items, (i) => parseInt(i.position, 10), [
+      'asc',
+    ]).map((item, index) => (
+      <CategoryListView
+        category={item}
+        onPress={() => onPress(item)}
+        key={index}
+      />
+    ));
 
     return (
       <View style={styles.container}>
         {wrapper !== '' && (
-          <Text style={styles.header}>
-            {i18n.t('Categories')}
-          </Text>
+          <Text style={styles.header}>{i18n.t('Categories')}</Text>
         )}
-        <View style={styles.wrapper}>
-          {itemsList}
-        </View>
+        <View style={styles.wrapper}>{itemsList}</View>
       </View>
     );
   }

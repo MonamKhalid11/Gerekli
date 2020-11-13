@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Platform } from 'react-native';
+import { Platform, Button } from 'react-native';
 import { bindActionCreators } from 'redux';
 import throttle from 'lodash/throttle';
 import { connect } from 'react-redux';
-import { PaymentRequest, ApplePayButton } from 'react-native-payments';
+import stripe from 'tipsi-stripe';
 
 import config from '../config';
 
@@ -17,7 +17,6 @@ import * as paymentsActions from '../actions/paymentsActions';
  *
  * @reactProps {object} cart - Cart information.
  * @reactProps {object} cartActions - Cart actions.
- * @reactProps {object} navigator - Navigator.
  * @reactProps {function} onPress - Push function.
  * @reactProps {object} orderActions - Order actions.
  * @reactProps {object} paymentsActions - Payment actions.
@@ -32,10 +31,9 @@ class InAppPayment extends React.Component {
     }),
     ordersActions: PropTypes.shape({}),
     paymentsActions: PropTypes.shape({
-      settlements: PropTypes.func
+      settlements: PropTypes.func,
     }),
     onPress: PropTypes.func,
-    navigator: PropTypes.shape({}),
     cart: PropTypes.shape({}),
   };
 
@@ -66,6 +64,11 @@ class InAppPayment extends React.Component {
     this.methodData = [];
     this.details = {};
     this.options = {};
+
+    stripe.setOptions({
+      publishableKey: 'pk_test_51Hcm2mDrV9B8Z7P9D4EijBxtUkA77bfI1e4AjcEBvN3ROJo6IRB25MPdiAiXzbpSieGodCmDAX5ZHGyVE2zUs52L0044SLn3PP',
+      merchantId: config.applePayMerchantIdentifier,
+    });
   }
 
   /**
@@ -79,46 +82,37 @@ class InAppPayment extends React.Component {
     const vendorNames = [];
     const methodData = [];
 
-    methodData.push(
-      {
-        supportedMethods: ['apple-pay'],
-        data: {
-          merchantIdentifier: config.applePayMerchantIdentifier,
-          supportedNetworks: config.applePaySupportedNetworks,
-          countryCode: 'US',
-          currencyCode: 'USD'
-        }
-      }
-    );
+    methodData.push({
+      supportedMethods: ['apple-pay'],
+      data: {
+        merchantIdentifier: config.applePayMerchantIdentifier,
+        supportedNetworks: config.applePaySupportedNetworks,
+        countryCode: 'US',
+        currencyCode: 'USD',
+      },
+    });
 
     const shippingOptions = [];
     const displayItems = [];
     cart.product_groups.forEach((group) => {
       vendorNames.push(group.name);
 
-      Object.keys(group.shippings)
-        .forEach((k) => {
-          const shipping = group.shippings[k];
-          shippingOptions.push({
-            id: k,
-            label: shipping.shipping,
-            amount: {
-              currency: 'USD',
-              value: shipping.rate,
-            },
-            detail: shipping.delivery_time,
-          });
+      Object.keys(group.shippings).forEach((k) => {
+        const shipping = group.shippings[k];
+        shippingOptions.push({
+          id: k,
+          label: shipping.shipping,
+          amount: `${shipping.rate}`,
+          detail: shipping.delivery_time,
         });
+      });
 
       Object.keys(group.products)
-        .map(k => group.products[k])
+        .map((k) => group.products[k])
         .forEach((p) => {
           displayItems.push({
             label: p.product,
-            amount: {
-              currency: 'USD',
-              value: p.price,
-            },
+            amount: `${p.price}`,
           });
         });
     });
@@ -126,30 +120,27 @@ class InAppPayment extends React.Component {
     if (cart.discount) {
       displayItems.push({
         label: 'Discount',
-        amount: {
-          currency: 'USD',
-          value: cart.discount,
-        }
+        amount: `${cart.discount}`,
       });
     }
     if (cart.tax_subtotal) {
       displayItems.push({
         label: 'Tax',
-        amount: {
-          currency: 'USD',
-          value: cart.tax_subtotal,
-        },
+        amount: `${cart.tax_subtotal}`,
       });
     }
     if (cart.subtotal) {
       displayItems.push({
         label: 'Subtotal',
-        amount: {
-          currency: 'USD',
-          value: cart.subtotal,
-        },
+        amount: `${cart.subtotal}`,
       });
     }
+
+    displayItems.push({
+      label: 'Simtech',
+      amount: '10',
+      type: 'pending',
+    });
 
     const details = {
       id: vendorNames.join(', '),
@@ -161,7 +152,7 @@ class InAppPayment extends React.Component {
           currency: 'USD',
           value: cart.total,
         },
-      }
+      },
     };
 
     const options = {
@@ -178,14 +169,20 @@ class InAppPayment extends React.Component {
   /**
    * Creates a payment request.
    */
-  initPaymentRequest = () => {
+  initPaymentRequest = async () => {
     const { cart } = this.props;
     const { methodData, details, options } = this.getPaymentData(cart);
-    this.paymentRequest = new PaymentRequest(methodData, details, options);
+    this.paymentRequest = await stripe.paymentRequestWithNativePay(
+      {
+        requiredShippingAddressFields: ['all'],
+        requiredBillingAddressFields: ['all'],
+        shippingMethods: details.shippingOptions,
+      },
+      details.displayItems,
+    );
 
-    this.paymentRequest.addEventListener('shippingaddresschange', this.handleShippingAddressChange);
-    this.paymentRequest.addEventListener('shippingoptionchange', this.handleShippingOptionChange);
-  }
+    stripe.completeApplePayRequest();
+  };
 
   /**
    * Works when the delivery address changes.
@@ -207,7 +204,8 @@ class InAppPayment extends React.Component {
       b_zipcode: shippingAddress.postalCode,
       s_zipcode: shippingAddress.postalCode,
     };
-    cartActions.getUpdatedDetailsForShippingAddress(data)
+    cartActions
+      .getUpdatedDetailsForShippingAddress(data)
       .then((result) => {
         const updatedDetail = this.getPaymentData(result).details;
         event.updateWith(updatedDetail);
@@ -215,14 +213,20 @@ class InAppPayment extends React.Component {
       .catch(() => {
         this.paymentRequest.fail();
       });
-  }
+  };
 
   /**
    * Cancels the payment request on error.
    */
   handleShowError = () => {
-    this.paymentRequest.removeEventListener('shippingaddresschange', this.handleShippingAddressChange);
-    this.paymentRequest.removeEventListener('shippingoptionchange', this.handleShippingOptionChange);
+    this.paymentRequest.removeEventListener(
+      'shippingaddresschange',
+      this.handleShippingAddressChange,
+    );
+    this.paymentRequest.removeEventListener(
+      'shippingoptionchange',
+      this.handleShippingOptionChange,
+    );
 
     this.paymentRequest.abort();
   };
@@ -241,13 +245,11 @@ class InAppPayment extends React.Component {
       cart,
     } = this.props;
 
-    this.paymentRequest.show()
+    this.paymentRequest
+      .show()
       .then((paymentResponse) => {
         const { shippingOption } = paymentResponse;
-        const {
-          transactionIdentifier,
-          paymentData
-        } = paymentResponse.details;
+        const { transactionIdentifier, paymentData } = paymentResponse.details;
 
         const orderInfo = {
           products: {},
@@ -278,12 +280,10 @@ class InAppPayment extends React.Component {
             };
             return paymentsActions
               .settlements(data)
-              .then(settlementsResponse => (
-                {
-                  settlements: settlementsResponse.data,
-                  order: response.data
-                }
-              ));
+              .then((settlementsResponse) => ({
+                settlements: settlementsResponse.data,
+                order: response.data,
+              }));
           })
           .then((result) => {
             setTimeout(() => {
@@ -294,7 +294,7 @@ class InAppPayment extends React.Component {
                 backButtonHidden: true,
                 passProps: {
                   orderId: result.order.order_id, // FIXME
-                }
+                },
               });
             }, 3000);
           })
@@ -303,7 +303,7 @@ class InAppPayment extends React.Component {
             cartActions.clear();
           });
       })
-      .catch(error => this.handleShowError(error));
+      .catch((error) => this.handleShowError(error));
   };
 
   /**
@@ -314,21 +314,20 @@ class InAppPayment extends React.Component {
     let paymentID = null;
 
     // FIXME: Find apple pay payment id.
-    Object.keys(cart.payments)
-      .forEach((key) => {
-        const payment = cart.payments[key];
-        if (payment.template.endsWith('apple_pay.tpl')) {
-          paymentID = payment.payment_id;
-        }
-      });
+    Object.keys(cart.payments).forEach((key) => {
+      const payment = cart.payments[key];
+      if (payment.template.endsWith('apple_pay.tpl')) {
+        paymentID = payment.payment_id;
+      }
+    });
 
     if (!paymentID) {
       return;
     }
 
     this.initPaymentRequest();
-    this.handleApplePay(paymentID);
-  }
+    // this.handleApplePay(paymentID);
+  };
 
   /**
    * Renders component
@@ -339,9 +338,10 @@ class InAppPayment extends React.Component {
     const { onPress } = this.props;
     if (Platform.OS === 'ios' && config.applePay) {
       return (
-        <ApplePayButton
-          buttonStyle="black"
-          buttonType="buy"
+        <Button
+          title="Pay with Pay"
+          text="Pay with Pay"
+          disabledText="Not supported"
           onPress={() => onPress(this.handlePayPresed)}
         />
       );
@@ -351,12 +351,12 @@ class InAppPayment extends React.Component {
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     cart: state.cart,
   }),
-  dispatch => ({
+  (dispatch) => ({
     ordersActions: bindActionCreators(ordersActions, dispatch),
     cartActions: bindActionCreators(cartActions, dispatch),
     paymentsActions: bindActionCreators(paymentsActions, dispatch),
-  })
+  }),
 )(InAppPayment);

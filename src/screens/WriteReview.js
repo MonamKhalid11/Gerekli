@@ -1,16 +1,11 @@
 import React, { Component } from 'react';
+import { Navigation } from 'react-native-navigation';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import cloneDeep from 'lodash/cloneDeep';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import * as t from 'tcomb-form-native';
 
 // Import actions.
 import * as productsActions from '../actions/productsActions';
@@ -18,18 +13,12 @@ import * as productsActions from '../actions/productsActions';
 import Button from '../components/Button';
 import Spinner from '../components/Spinner';
 import Icon from '../components/Icon';
-import {
-  iconsMap,
-  iconsLoaded,
-} from '../utils/navIcons';
+import { iconsMap } from '../utils/navIcons';
 
 import theme from '../config/theme';
 import i18n from '../utils/i18n';
 
-import {
-  DISCUSSION_COMMUNICATION,
-  DISCUSSION_RATING,
-} from '../constants';
+import { DISCUSSION_COMMUNICATION, DISCUSSION_RATING } from '../constants';
 
 const styles = EStyleSheet.create({
   container: {
@@ -38,8 +27,10 @@ const styles = EStyleSheet.create({
   },
   wrapperStyle: {
     flex: 1,
-  }
+  },
 });
+
+const t = require('tcomb-form-native');
 
 const inputStyle = cloneDeep(t.form.Form.stylesheet);
 // overriding the text color
@@ -83,48 +74,39 @@ function selectRatingTemplate(rating) {
   const currentRating = Math.round(rating.value || 0);
 
   for (let i = 1; i <= currentRating; i += 1) {
-    stars.push(// eslint-disable-line
+    stars.push(
       <TouchableOpacity key={`star_${i}`} onPress={() => rating.onChange(i)}>
         <Icon name="star" style={checkIcon} />
-      </TouchableOpacity>
-    );// eslint-disable-line
+      </TouchableOpacity>,
+    );
   }
 
   for (let r = stars.length; r <= 4; r += 1) {
-    stars.push( // eslint-disable-line
-      <TouchableOpacity key={`star_border_${r}`} onPress={() => rating.onChange(r + 1)}>
+    stars.push(
+      <TouchableOpacity
+        key={`star_border_${r}`}
+        onPress={() => rating.onChange(r + 1)}>
         <Icon name="star-border" style={checkIcon} />
-      </TouchableOpacity>
-    ); // eslint-disable-line
+      </TouchableOpacity>,
+    );
   }
 
   return (
     <View style={containerStyle}>
-      <View style={wrapperStyle}>
-        {stars}
-      </View>
-      {rating.hasError &&
+      <View style={wrapperStyle}>{stars}</View>
+      {rating.hasError && (
         <Text style={errorTextStyle}>
           {i18n.t('The rating field is mandatory.')}
         </Text>
-      }
+      )}
     </View>
   );
 }
 
 class WriteReview extends Component {
   static propTypes = {
-    navigator: PropTypes.shape({
-      push: PropTypes.func,
-      pop: PropTypes.func,
-      dismissModal: PropTypes.func,
-      setOnNavigatorEvent: PropTypes.func,
-    }),
     type: PropTypes.string,
-    discussionId: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]),
+    discussionId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     discussionType: PropTypes.string,
     activeDiscussion: PropTypes.shape({}),
     productsActions: PropTypes.shape({
@@ -136,59 +118,27 @@ class WriteReview extends Component {
     }),
   };
 
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
-  };
-
   constructor(props) {
     super(props);
     this.isNewPostSent = false;
 
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+    Navigation.events().bindComponent(this);
   }
 
   componentWillMount() {
-    const { navigator } = this.props;
-    if (this.props.type === 'modal') {
-      iconsLoaded.then(() => {
-        navigator.setButtons({
-          leftButtons: [
-            {
-              id: 'close',
-              icon: iconsMap.close,
-            },
-          ],
-        });
-      });
-    }
-
-    navigator.setTitle({
-      title: i18n.t('Write a Review').toUpperCase(),
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        title: {
+          text: i18n.t('Write a Review').toUpperCase(),
+        },
+      },
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { navigator } = this.props;
     if (this.isNewPostSent) {
       this.isNewPostSent = false;
-      if (nextProps.type === 'modal') {
-        navigator.dismissModal();
-      } else {
-        navigator.pop();
-      }
-    }
-  }
-
-  onNavigatorEvent(event) {
-    const { navigator } = this.props;
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'close') {
-        navigator.dismissModal();
-      }
+      Navigation.pop(this.props.componentId);
     }
   }
 
@@ -199,7 +149,7 @@ class WriteReview extends Component {
       discussionType,
       discussionId,
     } = this.props;
-    const value = this.refs.form.getValue(); // eslint-disable-line
+    const value = this.refs.form.getValue();
     if (value) {
       this.isNewPostSent = true;
       productsActions.postDiscussion({
@@ -215,15 +165,16 @@ class WriteReview extends Component {
 
   render() {
     const { discussion, activeDiscussion } = this.props;
-    const Rating = t.enums({
-      1: '1',
-      2: '2',
-      3: '3',
-      4: '4',
-      5: '5',
-    }, '1');
-
-    // eslint-disable-next-line
+    const Rating = t.enums(
+      {
+        1: '1',
+        2: '2',
+        3: '3',
+        4: '4',
+        5: '5',
+      },
+      '1',
+    );
     const Form = t.form.Form;
     let FormFields = null;
 
@@ -267,16 +218,14 @@ class WriteReview extends Component {
           label: i18n.t('Your message'),
           clearButtonMode: 'while-editing',
         },
-      }
+      },
     };
 
     return (
-      <ScrollView style={styles.wrapperStyle} contentContainerStyle={styles.container}>
-        <Form
-          ref="form" // eslint-disable-line
-          type={FormFields}
-          options={options}
-        />
+      <ScrollView
+        style={styles.wrapperStyle}
+        contentContainerStyle={styles.container}>
+        <Form ref="form" type={FormFields} options={options} />
         <Button type="primary" onPress={() => this.handleSend()}>
           {i18n.t('Send review').toUpperCase()}
         </Button>
@@ -287,11 +236,11 @@ class WriteReview extends Component {
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     discussion: state.discussion,
     productDetail: state.productDetail,
   }),
-  dispatch => ({
+  (dispatch) => ({
     productsActions: bindActionCreators(productsActions, dispatch),
-  })
+  }),
 )(WriteReview);

@@ -1,11 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import toInteger from 'lodash/toInteger';
 import get from 'lodash/get';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -74,7 +69,7 @@ const styles = EStyleSheet.create({
   rating: {
     marginLeft: -10,
     marginRight: -10,
-    marginTop: 0
+    marginTop: 0,
   },
 });
 
@@ -117,7 +112,7 @@ class ProductListView extends PureComponent {
         </Text>
       </View>
     );
-  }
+  };
 
   /**
    * Renders price.
@@ -128,7 +123,8 @@ class ProductListView extends PureComponent {
     const { product } = this.props;
     const { item } = product;
     const productTaxedPrice = get(item, 'taxed_price_formatted.price', '');
-    const productPrice = productTaxedPrice || get(item, 'price_formatted.price', product.price);
+    const productPrice =
+      productTaxedPrice || get(item, 'price_formatted.price', product.price);
     let discountPrice = null;
 
     if (toInteger(item.discount_prc)) {
@@ -138,28 +134,24 @@ class ProductListView extends PureComponent {
     }
 
     const isProductPriceZero = Math.ceil(item.price) === 0;
-    const showDiscount = isProductPriceZero && (item.discount_prc || item.list_discount_prc);
+    const showDiscount =
+      isProductPriceZero && (item.discount_prc || item.list_discount_prc);
 
     return (
       <View style={styles.priceWrapper}>
-        {
-          showDiscount && (
-            <Text style={styles.listPriceText}>
-              {discountPrice}
-            </Text>
-          )
-        }
-        {isProductPriceZero ? <Text>{i18n.t('Contact us for a price')}</Text> : (
-          <Text
-            numberOfLines={1}
-            style={styles.productPrice}
-          >
+        {showDiscount && (
+          <Text style={styles.listPriceText}>{discountPrice}</Text>
+        )}
+        {isProductPriceZero ? (
+          <Text>{i18n.t('Contact us for a price')}</Text>
+        ) : (
+          <Text numberOfLines={1} style={styles.productPrice}>
             {formatPrice(productPrice)}
           </Text>
         )}
       </View>
     );
-  }
+  };
 
   /**
    * Renders rating.
@@ -167,14 +159,13 @@ class ProductListView extends PureComponent {
    * @return {JSX.Element}
    */
   renderRating = () => {
-    const { product: { item } } = this.props;
+    const {
+      product: { item },
+    } = this.props;
     return (
-      <Rating
-        containerStyle={styles.rating}
-        value={item.average_rating}
-      />
+      <Rating containerStyle={styles.rating} value={item.average_rating} />
     );
-  }
+  };
 
   /**
    * Renders component
@@ -187,10 +178,7 @@ class ProductListView extends PureComponent {
     const imageUri = getImagePath(item);
 
     return (
-      <TouchableOpacity
-        style={styles.container}
-        onPress={() => onPress(item)}
-      >
+      <TouchableOpacity style={styles.container} onPress={() => onPress(item)}>
         <View>
           {imageUri !== null && (
             <Image
@@ -203,10 +191,7 @@ class ProductListView extends PureComponent {
         </View>
         {this.renderDiscount()}
         <View style={styles.description}>
-          <Text
-            numberOfLines={1}
-            style={styles.productName}
-          >
+          <Text numberOfLines={1} style={styles.productName}>
             {item.product}
           </Text>
           {this.renderRating()}

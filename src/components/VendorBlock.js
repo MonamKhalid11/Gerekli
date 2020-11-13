@@ -48,7 +48,7 @@ const styles = EStyleSheet.create({
     paddingBottom: 10,
     color: '$categoriesHeaderColor',
     textAlign: I18nManager.isRTL ? 'right' : 'left',
-  }
+  },
 });
 
 /**
@@ -68,11 +68,11 @@ export default class VendorBlock extends Component {
     wrapper: PropTypes.string,
     items: PropTypes.arrayOf(PropTypes.shape({})),
     onPress: PropTypes.func,
-  }
+  };
 
   static defaultProps = {
     items: [],
-  }
+  };
 
   /**
    * Renders image.
@@ -88,13 +88,12 @@ export default class VendorBlock extends Component {
       <TouchableOpacity
         key={index}
         onPress={() => this.props.onPress(item)}
-        style={styles.item}
-      >
+        style={styles.item}>
         <Image source={{ uri: imageUri }} style={styles.img} />
         <Rating value={item.average_rating} />
       </TouchableOpacity>
     );
-  }
+  };
 
   /**
    * Renders component

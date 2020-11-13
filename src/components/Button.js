@@ -1,9 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from './Icon';
 
@@ -92,7 +89,7 @@ const styles = EStyleSheet.create({
     position: 'absolute',
     right: 4,
     top: 4,
-  }
+  },
 });
 
 /**
@@ -124,7 +121,7 @@ export default class extends PureComponent {
    */
   static defaultProps = {
     clear: false,
-  }
+  };
 
   /**
    * Sets styles depending on type.
@@ -188,12 +185,9 @@ export default class extends PureComponent {
     return (
       <TouchableOpacity
         style={[this.getStyleByType().btn, style]}
-        {...this.props}
-      >
-        <Text style={[this.getStyleByType().btnText]}>
-          {children}
-        </Text>
-        {clear && (<Icon name="close" style={styles.clearIcon} />)}
+        {...this.props}>
+        <Text style={[this.getStyleByType().btnText]}>{children}</Text>
+        {clear && <Icon name="close" style={styles.clearIcon} />}
       </TouchableOpacity>
     );
   }

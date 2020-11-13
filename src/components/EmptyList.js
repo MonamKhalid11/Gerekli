@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-} from 'react-native';
+import { View, Text } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 import i18n from '../utils/i18n';
@@ -14,8 +11,8 @@ const styles = EStyleSheet.create({
   header: {
     fontSize: '1rem',
     color: 'gray',
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 });
 
 /**
@@ -25,9 +22,7 @@ const styles = EStyleSheet.create({
  */
 const EmptyList = () => (
   <View style={styles.container}>
-    <Text style={styles.header}>
-      {i18n.t('List is empty')}.
-    </Text>
+    <Text style={styles.header}>{i18n.t('List is empty')}.</Text>
   </View>
 );
 

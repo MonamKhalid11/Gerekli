@@ -16,7 +16,7 @@ const styles = EStyleSheet.create({
   img: {
     width: '100%',
     height: '100%',
-    resizeMode: 'contain'
+    resizeMode: 'contain',
   },
   textBannerWrapper: {
     height: '100%',
@@ -36,7 +36,7 @@ const styles = EStyleSheet.create({
     paddingBottom: 10,
     color: '$categoriesHeaderColor',
     textAlign: I18nManager.isRTL ? 'right' : 'left',
-  }
+  },
 });
 
 /**
@@ -56,14 +56,14 @@ export default class BannerBlocks extends Component {
     wrapper: PropTypes.string,
     items: PropTypes.arrayOf(PropTypes.object),
     onPress: PropTypes.func,
-  }
+  };
 
   /**
    * @ignore
    */
   static defaultProps = {
-    items: []
-  }
+    items: [],
+  };
 
   /**
    * Renders image.
@@ -84,7 +84,7 @@ export default class BannerBlocks extends Component {
           : <View style={styles.textBannerWrapper}><Text style={styles.textBanner}>{stripTags(item.description)}</Text></View>}
       </TouchableOpacity>
     );
-  }
+  };
 
   /**
    * Renders component.
@@ -97,11 +97,7 @@ export default class BannerBlocks extends Component {
     return (
       <View style={styles.container}>
         {wrapper !== '' && <Text style={styles.header}>{name}</Text>}
-        <Swiper
-          horizontal
-          height={200}
-          style={styles.container}
-        >
+        <Swiper horizontal height={200} style={styles.container}>
           {itemsList}
         </Swiper>
       </View>

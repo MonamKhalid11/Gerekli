@@ -1,9 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {
-  View,
-  Text,
-} from 'react-native';
+import { View, Text } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 import Button from './Button';
@@ -33,14 +30,8 @@ export default class extends PureComponent {
     const { onBtnPress, disabled, btnText } = this.props;
     return (
       <View style={styles.container}>
-        <Button
-          type="primary"
-          onPress={() => onBtnPress()}
-          disabled={disabled}
-        >
-          <Text style={styles.placeOrderBtnText}>
-            {btnText}
-          </Text>
+        <Button type="primary" onPress={() => onBtnPress()} disabled={disabled}>
+          <Text style={styles.placeOrderBtnText}>{btnText}</Text>
         </Button>
       </View>
     );

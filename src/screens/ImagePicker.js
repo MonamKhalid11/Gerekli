@@ -5,7 +5,6 @@ import {
   View,
   Image,
   TouchableOpacity,
-  CameraRoll,
   FlatList,
   Dimensions,
   Alert,
@@ -13,24 +12,14 @@ import {
   PermissionsAndroid,
 } from 'react-native';
 import { bindActionCreators } from 'redux';
+import CameraRoll from '@react-native-community/cameraroll';
 import EStyleSheet from 'react-native-extended-stylesheet';
-
-// Styles
-import theme from '../config/theme';
-
-// Actions
 import * as imagePickerActions from '../actions/imagePickerActions';
-
-// Components
 import Icon from '../components/Icon';
 import BottomActions from '../components/BottomActions';
-
 import i18n from '../utils/i18n';
-
-import {
-  iconsMap,
-  iconsLoaded,
-} from '../utils/navIcons';
+import { iconsMap } from '../utils/navIcons';
+import { Navigation } from 'react-native-navigation';
 
 const styles = EStyleSheet.create({
   container: {
@@ -52,7 +41,7 @@ const styles = EStyleSheet.create({
   },
   selectedIcon: {
     color: '#0f70e2',
-  }
+  },
 });
 
 const IMAGE_NUM_COLUMNS = 4;
@@ -72,21 +61,6 @@ export class AddProductStep1 extends Component {
       clear: PropTypes.func,
       toggle: PropTypes.func,
     }),
-    navigator: PropTypes.shape({
-      setTitle: PropTypes.func,
-      setButtons: PropTypes.func,
-      push: PropTypes.func,
-      setOnNavigatorEvent: PropTypes.func,
-    }),
-    selected: PropTypes.arrayOf(String)
-  };
-
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
   };
 
   constructor(props) {
@@ -99,31 +73,31 @@ export class AddProductStep1 extends Component {
       selected: [],
     };
 
-    props.navigator.setTitle({
-      title: i18n.t('Select product image').toUpperCase(),
-    });
-
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+    Navigation.events().bindComponent(this);
   }
 
   /**
    * Loads icons. Sets selected photos to state.
    */
   componentWillMount() {
-    const { navigator, selected } = this.props;
-    iconsLoaded.then(() => {
-      navigator.setButtons({
-        leftButtons: [
+    const { selected } = this.props;
+    this.setState(
+      {
+        selected,
+      },
+      () => this.getImages(),
+    );
+
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        rightButtons: [
           {
             id: 'close',
             icon: iconsMap.close,
           },
         ],
-      });
+      },
     });
-    this.setState({
-      selected,
-    }, () => this.getImages());
   }
 
   /**
@@ -131,12 +105,9 @@ export class AddProductStep1 extends Component {
    *
    * @param {object} event - Information about the element on which the event occurred.
    */
-  onNavigatorEvent(event) {
-    const { navigator } = this.props;
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'close') {
-        navigator.dismissModal();
-      }
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'close') {
+      Navigation.dismissModal(this.props.componentId);
     }
   }
 
@@ -144,7 +115,6 @@ export class AddProductStep1 extends Component {
    * Gets permissions to phone photo gallery.
    */
   getImages = async () => {
-    const { navigator } = this.props;
     const { photos, hasMore, after } = this.state;
 
     let granted = false;
@@ -172,7 +142,7 @@ export class AddProductStep1 extends Component {
       }
 
       if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-        navigator.dismissModal();
+        Navigation.dismissModal(this.props.componentId);
       }
     }
 
@@ -200,14 +170,11 @@ export class AddProductStep1 extends Component {
 
       if (images) {
         const imagesUris = images.edges
-          .filter(item => item.node.group_name !== 'Recently Added')
-          .map(edge => edge.node.image.uri);
+          .filter((item) => item.node.group_name !== 'Recently Added')
+          .map((edge) => edge.node.image.uri);
 
         this.setState({
-          photos: [
-            ...photos,
-            ...imagesUris,
-          ],
+          photos: [...photos, ...imagesUris],
           hasMore: images.page_info.has_next_page,
           after: images.page_info.end_cursor,
         });
@@ -215,7 +182,7 @@ export class AddProductStep1 extends Component {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   /**
    * Adds image to selected.
@@ -226,17 +193,15 @@ export class AddProductStep1 extends Component {
     const { selected } = this.state;
     let result = [...selected];
 
-    if (selected.some(item => image.item === item)) {
-      result = selected.filter(item => image.item !== item);
+    if (selected.some((item) => image.item === item)) {
+      result = selected.filter((item) => image.item !== item);
     } else {
-      result.push(
-        image.item,
-      );
+      result.push(image.item);
     }
     this.setState({
       selected: result,
     });
-  }
+  };
 
   /**
    * Loads more images from phone photo gallery.
@@ -252,15 +217,14 @@ export class AddProductStep1 extends Component {
    */
   renderImage = (image) => {
     const { selected } = this.state;
-    const isSelected = selected.some(item => item === image.item);
+    const isSelected = selected.some((item) => item === image.item);
     const IMAGE_WIDTH = Dimensions.get('window').width / IMAGE_NUM_COLUMNS;
 
     return (
       <TouchableOpacity
         style={styles.imageWrapper}
         onPress={() => this.handleToggleImage(image)}
-        key={image}
-      >
+        key={image}>
         <Image
           style={{
             width: IMAGE_WIDTH,
@@ -275,7 +239,7 @@ export class AddProductStep1 extends Component {
         )}
       </TouchableOpacity>
     );
-  }
+  };
 
   /**
    * Renders component
@@ -283,14 +247,14 @@ export class AddProductStep1 extends Component {
    * @return {JSX.Element}
    */
   render() {
-    const { navigator, imagePickerActions } = this.props;
+    const { imagePickerActions } = this.props;
     const { photos, selected } = this.state;
     return (
       <View style={styles.container}>
         <FlatList
           contentContainerStyle={styles.scrollContainer}
           data={photos}
-          keyExtractor={item => item}
+          keyExtractor={(item) => item}
           numColumns={IMAGE_NUM_COLUMNS}
           renderItem={this.renderImage}
           onEndReachedThreshold={1}
@@ -299,7 +263,7 @@ export class AddProductStep1 extends Component {
         <BottomActions
           onBtnPress={() => {
             imagePickerActions.toggle(selected);
-            navigator.dismissModal();
+            Navigation.dismissModal(this.props.componentId);
           }}
           btnText={i18n.t('Select')}
         />
@@ -309,10 +273,10 @@ export class AddProductStep1 extends Component {
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     selected: state.imagePicker.selected,
   }),
-  dispatch => ({
+  (dispatch) => ({
     imagePickerActions: bindActionCreators(imagePickerActions, dispatch),
-  })
+  }),
 )(AddProductStep1);

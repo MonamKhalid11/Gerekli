@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
+import { Navigation } from 'react-native-navigation';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-  View,
-  Alert,
-} from 'react-native';
+import { View, Alert } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Import actions.
@@ -17,16 +15,9 @@ import VendorsCartsList from '../components/VendorsCartsList';
 import CartProductList from '../components/CartProductList';
 
 // theme
-import theme from '../config/theme';
-
-// links
-import { registerDrawerDeepLinks } from '../utils/deepLinks';
 import i18n from '../utils/i18n';
 
-import {
-  iconsMap,
-  iconsLoaded,
-} from '../utils/navIcons';
+import { iconsMap } from '../utils/navIcons';
 
 // Styles
 const styles = EStyleSheet.create({
@@ -40,35 +31,21 @@ const styles = EStyleSheet.create({
   trashIcon: {
     height: 20,
     fontSize: 20,
-  }
+  },
 });
 
 /**
  * Renders the cart modal.
  *
- * @reactProps {object} navigator - Navigator.
  * @reactProps {object} cartActions - Cart actions.
  * @reactProps {object} auth - Authorization information.
  * @reactProps {object} cart - Cart information.
  */
-export class Cart extends Component {
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
-  };
-
+class Cart extends Component {
   /**
    * @ignore
    */
   static propTypes = {
-    navigator: PropTypes.shape({
-      push: PropTypes.func,
-      dismissModal: PropTypes.func,
-      setOnNavigatorEvent: PropTypes.func,
-    }),
     cartActions: PropTypes.shape({
       fetch: PropTypes.func,
       clear: PropTypes.func,
@@ -80,7 +57,7 @@ export class Cart extends Component {
       token: PropTypes.string,
     }),
     cart: PropTypes.shape({}),
-    vendorCarts: PropTypes.shape({})
+    vendorCarts: PropTypes.shape({}),
   };
 
   constructor(props) {
@@ -90,42 +67,15 @@ export class Cart extends Component {
       fetching: true,
       refreshing: false,
     };
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
-  }
 
-  /**
-   * Preloading icons. Sets title.
-   */
-  componentWillMount() {
-    const { navigator } = this.props;
-    iconsLoaded.then(() => {
-      navigator.setButtons({
-        leftButtons: [
-          {
-            id: 'close',
-            icon: iconsMap.close,
-          },
-        ],
-        rightButtons: [
-          {
-            id: 'clearCart',
-            icon: iconsMap.delete,
-          },
-        ],
-      });
-    });
-
-    navigator.setTitle({
-      title: i18n.t('Cart').toUpperCase(),
-    });
+    Navigation.events().bindComponent(this);
   }
 
   /**
    * Gets cart data.
    */
-  async componentDidMount() {
-    const { cartActions } = this.props;
-    await cartActions.fetch();
+  componentDidMount() {
+    this.props.cartActions.fetch();
   }
 
   /**
@@ -134,15 +84,50 @@ export class Cart extends Component {
    * @param {object} nextProps - Incoming props.
    */
   componentWillReceiveProps(nextProps) {
-    const { cart } = nextProps;
+    const { cart, auth } = nextProps;
 
     if (cart.fetching) {
       return;
     }
 
+    let productsAmount;
+    if (Object.keys(cart.carts).length) {
+      if (cart.isSeparateCart) {
+        productsAmount = Object.keys(cart.carts).reduce((accumulator, el) => {
+          return el !== 'general'
+            ? accumulator + cart.carts[el].amount
+            : accumulator;
+        }, 0);
+      } else {
+        productsAmount = cart.carts.general.amount;
+      }
+    }
+
     this.setState({
       fetching: false,
       refreshing: false,
+    });
+
+    const buttons = {};
+    if (auth.logged) {
+      buttons.rightButtons = [
+        {
+          id: 'clearCart',
+          icon: iconsMap.delete,
+        },
+      ];
+    }
+
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        title: {
+          text: i18n.t('Cart').toUpperCase(),
+        },
+        ...buttons,
+      },
+      bottomTab: {
+        badge: productsAmount !== undefined ? `${productsAmount}` : '',
+      },
     });
   }
 
@@ -151,44 +136,35 @@ export class Cart extends Component {
    *
    * @param {object} event - Information about the element on which the event occurred.
    */
-  onNavigatorEvent(event) {
-    const { navigator, cartActions } = this.props;
-    // handle a deep link
-    registerDrawerDeepLinks(event, navigator);
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'close') {
-        navigator.dismissModal();
-      } else if (event.id === 'clearCart') {
-        Alert.alert(
-          i18n.t('Clear all cart ?'),
-          '',
-          [
-            {
-              text: i18n.t('Cancel'),
-              onPress: () => {},
-              style: 'cancel'
-            },
-            {
-              text: i18n.t('Ok'),
-              onPress: () => cartActions.clear(),
-            },
-          ],
-          { cancelable: true }
-        );
-      }
+  navigationButtonPressed({ buttonId }) {
+    const { cartActions } = this.props;
+    if (buttonId === 'clearCart') {
+      Alert.alert(
+        i18n.t('Clear all cart ?'),
+        '',
+        [
+          {
+            text: i18n.t('Cancel'),
+            onPress: () => {},
+            style: 'cancel',
+          },
+          {
+            text: i18n.t('Ok'),
+            onPress: () => cartActions.clear(),
+          },
+        ],
+        { cancelable: true },
+      );
     }
   }
 
   /**
    * Refresh cart data.
    */
-  handleRefresh() {
+  handleRefresh = () => {
     const { cartActions } = this.props;
-    this.setState(
-      { refreshing: true },
-      () => cartActions.fetch(),
-    );
-  }
+    this.setState({ refreshing: true }, () => cartActions.fetch());
+  };
 
   /**
    * Renders a list of products.
@@ -197,9 +173,7 @@ export class Cart extends Component {
    */
   renderList() {
     const { refreshing, fetching } = this.state;
-    const {
-      cartActions, cart, auth, navigator
-    } = this.props;
+    const { cartActions, cart, auth, componentId } = this.props;
 
     if (fetching) {
       return this.renderSpinner();
@@ -209,7 +183,7 @@ export class Cart extends Component {
       <CartProductList
         cart={cart.carts.general}
         auth={auth}
-        navigator={navigator}
+        componentId={componentId}
         handleRefresh={this.handleRefresh}
         refreshing={refreshing}
         cartActions={cartActions}
@@ -224,9 +198,7 @@ export class Cart extends Component {
    */
   renderVendorsList = () => {
     const { fetching, refreshing } = this.state;
-    const {
-      cartActions, auth, navigator, cart
-    } = this.props;
+    const { cartActions, auth, componentId, cart } = this.props;
 
     if (fetching) {
       return this.renderSpinner();
@@ -243,13 +215,13 @@ export class Cart extends Component {
       <VendorsCartsList
         carts={newCarts}
         auth={auth}
-        navigator={navigator}
+        componentId={componentId}
         handleRefresh={this.handleRefresh}
         refreshing={refreshing}
         cartActions={cartActions}
       />
     );
-  }
+  };
 
   /**
    * Renders spinner.
@@ -264,9 +236,7 @@ export class Cart extends Component {
       return false;
     }
 
-    return (
-      <Spinner visible={cart.fetching} />
-    );
+    return <Spinner visible={cart.fetching} />;
   };
 
   /**
@@ -285,11 +255,11 @@ export class Cart extends Component {
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     auth: state.auth,
     cart: state.cart,
   }),
-  dispatch => ({
+  (dispatch) => ({
     cartActions: bindActionCreators(cartActions, dispatch),
-  })
+  }),
 )(Cart);

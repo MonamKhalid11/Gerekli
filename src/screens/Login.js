@@ -2,30 +2,20 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-  View,
-  TouchableOpacity,
-  Text,
-} from 'react-native';
-import * as t from 'tcomb-form-native';
+import { View, TouchableOpacity, Text } from 'react-native';
+// import * as t from 'tcomb-form-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Import actions.
 import * as authActions from '../actions/authActions';
 
-// theme
-import theme from '../config/theme';
-
 // Components
 import Spinner from '../components/Spinner';
 import i18n from '../utils/i18n';
-
-import {
-  iconsMap,
-  iconsLoaded,
-} from '../utils/navIcons';
-
+import { iconsMap } from '../utils/navIcons';
 import config from '../config';
+import * as nav from '../services/navigation';
+import { Navigation } from 'react-native-navigation';
 
 const styles = EStyleSheet.create({
   container: {
@@ -49,36 +39,14 @@ const styles = EStyleSheet.create({
   btnRegistrationText: {
     color: 'black',
     fontSize: '1rem',
-    textAlign: 'center'
-  }
-});
-
-const Form = t.form.Form;
-const FormFields = t.struct({
-  email: t.String,
-  password: t.String,
+    textAlign: 'center',
+  },
 });
 
 class Login extends Component {
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
-  };
-
   static propTypes = {
     authActions: PropTypes.shape({
       login: PropTypes.func,
-    }),
-    navigator: PropTypes.shape({
-      setOnNavigatorEvent: PropTypes.func,
-      setTitle: PropTypes.func,
-      setStyle: PropTypes.func,
-      dismissModal: PropTypes.func,
-      showInAppNotification: PropTypes.func,
-      push: PropTypes.func,
     }),
     auth: PropTypes.shape({
       logged: PropTypes.bool,
@@ -90,49 +58,34 @@ class Login extends Component {
   constructor(props) {
     super(props);
 
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+    Navigation.events().bindComponent(this);
   }
 
   componentWillMount() {
-    const { navigator } = this.props;
-    navigator.setTitle({
-      title: i18n.t('Login').toUpperCase(),
-    });
-    iconsLoaded.then(() => {
-      navigator.setButtons({
-        leftButtons: [
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        title: {
+          text: i18n.t('Login').toUpperCase(),
+        },
+        rightButtons: [
           {
             id: 'close',
             icon: iconsMap.close,
           },
         ],
-      });
+      },
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { navigator } = this.props;
     if (nextProps.auth.logged) {
-      setTimeout(() => navigator.dismissModal(), 1500);
-    }
-    if (nextProps.auth.error && !nextProps.auth.fetching) {
-      navigator.showInAppNotification({
-        screen: 'Notification',
-        passProps: {
-          type: 'warning',
-          title: i18n.t('Error'),
-          text: i18n.t('Wrong password.')
-        }
-      });
+      setTimeout(() => Navigation.dismissModal(this.props.componentId), 1500);
     }
   }
 
-  onNavigatorEvent(event) {
-    const { navigator } = this.props;
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'close') {
-        navigator.dismissModal();
-      }
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'close') {
+      Navigation.dismissModal(this.props.componentId);
     }
   }
 
@@ -145,8 +98,19 @@ class Login extends Component {
   }
 
   render() {
-    const { auth, navigator } = this.props;
+    const { auth } = this.props;
     const values = {};
+    const t = require('tcomb-form-native');
+
+    if (!t.form) {
+      return null;
+    }
+
+    const Form = t.form.Form;
+    const FormFields = t.struct({
+      email: t.String,
+      password: t.String,
+    });
 
     if (config.demo) {
       values.email = config.demoUsername;
@@ -166,33 +130,21 @@ class Login extends Component {
           secureTextEntry: true,
           clearButtonMode: 'while-editing',
         },
-      }
+      },
     };
 
     return (
       <View style={styles.container}>
-        <Form
-          ref="form"
-          type={FormFields}
-          options={options}
-          value={values}
-        />
+        <Form ref="form" type={FormFields} options={options} value={values} />
         <TouchableOpacity
           style={styles.btn}
           onPress={() => this.handleLogin()}
-          disabled={auth.fetching}
-        >
-          <Text style={styles.btnText}>
-            {i18n.t('Login')}
-          </Text>
+          disabled={auth.fetching}>
+          <Text style={styles.btnText}>{i18n.t('Login')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.btnRegistration}
-          onPress={() => navigator.push({
-            screen: 'Registration',
-            backButtonTitle: '',
-          })}
-        >
+          onPress={() => nav.pushRegistration(this.props.componentId)}>
           <Text style={styles.btnRegistrationText}>
             {i18n.t('Registration')}
           </Text>
@@ -204,10 +156,10 @@ class Login extends Component {
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     auth: state.auth,
   }),
-  dispatch => ({
+  (dispatch) => ({
     authActions: bindActionCreators(authActions, dispatch),
-  })
+  }),
 )(Login);

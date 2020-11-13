@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Navigation } from 'react-native-navigation';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -21,16 +22,11 @@ import Icon from '../components/Icon';
 
 // theme
 import theme from '../config/theme';
-
-// links
-import { registerDrawerDeepLinks } from '../utils/deepLinks';
 import i18n from '../utils/i18n';
+import * as nav from '../services/navigation';
 import { formatPrice, getImagePath } from '../utils';
 
-import {
-  iconsMap,
-  iconsLoaded,
-} from '../utils/navIcons';
+import { iconsMap } from '../utils/navIcons';
 
 // Styles
 const styles = EStyleSheet.create({
@@ -64,17 +60,17 @@ const styles = EStyleSheet.create({
     color: 'black',
     marginBottom: 5,
     fontWeight: 'bold',
-    textAlign: 'left'
+    textAlign: 'left',
   },
   productItemPrice: {
     fontSize: '0.7rem',
     color: 'black',
-    textAlign: 'left'
+    textAlign: 'left',
   },
   emptyListContainer: {
     marginTop: '3rem',
     flexDirection: 'column',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   emptyListIconWrapper: {
     backgroundColor: '#3FC9F6',
@@ -97,7 +93,7 @@ const styles = EStyleSheet.create({
     marginTop: '1rem',
     paddingLeft: '0.25rem',
     paddingRight: '0.25rem',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   emptyListDesc: {
     fontSize: '1rem',
@@ -107,20 +103,7 @@ const styles = EStyleSheet.create({
 });
 
 export class WishList extends Component {
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
-  };
-
   static propTypes = {
-    navigator: PropTypes.shape({
-      push: PropTypes.func,
-      dismissModal: PropTypes.func,
-      setOnNavigatorEvent: PropTypes.func,
-    }),
     wishListActions: PropTypes.shape({
       fetch: PropTypes.func,
       remove: PropTypes.func,
@@ -136,33 +119,25 @@ export class WishList extends Component {
       fetching: true,
       refreshing: false,
     };
-
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+    Navigation.events().bindComponent(this);
   }
 
-  componentWillMount() {
-    const { navigator, wishListActions } = this.props;
+  componentDidMount() {
+    const { wishListActions } = this.props;
 
     wishListActions.fetch();
-    iconsLoaded.then(() => {
-      navigator.setButtons({
-        leftButtons: [
-          {
-            id: 'close',
-            icon: iconsMap.close,
-          },
-        ],
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        title: {
+          text: i18n.t('Wish List').toUpperCase(),
+        },
         rightButtons: [
           {
             id: 'clearWishList',
             icon: iconsMap.delete,
           },
         ],
-      });
-    });
-
-    navigator.setTitle({
-      title: i18n.t('Wish List').toUpperCase(),
+      },
     });
   }
 
@@ -176,33 +151,32 @@ export class WishList extends Component {
       fetching: false,
       refreshing: false,
     });
+
+    Navigation.mergeOptions(this.props.componentId, {
+      bottomTab: {
+        badge: wishList.items.length ? `${wishList.items.length}` : '',
+      },
+    });
   }
 
-  onNavigatorEvent(event) {
-    // handle a deep link
-    registerDrawerDeepLinks(event, this.props.navigator);
-    const { navigator } = this.props;
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'close') {
-        navigator.dismissModal();
-      } else if (event.id === 'clearWishList') {
-        Alert.alert(
-          i18n.t('Clear wish list?'),
-          '',
-          [
-            {
-              text: i18n.t('Cancel'),
-              onPress: () => {},
-              style: 'cancel'
-            },
-            {
-              text: i18n.t('Ok'),
-              onPress: () => this.props.wishListActions.clear(),
-            },
-          ],
-          { cancelable: true }
-        );
-      }
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'clearWishList') {
+      Alert.alert(
+        i18n.t('Clear wish list?'),
+        '',
+        [
+          {
+            text: i18n.t('Cancel'),
+            onPress: () => {},
+            style: 'cancel',
+          },
+          {
+            text: i18n.t('Ok'),
+            onPress: () => this.props.wishListActions.clear(),
+          },
+        ],
+        { cancelable: true },
+      );
     }
   }
 
@@ -213,10 +187,7 @@ export class WishList extends Component {
 
   handleRefresh() {
     const { wishListActions } = this.props;
-    this.setState(
-      { refreshing: true },
-      () => wishListActions.fetch(),
-    );
+    this.setState({ refreshing: true }, () => wishListActions.fetch());
   }
 
   renderProductItem = (item) => {
@@ -224,10 +195,8 @@ export class WishList extends Component {
     const imageUri = getImagePath(item);
     if (imageUri) {
       productImage = (
-        <Image
-          source={{ uri: imageUri }}
-          style={styles.productItemImage}
-        />);
+        <Image source={{ uri: imageUri }} style={styles.productItemImage} />
+      );
     }
 
     const swipeoutBtns = [
@@ -243,26 +212,19 @@ export class WishList extends Component {
         <Swipeout
           autoClose
           right={swipeoutBtns}
-          backgroundColor={theme.$navBarBackgroundColor}
-        >
+          backgroundColor={theme.$navBarBackgroundColor}>
           <TouchableOpacity
             style={styles.productItem}
-            onPress={() => this.props.navigator.push({
-              screen: 'ProductDetail',
-              backButtonTitle: '',
-              passProps: {
+            onPress={() =>
+              nav.pushProductDetail(this.props.componentId, {
                 pid: item.product_id,
                 hideSearch: true,
                 hideWishList: true,
-              }
-            })}
-          >
+              })
+            }>
             {productImage}
             <View style={styles.productItemDetail}>
-              <Text
-                style={styles.productItemName}
-                numberOfLines={1}
-              >
+              <Text style={styles.productItemName} numberOfLines={1}>
                 {item.product}
               </Text>
               <Text style={styles.productItemPrice}>
@@ -273,7 +235,7 @@ export class WishList extends Component {
         </Swipeout>
       </View>
     );
-  }
+  };
 
   renderEmptyList = () => {
     if (this.state.fetching) {
@@ -308,19 +270,15 @@ export class WishList extends Component {
   }
 
   render() {
-    return (
-      <View style={styles.container}>
-        {this.renderList()}
-      </View>
-    );
+    return <View style={styles.container}>{this.renderList()}</View>;
   }
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     wishList: state.wishList,
   }),
-  dispatch => ({
+  (dispatch) => ({
     wishListActions: bindActionCreators(wishListActions, dispatch),
-  })
+  }),
 )(WishList);

@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
+  SafeAreaView,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -27,17 +28,15 @@ import Icon from '../components/Icon';
 import i18n from '../utils/i18n';
 
 import { stripTags, formatPrice } from '../utils';
-
-// theme
-import theme from '../config/theme';
+// import { Navigation } from 'react-native-navigation';
+import * as nav from '../services/navigation';
 
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FAFAFA',
   },
-  contentContainer: {
-  },
+  contentContainer: {},
   shippingItem: {
     padding: 14,
     borderBottomWidth: 1,
@@ -55,7 +54,7 @@ const styles = EStyleSheet.create({
   shippingItemDesc: {
     fontSize: '0.8rem',
     paddingBottom: 6,
-    color: 'gray'
+    color: 'gray',
   },
   shippingTitle: {
     fontSize: '1rem',
@@ -96,26 +95,17 @@ const styles = EStyleSheet.create({
  * @reactProps {object} cart - Cart information.
  * @reactProps {object} cartActions - Cart actions.
  */
-export class CheckoutShipping extends Component {
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
-  };
-
-  /**
-   * @ignore
-   */
+class CheckoutShipping extends Component {
   static propTypes = {
     cart: PropTypes.shape({}),
-    navigator: PropTypes.shape({
-      push: PropTypes.func,
-      setOnNavigatorEvent: PropTypes.func
-    }),
-    stateCart: PropTypes.shape({}),
-    cartActions: PropTypes.shape({})
+  };
+
+  static options = {
+    topBar: {
+      title: {
+        text: i18n.t('Checkout').toUpperCase(),
+      },
+    },
   };
 
   constructor(props) {
@@ -127,8 +117,6 @@ export class CheckoutShipping extends Component {
       shipping_id: {},
       isNextDisabled: true,
     };
-
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
   /**
@@ -147,20 +135,6 @@ export class CheckoutShipping extends Component {
   componentWillReceiveProps(nextProps) {
     const { cart } = nextProps;
     this.setDefaults(cart);
-  }
-
-  /**
-   * Shipping screen navigation.
-   *
-   * @param {object} event - Information about the element on which the event occurred.
-   */
-  onNavigatorEvent(event) {
-    const { navigator } = this.props;
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'back') {
-        navigator.pop();
-      }
-    }
   }
 
   /**
@@ -214,7 +188,7 @@ export class CheckoutShipping extends Component {
       });
       return item;
     });
-  }
+  };
 
   /**
    * Calculates the cost including delivery.
@@ -239,28 +213,22 @@ export class CheckoutShipping extends Component {
       }
     });
 
-    cartActions
-      .recalculateTotal(shippingsIds)
-      .then((data) => {
-        this.setState({
-          total: data.total_formatted.price,
-        });
+    cartActions.recalculateTotal(shippingsIds).then((data) => {
+      this.setState({
+        total: data.total_formatted.price,
       });
+    });
   }
 
   /**
    * Redirects to CheckoutPayment.
    */
   handleNextPress() {
-    const { navigator, cart } = this.props;
-    navigator.push({
-      screen: 'CheckoutPayment',
-      title: i18n.t('Checkout').toUpperCase(),
-      backButtonTitle: '',
-      passProps: {
-        shipping_id: this.state.shipping_id,
-        cart
-      },
+    const { cart } = this.props;
+
+    nav.pushCheckoutPayment(this.props.componentId, {
+      cart,
+      shipping_id: this.state.shipping_id,
     });
   }
 
@@ -278,20 +246,20 @@ export class CheckoutShipping extends Component {
     }
     // Check shipping
     const newItems = [...this.state.items];
-    newItems[itemIndex].shippings = newItems[itemIndex].shippings
-      .map(s => ({ ...s, isSelected: false, }));
+    newItems[itemIndex].shippings = newItems[itemIndex].shippings.map((s) => ({
+      ...s,
+      isSelected: false,
+    }));
     newItems[itemIndex].shippings[shippingIndex].isSelected = true;
     // Get selected ids
     const selectedIds = {};
     selectedIds[`${itemIndex}`] = `${shipping.shipping_id}`;
 
-    cartActions
-      .recalculateTotal(selectedIds)
-      .then((data) => {
-        this.setState({
-          total: data.total_formatted.price,
-        });
+    cartActions.recalculateTotal(selectedIds).then((data) => {
+      this.setState({
+        total: data.total_formatted.price,
       });
+    });
 
     this.setState({
       items: newItems,
@@ -313,8 +281,7 @@ export class CheckoutShipping extends Component {
       <TouchableOpacity
         key={uniqueId('item_')}
         style={[styles.shippingItem]}
-        onPress={() => this.handleSelect(shipping, shippingIndex, itemIndex)}
-      >
+        onPress={() => this.handleSelect(shipping, shippingIndex, itemIndex)}>
         <View style={styles.shippingItemTitleWrap}>
           <View style={styles.shippingItemTitle}>
             {shipping.isSelected
@@ -360,11 +327,7 @@ export class CheckoutShipping extends Component {
     if (items.length === 1) {
       return null;
     }
-    return (
-      <Text style={styles.shippingTitle}>
-        {title}
-      </Text>
-    );
+    return <Text style={styles.shippingTitle}>{title}</Text>;
   };
 
   /**
@@ -382,19 +345,19 @@ export class CheckoutShipping extends Component {
       );
     }
 
-    const shippingsCount = flatten(items.map(s => s.shippings)).length;
+    const shippingsCount = flatten(items.map((s) => s.shippings)).length;
 
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.contentContainer}>
           {this.renderSteps()}
           {!shippingsCount && <EmptyList />}
           {items.map((item, itemIndex) => (
             <View key={item.company_id}>
               {this.renderCompany(item.name)}
-              {item.shippings
-                .map((shipping, shippingIndex) => this
-                  .renderItem(shipping, shippingIndex, itemIndex))}
+              {item.shippings.map((shipping, shippingIndex) =>
+                this.renderItem(shipping, shippingIndex, itemIndex),
+              )}
             </View>
           ))}
         </ScrollView>
@@ -404,7 +367,7 @@ export class CheckoutShipping extends Component {
           isBtnDisabled={isNextDisabled}
           onBtnPress={() => this.handleNextPress()}
         />
-      </View>
+      </SafeAreaView>
     );
   }
 }
@@ -414,7 +377,7 @@ export default connect(
     stateCart: state.cart,
     shippings: state.shippings,
   }),
-  dispatch => ({
+  (dispatch) => ({
     cartActions: bindActionCreators(cartActions, dispatch),
-  })
+  }),
 )(CheckoutShipping);

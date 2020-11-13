@@ -2,143 +2,317 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-  View,
-} from 'react-native';
+import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import omit from 'lodash/omit';
 
-// Import actions.
 import * as authActions from '../actions/authActions';
-
-// Theme
+import i18n from '../utils/i18n';
 import theme from '../config/theme';
-
-// Icons
-import {
-  iconsMap,
-  iconsLoaded,
-} from '../utils/navIcons';
-
-// Components
-import Spinner from '../components/Spinner';
-import ProfileForm from '../components/ProfileForm';
+import config from '../config';
+import * as nav from '../services/navigation';
+import { registerDrawerDeepLinks } from '../utils/deepLinks';
+import * as pagesActions from '../actions/pagesActions';
+import Icon from '../components/Icon';
+import { USER_TYPE_VENDOR } from '../constants/index';
 
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+  },
+  logo: {
+    resizeMode: 'contain',
+    width: '100%',
+    height: 130,
+  },
+  signInSectionContainer: {
+    backgroundColor: theme.$grayColor,
+    width: '100%',
+    padding: 15,
+    borderBottomWidth: 1,
+    borderColor: '#e3e3e3',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  signInSectionText: {
+    color: '#9c9c9c',
+    fontWeight: 'bold',
+    fontSize: '0.8rem',
+  },
+  signInBtnContainer: {
+    width: '100%',
+    padding: 15,
+    borderBottomWidth: 1,
+    borderColor: '$menuItemsBorderColor',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  signInButtons: {
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  signInBtnText: {
+    color: '#424040',
+  },
+  btn: {
+    borderRadius: '$borderRadius',
+    height: 38,
+    marginBottom: 10,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  btnText: {
+    color: '#424040',
+    fontSize: '1rem',
+  },
+  signInInfo: {
+    paddingHorizontal: 14,
+    paddingTop: 10,
+    paddingBottom: 30,
+  },
+  signOut: {
+    paddingBottom: 30,
+  },
+  userNameText: {
+    color: '#424040',
+    fontSize: '1rem',
+    fontWeight: 'bold',
+  },
+  userMailText: {
+    color: '#424040',
+    fontSize: '1rem',
+  },
+  IconNameWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  menuItemIcon: {
+    fontSize: '1.2rem',
+    color: '$menuItemsBorderColor',
+    marginRight: 5,
+  },
+  rightArrowIcon: {
+    fontSize: '1rem',
+    color: '$menuItemsBorderColor',
   },
 });
 
-class Profile extends Component {
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
-  };
-
+class ProfileEdit extends Component {
   static propTypes = {
     authActions: PropTypes.shape({
       registration: PropTypes.func,
     }),
-    navigator: PropTypes.shape({
-      setOnNavigatorEvent: PropTypes.func,
-      setTitle: PropTypes.func,
-      dismissModal: PropTypes.func,
-      showInAppNotification: PropTypes.func,
-      push: PropTypes.func,
-    }),
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      fetching: true,
-      profile: {},
-      forms: [],
-    };
-  }
-
-  componentWillMount() {
-    const { navigator } = this.props;
-
-    navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
-
-    iconsLoaded.then(() => {
-      navigator.setButtons({
-        leftButtons: [
-          {
-            id: 'close',
-            icon: iconsMap.close,
-          },
-        ],
-      });
-    });
-  }
+  static options = {
+    topBar: {
+      title: {
+        text: i18n.t('Profile').toUpperCase(),
+      },
+    },
+  };
 
   componentDidMount() {
-    const { authActions } = this.props;
-
-    authActions
-      .fetchProfile()
-      .then((profile) => {
-        this.setState({
-          profile,
-          fetching: false,
-          forms: profile.fields,
-        });
-      });
+    const { pagesActions } = this.props;
+    pagesActions.fetch(config.layoutId);
   }
 
-  onNavigatorEvent(event) {
-    const { navigator } = this.props;
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'close') {
-        navigator.dismissModal();
-      }
-    }
-  }
-
-  handleSave = (values) => {
-    const { profile } = this.state;
-    const { authActions } = this.props;
-    if (values) {
-      authActions.updateProfile(profile.user_id, values);
-    }
-  }
-
-  render() {
-    const { fetching, forms } = this.state;
-
-    if (fetching) {
-      return (
-        <View style={styles.container}>
-          <Spinner visible />
+  renderVendorFields() {
+    return (
+      <>
+        <View style={styles.signInSectionContainer}>
+          <Text style={styles.signInSectionText}>
+            {i18n.t('Seller').toUpperCase()}
+          </Text>
         </View>
+
+        <TouchableOpacity
+          onPress={() => nav.pushVendorManageOrders(this.props.componentId)}
+          style={styles.signInBtnContainer}>
+          <View style={styles.IconNameWrapper}>
+            <Icon name="archive" style={styles.menuItemIcon} />
+            <Text style={styles.signInBtnText}>{i18n.t('Vendor Orders')}</Text>
+          </View>
+          <Icon name="chevron-right" style={styles.rightArrowIcon} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => nav.pushVendorManageProducts(this.props.componentId)}
+          style={styles.signInBtnContainer}>
+          <View style={styles.IconNameWrapper}>
+            <Icon name="pages" style={styles.menuItemIcon} />
+            <Text style={styles.signInBtnText}>{i18n.t('Vendor Products')}</Text>
+          </View>
+          <Icon name="chevron-right" style={styles.rightArrowIcon} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => nav.showVendorManageCategoriesPicker({ parent: 0 })}
+          style={styles.signInBtnContainer}>
+          <View style={styles.IconNameWrapper}>
+            <Icon name="add-circle" style={styles.menuItemIcon} />
+            <Text style={styles.signInBtnText}>{i18n.t('Add Products')}</Text>
+          </View>
+          <Icon name="chevron-right" style={styles.rightArrowIcon} />
+        </TouchableOpacity>
+      </>
+    );
+  }
+
+  renderPages = (pages) => {
+    return (
+      <View>
+        <View style={styles.signInSectionContainer}>
+          <Text style={styles.signInSectionText}>
+            {i18n.t('Pages').toUpperCase()}
+          </Text>
+        </View>
+        {pages.items.map((page) => {
+          return (
+            <TouchableOpacity
+              style={styles.signInBtnContainer}
+              onPress={() =>
+                registerDrawerDeepLinks(
+                  {
+                    link: `dispatch=pages.view&page_id=${page.page_id}`,
+                    payload: {
+                      title: page.page,
+                    },
+                  },
+                  this.props.componentId,
+                )
+              }>
+              <Text style={styles.signInBtnText}>{page.page}</Text>
+              <Icon name="chevron-right" style={styles.rightArrowIcon} />
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+    );
+  };
+
+  renderUserInformation = (cart) => {
+    if (
+      cart.user_data.b_firstname ||
+      cart.user_data.b_lastname ||
+      cart.user_data.email
+    ) {
+      return (
+        <>
+          {(cart.user_data.b_firstname ||
+            cart.user_data.b_lastname ||
+            cart.user_data.email) && (
+            <View style={styles.signInInfo}>
+              <Text style={styles.userNameText} numberOfLines={2}>
+                {cart.user_data.b_firstname} {cart.user_data.b_lastname}
+              </Text>
+              <Text style={styles.userMailText}>{cart.user_data.email}</Text>
+            </View>
+          )}
+        </>
       );
     }
+    return null;
+  };
+
+  renderSignedIn = (auth, cart) => {
+    return (
+      <>
+        <View>
+          {theme.$logoUrl !== '' && (
+            <Image source={{ uri: theme.$logoUrl }} style={styles.logo} />
+          )}
+        </View>
+        {!auth.logged ? (
+          <View style={styles.signInButtons}>
+            <TouchableOpacity
+              onPress={() => nav.showLogin()}
+              style={{ ...styles.btn, backgroundColor: '#4fbe31' }}>
+              <Text style={{ ...styles.btnText, color: '#fff' }}>
+                {i18n.t('Login')}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => nav.showRegistration()}
+              style={styles.btn}>
+              <Text style={styles.btnText}>{i18n.t('Registration')}</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          this.renderUserInformation(cart)
+        )}
+      </>
+    );
+  };
+
+  renderSignedInMenu = (authActions) => {
+    return (
+      <>
+        <View style={styles.signInSectionContainer}>
+          <Text style={styles.signInSectionText}>
+            {i18n.t('Buyer').toUpperCase()}
+          </Text>
+        </View>
+
+        <TouchableOpacity
+          onPress={() => nav.pushProfileEdit(this.props.componentId)}
+          style={styles.signInBtnContainer}>
+          <View style={styles.IconNameWrapper}>
+            <Icon name="person" style={styles.menuItemIcon} />
+            <Text style={styles.signInBtnText}>{i18n.t('Profile')}</Text>
+          </View>
+          <Icon name="chevron-right" style={styles.rightArrowIcon} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => nav.pushOrders(this.props.componentId)}
+          style={styles.signInBtnContainer}>
+          <View style={styles.IconNameWrapper}>
+            <Icon name="receipt" style={styles.menuItemIcon} />
+            <Text style={styles.signInBtnText}>{i18n.t('Orders')}</Text>
+          </View>
+          <Icon name="chevron-right" style={styles.rightArrowIcon} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => authActions.logout()}
+          style={styles.signInBtnContainer}>
+          <View style={styles.IconNameWrapper}>
+            <Icon name="exit-to-app" style={styles.menuItemIcon} />
+            <Text style={styles.signInBtnText}>{i18n.t('Logout')}</Text>
+          </View>
+          <Icon name="chevron-right" style={styles.rightArrowIcon} />
+        </TouchableOpacity>
+      </>
+    );
+  };
+
+  render() {
+    const { profile, pages, auth, cart, authActions } = this.props;
 
     return (
-      <View style={styles.container}>
-        <ProfileForm
-          fields={omit(forms, 'B')}
-          isEdit
-          onSubmit={values => this.handleSave(values)}
-        />
-      </View>
+      <ScrollView style={styles.container}>
+        {this.renderSignedIn(auth, cart)}
+
+        {auth.logged && this.renderSignedInMenu(authActions)}
+
+        {profile.user_type === USER_TYPE_VENDOR && this.renderVendorFields()}
+
+        {this.renderPages(pages)}
+      </ScrollView>
     );
   }
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     auth: state.auth,
+    pages: state.pages,
+    cart: state.cart,
+    profile: state.profile,
   }),
-  dispatch => ({
+  (dispatch) => ({
     authActions: bindActionCreators(authActions, dispatch),
-  })
-)(Profile);
+    pagesActions: bindActionCreators(pagesActions, dispatch),
+  }),
+)(ProfileEdit);

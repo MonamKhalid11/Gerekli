@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { get } from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-  View,
-  Text,
-  Image,
-  ScrollView,
-} from 'react-native';
+import { View, Text, Image, ScrollView } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Import actions.
@@ -20,19 +16,11 @@ import Rating from '../components/Rating';
 import Section from '../components/Section';
 import SectionRow from '../components/SectionRow';
 import DiscussionList from '../components/DiscussionList';
-
-// theme
-import theme from '../config/theme';
-
-// links
-import { registerDrawerDeepLinks } from '../utils/deepLinks';
 import i18n from '../utils/i18n';
 import { stripTags } from '../utils';
-
-import {
-  iconsMap,
-  iconsLoaded,
-} from '../utils/navIcons';
+import { iconsMap } from '../utils/navIcons';
+import { Navigation } from 'react-native-navigation';
+import * as nav from '../services/navigation';
 
 // Styles
 const styles = EStyleSheet.create({
@@ -88,11 +76,6 @@ export class VendorDetail extends Component {
    * @ignore
    */
   static propTypes = {
-    navigator: PropTypes.shape({
-      push: PropTypes.func,
-      dismissModal: PropTypes.func,
-      setOnNavigatorEvent: PropTypes.func,
-    }),
     discussion: PropTypes.shape({
       items: PropTypes.shape({}),
       fetching: PropTypes.bool,
@@ -112,14 +95,6 @@ export class VendorDetail extends Component {
     }),
   };
 
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
-  };
-
   constructor(props) {
     super(props);
 
@@ -136,7 +111,7 @@ export class VendorDetail extends Component {
       },
     };
 
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+    Navigation.events().bindComponent(this);
   }
 
   /**
@@ -144,21 +119,18 @@ export class VendorDetail extends Component {
    * Loads icons. Sets title.
    */
   componentWillMount() {
-    const { navigator } = this.props;
-
-    iconsLoaded.then(() => {
-      navigator.setButtons({
-        leftButtons: [
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        title: {
+          text: i18n.t('Vendor Detail').toUpperCase(),
+        },
+        rightButtons: [
           {
             id: 'close',
             icon: iconsMap.close,
           },
         ],
-      });
-    });
-
-    navigator.setTitle({
-      title: i18n.t('Vendor Detail').toUpperCase(),
+      },
     });
   }
 
@@ -195,14 +167,9 @@ export class VendorDetail extends Component {
    *
    * @param {object} event - Information about the element on which the event occurred.
    */
-  onNavigatorEvent(event) {
-    // handle a deep link
-    registerDrawerDeepLinks(event, this.props.navigator);
-    const { navigator } = this.props;
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'close') {
-        navigator.dismissModal();
-      }
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'close') {
+      Navigation.dismissModal(this.props.componentId);
     }
   }
 
@@ -221,7 +188,7 @@ export class VendorDetail extends Component {
         {
           page: discussion.search.page + 1,
         },
-        'M'
+        'M',
       );
     }
   }
@@ -333,11 +300,14 @@ export class VendorDetail extends Component {
    */
   renderDiscussion() {
     const { discussion } = this.state;
-    const { auth, navigator, vendors } = this.props;
+    const { auth, vendors } = this.props;
 
     let title = i18n.t('Reviews');
-    if (discussion.search.total_items != 0) { // eslint-disable-line
-      title = i18n.t('Reviews ({{count}})', { count: discussion.search.total_items });
+    // eslint-disable-next-line eqeqeq
+    if (discussion.search.total_items != 0) {
+      title = i18n.t('Reviews ({{count}})', {
+        count: discussion.search.total_items,
+      });
     }
 
     return (
@@ -347,17 +317,12 @@ export class VendorDetail extends Component {
         showRightButton={!discussion.disable_adding && auth.logged}
         rightButtonText={i18n.t('Write a Review')}
         onRightButtonPress={() => {
-          navigator.push({
-            screen: 'WriteReview',
-            backButtonTitle: '',
-            passProps: {
-              activeDiscussion: discussion,
-              discussionType: 'M',
-              discussionId: vendors.currentVendor.company_id,
-            }
+          nav.pushWriteReview(this.props.componentId, {
+            activeDiscussion: discussion,
+            discussionType: 'M',
+            discussionId: vendors.currentVendor.company_id,
           });
-        }}
-      >
+        }}>
         <DiscussionList
           infinite
           items={discussion.posts}
@@ -394,13 +359,13 @@ export class VendorDetail extends Component {
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     auth: state.auth,
     vendors: state.vendors,
     discussion: state.discussion,
   }),
-  dispatch => ({
+  (dispatch) => ({
     vendorActions: bindActionCreators(vendorActions, dispatch),
     productsActions: bindActionCreators(productsActions, dispatch),
-  })
+  }),
 )(VendorDetail);

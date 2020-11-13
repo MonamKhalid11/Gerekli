@@ -17,7 +17,7 @@ const styles = EStyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     fontSize: '1rem',
-  }
+  },
 });
 
 /**
@@ -29,9 +29,7 @@ export default class Offline extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.msgText}>
-          You are offline
-        </Text>
+        <Text style={styles.msgText}>You are offline</Text>
       </View>
     );
   }

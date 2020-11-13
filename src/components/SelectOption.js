@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 const styles = EStyleSheet.create({
@@ -129,7 +124,7 @@ export default class extends Component {
    */
   renderComment = (option) => {
     if (option.comment) {
-      return (<Text style={styles.commentText}>{option.comment}</Text>);
+      return <Text style={styles.commentText}>{option.comment}</Text>;
     }
     return null;
   };
@@ -155,22 +150,21 @@ export default class extends Component {
       }
       let content = (
         <Text
-          style={[styles.optionsItemBtnText, active && styles.optionsItemBtnTextActive]}
-        >
+          style={[
+            styles.optionsItemBtnText,
+            active && styles.optionsItemBtnTextActive,
+          ]}>
           {v.variant_name}
         </Text>
       );
       if (img) {
-        content = (
-          <Image source={{ uri: img }} style={styles.optionImage} />
-        );
+        content = <Image source={{ uri: img }} style={styles.optionImage} />;
       }
       return (
         <TouchableOpacity
           key={v.variant_id}
           style={[styles.optionsItem, active && styles.optionsItemActive]}
-          onPress={() => this.handleChange(v)}
-        >
+          onPress={() => this.handleChange(v)}>
           {content}
         </TouchableOpacity>
       );
@@ -178,14 +172,11 @@ export default class extends Component {
 
     return (
       <View style={styles.container}>
-        <Text
-          style={styles.title}
-        >
-          {option.option_name}: <Text style={styles.titleSub}>{value.variant_name}</Text>
+        <Text style={styles.title}>
+          {option.option_name}:{' '}
+          <Text style={styles.titleSub}>{value.variant_name}</Text>
         </Text>
-        <View style={styles.optionsVariants}>
-          {optionsVariantsList}
-        </View>
+        <View style={styles.optionsVariants}>{optionsVariantsList}</View>
         {this.renderComment(option)}
       </View>
     );

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, I18nManager } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import * as t from 'tcomb-form-native';
 
 import i18n from '../utils/i18n';
 
@@ -15,6 +14,7 @@ const styles = EStyleSheet.create({
   },
 });
 
+const t = require('tcomb-form-native');
 const Form = t.form.Form;
 const formFields = t.struct({
   phone: t.String,
@@ -65,11 +65,11 @@ const formOptions = {
             ...Form.stylesheet.textbox.error,
             textAlign: I18nManager.isRTL ? 'right' : 'left',
             writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
-          }
-        }
+          },
+        },
       },
     },
-  }
+  },
 };
 
 /**

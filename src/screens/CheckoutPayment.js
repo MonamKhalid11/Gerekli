@@ -7,6 +7,7 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
+  SafeAreaView,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -31,9 +32,7 @@ import Spinner from '../components/Spinner';
 import Icon from '../components/Icon';
 import { stripTags, formatPrice } from '../utils';
 import i18n from '../utils/i18n';
-
-// theme
-import theme from '../config/theme';
+import * as nav from '../services/navigation';
 
 const styles = EStyleSheet.create({
   container: {
@@ -81,16 +80,18 @@ const styles = EStyleSheet.create({
 const PAYMENT_CREDIT_CARD = 'views/orders/components/payments/cc.tpl';
 const PAYMENT_EMPTY = 'views/orders/components/payments/empty.tpl';
 const PAYMENT_CHECK = 'views/orders/components/payments/check.tpl';
-const PAYMENT_PAYPAL_EXPRESS = 'addons/paypal/views/orders/components/payments/paypal_express.tpl';
+const PAYMENT_PAYPAL_EXPRESS =
+  'addons/paypal/views/orders/components/payments/paypal_express.tpl';
 const PAYMENT_PHONE = 'views/orders/components/payments/phone.tpl';
-const PAYMENT_YANDEX_KASSA = 'addons/rus_payments/views/orders/components/payments/yandex_money.tpl';
+const PAYMENT_YANDEX_KASSA =
+  'addons/rus_payments/views/orders/components/payments/yandex_money.tpl';
 const PAYMENTS = [
   PAYMENT_CREDIT_CARD,
   PAYMENT_EMPTY,
   PAYMENT_YANDEX_KASSA,
   PAYMENT_CHECK,
   PAYMENT_PAYPAL_EXPRESS,
-  PAYMENT_PHONE
+  PAYMENT_PHONE,
 ];
 
 /**
@@ -101,20 +102,8 @@ const PAYMENTS = [
  * @reactProps {object} paymentsActions - Payments actions.
  * @reactProps {object} ordersActions - Orders actions.
  * @reactProps {string} shipping_id - Shipping id.
- * @reactProps {object} navigator - Navigator.
  */
-export class CheckoutStepThree extends Component {
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
-  };
-
-  /**
-   * @ignore
-   */
+class CheckoutPayment extends Component {
   static propTypes = {
     cart: PropTypes.shape({
       items: PropTypes.arrayOf(PropTypes.object),
@@ -127,11 +116,7 @@ export class CheckoutStepThree extends Component {
       create: PropTypes.func,
     }),
     shipping_id: PropTypes.string,
-    navigator: PropTypes.shape({
-      push: PropTypes.func,
-      setOnNavigatorEvent: PropTypes.func
-    }),
-    cartActions: PropTypes.shape({})
+    cartActions: PropTypes.shape({}),
   };
 
   constructor(props) {
@@ -142,8 +127,6 @@ export class CheckoutStepThree extends Component {
       selectedItem: null,
       items: [],
     };
-
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
   /**
@@ -152,8 +135,8 @@ export class CheckoutStepThree extends Component {
   componentDidMount() {
     const { cart } = this.props;
     const items = Object.keys(cart.payments)
-      .map(k => cart.payments[k])
-      .filter(p => PAYMENTS.includes(p.template));
+      .map((k) => cart.payments[k])
+      .filter((p) => PAYMENTS.includes(p.template));
     // FIXME: Default selected payment method.
     const selectedItem = items[0];
 
@@ -161,20 +144,6 @@ export class CheckoutStepThree extends Component {
       items,
       selectedItem,
     });
-  }
-
-  /**
-   * Payment screen navigation.
-   *
-   * @param {object} event - Information about the element on which the event occurred.
-   */
-  onNavigatorEvent(event) {
-    const { navigator } = this.props;
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'back') {
-        navigator.pop();
-      }
-    }
   }
 
   /**
@@ -200,13 +169,7 @@ export class CheckoutStepThree extends Component {
    * Redirects to CheckoutComplete.
    */
   placeOrderAndComplete() {
-    const {
-      cart,
-      shipping_id,
-      ordersActions,
-      navigator,
-      cartActions,
-    } = this.props;
+    const { cart, shipping_id, ordersActions, cartActions } = this.props;
     const values = this.paymentFormRef.getValue();
 
     if (!values) {
@@ -223,7 +186,7 @@ export class CheckoutStepThree extends Component {
       shipping_id,
       payment_id: this.state.selectedItem.payment_id,
       user_data: cart.user_data,
-      ...values
+      ...values,
     };
     Object.keys(cart.products).map((key) => {
       const p = cart.products[key];
@@ -247,7 +210,7 @@ export class CheckoutStepThree extends Component {
         expiry_month: values.expiryMonth,
         expiry_year: values.expiryYear,
         cardholder_name: values.cardholderName,
-        cvv2: values.ccv
+        cvv2: values.ccv,
       };
     }
 
@@ -261,13 +224,8 @@ export class CheckoutStepThree extends Component {
           return;
         }
         cartActions.clear(cart);
-        navigator.push({
-          screen: 'CheckoutComplete',
-          backButtonTitle: '',
-          backButtonHidden: true,
-          passProps: {
-            orderId: data.order_id,
-          }
+        nav.pushCheckoutComplete(this.props.componentId, {
+          orderId: data.order_id,
         });
       })
       .catch(() => {
@@ -282,13 +240,7 @@ export class CheckoutStepThree extends Component {
    * Redirects to SettlementsCompleteWebView.
    */
   placeSettlements() {
-    const {
-      cart,
-      shipping_id,
-      ordersActions,
-      navigator,
-      paymentsActions,
-    } = this.props;
+    const { cart, shipping_id, ordersActions, paymentsActions } = this.props;
 
     const orderInfo = {
       products: {},
@@ -325,20 +277,14 @@ export class CheckoutStepThree extends Component {
           order_id: data.order_id,
           replay: false,
         };
-        paymentsActions.settlements(settlementData)
-          .then((response) => {
-            navigator.push({
-              screen: 'SettlementsCompleteWebView',
-              backButtonTitle: '',
-              title: this.state.selectedItem.payment,
-              // backButtonHidden: true,
-              passProps: {
-                cart,
-                orderId: data.order_id,
-                ...response.data.data,
-              },
-            });
+        paymentsActions.settlements(settlementData).then((response) => {
+          nav.pushSettlementsCompleteWebView(this.props.componentId, {
+            title: this.state.selectedItem.payment,
+            orderId: data.order_id,
+            cart,
+            ...response.data.data,
           });
+        });
       })
       .catch(() => {
         this.setState({
@@ -363,23 +309,24 @@ export class CheckoutStepThree extends Component {
       <TouchableOpacity
         style={styles.paymentItem}
         onPress={() => {
-          this.setState({
-            selectedItem: item,
-          }, () => {
-            this.listView.scrollToOffset({ x: 0, y: 0, animated: true });
-          });
-        }}
-      >
-        {isSelected
-          ? <Icon name="radio-button-checked" style={styles.checkIcon} />
-          : <Icon name="radio-button-unchecked" style={styles.uncheckIcon} />
-        }
-        <Text style={styles.paymentItemText}>
-          {stripTags(item.payment)}
-        </Text>
+          this.setState(
+            {
+              selectedItem: item,
+            },
+            () => {
+              this.listView.scrollToOffset({ x: 0, y: 0, animated: true });
+            },
+          );
+        }}>
+        {isSelected ? (
+          <Icon name="radio-button-checked" style={styles.checkIcon} />
+        ) : (
+          <Icon name="radio-button-unchecked" style={styles.uncheckIcon} />
+        )}
+        <Text style={styles.paymentItemText}>{stripTags(item.payment)}</Text>
       </TouchableOpacity>
     );
-  }
+  };
 
   /**
    * Renders header.
@@ -468,9 +415,7 @@ export class CheckoutStepThree extends Component {
 
     return (
       <View style={styles.paymentItemWrapper}>
-        <FormBlock
-          title={selectedItem.payment}
-        >
+        <FormBlock title={selectedItem.payment}>
           {form}
           <Text style={styles.paymentItemDesc}>
             {stripTags(selectedItem.instructions)}
@@ -483,7 +428,7 @@ export class CheckoutStepThree extends Component {
             setTimeout(() => {
               cartActions.recalculateTotal(
                 shipping_id,
-                this.props.cart.coupons
+                this.props.cart.coupons,
               );
             }, 400);
           }}
@@ -492,7 +437,7 @@ export class CheckoutStepThree extends Component {
             setTimeout(() => {
               cartActions.recalculateTotal(
                 shipping_id,
-                this.props.cart.coupons
+                this.props.cart.coupons,
               );
             }, 400);
           }}
@@ -508,9 +453,7 @@ export class CheckoutStepThree extends Component {
    */
   renderSpinner = () => {
     const { fetching } = this.state;
-    return (
-      <Spinner visible={fetching} mode="modal" />
-    );
+    return <Spinner visible={fetching} mode="modal" />;
   };
 
   /**
@@ -521,10 +464,12 @@ export class CheckoutStepThree extends Component {
   render() {
     const { cart } = this.props;
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <KeyboardAwareScrollView>
           <FlatList
-            ref={(ref) => { this.listView = ref; }}
+            ref={(ref) => {
+              this.listView = ref;
+            }}
             contentContainerStyle={styles.contentContainer}
             ListHeaderComponent={() => this.renderHeader()}
             ListFooterComponent={() => this.renderFooter()}
@@ -541,18 +486,18 @@ export class CheckoutStepThree extends Component {
           onBtnPress={() => this.handlePlaceOrder()}
         />
         {this.renderSpinner()}
-      </View>
+      </SafeAreaView>
     );
   }
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     auth: state.auth,
   }),
-  dispatch => ({
+  (dispatch) => ({
     ordersActions: bindActionCreators(ordersActions, dispatch),
     cartActions: bindActionCreators(cartActions, dispatch),
     paymentsActions: bindActionCreators(paymentsActions, dispatch),
-  })
-)(CheckoutStepThree);
+  }),
+)(CheckoutPayment);

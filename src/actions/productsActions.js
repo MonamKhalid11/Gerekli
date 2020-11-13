@@ -76,7 +76,6 @@ export function postDiscussion(data) {
             type: 'success',
             title: i18n.t('Thank you for your post.'),
             text: i18n.t('Your post will be checked before it gets published.'),
-            closeLastModal: false,
           },
         });
         // Reload discussion.
