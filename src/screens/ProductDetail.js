@@ -930,7 +930,7 @@ class ProductDetail extends Component {
       if (currentFeature.description === value) {
         Object.keys(currentFeature.variants).forEach((variant) => {
           const currentVariant = currentFeature.variants[variant];
-          if (currentVariant.product) {
+          if (currentVariant.product_id) {
             featureVariants[currentVariant.variant] = currentVariant.product_id;
           }
         });
