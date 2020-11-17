@@ -238,9 +238,6 @@ const styles = EStyleSheet.create({
   },
 });
 
-const CANCEL_INDEX = 5;
-const DESTRUCTIVE_INDEX = 5;
-
 class ProductDetail extends Component {
   static propTypes = {
     wishListActions: PropTypes.shape({
@@ -944,10 +941,14 @@ class ProductDetail extends Component {
 
   variationChangeHandler(index) {
     const { currentFeatureVariants } = this.state;
-    const pid =
-      currentFeatureVariants[Object.keys(currentFeatureVariants)[index]];
 
-    this.productInit(pid);
+    const featuresArray = Object.keys(currentFeatureVariants);
+
+    // if 'cancel', do nothing
+    if (index !== featuresArray.length) {
+      const pid = currentFeatureVariants[featuresArray[index]];
+      this.productInit(pid);
+    }
   }
 
   render() {
@@ -956,6 +957,12 @@ class ProductDetail extends Component {
     if (fetching) {
       return <Spinner visible />;
     }
+
+    const cancelButtonIndex = Object.keys(this.state.currentFeatureVariants)
+      .length;
+    const actionSheetOptions = Object.keys(
+      this.state.currentFeatureVariants,
+    ).map((el) => i18n.t(el));
 
     return (
       <View style={styles.container}>
@@ -983,12 +990,9 @@ class ProductDetail extends Component {
           ref={(ref) => {
             this.ActionSheet = ref;
           }}
-          options={[
-            ...Object.keys(this.state.currentFeatureVariants),
-            'cancel',
-          ]}
-          cancelButtonIndex={DESTRUCTIVE_INDEX}
-          destructiveButtonIndex={CANCEL_INDEX}
+          options={[...actionSheetOptions, i18n.t('Cancel')]}
+          cancelButtonIndex={cancelButtonIndex}
+          destructiveButtonIndex={cancelButtonIndex}
           onPress={(index) => this.variationChangeHandler(index)}
         />
       </View>
