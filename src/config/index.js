@@ -3,9 +3,9 @@ export default {
   // API KEY
   apiKey: '62f5a9c133da276c516cc7f491f8a644',
   // API URL
-  baseUrl: 'http://mobile.mve.demo.cs-cart.com/api/4.0/',
+  baseUrl: 'https://mobile.mve.demo.cs-cart.com/api/4.0/',
   // SITE URL
-  siteUrl: 'http://mobile.mve.demo.cs-cart.com/',
+  siteUrl: 'https://mobile.mve.demo.cs-cart.com/',
   // SHOP NAME
   shopName: 'CS-Cart Mobile',
   // SHOP DEFAULT LAYOUT ID
