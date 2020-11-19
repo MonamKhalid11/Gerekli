@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import Icon from '../components/Icon';
 
 const styles = EStyleSheet.create({
   row: {
@@ -18,6 +19,14 @@ const styles = EStyleSheet.create({
   },
   nameText: {
     fontWeight: 'bold',
+  },
+  valueWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  menuItemIcon: {
+    fontSize: '1.2rem',
+    marginHorizontal: 5,
   },
   valueText: {},
 });
@@ -46,8 +55,11 @@ const SectionRow = ({
         <View style={styles.name}>
           <Text style={styles.nameText}>{name}</Text>
         </View>
-        <View style={styles.value}>
-          <Text style={styles.valueText}>{value}</Text>
+        <View style={styles.valueWrapper}>
+          <View style={styles.value}>
+            <Text style={styles.valueText}>{value}</Text>
+          </View>
+          <Icon name="arrow-drop-down" style={styles.menuItemIcon} />
         </View>
       </TouchableOpacity>
     );
