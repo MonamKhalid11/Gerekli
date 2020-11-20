@@ -83,7 +83,7 @@ export default class VendorBlock extends Component {
    * @return {JSX.Element}
    */
   renderImage = (item, index) => {
-    const imageUri = get(item, 'logos.theme.image.https_image_path');
+    const imageUri = get(item, 'logos.theme.image.image_path');
     return (
       <TouchableOpacity
         key={index}
