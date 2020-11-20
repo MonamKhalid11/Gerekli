@@ -211,11 +211,10 @@ dependencies {
     }
 
     implementation 'com.android.support:design:27.1.0'
-      compile 'com.android.support:multidex:1.0.3'
-      compile (project(':tipsi-stripe')) {
-        exclude group: 'com.google.android.gms'
-        exclude group: 'com.google.firebase'
-      }
+    compile 'com.android.support:multidex:1.0.3'
+    compile (project(':tipsi-stripe')) {
+      exclude group: 'com.google.android.gms'
+      exclude group: 'com.google.firebase'
     }
 }
 
