@@ -284,10 +284,11 @@ class CheckoutShipping extends Component {
         onPress={() => this.handleSelect(shipping, shippingIndex, itemIndex)}>
         <View style={styles.shippingItemTitleWrap}>
           <View style={styles.shippingItemTitle}>
-            {shipping.isSelected
-              ? <Icon name="radio-button-checked" style={styles.checkIcon} />
-              : <Icon name="radio-button-unchecked" style={styles.uncheckIcon} />
-            }
+            {shipping.isSelected ? (
+              <Icon name="radio-button-checked" style={styles.checkIcon} />
+            ) : (
+              <Icon name="radio-button-unchecked" style={styles.uncheckIcon} />
+            )}
             <Text style={styles.shippingItemText}>
               {shipping.shipping} {shipping.delivery_time}
             </Text>
@@ -340,9 +341,7 @@ class CheckoutShipping extends Component {
     const { stateCart } = this.props;
 
     if (stateCart.fetching) {
-      return (
-        <Spinner visible />
-      );
+      return <Spinner visible />;
     }
 
     const shippingsCount = flatten(items.map((s) => s.shippings)).length;
@@ -373,7 +372,7 @@ class CheckoutShipping extends Component {
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     stateCart: state.cart,
     shippings: state.shippings,
   }),

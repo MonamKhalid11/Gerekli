@@ -43,7 +43,16 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders login screen.
+ *
+ * @reactProps {object} authActions - Auth functions.
+ * @reactProps {object} auth - Auth setup.
+ */
 class Login extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     authActions: PropTypes.shape({
       login: PropTypes.func,
@@ -55,12 +64,17 @@ class Login extends Component {
     }),
   };
 
+  /**
+   * @ignore
+   */
   constructor(props) {
     super(props);
-
     Navigation.events().bindComponent(this);
   }
 
+  /**
+   * Sets title and header icons.
+   */
   componentWillMount() {
     Navigation.mergeOptions(this.props.componentId, {
       topBar: {
@@ -77,18 +91,27 @@ class Login extends Component {
     });
   }
 
+  /**
+   * Closes login screen if user logged in.
+   */
   componentWillReceiveProps(nextProps) {
     if (nextProps.auth.logged) {
       setTimeout(() => Navigation.dismissModal(this.props.componentId), 1500);
     }
   }
 
+  /**
+   * Closes login screen if user pressed close button.
+   */
   navigationButtonPressed({ buttonId }) {
     if (buttonId === 'close') {
       Navigation.dismissModal(this.props.componentId);
     }
   }
 
+  /**
+   * Activates login function.
+   */
   handleLogin() {
     const { authActions } = this.props;
     const value = this.refs.form.getValue();
@@ -97,6 +120,11 @@ class Login extends Component {
     }
   }
 
+  /**
+   * Renders component.
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { auth } = this.props;
     const values = {};

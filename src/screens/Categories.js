@@ -280,9 +280,7 @@ class Categories extends Component {
    *
    * @return {JSX.Element}
    */
-  renderSpinner = () => (
-    <Spinner visible />
-  );
+  renderSpinner = () => <Spinner visible />;
 
   /**
    * Renders if there are no products in this section.

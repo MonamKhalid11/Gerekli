@@ -8,6 +8,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
  *
  * @return {JSX.Element}
  */
-const MyIcon = props => (<Icon size={30} {...props} />);
+const MyIcon = (props) => <Icon size={30} {...props} />;
 
 export default MyIcon;

@@ -8,6 +8,11 @@ import { registerDrawerDeepLinks } from '../utils/deepLinks';
 import store from '../store';
 import * as authActions from '../actions/authActions';
 
+/**
+ * Registers a notification listeners. (get, open, post)
+ *
+ * @param {string} componentId - Component id where notification was received.
+ */
 function RegisterPushListener(componentId) {
   Notifications.registerRemoteNotifications();
 
@@ -47,6 +52,11 @@ function RegisterPushListener(componentId) {
   return unsubscribe;
 }
 
+/**
+ * Initializes notifications.
+ * Requests permissions.
+ * Gets token and set it to store.
+ */
 async function Init() {
   await messaging().requestPermission({
     badge: true,

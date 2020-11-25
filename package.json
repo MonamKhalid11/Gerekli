@@ -9,8 +9,6 @@
     "test": "jest",
     "lint": "eslint .",
     "test:watch": "npm run test -- --watch",
-    "styleguidist": "styleguidist server --config styleguidist.config.js",
-    "styleguidist-build": "styleguidist build --config styleguidist.config.js",
     "esdoc": "./node_modules/.bin/esdoc"
   },
   "dependencies": {

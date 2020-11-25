@@ -28,19 +28,35 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders the option to input product properties.
+ *
+ * @reactProps {string} value - Initial value of the input.
+ * @reactProps {object} option - Contains add information.
+ * @reactProps {function} onChange - Change function.
+ */
 export default class extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     value: PropTypes.string,
     option: PropTypes.shape({}).isRequired,
     onChange: PropTypes.func,
   };
 
+  /**
+   * @ignore
+   */
   static defaultProps = {
     option: {},
     value: '',
     onChange() {},
   };
 
+  /**
+   * @ignore
+   */
   constructor(props) {
     super(props);
 
@@ -49,20 +65,38 @@ export default class extends Component {
     };
   }
 
+  /**
+   * Sets initial value to state.
+   */
   componentDidMount() {
     const { value } = this.props;
     this.setState({ value });
   }
 
+  /**
+   * Re-renders the component if new props are received.
+   */
   componentWillReceiveProps(nextProps) {
     const { value } = nextProps;
     this.setState({ value });
   }
 
+  /**
+   * Changes input value.
+   *
+   * @param {string} value -  Input value.
+   */
   handleChange(value) {
     this.props.onChange(value);
   }
 
+  /**
+   * Renders a comment about what to enter in the input.
+   *
+   * @param {object} option - If contains comment, renders it.
+   *
+   * @return {JSX.Element}
+   */
   renderComment = (option) => {
     if (option.comment) {
       return <Text style={styles.commentText}>{option.comment}</Text>;
@@ -70,6 +104,11 @@ export default class extends Component {
     return null;
   };
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { option } = this.props;
     const { value } = this.state;

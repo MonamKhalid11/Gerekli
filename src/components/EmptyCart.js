@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text
-} from 'react-native';
+import { View, Text } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Components
@@ -42,7 +39,7 @@ const styles = EStyleSheet.create({
     fontSize: '1rem',
     color: '#24282b',
     marginTop: '0.5rem',
-  }
+  },
 });
 
 /**
@@ -58,9 +55,7 @@ const EmptyCart = () => (
     <Text style={styles.emptyListHeader}>
       {i18n.t('Your shopping cart is empty.')}
     </Text>
-    <Text style={styles.emptyListDesc}>
-      {i18n.t('Looking for ideas?')}
-    </Text>
+    <Text style={styles.emptyListDesc}>{i18n.t('Looking for ideas?')}</Text>
   </View>
 );
 

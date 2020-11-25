@@ -90,7 +90,16 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders order detail screen.
+ *
+ * @reactProps {object} notificationsActions - Notifications functions.
+ * @reactProps {string} orderId - Order id.
+ */
 class OrderDetail extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     notificationsActions: PropTypes.shape({
       show: PropTypes.func,
@@ -98,6 +107,9 @@ class OrderDetail extends Component {
     orderId: PropTypes.string,
   };
 
+  /**
+   * @ignore
+   */
   static options = {
     topBar: {
       title: {
@@ -106,6 +118,9 @@ class OrderDetail extends Component {
     },
   };
 
+  /**
+   * @ignore
+   */
   constructor(props) {
     super(props);
 
@@ -116,6 +131,9 @@ class OrderDetail extends Component {
     };
   }
 
+  /**
+   * Gets order information.
+   */
   componentWillMount() {
     const { orderId, notificationsActions } = this.props;
 
@@ -149,6 +167,15 @@ class OrderDetail extends Component {
       });
   }
 
+  /**
+   * Renders a product from an order.
+   *
+   * @param {object} item - Product information.
+   * @param {number} index - Product index.
+   *
+   * @return {JSX.Element}
+   */
+
   renderProduct = (item, index) => {
     let productImage = null;
     const imageUri = getImagePath(item);
@@ -172,6 +199,12 @@ class OrderDetail extends Component {
     );
   };
 
+  /**
+   * Renders order informations blocks (contacts, shipping, billing).
+   *
+   * @param {array} orderDetail - Order information.
+   * @param {object} fields - Contents information about blocks.
+   */
   renderFields() {
     const { orderDetail, fields } = this.state;
 
@@ -226,6 +259,11 @@ class OrderDetail extends Component {
     });
   }
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { orderDetail, fetching } = this.state;
     if (fetching) {

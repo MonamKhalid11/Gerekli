@@ -1,12 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import {
-  TouchableOpacity,
-  Text,
-  I18nManager,
-  Platform,
-} from 'react-native';
+import { TouchableOpacity, Text, I18nManager, Platform } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -51,11 +46,11 @@ const styles = EStyleSheet.create({
     borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FD542A'
+    backgroundColor: '#FD542A',
   },
   badgeTextStyle: {
     color: '#fff',
-  }
+  },
 });
 
 /**
@@ -70,7 +65,7 @@ export class CartBtn extends Component {
   static propTypes = {
     cart: PropTypes.shape({
       amount: PropTypes.number,
-    })
+    }),
   };
 
   /**
@@ -82,7 +77,8 @@ export class CartBtn extends Component {
     const { cart } = this.props;
 
     const amount = Object.keys(cart.carts).reduce(
-      (result, el) => result + cart.carts[el].amount, 0
+      (result, el) => result + cart.carts[el].amount,
+      0,
     );
 
     if (!amount) {
@@ -91,19 +87,16 @@ export class CartBtn extends Component {
 
     return (
       <TouchableOpacity
-        style={(Platform.OS === 'ios') ? styles.badge : styles.badgeAndroid}
+        style={Platform.OS === 'ios' ? styles.badge : styles.badgeAndroid}
         onPress={() => {
           Navigation.showModal({
             screen: 'Cart',
           });
-        }}
-      >
-        <Text style={styles.badgeTextStyle}>
-          {amount}
-        </Text>
+        }}>
+        <Text style={styles.badgeTextStyle}>{amount}</Text>
       </TouchableOpacity>
     );
-  }
+  };
 
   /**
    * Renders component
@@ -113,13 +106,14 @@ export class CartBtn extends Component {
   render() {
     return (
       <TouchableOpacity
-        style={(Platform.OS === 'ios') ? styles.container : styles.containerAndroid}
+        style={
+          Platform.OS === 'ios' ? styles.container : styles.containerAndroid
+        }
         onPress={() => {
           Navigation.showModal({
             screen: 'Cart',
           });
-        }}
-      >
+        }}>
         <Icon name="shopping-cart" style={styles.btn} />
         {this.renderBadge()}
       </TouchableOpacity>
@@ -127,6 +121,6 @@ export class CartBtn extends Component {
   }
 }
 
-export default connect(state => ({
+export default connect((state) => ({
   cart: state.cart,
 }))(CartBtn);

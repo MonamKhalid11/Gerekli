@@ -35,7 +35,7 @@ const styles = EStyleSheet.create({
 });
 
 /**
- * Renders a block of form
+ * Renders a block of form.
  *
  * @reactProps {string} buttonText - Button text.
  * @reactProps {string} title - Block title.
@@ -124,7 +124,7 @@ export default class FormBlock extends Component {
   }
 
   /**
-   * Renders component
+   * Renders component.
    *
    * @return {JSX.Element}
    */
