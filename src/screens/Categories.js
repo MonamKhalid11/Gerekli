@@ -46,7 +46,7 @@ const styles = EStyleSheet.create({
  * @reactProps {object} layouts - Information about all blocks from the main page.
  * @reactProps {object} productsActions - Products actions.
  */
-class Categories extends Component {
+export class Categories extends Component {
   /**
    * @ignore
    */
@@ -280,9 +280,7 @@ class Categories extends Component {
    *
    * @return {JSX.Element}
    */
-  renderSpinner = () => (
-    <Spinner visible />
-  );
+  renderSpinner = () => <Spinner visible />;
 
   /**
    * Renders if there are no products in this section.

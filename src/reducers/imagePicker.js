@@ -1,7 +1,4 @@
-import {
-  IMAGE_PICKER_CLEAR,
-  IMAGE_PICKER_TOGGLE,
-} from '../constants';
+import { IMAGE_PICKER_CLEAR, IMAGE_PICKER_TOGGLE } from '../constants';
 
 const initialState = {
   selected: [],

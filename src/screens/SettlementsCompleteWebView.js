@@ -19,7 +19,7 @@ const styles = EStyleSheet.create({
   },
 });
 
-class SettlementsCompleteWebView extends Component {
+export class SettlementsCompleteWebView extends Component {
   static propTypes = {
     return_url: PropTypes.string,
     payment_url: PropTypes.string,
@@ -30,11 +30,7 @@ class SettlementsCompleteWebView extends Component {
   };
 
   onNavigationStateChange = ({ url }, cart) => {
-    const {
-      return_url,
-      cartActions,
-      orderId
-    } = this.props;
+    const { return_url, cartActions, orderId } = this.props;
 
     if (url && return_url) {
       if (url.toLowerCase().startsWith(return_url.toLowerCase())) {
@@ -63,7 +59,7 @@ class SettlementsCompleteWebView extends Component {
           source={{
             uri: url,
           }}
-          onNavigationStateChange={e => this.onNavigationStateChange(e, cart)}
+          onNavigationStateChange={(e) => this.onNavigationStateChange(e, cart)}
         />
       </View>
     );

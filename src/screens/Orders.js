@@ -22,7 +22,16 @@ const styles = EStyleSheet.create({
   },
 });
 
-class Orders extends Component {
+/**
+ * Renders screen with orders list.
+ *
+ * @reactProps {object} ordersActions - Orders functions.
+ * @reactProps {object} orders - Orders information.
+ */
+export class Orders extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     ordersActions: PropTypes.shape({
       login: PropTypes.func,
@@ -33,10 +42,16 @@ class Orders extends Component {
     }),
   };
 
+  /**
+   * @ignore
+   */
   constructor(props) {
     super(props);
   }
 
+  /**
+   * Gets orders.
+   */
   componentDidMount() {
     const { ordersActions } = this.props;
     InteractionManager.runAfterInteractions(() => {
@@ -44,6 +59,11 @@ class Orders extends Component {
     });
   }
 
+  /**
+   * Renders orders list.
+   *
+   * @return {JSX.Element}
+   */
   renderList = () => {
     const { orders } = this.props;
 
@@ -71,6 +91,11 @@ class Orders extends Component {
     );
   };
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { orders } = this.props;
     if (orders.fetching) {

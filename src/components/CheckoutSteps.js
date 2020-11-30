@@ -107,8 +107,8 @@ export default class extends Component {
    * @ignore
    */
   static defaultProps = {
-    steps: []
-  }
+    steps: [],
+  };
 
   /**
    * @ignore

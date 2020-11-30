@@ -149,16 +149,22 @@ export function saveUserData(data) {
 }
 
 export function getUpdatedDetailsForShippingAddress(data) {
-  return () => Api.put('/sra_cart_content/', { user_data: data })
-    .then(() => Api.get('/sra_cart_content/', { params: { calculate_shipping: 'A' } }))
-    .then(response => response.data)
-    .catch(error => error);
+  return () =>
+    Api.put('/sra_cart_content/', { user_data: data })
+      .then(() =>
+        Api.get('/sra_cart_content/', { params: { calculate_shipping: 'A' } }),
+      )
+      .then((response) => response.data)
+      .catch((error) => error);
 }
 
 export function getUpdatedDetailsForShippingOption(ids) {
-  return () => Api.get('/sra_cart_content/', { params: { shipping_ids: ids, calculate_shipping: 'E' } })
-    .then(response => response.data)
-    .catch(error => error);
+  return () =>
+    Api.get('/sra_cart_content/', {
+      params: { shipping_ids: ids, calculate_shipping: 'E' },
+    })
+      .then((response) => response.data)
+      .catch((error) => error);
 }
 
 export function add(data, notify = true) {

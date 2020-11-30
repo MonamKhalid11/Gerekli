@@ -28,7 +28,20 @@ const styles = EStyleSheet.create({
   },
 });
 
-class Vendor extends Component {
+/**
+ * Renders product detail screen.
+ *
+ * @reactProps {object} vendors - Vendors information from store.
+ * @reactProps {object} vendorCategories - Vendor product categories.
+ * @reactProps {object} products - Vendor products.
+ * @reactProps {object} vendorActions - Vendor actions.
+ * @reactProps {object} productsActions - Products actions.
+ * @reactProps {string or number} companyId - Vendor company id.
+ */
+export class Vendor extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     vendors: PropTypes.shape({}),
     vendorCategories: PropTypes.shape({}),
@@ -44,6 +57,9 @@ class Vendor extends Component {
     companyId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   };
 
+  /**
+   * @ignore
+   */
   constructor(props) {
     super(props);
     this.isFirstLoad = true;
@@ -63,6 +79,11 @@ class Vendor extends Component {
     Navigation.events().bindComponent(this);
   }
 
+  /**
+   * Gets vendor product categories.
+   * Checks vendor state doesn`t empty else gets it.
+   * Sets header setup.
+   */
   componentWillMount() {
     const { vendors, companyId, vendorActions, productsActions } = this.props;
 
@@ -98,6 +119,9 @@ class Vendor extends Component {
     });
   }
 
+  /**
+   * If more products are received, sets them in the state.
+   */
   componentWillReceiveProps(nextProps) {
     const { products, vendors, companyId } = nextProps;
     const vendorProducts = products.items[companyId];
@@ -117,12 +141,22 @@ class Vendor extends Component {
     }
   }
 
+  /**
+   * Vendor modal navigation.
+   *
+   * @param {object} event - Information about the element on which the event occurred.
+   */
   navigationButtonPressed({ buttonId }) {
     if (buttonId === 'close') {
       Navigation.dismissModal(this.props.componentId);
     }
   }
 
+  /**
+   * Loads products.
+   *
+   * @param {number} page - Page number.
+   */
   handleLoad = (page = 1) => {
     const { companyId, vendorActions, products } = this.props;
     const { filters } = this.state;
@@ -132,6 +166,9 @@ class Vendor extends Component {
     });
   };
 
+  /**
+   * Loads more products.
+   */
   handleLoadMore() {
     const { products } = this.props;
     if (products.hasMore && !products.fetching && !this.isFirstLoad) {
@@ -139,6 +176,11 @@ class Vendor extends Component {
     }
   }
 
+  /**
+   * Renders header.
+   *
+   * @return {JSX.Element}
+   */
   renderHeader() {
     const {
       vendorCategories,
@@ -189,6 +231,11 @@ class Vendor extends Component {
     );
   }
 
+  /**
+   * Renders component.
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { vendorCategories, vendors } = this.props;
     const { products } = this.state;

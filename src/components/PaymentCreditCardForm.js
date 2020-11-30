@@ -16,8 +16,14 @@ const styles = EStyleSheet.create({
 
 const t = require('tcomb-form-native');
 // Validating length
-const cardNumber = t.refinement(t.Number, cardNumber => String(cardNumber).length >= 13);
-const expiryYear = t.refinement(t.String, expiryYear => expiryYear.length >= 2);
+const cardNumber = t.refinement(
+  t.Number,
+  (cardNumber) => String(cardNumber).length >= 13,
+);
+const expiryYear = t.refinement(
+  t.String,
+  (expiryYear) => expiryYear.length >= 2,
+);
 
 const { Form } = t.form;
 const formFields = t.struct({

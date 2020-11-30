@@ -2,16 +2,13 @@ import {
   FETCH_VENDOR_REQUEST,
   FETCH_VENDOR_FAIL,
   FETCH_VENDOR_SUCCESS,
-
   FETCH_VENDOR_CATEGORIES_REQUEST,
   FETCH_VENDOR_CATEGORIES_SUCCESS,
   FETCH_VENDOR_CATEGORIES_FAIL,
-
   FETCH_PRODUCTS_REQUEST,
   FETCH_PRODUCTS_SUCCESS,
   FETCH_PRODUCTS_FAIL,
-
-  DISCUSSION_DISABLED
+  DISCUSSION_DISABLED,
 } from '../constants';
 import Api from '../services/api';
 import * as productsActions from './productsActions';
@@ -67,7 +64,7 @@ export function products(companyId, page = 1, sort = {}) {
     page,
     company_id: companyId,
     get_filters: true,
-    ...sort
+    ...sort,
   };
 
   return (dispatch) => {
@@ -88,7 +85,7 @@ export function products(companyId, page = 1, sort = {}) {
       .catch((error) => {
         dispatch({
           type: FETCH_PRODUCTS_FAIL,
-          error
+          error,
         });
       });
   };

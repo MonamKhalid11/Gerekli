@@ -24,10 +24,7 @@ export default function (state = initialState, action) {
       pages = [];
       Object.keys(action.payload).forEach((id) => {
         if (action.payload[id].type === 'pages') {
-          pages = [
-            ...pages,
-            ...action.payload[id].content.items,
-          ];
+          pages = [...pages, ...action.payload[id].content.items];
         }
       });
       return {

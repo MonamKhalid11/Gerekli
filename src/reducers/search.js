@@ -29,21 +29,16 @@ export default function (state = initialState, action) {
       params = { ...action.payload.params };
 
       if (params.page != 1) {
-        items = [
-          ...state.items,
-          ...action.payload.products,
-        ];
+        items = [...state.items, ...action.payload.products];
       } else {
-        items = [
-          ...action.payload.products,
-        ];
+        items = [...action.payload.products];
       }
 
       return {
         params,
         items,
         fetching: false,
-        hasMore: (params.items_per_page * params.page) < +params.total_items
+        hasMore: params.items_per_page * params.page < +params.total_items,
       };
 
     case SEARCH_PRODUCTS_FAIL:

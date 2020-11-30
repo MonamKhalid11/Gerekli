@@ -57,11 +57,22 @@ const formOptions = {
   },
 };
 
-class AddProductStep2 extends Component {
+/**
+ * Renders add product screen step 2.
+ *
+ * @reactProps {object} stepsData - Previous steps information.
+ */
+export class AddProductStep2 extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     stepsData: PropTypes.shape({}),
   };
 
+  /**
+   * @ignore
+   */
   constructor(props) {
     super(props);
     this.formRef = React.createRef();
@@ -69,6 +80,9 @@ class AddProductStep2 extends Component {
     Navigation.events().bindComponent(this);
   }
 
+  /**
+   * Moves to the next screen.
+   */
   handleGoNext = () => {
     const { stepsData } = this.props;
 
@@ -84,12 +98,22 @@ class AddProductStep2 extends Component {
     }
   };
 
+  /**
+   * Renders header.
+   *
+   * @return {JSX.Element}
+   */
   renderHeader = () => (
     <View style={styles.header}>
       <CheckoutSteps step={1} steps={steps} />
     </View>
   );
 
+  /**
+   * Renders component.
+   *
+   * @return {JSX.Element}
+   */
   render() {
     return (
       <View style={styles.container}>

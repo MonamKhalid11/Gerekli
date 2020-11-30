@@ -51,7 +51,6 @@ const styles = EStyleSheet.create({
   },
 });
 
-
 /**
  * Renders a category.
  *

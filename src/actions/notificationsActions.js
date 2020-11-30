@@ -1,9 +1,5 @@
-import {
-  NOTIFICATION_HIDE,
-  NOTIFICATION_SHOW,
-} from '../constants';
+import { NOTIFICATION_HIDE, NOTIFICATION_SHOW } from '../constants';
 
-// eslint-disable-next-line import/prefer-default-export
 export function hide(id) {
   return (dispatch) => {
     dispatch({
@@ -15,9 +11,13 @@ export function hide(id) {
   };
 }
 
-export function show(params = {
-  type: 'success', title: '', text: '',
-}) {
+export function show(
+  params = {
+    type: 'success',
+    title: '',
+    text: '',
+  },
+) {
   return (dispatch) => {
     setTimeout(() => {
       dispatch({

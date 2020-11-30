@@ -130,7 +130,24 @@ const STATUS_ACTIONS_LIST = [
   i18n.t('Cancel'),
 ];
 
-class EditProduct extends Component {
+/**
+ * Renders categories picker.
+ *
+ * @reactProps {number} productID - Product id.
+ * @reactProps {object} stepsData - Data from create product flow.
+ * @reactProps {object} productsActions - Products actions.
+ * @reactProps {object} product - Product information.
+ * @reactProps {[object]} categories - List of categories.
+ * @reactProps {boolean} loading - Loading indicator.
+ * @reactProps {boolean} showClose - Shows close button or not.
+ * @reactProps {boolean} isUpdating - Updating indicator.
+ * @reactProps {[string]} selectedImages - Images paths.
+ * @reactProps {object} imagePickerActions - Image picker actions.
+ */
+export class EditProduct extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     productID: PropTypes.number,
     stepsData: PropTypes.shape({}),
@@ -146,6 +163,9 @@ class EditProduct extends Component {
     }),
   };
 
+  /**
+   * @ignore
+   */
   constructor(props) {
     super(props);
 
@@ -153,6 +173,9 @@ class EditProduct extends Component {
     Navigation.events().bindComponent(this);
   }
 
+  /**
+   * Sets header setup.
+   */
   componentDidMount() {
     const {
       imagePickerActions,
@@ -189,6 +212,11 @@ class EditProduct extends Component {
     });
   }
 
+  /**
+   * Edit product modal navigation.
+   *
+   * @param {object} event - Information about the element on which the event occurred.
+   */
   navigationButtonPressed({ buttonId }) {
     if (buttonId === 'more') {
       this.ActionSheet.show();
@@ -212,6 +240,11 @@ class EditProduct extends Component {
     }
   };
 
+  /**
+   * Sets selected value.
+   *
+   * @param {number} index - Value index.
+   */
   handleStatusActionSheet = (index) => {
     const { product, productsActions } = this.props;
     const statuses = ['A', 'H', 'D'];
@@ -224,6 +257,9 @@ class EditProduct extends Component {
     }
   };
 
+  /**
+   * Saves changes.
+   */
   handleSave = () => {
     const {
       product,
@@ -254,6 +290,11 @@ class EditProduct extends Component {
       .then(() => imagePickerActions.clear());
   };
 
+  /**
+   * Removes an image.
+   *
+   * @param {number} imageIndex - Image index.
+   */
   handleRemoveImage = (imageIndex) => {
     const { imagePickerActions, selectedImages } = this.props;
     const newImages = [...selectedImages];
@@ -262,6 +303,11 @@ class EditProduct extends Component {
     Navigation.dismissModal(this.props.componenId);
   };
 
+  /**
+   * Renders images.
+   *
+   * @return {JSX.Element}
+   */
   renderImages = () => {
     const { product, selectedImages } = this.props;
     const images = [];
@@ -317,6 +363,15 @@ class EditProduct extends Component {
     );
   };
 
+  /**
+   * Renders menu item.
+   *
+   * @param {string} title - Item title.
+   * @param {string} subTitle - Item subtitle.
+   * @param {function} fn - Open function.
+   *
+   * @return {JSX.Element}
+   */
   renderMenuItem = (title, subTitle, fn = () => {}) => (
     <TouchableOpacity style={styles.menuItem} onPress={fn}>
       <View style={styles.menuItemText}>
@@ -327,6 +382,11 @@ class EditProduct extends Component {
     </TouchableOpacity>
   );
 
+  /**
+   * Renders component.
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { loading, product, productsActions, isUpdating } = this.props;
 

@@ -84,7 +84,7 @@ const styles = EStyleSheet.create({
  * @reactProps {number} orderId - Order id.
  * @reactProps {object} navigator - Navigator.
  */
-class CheckoutComplete extends Component {
+export class CheckoutComplete extends Component {
   /**
    * @ignore
    */

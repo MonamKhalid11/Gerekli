@@ -1,9 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {
-  View,
-  Text,
-} from 'react-native';
+import { View, Text } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 const styles = EStyleSheet.create({
@@ -16,13 +13,13 @@ const styles = EStyleSheet.create({
     fontWeight: 'bold',
     paddingRight: 4,
     fontSize: '0.9rem',
-    textAlign: 'left'
+    textAlign: 'left',
   },
   text: {
     color: '#7C7C7C',
     fontSize: '0.9rem',
     flex: 1,
-    textAlign: 'right'
+    textAlign: 'right',
   },
 });
 
@@ -54,13 +51,8 @@ export default class extends PureComponent {
     const { title, children } = this.props;
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>
-          {title}
-        </Text>
-        <Text
-          style={styles.text}
-          numberOfLines={4}
-        >
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.text} numberOfLines={4}>
           {children}
         </Text>
       </View>

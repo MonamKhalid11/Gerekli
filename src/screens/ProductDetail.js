@@ -237,7 +237,26 @@ const styles = EStyleSheet.create({
   },
 });
 
-class ProductDetail extends Component {
+/**
+ * Renders product detail screen.
+ *
+ * @reactProps {object} wishListActions - Wishlist actions.
+ * @reactProps {string or number} pid - Product id.
+ * @reactProps {boolean} hideSearch - Showing search or not.
+ * @reactProps {boolean} hideWishList - Showing wishlist or not.
+ * @reactProps {object} discussion - Comments about the product.
+ * @reactProps {object} productDetail - Product information.
+ * @reactProps {object} productsActions - Products actions.
+ * @reactProps {object} cartActions - Cart actions.
+ * @reactProps {object} auth - Auth setup.
+ * @reactProps {object} cart - Cart information.
+ * @reactProps {object} vendorActions - Vendor actions.
+ * @reactProps {object} vendors - Information about vendors who has this product.
+ */
+export class ProductDetail extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     wishListActions: PropTypes.shape({
       add: PropTypes.func,
@@ -268,6 +287,9 @@ class ProductDetail extends Component {
     vendors: PropTypes.shape({}),
   };
 
+  /**
+   * @ignore
+   */
   constructor(props) {
     super(props);
 
@@ -287,8 +309,12 @@ class ProductDetail extends Component {
     Navigation.events().bindComponent(this);
   }
 
+  /**
+   *  Gets product information and sets to store.
+   */
   componentDidMount() {
     const { productsActions, pid } = this.props;
+
     productsActions.fetch(pid).then((product) => {
       const minQty = parseInt(get(product.data, 'min_qty', 0), 10);
       this.setState(
@@ -305,6 +331,9 @@ class ProductDetail extends Component {
     });
   }
 
+  /**
+   * Updates all data in the state when new props are received.
+   */
   componentWillReceiveProps(nextProps) {
     const {
       productDetail,
@@ -408,6 +437,9 @@ class ProductDetail extends Component {
     });
   }
 
+  /**
+   * Listens buttons events.
+   */
   navigationButtonPressed({ buttonId }) {
     if (buttonId === 'wishlist') {
       this.handleAddToWishList();
@@ -418,6 +450,10 @@ class ProductDetail extends Component {
     }
   }
 
+  /**
+   * Recalculates the price of an item.
+   * Takes into account the quantity and other options.
+   */
   calculatePrice = () => {
     const { productsActions } = this.props;
     const { product, selectedOptions } = this.state;
@@ -426,6 +462,9 @@ class ProductDetail extends Component {
       .then(() => this.setState({ fetching: false }));
   };
 
+  /**
+   * Share event.
+   */
   handleShare = () => {
     const { product } = this.state;
     const url = `${config.siteUrl}index.php?dispatch=products.view&product_id=${product.product_id}`;
@@ -442,6 +481,9 @@ class ProductDetail extends Component {
     );
   };
 
+  /**
+   * Pay with apple pay.
+   */
   handleApplePay = async (next) => {
     const { cartActions } = this.props;
 
@@ -457,6 +499,11 @@ class ProductDetail extends Component {
     }
   };
 
+  /**
+   * Adds the product to cart.
+   *
+   * @param {boolean} showNotification - Showing notifications or not.
+   */
   handleAddToCart = (showNotification = true) => {
     const productOptions = {};
     const { product, selectedOptions, amount } = this.state;
@@ -485,6 +532,9 @@ class ProductDetail extends Component {
     return cartActions.add({ products }, showNotification);
   };
 
+  /**
+   * Adds the product to wishlist.
+   */
   handleAddToWishList() {
     const productOptions = {};
     const { product, selectedOptions } = this.state;
@@ -512,6 +562,12 @@ class ProductDetail extends Component {
     return wishListActions.add({ products }, componentId);
   }
 
+  /**
+   * Adds the selected option.
+   *
+   * @param {string} name - Option name.
+   * @param {string} val - Option value.
+   */
   handleOptionChange(name, val) {
     const { selectedOptions } = this.state;
     const newOptions = { ...selectedOptions };
@@ -525,6 +581,11 @@ class ProductDetail extends Component {
     );
   }
 
+  /**
+   * Renders label with discount information.
+   *
+   * @return {JSX.Element}
+   */
   renderDiscountLabel() {
     const { product } = this.state;
 
@@ -543,6 +604,11 @@ class ProductDetail extends Component {
     );
   }
 
+  /**
+   * Renders swiper with product images.
+   *
+   * @return {JSX.Element}
+   */
   renderImage() {
     const { images } = this.state;
     const productImages = images.map((img, index) => (
@@ -573,6 +639,11 @@ class ProductDetail extends Component {
     );
   }
 
+  /**
+   * Renders product name.
+   *
+   * @return {JSX.Element}
+   */
   renderName() {
     const { product } = this.state;
     if (!product.product) {
@@ -581,6 +652,11 @@ class ProductDetail extends Component {
     return <Text style={styles.nameText}>{product.product}</Text>;
   }
 
+  /**
+   * Renders product rating.
+   *
+   * @return {JSX.Element}
+   */
   renderRating() {
     const { discussion } = this.state;
 
@@ -600,6 +676,11 @@ class ProductDetail extends Component {
     );
   }
 
+  /**
+   * Renders product description.
+   *
+   * @return {JSX.Element}
+   */
   renderDesc() {
     const { product } = this.state;
     if (product.full_description) {
@@ -612,6 +693,11 @@ class ProductDetail extends Component {
     return null;
   }
 
+  /**
+   * Renders product price or a message about the price.
+   *
+   * @return {JSX.Element}
+   */
   renderPrice() {
     const { product } = this.state;
     let discountPrice = null;
@@ -668,6 +754,11 @@ class ProductDetail extends Component {
     );
   }
 
+  /**
+   * Renders product comments.
+   *
+   * @return {JSX.Element}
+   */
   renderDiscussion() {
     const { productDetail } = this.props;
     const { discussion, canWriteComments } = this.state;
@@ -718,6 +809,14 @@ class ProductDetail extends Component {
     );
   }
 
+  /**
+   * Renders different options.
+   * "Memory capacity" for example.
+   *
+   * @param {object} item - Option information.
+   *
+   * @return {JSX.Element}
+   */
   renderOptionItem = (item) => {
     const option = { ...item };
     const { selectedOptions } = this.state;
@@ -764,6 +863,11 @@ class ProductDetail extends Component {
     }
   };
 
+  /**
+   * Renders options list.
+   *
+   * @return {JSX.Element}
+   */
   renderOptions() {
     const { product } = this.state;
 
@@ -787,6 +891,15 @@ class ProductDetail extends Component {
     );
   }
 
+  /**
+   * Renders product feature.
+   * "Brand" for example.
+   *
+   * @param {object} feature - Feature information.
+   * @param {number} index - Feature index.
+   *
+   * @return {JSX.Element}
+   */
   renderFeatureItem = (feature, index) => {
     const { description, feature_type, value_int, value, variant } = feature;
 
@@ -805,6 +918,11 @@ class ProductDetail extends Component {
     return <SectionRow name={description} value={newValue} key={index} />;
   };
 
+  /**
+   * Renders feature list.
+   *
+   * @return {JSX.Element}
+   */
   renderFeatures() {
     const { product } = this.state;
     const features = Object.keys(product.product_features).map(
@@ -824,6 +942,11 @@ class ProductDetail extends Component {
     );
   }
 
+  /**
+   * Renders vendor information
+   *
+   * @return {JSX.Element}
+   */
   renderVendorInfo() {
     const { vendor } = this.state;
 
@@ -869,6 +992,11 @@ class ProductDetail extends Component {
     );
   }
 
+  /**
+   * Renders an add to cart button.
+   *
+   * @return {JSX.Element}
+   */
   renderAddToCart() {
     const canPayWithApplePay = Platform.OS === 'ios' && config.applePay;
 
@@ -891,6 +1019,11 @@ class ProductDetail extends Component {
     );
   }
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { fetching } = this.state;
 

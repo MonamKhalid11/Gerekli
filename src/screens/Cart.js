@@ -41,7 +41,7 @@ const styles = EStyleSheet.create({
  * @reactProps {object} auth - Authorization information.
  * @reactProps {object} cart - Cart information.
  */
-class Cart extends Component {
+export class Cart extends Component {
   /**
    * @ignore
    */

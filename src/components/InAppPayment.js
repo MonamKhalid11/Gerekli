@@ -39,21 +39,26 @@ class InAppPayment extends React.Component {
 
   static defaultProps = {};
 
-  handleShippingOptionChange = throttle((event) => {
-    const { cartActions } = this.props;
-    const { shippingOption } = this.paymentRequest;
+  handleShippingOptionChange = throttle(
+    (event) => {
+      const { cartActions } = this.props;
+      const { shippingOption } = this.paymentRequest;
 
-    this.setState({
-      shippingId: shippingOption,
-    });
+      this.setState({
+        shippingId: shippingOption,
+      });
 
-    cartActions.getUpdatedDetailsForShippingOption([shippingOption])
-      .then((result) => {
-        const updatedDetail = this.getPaymentData(result).details;
-        event.updateWith(updatedDetail);
-      })
-      .catch(() => this.paymentRequest.fail());
-  }, 1000, { 'trailing': false });
+      cartActions
+        .getUpdatedDetailsForShippingOption([shippingOption])
+        .then((result) => {
+          const updatedDetail = this.getPaymentData(result).details;
+          event.updateWith(updatedDetail);
+        })
+        .catch(() => this.paymentRequest.fail());
+    },
+    1000,
+    { trailing: false },
+  );
 
   constructor(props) {
     super(props);
@@ -66,7 +71,8 @@ class InAppPayment extends React.Component {
     this.options = {};
 
     stripe.setOptions({
-      publishableKey: 'pk_test_51Hcm2mDrV9B8Z7P9D4EijBxtUkA77bfI1e4AjcEBvN3ROJo6IRB25MPdiAiXzbpSieGodCmDAX5ZHGyVE2zUs52L0044SLn3PP',
+      publishableKey:
+        'pk_test_51Hcm2mDrV9B8Z7P9D4EijBxtUkA77bfI1e4AjcEBvN3ROJo6IRB25MPdiAiXzbpSieGodCmDAX5ZHGyVE2zUs52L0044SLn3PP',
       merchantId: config.applePayMerchantIdentifier,
     });
   }
@@ -171,7 +177,7 @@ class InAppPayment extends React.Component {
    */
   initPaymentRequest = async () => {
     const { cart } = this.props;
-    const { methodData, details, options } = this.getPaymentData(cart);
+    const { details } = this.getPaymentData(cart);
     this.paymentRequest = await stripe.paymentRequestWithNativePay(
       {
         requiredShippingAddressFields: ['all'],

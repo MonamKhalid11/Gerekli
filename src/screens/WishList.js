@@ -102,7 +102,16 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders wishlist screen.
+ *
+ * @reactProps {object} wishListActions - Wishlist actions.
+ * @reactProps {object} wishList - Wishlist information.
+ */
 export class WishList extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     wishListActions: PropTypes.shape({
       fetch: PropTypes.func,
@@ -112,6 +121,9 @@ export class WishList extends Component {
     wishList: PropTypes.shape({}),
   };
 
+  /**
+   * @ignore
+   */
   constructor(props) {
     super(props);
 
@@ -122,6 +134,9 @@ export class WishList extends Component {
     Navigation.events().bindComponent(this);
   }
 
+  /**
+   * Gets wishlist. Sets header setup.
+   */
   componentDidMount() {
     const { wishListActions } = this.props;
 
@@ -141,6 +156,9 @@ export class WishList extends Component {
     });
   }
 
+  /**
+   * Listens to fetching. Refreshes icon badge value.
+   */
   componentWillReceiveProps(nextProps) {
     const { wishList } = nextProps;
     if (wishList.fetching) {
@@ -159,6 +177,11 @@ export class WishList extends Component {
     });
   }
 
+  /**
+   * Wishlist screen navigation.
+   *
+   * @param {object} event - Information about the element on which the event occurred.
+   */
   navigationButtonPressed({ buttonId }) {
     if (buttonId === 'clearWishList') {
       Alert.alert(
@@ -180,16 +203,32 @@ export class WishList extends Component {
     }
   }
 
+  /**
+   * Removes a product from whishlist.
+   *
+   * @param {object} product - Product information.
+   */
   handleRemoveProduct = (product) => {
     const { wishListActions } = this.props;
     wishListActions.remove(product.cartId);
   };
 
+  /**
+   * Refreshes the display of the wishlist.
+   */
   handleRefresh() {
     const { wishListActions } = this.props;
     this.setState({ refreshing: true }, () => wishListActions.fetch());
   }
 
+  /**
+   * Renders a product. Gets product image.
+   * Sets swipeout button setup.
+   *
+   * @param {object} item - Product information.
+   *
+   * @return {JSX.Element}
+   */
   renderProductItem = (item) => {
     let productImage = null;
     const imageUri = getImagePath(item);
@@ -237,6 +276,11 @@ export class WishList extends Component {
     );
   };
 
+  /**
+   * Renders if the whislist is empty.
+   *
+   * @return {JSX.Element}
+   */
   renderEmptyList = () => {
     if (this.state.fetching) {
       return null;
@@ -253,6 +297,11 @@ export class WishList extends Component {
     );
   };
 
+  /**
+   * Renders list of products.
+   *
+   * @return {JSX.Element}
+   */
   renderList() {
     const { wishList } = this.props;
     return (
@@ -269,6 +318,11 @@ export class WishList extends Component {
     );
   }
 
+  /**
+   * Renders component.
+   *
+   * @return {JSX.Element}
+   */
   render() {
     return <View style={styles.container}>{this.renderList()}</View>;
   }
