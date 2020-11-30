@@ -572,6 +572,7 @@ class ProductDetail extends Component {
           horizontal
           height={300}
           style={styles.wrapper}
+          loadMinimal={6}
           removeClippedSubviews={false}>
           {productImages}
         </Swiper>
