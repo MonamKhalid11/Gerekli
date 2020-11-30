@@ -1,7 +1,4 @@
-import {
-  NOTIFICATION_HIDE,
-  NOTIFICATION_SHOW,
-} from '../constants';
+import { NOTIFICATION_HIDE, NOTIFICATION_SHOW } from '../constants';
 
 const initialState = {
   items: [],
@@ -22,7 +19,9 @@ export default function notifications(state = initialState, action) {
 
     case NOTIFICATION_HIDE:
       return {
-        items: state.items.filter(notification => notification.id !== action.payload.id),
+        items: state.items.filter(
+          (notification) => notification.id !== action.payload.id,
+        ),
       };
 
     default:

@@ -28,7 +28,7 @@ const styles = EStyleSheet.create({
  * @reactProps {object} ordersActions - Orders functions.
  * @reactProps {object} orders - Orders information.
  */
-class Orders extends Component {
+export class Orders extends Component {
   /**
    * @ignore
    */

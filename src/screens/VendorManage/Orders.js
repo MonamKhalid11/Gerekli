@@ -34,7 +34,20 @@ const itemsList = [...orderStatuses.map((item) => item.text), i18n.t('Cancel')];
 
 const CANCEL_INDEX = itemsList.length - 1;
 
-class Orders extends Component {
+/**
+ * Renders orders screen.
+ *
+ * @reactProps {object} ordersActions - Orders actions.
+ * @reactProps {object} notifications - Notifications information.
+ * @reactProps {object} notificationsActions - Notifications actions.
+ * @reactProps {boolean} hasMore - Are there any more orders.
+ * @reactProps {number} page - Page number.
+ * @reactProps {object} orders - Orders information.
+ */
+export class Orders extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     ordersActions: PropTypes.shape({
       fetch: PropTypes.func,
@@ -53,6 +66,9 @@ class Orders extends Component {
     }),
   };
 
+  /**
+   * @ignore
+   */
   static options = {
     topBar: {
       title: {
@@ -61,6 +77,9 @@ class Orders extends Component {
     },
   };
 
+  /**
+   * @ignore
+   */
   constructor(props) {
     super(props);
 
@@ -71,6 +90,9 @@ class Orders extends Component {
     this.orderID = 0;
   }
 
+  /**
+   * Gets orders.
+   */
   componentDidMount() {
     const {
       ordersActions,
@@ -79,17 +101,28 @@ class Orders extends Component {
     ordersActions.fetch(page);
   }
 
+  /**
+   * Stops refreshing.
+   */
   componentWillReceiveProps() {
     this.setState({
       refreshing: false,
     });
   }
 
+  /**
+   * Opens action sheet element if click 'status' after swipeout.
+   *
+   * @param {number} id - Order id.
+   */
   showActionSheet = (id) => {
     this.orderID = id;
     this.ActionSheet.show();
   };
 
+  /**
+   * Refreshes screen.
+   */
   handleRefresh = () => {
     const { ordersActions } = this.props;
     this.setState({
@@ -99,6 +132,9 @@ class Orders extends Component {
     ordersActions.fetch(0);
   };
 
+  /**
+   * Loads more orders.
+   */
   handleLoadMore = () => {
     const {
       ordersActions,
@@ -112,6 +148,11 @@ class Orders extends Component {
     ordersActions.fetch(page);
   };
 
+  /**
+   * Updates status of order.
+   *
+   * @param {number} index - Order index.
+   */
   handleChangeStatus = (index) => {
     const { ordersActions } = this.props;
 
@@ -120,6 +161,12 @@ class Orders extends Component {
     }
   };
 
+  /**
+   * Renders item.
+   * @param {object} item - Order information.
+   *
+   * @return {JSX.Element}
+   */
   renderItem = ({ item }) => {
     const swipeoutBtns = [
       {
@@ -147,6 +194,11 @@ class Orders extends Component {
     );
   };
 
+  /**
+   * Renders component.
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { orders } = this.props;
     const { refreshing } = this.state;

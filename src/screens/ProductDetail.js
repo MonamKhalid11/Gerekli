@@ -253,7 +253,7 @@ const styles = EStyleSheet.create({
  * @reactProps {object} vendorActions - Vendor actions.
  * @reactProps {object} vendors - Information about vendors who has this product.
  */
-class ProductDetail extends Component {
+export class ProductDetail extends Component {
   /**
    * @ignore
    */

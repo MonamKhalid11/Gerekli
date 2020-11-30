@@ -2,25 +2,19 @@ import {
   VENDOR_FETCH_PRODUCTS_REQUEST,
   VENDOR_FETCH_PRODUCTS_FAIL,
   VENDOR_FETCH_PRODUCTS_SUCCESS,
-
   VENDOR_FETCH_PRODUCT_REQUEST,
   VENDOR_FETCH_PRODUCT_FAIL,
   VENDOR_FETCH_PRODUCT_SUCCESS,
-
   VENDOR_DELETE_PRODUCT_REQUEST,
   VENDOR_DELETE_PRODUCT_FAIL,
   VENDOR_DELETE_PRODUCT_SUCCESS,
-
   VENDOR_UPDATE_PRODUCT_REQUEST,
   VENDOR_UPDATE_PRODUCT_FAIL,
   VENDOR_UPDATE_PRODUCT_SUCCESS,
-
   VENDOR_CREATE_PRODUCT_REQUEST,
   VENDOR_CREATE_PRODUCT_FAIL,
   VENDOR_CREATE_PRODUCT_SUCCESS,
-
   VENDOR_PRODUCT_CHANGE_CATEGORY,
-
   NOTIFICATION_SHOW,
 } from '../../constants';
 import * as vendorService from '../../services/vendors';
@@ -57,7 +51,7 @@ export function fetchProduct(id = 0, loading = true) {
   return async (dispatch) => {
     dispatch({
       type: VENDOR_FETCH_PRODUCT_REQUEST,
-      payload: loading
+      payload: loading,
     });
 
     try {
@@ -110,7 +104,7 @@ export function updateProduct(id = null, product = {}) {
       type: VENDOR_UPDATE_PRODUCT_REQUEST,
       payload: {
         id,
-        product
+        product,
       },
     });
 
@@ -120,7 +114,7 @@ export function updateProduct(id = null, product = {}) {
         type: VENDOR_UPDATE_PRODUCT_SUCCESS,
         payload: {
           id,
-          product
+          product,
         },
       });
       dispatch({
@@ -186,7 +180,6 @@ export function createProduct(product) {
     return null;
   };
 }
-
 
 export function changeProductCategory(categories) {
   return (dispatch) => {

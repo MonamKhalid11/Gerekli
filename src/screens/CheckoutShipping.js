@@ -95,7 +95,7 @@ const styles = EStyleSheet.create({
  * @reactProps {object} cart - Cart information.
  * @reactProps {object} cartActions - Cart actions.
  */
-class CheckoutShipping extends Component {
+export class CheckoutShipping extends Component {
   static propTypes = {
     cart: PropTypes.shape({}),
   };

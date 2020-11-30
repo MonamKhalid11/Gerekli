@@ -103,7 +103,7 @@ const PAYMENTS = [
  * @reactProps {object} ordersActions - Orders actions.
  * @reactProps {string} shipping_id - Shipping id.
  */
-class CheckoutPayment extends Component {
+export class CheckoutPayment extends Component {
   static propTypes = {
     cart: PropTypes.shape({
       items: PropTypes.arrayOf(PropTypes.object),

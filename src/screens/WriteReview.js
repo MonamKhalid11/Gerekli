@@ -13,7 +13,6 @@ import * as productsActions from '../actions/productsActions';
 import Button from '../components/Button';
 import Spinner from '../components/Spinner';
 import Icon from '../components/Icon';
-import { iconsMap } from '../utils/navIcons';
 
 import theme from '../config/theme';
 import i18n from '../utils/i18n';
@@ -103,7 +102,19 @@ function selectRatingTemplate(rating) {
   );
 }
 
-class WriteReview extends Component {
+/**
+ * Renders write review screen.
+ *
+ * @reactProps {number or string} discussionId - Id of the discussion in which we give feedback.
+ * @reactProps {string} discussionType - Discussion type.
+ * @reactProps {object} activeDiscussion - Active discussion.
+ * @reactProps {object} productsActions - Products actions.
+ * @reactProps {object} discussion - Discussion information.
+ */
+export class WriteReview extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     type: PropTypes.string,
     discussionId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -118,6 +129,9 @@ class WriteReview extends Component {
     }),
   };
 
+  /**
+   * @ignore
+   */
   constructor(props) {
     super(props);
     this.isNewPostSent = false;
@@ -125,6 +139,9 @@ class WriteReview extends Component {
     Navigation.events().bindComponent(this);
   }
 
+  /**
+   * Sets header setup.
+   */
   componentWillMount() {
     Navigation.mergeOptions(this.props.componentId, {
       topBar: {
@@ -135,13 +152,19 @@ class WriteReview extends Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  /**
+   * Closes screen if a post send.
+   */
+  componentWillReceiveProps() {
     if (this.isNewPostSent) {
       this.isNewPostSent = false;
       Navigation.pop(this.props.componentId);
     }
   }
 
+  /**
+   * Sends new post.
+   */
   handleSend() {
     const {
       productsActions,
@@ -150,6 +173,7 @@ class WriteReview extends Component {
       discussionId,
     } = this.props;
     const value = this.refs.form.getValue();
+
     if (value) {
       this.isNewPostSent = true;
       productsActions.postDiscussion({
@@ -163,6 +187,11 @@ class WriteReview extends Component {
     }
   }
 
+  /**
+   * Renders component.
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { discussion, activeDiscussion } = this.props;
     const Rating = t.enums(

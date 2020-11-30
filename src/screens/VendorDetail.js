@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { get } from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { View, Text, Image, ScrollView } from 'react-native';
@@ -152,7 +151,8 @@ export class VendorDetail extends Component {
     const { currentVendor } = this.state;
 
     if (vendors.currentVendor && Object.keys(discussion.items).length) {
-      const activeDiscussion = discussion.items[`m_${vendors.currentVendor.company_id}`];
+      const activeDiscussion =
+        discussion.items[`m_${vendors.currentVendor.company_id}`];
       if (currentVendor !== vendors.currentVendor && activeDiscussion) {
         this.setState({
           currentVendor: vendors.currentVendor,
@@ -223,9 +223,7 @@ export class VendorDetail extends Component {
     return (
       <Section>
         <View style={styles.vendorWrapper}>
-          <Text style={styles.vendorName}>
-            {vendors.currentVendor.company}
-          </Text>
+          <Text style={styles.vendorName}>{vendors.currentVendor.company}</Text>
           <Rating
             value={discussion.average_rating}
             count={discussion.search.total_items}
@@ -279,12 +277,11 @@ export class VendorDetail extends Component {
     return (
       <Section title={i18n.t('Shipping address')}>
         <Text style={styles.address}>
-          {vendors.currentVendor.shipping_address.address}
-          ,
+          {vendors.currentVendor.shipping_address.address},
         </Text>
         <Text style={styles.address}>
-          {vendors.currentVendor.shipping_address.state} {vendors.currentVendor.shipping_address.zipcode}
-          ,
+          {vendors.currentVendor.shipping_address.state}{' '}
+          {vendors.currentVendor.shipping_address.zipcode},
         </Text>
         <Text style={styles.address}>
           {vendors.currentVendor.shipping_address.country}

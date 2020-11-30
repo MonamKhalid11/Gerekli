@@ -70,7 +70,21 @@ const styles = EStyleSheet.create({
   },
 });
 
-class Products extends Component {
+/**
+ * Renders vendor products screen.
+ *
+ * @reactProps {object} notifications - Notifications information.
+ * @reactProps {object} notificationsActions - Notifications actions.
+ * @reactProps {object} productsActions - Products actions.
+ * @reactProps {boolean} hasMore - Are there any more products.
+ * @reactProps {boolean} loading - Loading indicator.
+ * @reactProps {number} page - Page number.
+ * @reactProps {[object]} products - Products information.
+ */
+export class Products extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     notifications: PropTypes.shape({
       items: PropTypes.arrayOf(PropTypes.object),
@@ -85,6 +99,9 @@ class Products extends Component {
     products: PropTypes.arrayOf(PropTypes.shape({})),
   };
 
+  /**
+   * @ignore
+   */
   static options = {
     topBar: {
       title: {
@@ -93,6 +110,9 @@ class Products extends Component {
     },
   };
 
+  /**
+   * @ignore
+   */
   constructor(props) {
     super(props);
 
@@ -103,6 +123,9 @@ class Products extends Component {
     Navigation.events().bindComponent(this);
   }
 
+  /**
+   * Sets header setup.
+   */
   componentDidMount() {
     this.handleLoadMore();
 
@@ -118,12 +141,20 @@ class Products extends Component {
     });
   }
 
+  /**
+   * Stops refreshing.
+   */
   componentWillReceiveProps() {
     this.setState({
       refreshing: false,
     });
   }
 
+  /**
+   * Vendor products screen navigation.
+   *
+   * @param {object} event - Information about the element on which the event occurred.
+   */
   navigationButtonPressed({ buttonId }) {
     if (buttonId === 'add') {
       nav.showVendorManageCategoriesPicker({
@@ -133,6 +164,9 @@ class Products extends Component {
     }
   }
 
+  /**
+   * Loads more products.
+   */
   handleLoadMore = () => {
     const { productsActions, hasMore, page } = this.props;
     if (!hasMore) {
@@ -142,6 +176,9 @@ class Products extends Component {
     productsActions.fetchProducts(page);
   };
 
+  /**
+   * Refreshes screen.
+   */
   handleRefresh = () => {
     const { productsActions } = this.props;
     this.setState({
@@ -151,6 +188,11 @@ class Products extends Component {
     productsActions.fetchProducts(0);
   };
 
+  /**
+   * Changes product status, after selected when swipeout.
+   *
+   * @param {object} index - Value index.
+   */
   handleStatusActionSheet = (index) => {
     const { productsActions } = this.props;
     const statuses = ['A', 'H', 'D'];
@@ -160,6 +202,11 @@ class Products extends Component {
     });
   };
 
+  /**
+   * Renders a product.
+   *
+   * @param {object} item - Product information.
+   */
   renderItem = (item) => {
     const { productsActions } = this.props;
     const swipeoutBtns = [
@@ -237,6 +284,11 @@ class Products extends Component {
     );
   };
 
+  /**
+   * Renders component.
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { loading, products } = this.props;
     const { refreshing } = this.state;

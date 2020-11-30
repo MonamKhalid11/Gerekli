@@ -88,7 +88,18 @@ const styles = EStyleSheet.create({
   },
 });
 
-class OrderDetail extends Component {
+/**
+ * Renders order detail screen.
+ *
+ * @reactProps {number} orderId - Order id.
+ * @reactProps {boolean} fetching - Fetching indicator.
+ * @reactProps {object} ordersActions - Orders actions.
+ * @reactProps {object} order - Order information.
+ */
+export class OrderDetail extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     orderId: PropTypes.number,
     fetching: PropTypes.bool,
@@ -98,6 +109,9 @@ class OrderDetail extends Component {
     order: PropTypes.shape({}),
   };
 
+  /**
+   * @ignore
+   */
   static options = {
     topBar: {
       title: {
@@ -106,6 +120,9 @@ class OrderDetail extends Component {
     },
   };
 
+  /**
+   * Gets order data, else closes modal.
+   */
   async componentWillMount() {
     const { orderId, ordersActions } = this.props;
     const data = await ordersActions.fetchOrder(orderId);
@@ -117,6 +134,14 @@ class OrderDetail extends Component {
     }
   }
 
+  /**
+   * Renders product.
+   *
+   * @param {object} item - Product information.
+   * @param {number} index - Product index.
+   *
+   * @return {JSX.Element}
+   */
   renderProduct = (item, index) => {
     let productImage = null;
     const imageUri = getImagePath(item);
@@ -142,6 +167,14 @@ class OrderDetail extends Component {
     );
   };
 
+  /**
+   * Renders row in the form.
+   *
+   * @param {string} title - Row title.
+   * @param {string} text - Row text.
+   *
+   * @return {JSX.Element}
+   */
   renderFieldRow = (title, text) => {
     if (text === '') {
       return null;
@@ -149,6 +182,11 @@ class OrderDetail extends Component {
     return <FormBlockField title={title}>{text}</FormBlockField>;
   };
 
+  /**
+   * Renders all information blocks.
+   *
+   * @return {JSX.Element}
+   */
   renderFields() {
     const { order } = this.props;
 
@@ -192,6 +230,11 @@ class OrderDetail extends Component {
     );
   }
 
+  /**
+   * Renders status of order.
+   *
+   * @return {JSX.Element}
+   */
   renderStatus = () => {
     const { order } = this.props;
     const status = getOrderStatus(order.status);
@@ -203,6 +246,11 @@ class OrderDetail extends Component {
     );
   };
 
+  /**
+   * Renders component.
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { order, fetching } = this.props;
 

@@ -50,7 +50,16 @@ const styles = EStyleSheet.create({
 
 const IMAGE_NUM_COLUMNS = 4;
 
-class AddProductStep1 extends Component {
+/**
+ * Renders add product screen step 1.
+ *
+ * @reactProps {[string]} images - Images paths.
+ * @reactProps {object} imagePickerActions - Image picker actions.
+ */
+export class AddProductStep1 extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     images: PropTypes.arrayOf(PropTypes.string),
     imagePickerActions: PropTypes.shape({
@@ -58,11 +67,9 @@ class AddProductStep1 extends Component {
     }),
   };
 
-  componentDidMount() {
-    // const { imagePickerActions } = this.props;
-    // imagePickerActions.clear();
-  }
-
+  /**
+   * Moves to the next screen.
+   */
   handleGoNext = () => {
     const { images, category_ids } = this.props;
     nav.pushVendorManageAddProductStep2(this.props.componentId, {
@@ -73,6 +80,10 @@ class AddProductStep1 extends Component {
     });
   };
 
+  /**
+   * Removes image from selected images.
+   * @param {number} imageIndex - Image index.
+   */
   handleRemoveImage = (imageIndex) => {
     const { imagePickerActions, images } = this.props;
     const newImages = [...images];
@@ -81,6 +92,11 @@ class AddProductStep1 extends Component {
     Navigation.dismissModal(this.props.componentId);
   };
 
+  /**
+   * Renders header.
+   *
+   * @return {JSX.Element}
+   */
   renderHeader = () => {
     return (
       <View>
@@ -99,10 +115,20 @@ class AddProductStep1 extends Component {
     );
   };
 
+  /**
+   * Renders if images list is empty.
+   *
+   * @return {JSX.Element}
+   */
   renderEmptyList = () => (
     <Text style={styles.emptyList}>{i18n.t('There are no images')}</Text>
   );
 
+  /**
+   * Renders image.
+   *
+   * @param {object} image - image information.
+   */
   renderImage = (image) => {
     const IMAGE_WIDTH = Dimensions.get('window').width / IMAGE_NUM_COLUMNS;
 
@@ -128,6 +154,11 @@ class AddProductStep1 extends Component {
     );
   };
 
+  /**
+   * Renders component.
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { images } = this.props;
     return (

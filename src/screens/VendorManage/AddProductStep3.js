@@ -45,7 +45,17 @@ const formOptions = {
   disableOrder: true,
 };
 
-class AddProductStep4 extends Component {
+/**
+ * Renders add product screen step 3.
+ *
+ * @reactProps {object} stepsData - Previous steps information.
+ * @reactProps {object} productsActions - Products actions.
+ * @reactProps {object} imagePickerActions - Image picker actions.
+ */
+export class AddProductStep3 extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     stepsData: PropTypes.shape({}),
     productsActions: PropTypes.shape({}),
@@ -54,6 +64,9 @@ class AddProductStep4 extends Component {
     }),
   };
 
+  /**
+   * @ignore
+   */
   constructor(props) {
     super(props);
 
@@ -65,6 +78,11 @@ class AddProductStep4 extends Component {
     Navigation.events().bindComponent(this);
   }
 
+  /**
+   * Creates new product.
+   * Clears selected images from store.
+   * Moves to edit product screen.
+   */
   handleCreate = async () => {
     const { productsActions, stepsData, imagePickerActions } = this.props;
     const values = this.formRef.current.getValue();
@@ -97,12 +115,22 @@ class AddProductStep4 extends Component {
     }
   };
 
+  /**
+   * Renders header.
+   *
+   * @return {JSX.Element}
+   */
   renderHeader = () => (
     <View style={styles.header}>
       <CheckoutSteps step={2} steps={steps} />
     </View>
   );
 
+  /**
+   * Renders component.
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { loading } = this.state;
     return (
@@ -132,4 +160,4 @@ export default connect(
     imagePickerActions: bindActionCreators(imagePickerActions, dispatch),
     productsActions: bindActionCreators(productsActions, dispatch),
   }),
-)(AddProductStep4);
+)(AddProductStep3);

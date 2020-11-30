@@ -21,7 +21,16 @@ const styles = EStyleSheet.create({
   },
 });
 
-class Registration extends Component {
+/**
+ * Renders product detail screen.
+ *
+ * @reactProps {object} authActions - Auth actions.
+ * @reactProps {boolean} showClose - Show close buttom or not.
+ */
+export class Registration extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     authActions: PropTypes.shape({
       registration: PropTypes.func,
@@ -29,6 +38,9 @@ class Registration extends Component {
     showClose: PropTypes.bool,
   };
 
+  /**
+   * @ignore
+   */
   constructor(props) {
     super(props);
 
@@ -39,6 +51,9 @@ class Registration extends Component {
     Navigation.events().bindComponent(this);
   }
 
+  /**
+   * Gets fields and sets them to state.
+   */
   componentDidMount() {
     const { authActions } = this.props;
     authActions.profileFields().then((fields) => {
@@ -63,12 +78,22 @@ class Registration extends Component {
     });
   }
 
+  /**
+   * Registration modal navigation.
+   *
+   * @param {object} event - Information about the element on which the event occurred.
+   */
   navigationButtonPressed({ buttonId }) {
     if (buttonId === 'close') {
       Navigation.dismissModal(this.props.componentId);
     }
   }
 
+  /**
+   * Creates new user.
+   *
+   * @param {object} values - Registration form values.
+   */
   handleRegister = async (values) => {
     const { authActions, componentId } = this.props;
     if (values) {
@@ -76,6 +101,11 @@ class Registration extends Component {
     }
   };
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { fetching, forms } = this.state;
 

@@ -49,7 +49,7 @@ const styles = EStyleSheet.create({
  * @reactProps {object} authActions - Auth functions.
  * @reactProps {object} auth - Auth setup.
  */
-class Login extends Component {
+export class Login extends Component {
   /**
    * @ignore
    */

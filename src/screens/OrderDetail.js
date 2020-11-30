@@ -96,7 +96,7 @@ const styles = EStyleSheet.create({
  * @reactProps {object} notificationsActions - Notifications functions.
  * @reactProps {string} orderId - Order id.
  */
-class OrderDetail extends Component {
+export class OrderDetail extends Component {
   /**
    * @ignore
    */

@@ -1,7 +1,4 @@
-import {
-  IMAGE_PICKER_TOGGLE,
-  IMAGE_PICKER_CLEAR,
-} from '../constants';
+import { IMAGE_PICKER_TOGGLE, IMAGE_PICKER_CLEAR } from '../constants';
 
 export function clear() {
   return (dispatch) => {

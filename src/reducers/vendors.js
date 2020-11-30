@@ -7,7 +7,7 @@ import {
 const initialState = {
   items: {},
   fetching: false,
-  currentVendor: null
+  currentVendor: null,
 };
 
 export default function (state = initialState, action) {

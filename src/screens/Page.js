@@ -19,7 +19,7 @@ const styles = EStyleSheet.create({
  *
  * @reactProps {string} uri - Link to the page.
  */
-class Page extends Component {
+export class Page extends Component {
   /**
    * @ignore
    */

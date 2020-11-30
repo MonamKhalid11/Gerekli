@@ -1,32 +1,24 @@
 import {
   CART_SUCCESS,
   CART_FAIL,
-
   CART_CONTENT_SUCCESS,
   CART_CONTENT_SAVE_REQUEST,
   CART_CONTENT_SAVE_SUCCESS,
   CART_CONTENT_SAVE_FAIL,
-
   ADD_TO_CART_REQUEST,
   ADD_TO_CART_SUCCESS,
   ADD_TO_CART_FAIL,
-
   CART_CLEAR_REQUEST,
   CART_CLEAR_SUCCESS,
   CART_CLEAR_FAIL,
-
   CART_RECALCULATE_SUCCESS,
-
   CART_ADD_COUPON_CODE,
   CART_REMOVE_COUPON_CODE,
-
   CHANGE_AMOUNT,
   AUTH_LOGOUT,
-
   RESTORE_STATE,
-
   CART_LOADING,
-  CART_LOADED
+  CART_LOADED,
 } from '../constants';
 
 const initialState = {
@@ -38,7 +30,7 @@ const initialState = {
   coupons: [],
   vendorCarts: [],
   isSeparateCart: null,
-  carts: {}
+  carts: {},
 };
 
 let newProducts = [];
@@ -49,13 +41,13 @@ export default function (state = initialState, action) {
     case CART_LOADING:
       return {
         ...state,
-        fetching: true
+        fetching: true,
       };
 
     case CART_LOADED:
       return {
         ...state,
-        fetching: false
+        fetching: false,
       };
 
     case RESTORE_STATE:
@@ -145,7 +137,7 @@ export default function (state = initialState, action) {
         total_formatted: action.payload.total_formatted,
         subtotal: action.payload.total_formatted,
         subtotal_formatted: action.payload.subtotal_formatted,
-        coupons: Object.keys(action.payload.coupons).map(k => k),
+        coupons: Object.keys(action.payload.coupons).map((k) => k),
       };
 
     case AUTH_LOGOUT:
@@ -159,7 +151,9 @@ export default function (state = initialState, action) {
         newProducts[action.payload.cid].amount = action.payload.amount;
         newState.general.products = newProducts;
       } else {
-        newProducts = JSON.parse(JSON.stringify(state.carts[action.payload.id].products));
+        newProducts = JSON.parse(
+          JSON.stringify(state.carts[action.payload.id].products),
+        );
         newProducts[action.payload.cid].amount = action.payload.amount;
         newState[action.payload.id].products = newProducts;
       }
@@ -167,22 +161,19 @@ export default function (state = initialState, action) {
       return {
         ...state,
         carts: newState,
-        fetching: false
+        fetching: false,
       };
 
     case CART_ADD_COUPON_CODE:
       return {
         ...state,
-        coupons: [
-          ...state.coupons,
-          action.payload,
-        ],
+        coupons: [...state.coupons, action.payload],
       };
 
     case CART_REMOVE_COUPON_CODE:
       return {
         ...state,
-        coupons: [...state.coupons].filter(item => item !== action.payload),
+        coupons: [...state.coupons].filter((item) => item !== action.payload),
       };
 
     default:

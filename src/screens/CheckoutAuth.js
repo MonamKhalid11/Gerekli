@@ -44,7 +44,7 @@ const options = {
   },
 };
 
-class CheckoutAuth extends Component {
+export class CheckoutAuth extends Component {
   static propTypes = {
     authActions: PropTypes.shape({
       login: PropTypes.func,
