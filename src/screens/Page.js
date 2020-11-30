@@ -14,17 +14,31 @@ const styles = EStyleSheet.create({
   },
 });
 
-class Page extends Component {
+/**
+ * Renders page from server.
+ *
+ * @reactProps {string} uri - Link to the page.
+ */
+export class Page extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     uri: PropTypes.string,
   };
 
+  /**
+   * @ignore
+   */
   constructor(props) {
     super(props);
 
     Navigation.events().bindComponent(this);
   }
 
+  /**
+   * Sets header options.
+   */
   componentDidMount() {
     Navigation.mergeOptions(this.props.componentId, {
       topBar: {
@@ -38,12 +52,22 @@ class Page extends Component {
     });
   }
 
+  /**
+   * Page modal navigation.
+   *
+   * @param {object} event - Information about the element on which the event occurred.
+   */
   navigationButtonPressed({ buttonId }) {
     if (buttonId === 'close') {
       Navigation.dismissModal(this.props.componentId);
     }
   }
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { uri } = this.props;
     return (

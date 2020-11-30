@@ -3,11 +3,9 @@ import {
   FETCH_ORDERS_REQUEST,
   FETCH_ORDERS_FAIL,
   FETCH_ORDERS_SUCCESS,
-
   ORDER_CREATE_REQUEST,
   ORDER_CREATE_SUCCESS,
   ORDER_CREATE_FAIL,
-
   NOTIFICATION_SHOW,
 } from '../constants';
 import Api from '../services/api';
@@ -30,7 +28,11 @@ export function create(data) {
           payload: {
             type: 'error',
             title: i18n.t('Error'),
-            text: get(error, 'response.data.message', i18n.t('Something went wrong. Please try again later.')),
+            text: get(
+              error,
+              'response.data.message',
+              i18n.t('Something went wrong. Please try again later.'),
+            ),
           },
         });
         dispatch({

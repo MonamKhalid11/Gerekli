@@ -2,14 +2,12 @@ import {
   SETTLEMENTS_REQUEST,
   SETTLEMENTS_SUCCESS,
   SETTLEMENTS_FAIL,
-
   NOTIFICATION_SHOW,
 } from '../constants';
 
 import Api from '../services/api';
 import i18n from '../utils/i18n';
 
-// eslint-disable-next-line import/prefer-default-export
 export function settlements(data) {
   return (dispatch) => {
     dispatch({ type: SETTLEMENTS_REQUEST });

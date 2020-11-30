@@ -2,7 +2,6 @@ import {
   FETCH_PRODUCTS_REQUEST,
   FETCH_PRODUCTS_FAIL,
   FETCH_PRODUCTS_SUCCESS,
-
   CHANGE_PRODUCTS_SORT,
 } from '../constants';
 
@@ -34,22 +33,17 @@ export default function (state = initialState, action) {
     case FETCH_PRODUCTS_SUCCESS:
       items = { ...state.items };
       params = { ...action.payload.params };
-      if (items[params.cid] && action.payload.params.page != 1) { // eslint-disable-line
-        items[params.cid] = [
-          ...items[params.cid],
-          ...action.payload.products
-        ];
+      if (items[params.cid] && action.payload.params.page != 1) {
+        items[params.cid] = [...items[params.cid], ...action.payload.products];
       } else {
-        items[params.cid] = [
-          ...action.payload.products,
-        ];
+        items[params.cid] = [...action.payload.products];
       }
       return {
         ...state,
         params,
         items,
         filters: action.payload.filters || [],
-        hasMore: (params.items_per_page * params.page) < +params.total_items,
+        hasMore: params.items_per_page * params.page < +params.total_items,
         fetching: false,
       };
 

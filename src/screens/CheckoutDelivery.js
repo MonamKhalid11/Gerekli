@@ -39,7 +39,7 @@ const styles = EStyleSheet.create({
  * @reactProps {object} cart - Cart information.
  * @reactProps {object} authActions - Auth actions.
  */
-class Checkout extends Component {
+export class Checkout extends Component {
   /**
    * @ignore
    */

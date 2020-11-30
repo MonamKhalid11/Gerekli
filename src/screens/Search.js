@@ -69,7 +69,16 @@ const styles = EStyleSheet.create({
   },
 });
 
-class Search extends Component {
+/**
+ * Renders search.
+ *
+ * @reactProps {object} productsActions - Products actions.
+ * @reactProps {object} search - Search information.
+ */
+export class Search extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     productsActions: PropTypes.shape({
       search: PropTypes.func,
@@ -77,12 +86,18 @@ class Search extends Component {
     search: PropTypes.shape({}),
   };
 
+  /**
+   * @ignore
+   */
   static options = {
     topBar: {
       visible: false,
     },
   };
 
+  /**
+   * @ignore
+   */
   constructor(props) {
     super(props);
 
@@ -91,6 +106,9 @@ class Search extends Component {
     };
   }
 
+  /**
+   * Gets more results of search and sets them in the store.
+   */
   handleLoadMore = () => {
     const { productsActions, search } = this.props;
     const { q } = this.state;
@@ -105,6 +123,11 @@ class Search extends Component {
     });
   };
 
+  /**
+   * Monitors input changes, makes requests.
+   *
+   * @param {number} q - Request length.
+   */
   handleInputChange(q) {
     const { productsActions } = this.props;
 
@@ -124,6 +147,11 @@ class Search extends Component {
     );
   }
 
+  /**
+   * Renders if no matches.
+   *
+   * @return {JSX.Element}
+   */
   renderEmptyList = () => {
     const { search } = this.props;
 
@@ -142,8 +170,18 @@ class Search extends Component {
     );
   };
 
+  /**
+   * Renders spinner.
+   *
+   * @return {JSX.Element}
+   */
   renderSpinner = () => <Spinner visible />;
 
+  /**
+   * Renders footer if fetching.
+   *
+   * @return {JSX.Element}
+   */
   renderFooter() {
     const { search } = this.props;
 
@@ -154,6 +192,11 @@ class Search extends Component {
     return null;
   }
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { search } = this.props;
     return (

@@ -70,7 +70,7 @@ export default class BannerBlocks extends Component {
    * @param {number} index - Banner index.
    */
   renderImage = (item, index) => {
-    const imageUri = get(item, 'main_pair.icon.http_image_path');
+    const imageUri = get(item, 'main_pair.icon.image_path');
     const { onPress } = this.props;
     return (
       <TouchableOpacity key={index} onPress={() => onPress(item)}>

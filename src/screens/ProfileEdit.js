@@ -20,13 +20,24 @@ const styles = EStyleSheet.create({
   },
 });
 
-class ProfileEdit extends Component {
+/**
+ * Renders profile edit screen.
+ *
+ * @reactProps {object} authActions - Auth actions.
+ */
+export class ProfileEdit extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     authActions: PropTypes.shape({
       registration: PropTypes.func,
     }),
   };
 
+  /**
+   * @ignore
+   */
   constructor(props) {
     super(props);
 
@@ -37,6 +48,9 @@ class ProfileEdit extends Component {
     };
   }
 
+  /**
+   * Gets user profile, sets it to state.
+   */
   componentDidMount() {
     const { authActions } = this.props;
 
@@ -49,6 +63,11 @@ class ProfileEdit extends Component {
     });
   }
 
+  /**
+   * Saves update user profile data.
+   *
+   * @param {object} values - Updated user profile data.
+   */
   handleSave = (values) => {
     const { profile } = this.state;
     const { authActions, componentId } = this.props;
@@ -57,6 +76,11 @@ class ProfileEdit extends Component {
     }
   };
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { fetching, forms } = this.state;
 

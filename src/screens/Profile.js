@@ -97,13 +97,24 @@ const styles = EStyleSheet.create({
   },
 });
 
-class ProfileEdit extends Component {
+/**
+ * Renders profile screen.
+ *
+ * @reactProps {object} authActions - Auth actions.
+ */
+export class ProfileEdit extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     authActions: PropTypes.shape({
       registration: PropTypes.func,
     }),
   };
 
+  /**
+   * @ignore
+   */
   static options = {
     topBar: {
       title: {
@@ -112,11 +123,19 @@ class ProfileEdit extends Component {
     },
   };
 
+  /**
+   * Gets data for Pages block.
+   */
   componentDidMount() {
     const { pagesActions } = this.props;
     pagesActions.fetch(config.layoutId);
   }
 
+  /**
+   * Renders Seller block if the user is vendor.
+   *
+   * @return {JSX.Element}
+   */
   renderVendorFields() {
     return (
       <>
@@ -141,7 +160,9 @@ class ProfileEdit extends Component {
           style={styles.signInBtnContainer}>
           <View style={styles.IconNameWrapper}>
             <Icon name="pages" style={styles.menuItemIcon} />
-            <Text style={styles.signInBtnText}>{i18n.t('Vendor Products')}</Text>
+            <Text style={styles.signInBtnText}>
+              {i18n.t('Vendor Products')}
+            </Text>
           </View>
           <Icon name="chevron-right" style={styles.rightArrowIcon} />
         </TouchableOpacity>
@@ -159,6 +180,13 @@ class ProfileEdit extends Component {
     );
   }
 
+  /**
+   * Renders pages.
+   *
+   * @param {object} pages - Pages information.
+   *
+   * @return {JSX.Element}
+   */
   renderPages = (pages) => {
     return (
       <View>
@@ -191,6 +219,13 @@ class ProfileEdit extends Component {
     );
   };
 
+  /**
+   * Renders user infotmation.
+   *
+   * @param {object} cart - Cart data.
+   *
+   * @return {JSX.Element}
+   */
   renderUserInformation = (cart) => {
     if (
       cart.user_data.b_firstname ||
@@ -215,6 +250,14 @@ class ProfileEdit extends Component {
     return null;
   };
 
+  /**
+   * Renders login form if the user didn`t login.
+   *
+   * @param {object} auth - Auth information.
+   * @param {object} cart - Cart information.
+   *
+   * @return {JSX.Element}
+   */
   renderSignedIn = (auth, cart) => {
     return (
       <>
@@ -245,6 +288,13 @@ class ProfileEdit extends Component {
     );
   };
 
+  /**
+   * Renders profile if the user logged in.
+   *
+   * @param {object} authActions - Auth actions.
+   *
+   * @return {JSX.Element}
+   */
   renderSignedInMenu = (authActions) => {
     return (
       <>
@@ -287,6 +337,11 @@ class ProfileEdit extends Component {
     );
   };
 
+  /**
+   * Renders component
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { profile, pages, auth, cart, authActions } = this.props;
 

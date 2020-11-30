@@ -50,7 +50,7 @@ const styles = EStyleSheet.create({
  * @reactProps {object} navigator - Navigator.
  * @reactProps {object} layouts - Information about blocks for rendering.
  */
-class Layouts extends Component {
+export class Layouts extends Component {
   /**
    * @ignore
    */

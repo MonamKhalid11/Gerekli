@@ -13,8 +13,6 @@ import BottomActions from '../../components/BottomActions';
 import * as productsActions from '../../actions/vendorManage/productsActions';
 
 import i18n from '../../utils/i18n';
-import theme from '../../config/theme';
-import { registerDrawerDeepLinks } from '../../utils/deepLinks';
 
 const styles = EStyleSheet.create({
   container: {
@@ -48,18 +46,34 @@ const formOptions = {
   },
 };
 
-class PricingInventory extends Component {
+/**
+ * Renders pricing inventory screen.
+ *
+ * @reactProps {object} stepsData - Data from previous steps of create product flow.
+ * @reactProps {object} productsActions - Products actions.
+ * @reactProps {object} product - Product information.
+ */
+export class PricingInventory extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     stepsData: PropTypes.shape({}),
     productsActions: PropTypes.shape({}),
     product: PropTypes.shape({}),
   };
 
+  /**
+   * @ignore
+   */
   constructor(props) {
     super(props);
     this.formRef = React.createRef();
   }
 
+  /**
+   * Saves changes.
+   */
   handleSave = () => {
     const { product, productsActions } = this.props;
     const values = this.formRef.current.getValue();
@@ -71,6 +85,11 @@ class PricingInventory extends Component {
     productsActions.updateProduct(product.product_id, { ...values });
   };
 
+  /**
+   * Renders component.
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { product } = this.props;
     return (

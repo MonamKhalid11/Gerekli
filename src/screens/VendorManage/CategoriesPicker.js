@@ -43,7 +43,17 @@ const styles = EStyleSheet.create({
   },
 });
 
-class CategoriesPicker extends Component {
+/**
+ * Renders categories picker.
+ *
+ * @reactProps {number} parent - Number of parent category.
+ * @reactProps {object} categoriesActions - Categories actions.
+ * @reactProps {[object]} categories - Categories infromation.
+ */
+export class CategoriesPicker extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     parent: PropTypes.number,
     categoriesActions: PropTypes.shape({
@@ -53,10 +63,16 @@ class CategoriesPicker extends Component {
     categories: PropTypes.arrayOf(PropTypes.shape({})),
   };
 
+  /**
+   * @ignore
+   */
   static defaultProps = {
     categories: [],
   };
 
+  /**
+   * @ignore
+   */
   constructor(props) {
     super(props);
 
@@ -68,6 +84,9 @@ class CategoriesPicker extends Component {
     Navigation.events().bindComponent(this);
   }
 
+  /**
+   * Gets base categories if no parent.
+   */
   async componentDidMount() {
     const { categoriesActions, categories, parent } = this.props;
 
@@ -83,6 +102,9 @@ class CategoriesPicker extends Component {
     });
   }
 
+  /**
+   * Sets header setup.
+   */
   componentWillReceiveProps() {
     Navigation.mergeOptions(this.props.componentId, {
       topBar: {
@@ -99,12 +121,23 @@ class CategoriesPicker extends Component {
     });
   }
 
+  /**
+   * Categories picker modal navigation.
+   *
+   * @param {object} event - Information about the element on which the event occurred.
+   */
   navigationButtonPressed({ buttonId }) {
     if (buttonId === 'close') {
       Navigation.dismissModal(this.props.componentId);
     }
   }
 
+  /**
+   * Gets more categories.
+   *
+   * @param {number} parent_id - Parent category id.
+   * @param {number} page - Page number.
+   */
   handleLoadCategories = async (parent_id = 0, page = 1) => {
     this.setState({ loading: true });
     try {
@@ -120,6 +153,11 @@ class CategoriesPicker extends Component {
     }
   };
 
+  /**
+   * Moves to subcategories of the selected category or add product step 1.
+   *
+   * @param {object} item - Category information.
+   */
   handleToggle = async (item) => {
     const { categoriesActions, onCategoryPress } = this.props;
     try {
@@ -152,10 +190,22 @@ class CategoriesPicker extends Component {
 
   handleLoadMore = () => {};
 
+  /**
+   * Renders if the list of categories is empty.
+   *
+   * @return {JSX.Element}
+   */
   renderEmptyList = () => (
     <Text style={styles.emptyList}>{i18n.t('There are no categories')}</Text>
   );
 
+  /**
+   * Renders a category.
+   *
+   * @param {object} item - Category information.
+   *
+   * @return {JSX.Element}
+   */
   renderCategoryItem = ({ item }) => (
     <TouchableOpacity
       style={styles.itemWrapper}
@@ -164,6 +214,11 @@ class CategoriesPicker extends Component {
     </TouchableOpacity>
   );
 
+  /**
+   * Renders component.
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { categories, loading } = this.state;
 

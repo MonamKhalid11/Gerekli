@@ -38,19 +38,34 @@ const formOptions = {
   },
 };
 
-class ShippingProperties extends Component {
+/**
+ * Shipping setup screen.
+ * @param {object} values - Shipping setup information.
+ * @param {object} productsActions - Products actions.
+ * @param {object} product - Product information.
+ */
+export class ShippingProperties extends Component {
+  /**
+   * @ignore
+   */
   static propTypes = {
     values: PropTypes.shape({}),
     productsActions: PropTypes.shape({}),
     product: PropTypes.shape({}),
   };
 
+  /**
+   * @ignore
+   */
   constructor(props) {
     super(props);
 
     this.formRef = React.createRef();
   }
 
+  /**
+   * Saves changes.
+   */
   handleSave = () => {
     const { product, productsActions } = this.props;
     const values = this.formRef.current.getValue();
@@ -62,6 +77,11 @@ class ShippingProperties extends Component {
     productsActions.updateProduct(product.product_id, { ...values });
   };
 
+  /**
+   * Renders component.
+   *
+   * @return {JSX.Element}
+   */
   render() {
     const { product } = this.props;
 

@@ -2,17 +2,13 @@ import {
   WISH_LIST_FETCH_REQUEST,
   WISH_LIST_FETCH_SUCCESS,
   WISH_LIST_FETCH_FAIL,
-
   WISH_LIST_ADD_REQUEST,
   WISH_LIST_ADD_SUCCESS,
   WISH_LIST_ADD_FAIL,
-
   WISH_LIST_REMOVE_REQUEST,
   WISH_LIST_REMOVE_SUCCESS,
   WISH_LIST_REMOVE_FAIL,
-
   WISH_LIST_CLEAR,
-
   NOTIFICATION_SHOW,
 } from '../constants';
 
@@ -26,7 +22,7 @@ export function fetch(fetching = true) {
       type: WISH_LIST_FETCH_REQUEST,
       payload: {
         fetching,
-      }
+      },
     });
     return Api.get('/sra_wish_list')
       .then((response) => {

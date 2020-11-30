@@ -274,52 +274,52 @@ class SortProducts extends Component {
       name: i18n.t('Sorting: Newest items first'),
       params: {
         sort_by: 'timestamp',
-        sort_order: 'desc'
+        sort_order: 'desc',
       },
     },
     {
       name: i18n.t('Sorting: A to Z'),
       params: {
         sort_by: 'product',
-        sort_order: 'asc'
+        sort_order: 'asc',
       },
     },
     {
       name: i18n.t('Sorting: Z to A'),
       params: {
         sort_by: 'product',
-        sort_order: 'desc'
+        sort_order: 'desc',
       },
     },
     {
       name: i18n.t('Sorting: Lowest prices first'),
       params: {
         sort_by: 'price',
-        sort_order: 'asc'
+        sort_order: 'asc',
       },
     },
     {
       name: i18n.t('Sorting: Highest prices first'),
       params: {
         sort_by: 'price',
-        sort_order: 'desc'
+        sort_order: 'desc',
       },
     },
     {
       name: i18n.t('Sorting: Most popular first'),
       params: {
         sort_by: 'popularity',
-        sort_order: 'desc'
+        sort_order: 'desc',
       },
     },
     {
       name: i18n.t('Cancel'),
       params: {
         sort_by: '',
-        sort_order: ''
+        sort_order: '',
       },
-    }
-  ]
+    },
+  ];
 
   /**
    * Selection of sorting type.
@@ -328,17 +328,14 @@ class SortProducts extends Component {
    */
   handleChange = (itemText) => {
     const { onChange } = this.props;
-    const items = this.getItemList().map(item => item.name);
-    const foundIndex = items.findIndex(item => item === itemText);
+    const items = this.getItemList().map((item) => item.name);
+    const foundIndex = items.findIndex((item) => item === itemText);
 
     if (foundIndex === CANCEL_INDEX + 1) {
       return;
     }
 
-    onChange(
-      this.getItemList()[foundIndex].params,
-      foundIndex,
-    );
+    onChange(this.getItemList()[foundIndex].params, foundIndex);
   };
 
   /**
@@ -717,14 +714,14 @@ class SortProducts extends Component {
   render() {
     const { sortParams, filters } = this.props;
     const { selectedFilters } = this.state;
-    const activeIndex = this.getItemList()
-      .findIndex(item => (
-        item.params.sort_by === sortParams.sort_by
-        && item.params.sort_order === sortParams.sort_order
-      ));
+    const activeIndex = this.getItemList().findIndex(
+      (item) =>
+        item.params.sort_by === sortParams.sort_by &&
+        item.params.sort_order === sortParams.sort_order,
+    );
 
-    const items = this.getItemList().map(item => item.name);
-    const filteredItems = items.filter(item => item !== items[activeIndex]);
+    const items = this.getItemList().map((item) => item.name);
+    const filteredItems = items.filter((item) => item !== items[activeIndex]);
     const RBSheetHeight = Math.round(Dimensions.get('window').height) - 140;
     const activeFiltersCount = selectedFilters.length;
 
