@@ -1,5 +1,4 @@
 export default {
-  username: 'ascherbachenko@cs-cart.com',
   // API KEY
   apiKey: '62f5a9c133da276c516cc7f491f8a644',
   // API URL

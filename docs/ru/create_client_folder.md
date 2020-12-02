@@ -1,7 +1,7 @@
 ## Создание папки клиента
 
-  1. Создаём папку клиента в папке users.
-      - ./users/client_folder_name (например, com.barakat.app)
+  1. Создаём папку клиента в папке users. Называем папку по bundleId
+      - ./users/client_folder_name (например, com.simtech.multivendor)
 
   2. Наполняем папку клиента следующим содержимым:
       - android/app/src/main/res/*

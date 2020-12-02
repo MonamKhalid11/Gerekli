@@ -1,79 +1,80 @@
 export default {
-  // Цвет статус бара (только андройд).
+  // Bar status color (android only).
   $statusBarColor: '#c1c1c1',
 
-  // Фон верхней панели навигации.
+  // The background of the top navigation bar.
   $navBarBackgroundColor: '#FAFAFA',
 
-  // Цвет кнопок верхней панели навигации.
+  // The color of the top navigation bar buttons.
   $navBarButtonColor: '#989898',
 
-  // Размер текста заголовка.
+  // The size of the title text.
   $navBarTitleFontSize: 16,
 
-  // Цвет текста кнопок.
+  // Button text color.
   $navBarTextColor: '#242424',
 
-  // Основной фон
+  // Main background.
   $screenBackgroundColor: '#fff',
 
-  // Фон и цвет нижнего таб меню.
+  // Background, icons and text color of the bottom tab menu.
   $bottomTabsBackgroundColor: '#fff',
   $bottomTabsTextColor: '#888888',
   $bottomTabsSelectedTextColor: '#000',
   $bottomTabsIconColor: '#888888',
   $bottomTabsSelectedIconColor: '#000',
 
-  // Цвет значка с кол-во товаров
+  // Color of the icon with the number of products.
   $bottomTabsPrimaryBadgeColor: '#FD542A',
 
-  // Основной цвет используется для кнопок действия.
-  // Например добавить в корзину.
+  // The base color is used for action buttons.
+  // For example add to cart.
   $primaryColor: '#FF6008',
   $primaryColorText: '#fff',
 
-  // Цвет фона сообщений.
+  // Background color of messages.
   // Success, Info, Danger
   $successColor: '#7DCFB6',
   $infoColor: '#FCEADE',
   $dangerColor: '#D9534F',
 
-  // Оттенки серого используются для отображения разделитилей и бордеров.
+  // Shades of gray. Used to display dividers and borders.
   $darkColor: '#242424',
   $grayColor: '#FAFAFA',
 
-  // Радиус скругления кнопок, элементов формы.
+  // The radius of the rounding of buttons and form elements.
   $borderRadius: 8,
 
-  // Фон скидочного лейбла на продукте.
+  // Discount label background on product.
   $productDiscountColor: '#EAA944',
 
-  // Цвет бордера на списке продукта.
-  // По умолчанию его не видно.
+  // Color of the border on the product list.
+  // It is not visible by default.
   $productBorderColor: '#FFF',
 
-  // Цвет бордера для пунктов меню
+  // Border color for menu items.
   $menuItemsBorderColor: '#D6D6D6',
 
-  // Цвет фона категорий
+  // Category background color.
   $categoriesBackgroundColor: '#FAFAFA',
 
-  // Цвет заголовка на экране категорий.
+  // The color of the title on the category screen.
   $categoriesHeaderColor: '#000',
   $categoryBlockBackgroundColor: '#FFF',
   $categoryBlockTextColor: '#000',
   $categoryBorderRadius: 6,
   $categoryEmptyImage: '#989898',
 
-  // Цвет фона кнопки add to wishlist.
+  // The background color of the add to wishlist button.
   $addToWishListColor: '#989898',
 
-  // Цвет зыездочек рейтинга.
+  // Rating stars color.
   $ratingStarsColor: '#EAA944',
 
-  // Цвет текста комментарий.
+  // Comment text color.
   $discussionMessageColor: '#808080',
 
-  // Лого магазина размер 760x240
-  $logoUrl: 'https://mobile.mve.demo.cs-cart.com/images/logos/logo-transparent.png',
+  // Store logo size 760x240.
+  $logoUrl:
+    'https://mobile.mve.demo.cs-cart.com/images/logos/logo-transparent.png',
 };
