@@ -413,14 +413,14 @@ export class ProductDetail extends Component {
     });
   }
 
-  productInit(productId = false) {
+  productInit(productId = false, productAmount = false) {
     const { productsActions, pid } = this.props;
 
     productsActions.fetch(productId || pid).then((product) => {
       const minQty = parseInt(get(product.data, 'min_qty', 0), 10);
       this.setState(
         {
-          amount: minQty || 1,
+          amount: productAmount || minQty || 1,
           fetching: minQty !== 0,
         },
         () => {
@@ -502,6 +502,8 @@ export class ProductDetail extends Component {
   handleAddToCart = (showNotification = true) => {
     const productOptions = {};
     const { product, selectedOptions, amount } = this.state;
+
+    console.log('this.state: ', this.state)
     const { auth, cartActions } = this.props;
 
     if (!auth.logged) {
@@ -1043,8 +1045,9 @@ export class ProductDetail extends Component {
 
     // if 'cancel', do nothing
     if (index !== featuresArray.length) {
+      const productAmount = this.state.amount;
       const pid = currentFeatureVariants[featuresArray[index]];
-      this.productInit(pid);
+      this.productInit(pid, productAmount);
     }
   }
 
