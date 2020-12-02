@@ -1,5 +1,5 @@
 export default {
-  // Bar status color (android only).
+  // Status bar color (android only).
   $statusBarColor: '#c1c1c1',
 
   // The background of the top navigation bar.
@@ -75,6 +75,5 @@ export default {
   $discussionMessageColor: '#808080',
 
   // Store logo size 760x240.
-  $logoUrl:
-    'https://mobile.mve.demo.cs-cart.com/images/logos/logo-transparent.png',
+  $logoUrl: 'https://mobile.mve.demo.cs-cart.com/images/logos/logo-transparent.png',
 };
