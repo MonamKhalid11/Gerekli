@@ -31,5 +31,5 @@ const SwiperWrapper = ({ children }) => {
   );
 };
 
-const MemoizedMovie = React.memo(SwiperWrapper);
-export default MemoizedMovie;
+const MemoizedSwiperWrapper = React.memo(SwiperWrapper);
+export default MemoizedSwiperWrapper;
