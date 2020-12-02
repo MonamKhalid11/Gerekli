@@ -8,7 +8,6 @@ import {
   View,
   Text,
   Share,
-  Image,
   Platform,
   ScrollView,
   TouchableOpacity,
@@ -17,7 +16,6 @@ import {
 import format from 'date-fns/format';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import ActionSheet from 'react-native-actionsheet';
-import Swiper from 'react-native-swiper';
 import get from 'lodash/get';
 import {
   stripTags,
@@ -34,6 +32,7 @@ import * as wishListActions from '../actions/wishListActions';
 import * as vendorActions from '../actions/vendorActions';
 
 // Components
+import ProductImageSwiper from '../components/ProductImageSwiper';
 import DiscussionList from '../components/DiscussionList';
 import InAppPayment from '../components/InAppPayment';
 import SelectOption from '../components/SelectOption';
@@ -64,16 +63,6 @@ const styles = EStyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '$screenBackgroundColor',
-  },
-  slide: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  productImage: {
-    width: '100%',
-    height: 300,
-    resizeMode: 'contain',
   },
   descriptionBlock: {
     paddingTop: 10,
@@ -316,22 +305,6 @@ export class ProductDetail extends Component {
    */
   componentDidMount() {
     this.productInit();
-    const { productsActions, pid } = this.props;
-
-    productsActions.fetch(pid).then((product) => {
-      const minQty = parseInt(get(product.data, 'min_qty', 0), 10);
-      this.setState(
-        {
-          amount: minQty || 1,
-          fetching: minQty !== 0,
-        },
-        () => {
-          if (minQty !== 0) {
-            this.calculatePrice();
-          }
-        },
-      );
-    });
   }
 
   /**
@@ -633,30 +606,10 @@ export class ProductDetail extends Component {
    */
   renderImage() {
     const { images } = this.state;
-    const productImages = images.map((img, index) => (
-      <TouchableOpacity
-        style={styles.slide}
-        key={index}
-        onPress={() => {
-          nav.showGallery({
-            images: [...images],
-            activeIndex: index,
-          });
-        }}>
-        <Image source={{ uri: img }} style={styles.productImage} />
-      </TouchableOpacity>
-    ));
 
     return (
       <View>
-        <Swiper
-          horizontal
-          height={300}
-          style={styles.wrapper}
-          loadMinimal={6}
-          removeClippedSubviews={false}>
-          {productImages}
-        </Swiper>
+        <ProductImageSwiper>{images}</ProductImageSwiper>
         {this.renderDiscountLabel()}
       </View>
     );
@@ -1060,7 +1013,7 @@ export class ProductDetail extends Component {
     );
   }
 
-  showActionSheet = async (value) => {
+  showActionSheet = (value) => {
     const { product } = this.state;
 
     // Gets all variations and product_ids for the selected feature.
@@ -1078,9 +1031,9 @@ export class ProductDetail extends Component {
       }
     });
 
-    await this.setState({ currentFeatureVariants: featureVariants });
-
-    this.ActionSheet.show();
+    this.setState({ currentFeatureVariants: featureVariants }, () =>
+      this.ActionSheet.show(),
+    );
   };
 
   variationChangeHandler(index) {
