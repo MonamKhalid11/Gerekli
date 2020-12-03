@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -50,23 +50,16 @@ const styles = EStyleSheet.create({
  * @reactProps {function} onChange - Changes the quantity of products.
  */
 export const QtyOption = ({ initialValue, step, onChange, max, min }) => {
-  const [productsAmount, setProductsAmount] = useState(0);
-
-  useEffect(() => {
-    setProductsAmount(initialValue);
-  }, [initialValue]);
-
   /**
    * Reduces the quantity of products.
    */
   const dicrement = () => {
-    const newProductsAmount = productsAmount - step;
+    const newProductsAmount = initialValue - step;
 
     if (min !== 0 && newProductsAmount < min) {
       return;
     }
 
-    setProductsAmount(newProductsAmount);
     onChange(newProductsAmount);
   };
 
@@ -74,13 +67,12 @@ export const QtyOption = ({ initialValue, step, onChange, max, min }) => {
    * Increases the quantity of products.
    */
   const increment = () => {
-    const newProductsAmount = productsAmount + step;
+    const newProductsAmount = initialValue + step;
 
     if (max !== 1 && newProductsAmount > max) {
       return;
     }
 
-    setProductsAmount(newProductsAmount);
     onChange(newProductsAmount);
   };
 
@@ -90,7 +82,7 @@ export const QtyOption = ({ initialValue, step, onChange, max, min }) => {
         <TouchableOpacity style={styles.btn} onPress={dicrement}>
           <Text style={styles.btnText}>-</Text>
         </TouchableOpacity>
-        <Text style={styles.valueText}>{productsAmount}</Text>
+        <Text style={styles.valueText}>{initialValue}</Text>
         <TouchableOpacity style={styles.btn} onPress={increment}>
           <Text style={styles.btnText}>+</Text>
         </TouchableOpacity>

@@ -294,7 +294,8 @@ export class ProductDetail extends Component {
       fetching: true,
       selectedOptions: {},
       canWriteComments: false,
-      amount: 1,
+      amount: 0,
+      currentPid: false,
     };
 
     Navigation.events().bindComponent(this);
@@ -413,14 +414,15 @@ export class ProductDetail extends Component {
     });
   }
 
-  productInit(productId = false, productAmount = false) {
+  productInit(productId = false) {
     const { productsActions, pid } = this.props;
 
     productsActions.fetch(productId || pid).then((product) => {
       const minQty = parseInt(get(product.data, 'min_qty', 0), 10);
       this.setState(
         {
-          amount: productAmount || minQty || 1,
+          currentPid: productId || false,
+          amount: minQty || 1,
           fetching: minQty !== 0,
         },
         () => {
@@ -502,8 +504,6 @@ export class ProductDetail extends Component {
   handleAddToCart = (showNotification = true) => {
     const productOptions = {};
     const { product, selectedOptions, amount } = this.state;
-
-    console.log('this.state: ', this.state)
     const { auth, cartActions } = this.props;
 
     if (!auth.logged) {
@@ -859,7 +859,7 @@ export class ProductDetail extends Component {
         <QtyOption
           max={max}
           min={min}
-          initialValue={min}
+          initialValue={this.state.amount || min}
           step={step}
           onChange={(val) => {
             this.setState({ amount: val }, this.calculatePrice);
@@ -1039,15 +1039,14 @@ export class ProductDetail extends Component {
   };
 
   variationChangeHandler(index) {
-    const { currentFeatureVariants } = this.state;
+    const { currentFeatureVariants, currentPid } = this.state;
 
     const featuresArray = Object.keys(currentFeatureVariants);
+    const pid = currentFeatureVariants[featuresArray[index]];
 
     // if 'cancel', do nothing
-    if (index !== featuresArray.length) {
-      const productAmount = this.state.amount;
-      const pid = currentFeatureVariants[featuresArray[index]];
-      this.productInit(pid, productAmount);
+    if (index !== featuresArray.length && pid !== currentPid) {
+      this.productInit(pid);
     }
   }
 
