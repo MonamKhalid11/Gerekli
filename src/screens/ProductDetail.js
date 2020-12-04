@@ -296,6 +296,7 @@ export class ProductDetail extends Component {
       canWriteComments: false,
       amount: 0,
       currentPid: false,
+      showSwiper: true,
     };
 
     Navigation.events().bindComponent(this);
@@ -417,21 +418,27 @@ export class ProductDetail extends Component {
   productInit(productId = false) {
     const { productsActions, pid } = this.props;
 
-    productsActions.fetch(productId || pid).then((product) => {
-      const minQty = parseInt(get(product.data, 'min_qty', 0), 10);
-      this.setState(
-        {
-          currentPid: productId || false,
-          amount: minQty || 1,
-          fetching: minQty !== 0,
-        },
-        () => {
-          if (minQty !== 0) {
-            this.calculatePrice();
-          }
-        },
-      );
-    });
+    productsActions
+      .fetch(productId || pid)
+      .then((product) => {
+        const minQty = parseInt(get(product.data, 'min_qty', 0), 10);
+        this.setState(
+          {
+            currentPid: productId || false,
+            amount: minQty || 1,
+            fetching: minQty !== 0,
+            showSwiper: false,
+          },
+          () => {
+            if (minQty !== 0) {
+              this.calculatePrice();
+            }
+          },
+        );
+      })
+      .then(() => {
+        this.setState({ showSwiper: true });
+      });
   }
 
   /**
@@ -607,7 +614,11 @@ export class ProductDetail extends Component {
    * @return {JSX.Element}
    */
   renderImage() {
-    const { images } = this.state;
+    const { images, showSwiper } = this.state;
+
+    if (!showSwiper) {
+      return <View />;
+    }
 
     return (
       <View>
