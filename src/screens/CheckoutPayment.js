@@ -413,6 +413,21 @@ export class CheckoutPayment extends Component {
         break;
     }
 
+    switch (selectedItem.script) {
+      case 'yandex_checkout_for_marketplaces.php':
+        form = (
+          <PaymentYandexKassaForm
+            onInit={(ref) => {
+              this.paymentFormRef = ref;
+            }}
+          />
+        );
+        break;
+
+      default:
+        break;
+    }
+
     return (
       <View style={styles.paymentItemWrapper}>
         <FormBlock title={selectedItem.payment}>
