@@ -4,11 +4,19 @@
       - ./users/client_folder_name (например, com.simtech.multivendor)
 
   2. Наполняем папку клиента следующим содержимым:
-      - android/app/src/main/res/*
-      - ios/csnative/Images.xcassets/*
-      - ios/csnative/Info.plist
-      - src/config/index.js
-      - src/config/theme/js
+      - src/
+        - index.js
+        - theme.js
+      - android/app/src/main/res
+        - Серия папок mipmap (Точные названия можно взять в примере. Файлы с иконками, иконками для уведомлений и сплэш скринами, внутри этих папок, должны называться точно также, как в примере)
+        - values
+          - strings.xml (В тег string должно подставляться название приложения)
+          - styles.xml
+      - ios/csnative
+          - Info.plist (В тег string, под ключом CFBundleDisplayName, должно подставляться название приложения)
+          - Images.xcassets
+            - AppIcon.appiconset (Должна содержать 21 иконку, названия и размеры должны соответствовать примерам)
+            - LaunchScreen.imageset (Должна содержать 3 сплэш скрина, названия и размеры должны соответствовать примерам)
 
   3. В корне проекта запускаем команду:
       ```sh
