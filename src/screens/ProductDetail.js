@@ -8,7 +8,6 @@ import {
   View,
   Text,
   Share,
-  Image,
   Platform,
   ScrollView,
   TouchableOpacity,
@@ -16,7 +15,7 @@ import {
 } from 'react-native';
 import format from 'date-fns/format';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import Swiper from 'react-native-swiper';
+import ActionSheet from 'react-native-actionsheet';
 import get from 'lodash/get';
 import {
   stripTags,
@@ -33,6 +32,7 @@ import * as wishListActions from '../actions/wishListActions';
 import * as vendorActions from '../actions/vendorActions';
 
 // Components
+import ProductImageSwiper from '../components/ProductImageSwiper';
 import DiscussionList from '../components/DiscussionList';
 import InAppPayment from '../components/InAppPayment';
 import SelectOption from '../components/SelectOption';
@@ -63,16 +63,6 @@ const styles = EStyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '$screenBackgroundColor',
-  },
-  slide: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  productImage: {
-    width: '100%',
-    height: 300,
-    resizeMode: 'contain',
   },
   descriptionBlock: {
     paddingTop: 10,
@@ -298,12 +288,15 @@ export class ProductDetail extends Component {
     this.state = {
       images: [],
       product: {},
+      currentFeatureVariants: {},
       discussion: {},
       vendor: null,
       fetching: true,
       selectedOptions: {},
       canWriteComments: false,
-      amount: 1,
+      amount: 0,
+      currentPid: false,
+      showSwiper: true,
     };
 
     Navigation.events().bindComponent(this);
@@ -313,22 +306,7 @@ export class ProductDetail extends Component {
    *  Gets product information and sets to store.
    */
   componentDidMount() {
-    const { productsActions, pid } = this.props;
-
-    productsActions.fetch(pid).then((product) => {
-      const minQty = parseInt(get(product.data, 'min_qty', 0), 10);
-      this.setState(
-        {
-          amount: minQty || 1,
-          fetching: minQty !== 0,
-        },
-        () => {
-          if (minQty !== 0) {
-            this.calculatePrice();
-          }
-        },
-      );
-    });
+    this.productInit();
   }
 
   /**
@@ -435,6 +413,32 @@ export class ProductDetail extends Component {
     Navigation.mergeOptions(this.props.componentId, {
       topBar,
     });
+  }
+
+  productInit(productId = false) {
+    const { productsActions, pid } = this.props;
+
+    productsActions
+      .fetch(productId || pid)
+      .then((product) => {
+        const minQty = parseInt(get(product.data, 'min_qty', 0), 10);
+        this.setState(
+          {
+            currentPid: productId || false,
+            amount: minQty || 1,
+            fetching: minQty !== 0,
+            showSwiper: false,
+          },
+          () => {
+            if (minQty !== 0) {
+              this.calculatePrice();
+            }
+          },
+        );
+      })
+      .then(() => {
+        this.setState({ showSwiper: true });
+      });
   }
 
   /**
@@ -610,30 +614,15 @@ export class ProductDetail extends Component {
    * @return {JSX.Element}
    */
   renderImage() {
-    const { images } = this.state;
-    const productImages = images.map((img, index) => (
-      <TouchableOpacity
-        style={styles.slide}
-        key={index}
-        onPress={() => {
-          nav.showGallery({
-            images: [...images],
-            activeIndex: index,
-          });
-        }}>
-        <Image source={{ uri: img }} style={styles.productImage} />
-      </TouchableOpacity>
-    ));
+    const { images, showSwiper } = this.state;
+
+    if (!showSwiper) {
+      return <View />;
+    }
 
     return (
       <View>
-        <Swiper
-          horizontal
-          height={300}
-          style={styles.wrapper}
-          removeClippedSubviews={false}>
-          {productImages}
-        </Swiper>
+        <ProductImageSwiper>{images}</ProductImageSwiper>
         {this.renderDiscountLabel()}
       </View>
     );
@@ -881,7 +870,7 @@ export class ProductDetail extends Component {
         <QtyOption
           max={max}
           min={min}
-          initialValue={min}
+          initialValue={this.state.amount || min}
           step={step}
           onChange={(val) => {
             this.setState({ amount: val }, this.calculatePrice);
@@ -900,7 +889,7 @@ export class ProductDetail extends Component {
    *
    * @return {JSX.Element}
    */
-  renderFeatureItem = (feature, index) => {
+  renderFeatureItem = (feature, index, last, isVariation) => {
     const { description, feature_type, value_int, value, variant } = feature;
 
     let newValue = null;
@@ -915,7 +904,16 @@ export class ProductDetail extends Component {
         newValue = value || variant;
     }
 
-    return <SectionRow name={description} value={newValue} key={index} />;
+    return (
+      <SectionRow
+        name={description}
+        value={newValue}
+        last={last}
+        key={index}
+        onPress={this.showActionSheet}
+        isVariation={isVariation}
+      />
+    );
   };
 
   /**
@@ -928,11 +926,20 @@ export class ProductDetail extends Component {
     const features = Object.keys(product.product_features).map(
       (k) => product.product_features[k],
     );
+    const lastElement = features.length - 1;
+    const isVariation = product.variation_features_variants ? true : false;
 
     return (
       <Section title={i18n.t('Features')}>
         {features.length !== 0 ? (
-          features.map((item, index) => this.renderFeatureItem(item, index))
+          features.map((item, index) =>
+            this.renderFeatureItem(
+              item,
+              index,
+              index === lastElement && true,
+              isVariation,
+            ),
+          )
         ) : (
           <Text style={styles.noFeaturesText}>
             {` ${i18n.t('There are no features.')} `}
@@ -1019,6 +1026,41 @@ export class ProductDetail extends Component {
     );
   }
 
+  showActionSheet = (value) => {
+    const { product } = this.state;
+
+    // Gets all variations and product_ids for the selected feature.
+    // {white: "123", black: "124"}
+    const featureVariants = {};
+    Object.keys(product.variation_features_variants).forEach((feature) => {
+      const currentFeature = product.variation_features_variants[feature];
+      if (currentFeature.description === value) {
+        Object.keys(currentFeature.variants).forEach((variant) => {
+          const currentVariant = currentFeature.variants[variant];
+          if (currentVariant.product_id) {
+            featureVariants[currentVariant.variant] = currentVariant.product_id;
+          }
+        });
+      }
+    });
+
+    this.setState({ currentFeatureVariants: featureVariants }, () =>
+      this.ActionSheet.show(),
+    );
+  };
+
+  variationChangeHandler(index) {
+    const { currentFeatureVariants, currentPid } = this.state;
+
+    const featuresArray = Object.keys(currentFeatureVariants);
+    const pid = currentFeatureVariants[featuresArray[index]];
+
+    // if 'cancel', do nothing
+    if (index !== featuresArray.length && pid !== currentPid) {
+      this.productInit(pid);
+    }
+  }
+
   /**
    * Renders component
    *
@@ -1030,6 +1072,12 @@ export class ProductDetail extends Component {
     if (fetching) {
       return <Spinner visible />;
     }
+
+    const cancelButtonIndex = Object.keys(this.state.currentFeatureVariants)
+      .length;
+    const actionSheetOptions = Object.keys(
+      this.state.currentFeatureVariants,
+    ).map((el) => i18n.t(el));
 
     return (
       <View style={styles.container}>
@@ -1053,6 +1101,15 @@ export class ProductDetail extends Component {
             {this.renderAddToCart()}
           </View>
         </KeyboardAvoidingView>
+        <ActionSheet
+          ref={(ref) => {
+            this.ActionSheet = ref;
+          }}
+          options={[...actionSheetOptions, i18n.t('Cancel')]}
+          cancelButtonIndex={cancelButtonIndex}
+          destructiveButtonIndex={cancelButtonIndex}
+          onPress={(index) => this.variationChangeHandler(index)}
+        />
       </View>
     );
   }

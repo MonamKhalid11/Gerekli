@@ -86,7 +86,11 @@ export default class ProductBlock extends Component {
     return (
       <View style={styles.container}>
         {wrapper !== '' && <Text style={styles.header}>{name}</Text>}
-        <Swiper horizontal height={300} style={styles.container}>
+        <Swiper
+          horizontal
+          height={300}
+          style={styles.container}
+          loadMinimal={6}>
           {itemsList}
         </Swiper>
       </View>

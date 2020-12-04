@@ -86,7 +86,7 @@ export default class Gallery extends Component {
     return (
       <SafeAreaView style={styles.wrapper}>
         <View style={styles.container}>
-          <Swiper horizontal index={activeIndex}>
+          <Swiper horizontal index={activeIndex} loadMinimal={6}>
             {items}
           </Swiper>
           <TouchableOpacity
