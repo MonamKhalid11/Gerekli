@@ -85,10 +85,12 @@ const PAYMENT_PAYPAL_EXPRESS =
 const PAYMENT_PHONE = 'views/orders/components/payments/phone.tpl';
 const PAYMENT_YANDEX_KASSA =
   'addons/rus_payments/views/orders/components/payments/yandex_money.tpl';
+const PAYMENT_YANDEX_CHECKOUT = 'yandex_checkout_for_marketplaces.php';
 const PAYMENTS = [
   PAYMENT_CREDIT_CARD,
   PAYMENT_EMPTY,
   PAYMENT_YANDEX_KASSA,
+  PAYMENT_YANDEX_CHECKOUT,
   PAYMENT_CHECK,
   PAYMENT_PAYPAL_EXPRESS,
   PAYMENT_PHONE,
@@ -414,7 +416,7 @@ export class CheckoutPayment extends Component {
     }
 
     switch (selectedItem.script) {
-      case 'yandex_checkout_for_marketplaces.php':
+      case PAYMENT_YANDEX_CHECKOUT:
         form = (
           <PaymentYandexKassaForm
             onInit={(ref) => {
