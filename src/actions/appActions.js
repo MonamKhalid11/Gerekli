@@ -3,7 +3,9 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { STORE_KEY, RESTORE_STATE } from '../constants';
 import API from '../services/api';
 import store from '../store';
-import i18n, { deviceLanguage } from '../utils/i18n';
+import i18n from '../utils/i18n';
+
+const { settings } = store.getState();
 
 const covertLangCodes = (translations = []) => {
   const result = {};
@@ -19,8 +21,8 @@ const getLocalTranslations = () => {
   let translation;
   const AVAILABLE_LANGS = ['ar', 'ru', 'en', 'fr', 'it', 'es', 'pt'];
 
-  if (AVAILABLE_LANGS.includes(deviceLanguage)) {
-    switch (deviceLanguage) {
+  if (AVAILABLE_LANGS.includes(settings.language)) {
+    switch (settings.language) {
       case 'ru':
         translation = require('../config/locales/ru.json');
         break;
@@ -49,7 +51,7 @@ const getLocalTranslations = () => {
 
 export async function initApp() {
   I18nManager.allowRTL(true);
-  I18nManager.forceRTL(['ar', 'he'].includes(deviceLanguage));
+  I18nManager.forceRTL(['ar', 'he'].includes(settings.language));
 
   const persist = await AsyncStorage.getItem(STORE_KEY);
   if (persist) {
@@ -62,15 +64,15 @@ export async function initApp() {
   try {
     // Load remote lang variables
     const transResult = await API.get(
-      `/sra_translations/?name=mobile_app.mobile_&lang_code=${deviceLanguage}`,
+      `/sra_translations/?name=mobile_app.mobile_&lang_code=${settings.language}`,
     );
-    i18n.addResourceBundle(deviceLanguage, 'translation', {
+    i18n.addResourceBundle(settings.language, 'translation', {
       ...getLocalTranslations(),
       ...covertLangCodes(transResult.data.langvars),
     });
   } catch (error) {
     i18n.addResourceBundle(
-      deviceLanguage,
+      settings.language,
       'translation',
       getLocalTranslations(),
     );
