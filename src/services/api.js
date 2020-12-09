@@ -11,8 +11,8 @@ const AxiosInstance = axios.create({
   baseURL: config.baseUrl,
   timeout: 100000,
   params: {
-    sl: settings.language,
-    lang_code: settings.language,
+    sl: settings.selectedLanguage.lang_code,
+    lang_code: settings.selectedLanguage.lang_code,
     items_per_page: 20,
     s_layouts: config.layoutId,
   },

@@ -200,3 +200,8 @@ export const STORE_KEY = '@REDUX_STORE_AUTH_KEY';
 export const RESTORE_STATE = 'RESTORE_STATE';
 
 export const USER_TYPE_VENDOR = 'V';
+
+export const SET_CURRENCY = 'SET_CURRENCY';
+export const SET_LANGUAGE = 'SET_LANGUAGE';
+export const GET_LANGUAGES = 'GET_LANGUAGES';
+export const GET_CURRENCIES = 'GET_CURRENCIES';

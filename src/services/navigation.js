@@ -457,6 +457,13 @@ export function pushLanguageSelection(componentId, params = {}) {
     component: {
       name: 'LanguageSelection',
       passProps: params,
+      options: {
+        topBar: {
+          title: {
+            text: i18n.t('Select Language'),
+          },
+        },
+      },
     },
   });
 }
@@ -466,6 +473,13 @@ export function pushCurrencySelection(componentId, params = {}) {
     component: {
       name: 'CurrencySelection',
       passProps: params,
+      options: {
+        topBar: {
+          title: {
+            text: i18n.t('Currency'),
+          },
+        },
+      },
     },
   });
 }

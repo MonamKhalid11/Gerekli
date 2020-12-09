@@ -53,7 +53,10 @@ export default {
   $productBorderColor: '#FFF',
 
   // Цвет бордера для пунктов меню
-  $menuItemsBorderColor: '#D6D6D6',
+  $menuItemsBorderColor: '#f3f3f3',
+
+  // Цвет иконок для пунктов меню
+  $menuIconsColor: '#d3d3d3',
 
   // Цвет фона категорий
   $categoriesBackgroundColor: '#FAFAFA',

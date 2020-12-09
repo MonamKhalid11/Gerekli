@@ -8,8 +8,8 @@ i18n.use(initReactI18next).init({
   debug: false,
   nsSeparator: ':::',
   keySeparator: false,
-  lng: settings.language,
-  fallbackLng: settings.language,
+  lng: settings.selectedLanguage.lang_code,
+  fallbackLng: settings.selectedLanguage.lang_code,
 });
 
 export default i18n;

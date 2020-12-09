@@ -41,7 +41,7 @@ const { settings } = store.getState();
 
 export function fetchProfile() {
   const params = {
-    lang_code: settings.language,
+    lang_code: settings.selectedLanguage.lang_code,
   };
 
   return (dispatch) => {
@@ -69,7 +69,7 @@ export function profileFields(data = {}) {
   const params = {
     location: 'profile',
     action: 'add',
-    lang_code: settings.language,
+    lang_code: settings.selectedLanguage.lang_code,
     ...data,
   };
 
@@ -246,7 +246,7 @@ export function login(data) {
           deviceInfo({
             token: auth.deviceToken,
             platform: Platform.OS,
-            locale: settings.language,
+            locale: settings.selectedLanguage.lang_code,
             device_id: auth.uuid,
           })(dispatch);
         }, 1000);

@@ -1,8 +1,11 @@
 import React from 'react';
 import { RadioButtonItem } from './RadioButtonItem';
 
-const arr = ['1', '2', '3'];
-
-export const RadioButtonList = () => {
-  return arr.map((el) => <RadioButtonItem item={el} />);
+export const RadioButtonList = ({ list }) => {
+  if (list) {
+    return Object.keys(list).map((el) => (
+      <RadioButtonItem item={list[el].name} />
+    ));
+  }
+  return null;
 };

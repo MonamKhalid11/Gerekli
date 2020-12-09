@@ -88,12 +88,12 @@ const styles = EStyleSheet.create({
   },
   menuItemIcon: {
     fontSize: '1.2rem',
-    color: '$menuItemsBorderColor',
+    color: '$menuIconsColor',
     marginRight: 5,
   },
   rightArrowIcon: {
     fontSize: '1rem',
-    color: '$menuItemsBorderColor',
+    color: '$menuIconsColor',
   },
 });
 

@@ -72,7 +72,7 @@ async function Init() {
       authActions.deviceInfo({
         token,
         platform: Platform.OS,
-        locale: settings.language,
+        locale: settings.selectedLanguage.lang_code,
         device_id: auth.uuid,
       }),
     );
