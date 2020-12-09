@@ -452,6 +452,24 @@ export function pushVendorManageOrders(componentId, params = {}) {
   });
 }
 
+export function pushLanguageSelection(componentId, params = {}) {
+  Navigation.push(componentId, {
+    component: {
+      name: 'LanguageSelection',
+      passProps: params,
+    },
+  });
+}
+
+export function pushCurrencySelection(componentId, params = {}) {
+  Navigation.push(componentId, {
+    component: {
+      name: 'CurrencySelection',
+      passProps: params,
+    },
+  });
+}
+
 export function pushVendorManageOrderDetail(componentId, params = {}) {
   Navigation.push(componentId, {
     component: {

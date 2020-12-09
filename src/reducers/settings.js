@@ -11,7 +11,7 @@ const deviceLanguage = platformLanguage.split('_')[0];
 
 const initialState = {
   currency: '',
-  language: deviceLanguage,
+  language: 'en',
 };
 
 export default function (state = initialState, action) {

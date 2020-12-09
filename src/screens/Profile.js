@@ -181,6 +181,43 @@ export class ProfileEdit extends Component {
   }
 
   /**
+   * Renders Settings block.
+   *
+   * @return {JSX.Element}
+   */
+  renderSettings() {
+    return (
+      <>
+        <View style={styles.signInSectionContainer}>
+          <Text style={styles.signInSectionText}>
+            {i18n.t('Settings').toUpperCase()}
+          </Text>
+        </View>
+
+        <TouchableOpacity
+          onPress={() => nav.pushLanguageSelection(this.props.componentId)}
+          style={styles.signInBtnContainer}>
+          <View style={styles.IconNameWrapper}>
+            <Icon name="archive" style={styles.menuItemIcon} />
+            <Text style={styles.signInBtnText}>{i18n.t('Language')}</Text>
+          </View>
+          <Icon name="chevron-right" style={styles.rightArrowIcon} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => nav.pushCurrencySelection(this.props.componentId)}
+          style={styles.signInBtnContainer}>
+          <View style={styles.IconNameWrapper}>
+            <Icon name="pages" style={styles.menuItemIcon} />
+            <Text style={styles.signInBtnText}>{i18n.t('Currency')}</Text>
+          </View>
+          <Icon name="chevron-right" style={styles.rightArrowIcon} />
+        </TouchableOpacity>
+      </>
+    );
+  }
+
+  /**
    * Renders pages.
    *
    * @param {object} pages - Pages information.
@@ -348,6 +385,8 @@ export class ProfileEdit extends Component {
     return (
       <ScrollView style={styles.container}>
         {this.renderSignedIn(auth, cart)}
+
+        {this.renderSettings()}
 
         {auth.logged && this.renderSignedInMenu(authActions)}
 
