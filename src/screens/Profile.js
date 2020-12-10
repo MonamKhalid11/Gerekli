@@ -25,7 +25,7 @@ const styles = EStyleSheet.create({
     height: 130,
   },
   signInSectionContainer: {
-    backgroundColor: theme.$grayColor,
+    backgroundColor: '$grayColor',
     width: '100%',
     padding: 15,
     borderBottomWidth: 1,
@@ -51,7 +51,7 @@ const styles = EStyleSheet.create({
     paddingVertical: 10,
   },
   signInBtnText: {
-    color: '#424040',
+    color: '$menuTextColor',
   },
   btn: {
     borderRadius: '$borderRadius',
@@ -62,7 +62,7 @@ const styles = EStyleSheet.create({
     justifyContent: 'center',
   },
   btnText: {
-    color: '#424040',
+    color: '$menuTextColor',
     fontSize: '1rem',
   },
   signInInfo: {
@@ -74,12 +74,12 @@ const styles = EStyleSheet.create({
     paddingBottom: 30,
   },
   userNameText: {
-    color: '#424040',
+    color: '$menuTextColor',
     fontSize: '1rem',
     fontWeight: 'bold',
   },
   userMailText: {
-    color: '#424040',
+    color: '$menuTextColor',
     fontSize: '1rem',
   },
   IconNameWrapper: {

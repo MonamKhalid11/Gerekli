@@ -58,6 +58,9 @@ export default {
   // Цвет иконок для пунктов меню
   $menuIconsColor: '#d3d3d3',
 
+  // Цвет текста для пунктов меню
+  $menuTextColor: '#424040',
+
   // Цвет фона категорий
   $categoriesBackgroundColor: '#FAFAFA',
 

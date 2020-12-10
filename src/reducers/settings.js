@@ -3,6 +3,7 @@ import {
   SET_LANGUAGE,
   GET_CURRENCIES,
   GET_LANGUAGES,
+  RESTORE_STATE,
 } from '../constants';
 import { NativeModules, Platform } from 'react-native';
 
@@ -41,13 +42,27 @@ export default function (state = initialState, action) {
     case SET_LANGUAGE:
       return {
         ...state,
-        language: action.payload,
+        selectedLanguage: action.payload,
       };
 
     case GET_LANGUAGES:
+      action.payload.map((el) => {
+        if (el.lang_code === state.selectedLanguage.lang_code) {
+          el.selected = true;
+        } else {
+          el.selected = false;
+        }
+        return el;
+      });
       return {
         ...state,
         languages: action.payload,
+      };
+
+    case RESTORE_STATE:
+      return {
+        ...state,
+        ...action.payload.settings,
       };
 
     default:

@@ -36,7 +36,7 @@ import VendorManagePricingInventory from './screens/VendorManage/PricingInventor
 import VendorManageShippingProperties from './screens/VendorManage/ShippingProperties';
 import VendorManageCategoriesPicker from './screens/VendorManage/CategoriesPicker';
 import VendorManageOrderDetail from './screens/VendorManage/OrderDetail';
-import { LanguageSelection } from './screens/LanguageSelection';
+import LanguageSelection from './screens/LanguageSelection';
 import { CurrencySelection } from './screens/CurrencySelection';
 
 const screenList = [

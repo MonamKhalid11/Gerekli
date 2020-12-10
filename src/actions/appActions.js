@@ -55,11 +55,6 @@ const getLocalTranslations = () => {
 };
 
 export async function initApp() {
-  I18nManager.allowRTL(true);
-  I18nManager.forceRTL(
-    ['ar', 'he'].includes(settings.selectedLanguage.lang_code),
-  );
-
   const persist = await AsyncStorage.getItem(STORE_KEY);
   if (persist) {
     store.dispatch({
@@ -82,21 +77,41 @@ export async function initApp() {
     payload: resLanguages.data.languages,
   });
 
+  const currentLanguage = JSON.parse(persist).settings.selectedLanguage
+    .lang_code;
+
+  console.log('currentLanguage: ', currentLanguage);
+
+  I18nManager.allowRTL(true);
+  I18nManager.forceRTL(
+    ['ar', 'he'].includes(
+      currentLanguage || settings.selectedLanguage.lang_code,
+    ),
+  );
+
   try {
     // Load remote lang variables
     const transResult = await API.get(
-      `/sra_translations/?name=mobile_app.mobile_&lang_code=${settings.selectedLanguage.lang_code}`,
+      `/sra_translations/?name=mobile_app.mobile_&lang_code=${
+        currentLanguage || settings.selectedLanguage.lang_code
+      }`,
     );
-    i18n.addResourceBundle(settings.selectedLanguage.lang_code, 'translation', {
-      ...getLocalTranslations(),
-      ...covertLangCodes(transResult.data.langvars),
-    });
+    i18n.addResourceBundle(
+      currentLanguage || settings.selectedLanguage.lang_code,
+      'translation',
+      {
+        ...getLocalTranslations(),
+        ...covertLangCodes(transResult.data.langvars),
+      },
+    );
   } catch (error) {
     i18n.addResourceBundle(
-      settings.selectedLanguage.lang_code,
+      currentLanguage || settings.selectedLanguage.lang_code,
       'translation',
       getLocalTranslations(),
     );
     console.log('Error loading translations', error);
   }
+
+  // i18n.changeLanguage(currentLanguage);
 }
