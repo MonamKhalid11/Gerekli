@@ -1,6 +1,36 @@
 import React from 'react';
-import { RadioButtonList } from '../components/RadioButtonList';
+import { RadioButtonItem } from '../components/RadioButtonItem';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { omit } from 'lodash';
 
-export const CurrencySelection = () => {
-  return <RadioButtonList />;
+// Import actions.
+import * as settingsActions from '../actions/settingsActions';
+
+export const CurrencySelection = ({ settingsActions, settings }) => {
+  const changeLanguageHandler = (currency) => {
+    const omitCurrency = omit(currency, ['selected']);
+    settingsActions.setCurrency(omitCurrency);
+  };
+
+  if (settings.currencies) {
+    return Object.keys(settings.currencies).map((el, index) => (
+      <RadioButtonItem
+        key={index}
+        item={settings.currencies[el]}
+        onPress={changeLanguageHandler}
+        title={settings.currencies[el].currency_code}
+      />
+    ));
+  }
+  return null;
 };
+
+export default connect(
+  (state) => ({
+    settings: state.settings,
+  }),
+  (dispatch) => ({
+    settingsActions: bindActionCreators(settingsActions, dispatch),
+  }),
+)(CurrencySelection);

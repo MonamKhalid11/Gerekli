@@ -15,10 +15,12 @@ export const setLanguage = (language) => {
 };
 
 export const setCurrency = (currency) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({
       type: SET_CURRENCY,
       payload: currency,
     });
+    await appActions.initApp();
+    Navigation.setRoot(nav.setRoot());
   };
 };

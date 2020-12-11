@@ -24,10 +24,10 @@ const styles = EStyleSheet.create({
   },
 });
 
-export const RadioButtonItem = ({ item, onPress }) => {
+export const RadioButtonItem = ({ item, onPress, title }) => {
   return (
     <TouchableOpacity onPress={() => onPress(item)} style={styles.itemWrapper}>
-      <Text style={styles.itemText}>{item.name}</Text>
+      <Text style={styles.itemText}>{title}</Text>
       {item.selected && <Icon name="check" style={styles.checkIcon} />}
     </TouchableOpacity>
   );

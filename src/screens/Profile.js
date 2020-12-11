@@ -95,6 +95,9 @@ const styles = EStyleSheet.create({
     fontSize: '1rem',
     color: '$menuIconsColor',
   },
+  hintText: {
+    color: '$menuIconsColor',
+  },
 });
 
 /**
@@ -185,7 +188,7 @@ export class ProfileEdit extends Component {
    *
    * @return {JSX.Element}
    */
-  renderSettings() {
+  renderSettings(settings) {
     return (
       <>
         <View style={styles.signInSectionContainer}>
@@ -197,21 +200,25 @@ export class ProfileEdit extends Component {
         <TouchableOpacity
           onPress={() => nav.pushLanguageSelection(this.props.componentId)}
           style={styles.signInBtnContainer}>
+          <Text style={styles.signInBtnText}>{i18n.t('Language')}</Text>
           <View style={styles.IconNameWrapper}>
-            <Icon name="archive" style={styles.menuItemIcon} />
-            <Text style={styles.signInBtnText}>{i18n.t('Language')}</Text>
+            <Text style={styles.hintText}>
+              {settings.selectedLanguage.name}
+            </Text>
+            <Icon name="chevron-right" style={styles.rightArrowIcon} />
           </View>
-          <Icon name="chevron-right" style={styles.rightArrowIcon} />
         </TouchableOpacity>
 
         <TouchableOpacity
           onPress={() => nav.pushCurrencySelection(this.props.componentId)}
           style={styles.signInBtnContainer}>
+          <Text style={styles.signInBtnText}>{i18n.t('Currency')}</Text>
           <View style={styles.IconNameWrapper}>
-            <Icon name="pages" style={styles.menuItemIcon} />
-            <Text style={styles.signInBtnText}>{i18n.t('Currency')}</Text>
+            <Text style={styles.hintText}>
+              {settings.selectedCurrency.symbol}
+            </Text>
+            <Icon name="chevron-right" style={styles.rightArrowIcon} />
           </View>
-          <Icon name="chevron-right" style={styles.rightArrowIcon} />
         </TouchableOpacity>
       </>
     );
@@ -232,9 +239,10 @@ export class ProfileEdit extends Component {
             {i18n.t('Pages').toUpperCase()}
           </Text>
         </View>
-        {pages.items.map((page) => {
+        {pages.items.map((page, index) => {
           return (
             <TouchableOpacity
+              key={index}
               style={styles.signInBtnContainer}
               onPress={() =>
                 registerDrawerDeepLinks(
@@ -380,13 +388,13 @@ export class ProfileEdit extends Component {
    * @return {JSX.Element}
    */
   render() {
-    const { profile, pages, auth, cart, authActions } = this.props;
+    const { profile, pages, auth, cart, authActions, settings } = this.props;
 
     return (
       <ScrollView style={styles.container}>
         {this.renderSignedIn(auth, cart)}
 
-        {this.renderSettings()}
+        {this.renderSettings(settings)}
 
         {auth.logged && this.renderSignedInMenu(authActions)}
 
@@ -404,6 +412,7 @@ export default connect(
     pages: state.pages,
     cart: state.cart,
     profile: state.profile,
+    settings: state.settings,
   }),
   (dispatch) => ({
     authActions: bindActionCreators(authActions, dispatch),

@@ -37,7 +37,7 @@ import VendorManageShippingProperties from './screens/VendorManage/ShippingPrope
 import VendorManageCategoriesPicker from './screens/VendorManage/CategoriesPicker';
 import VendorManageOrderDetail from './screens/VendorManage/OrderDetail';
 import LanguageSelection from './screens/LanguageSelection';
-import { CurrencySelection } from './screens/CurrencySelection';
+import CurrencySelection from './screens/CurrencySelection';
 
 const screenList = [
   { name: 'Page', component: Page },

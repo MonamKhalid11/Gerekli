@@ -16,7 +16,10 @@ const platformLanguage =
 const deviceLanguage = platformLanguage.split('_')[0];
 
 const initialState = {
-  currency: '',
+  selectedCurrency: {
+    symbol: '$',
+    currency_code: 'USD',
+  },
   selectedLanguage: {
     lang_code: deviceLanguage,
     name: deviceLanguage,
@@ -30,10 +33,18 @@ export default function (state = initialState, action) {
     case SET_CURRENCY:
       return {
         ...state,
-        currency: action.payload,
+        selectedCurrency: action.payload,
       };
 
     case GET_CURRENCIES:
+      action.payload.map((el) => {
+        if (el.currency_code === state.selectedCurrency.currency_code) {
+          el.selected = true;
+        } else {
+          el.selected = false;
+        }
+        return el;
+      });
       return {
         ...state,
         currencies: action.payload,
