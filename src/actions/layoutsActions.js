@@ -13,7 +13,6 @@ export function fetch(location = 'index.index') {
       `/sra_bm_layouts/${config.layoutId}/sra_bm_locations/${location}/sra_bm_blocks`,
     )
       .then((response) => {
-        console.log('response: ', response);
         dispatch({
           type: FETCH_LAYOUTS_BLOCKS_SUCCESS,
           payload: {
