@@ -1,6 +1,7 @@
 import { SET_LANGUAGE, SET_CURRENCY } from '../constants';
+import { Navigation } from 'react-native-navigation';
 import * as appActions from './appActions';
-import { DevSettings } from 'react-native';
+import * as nav from '../services/navigation';
 
 export const setLanguage = (language) => {
   return async (dispatch) => {
@@ -8,8 +9,8 @@ export const setLanguage = (language) => {
       type: SET_LANGUAGE,
       payload: language,
     });
-    DevSettings.reload();
     await appActions.initApp();
+    Navigation.setRoot(nav.setRoot());
   };
 };
 

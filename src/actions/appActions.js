@@ -1,5 +1,6 @@
 import { I18nManager } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import { get } from 'lodash';
 import {
   STORE_KEY,
   RESTORE_STATE,
@@ -9,8 +10,6 @@ import {
 import API from '../services/api';
 import store from '../store';
 import i18n from '../utils/i18n';
-
-const { settings } = store.getState();
 
 const covertLangCodes = (translations = []) => {
   const result = {};
@@ -22,12 +21,12 @@ const covertLangCodes = (translations = []) => {
   return result;
 };
 
-const getLocalTranslations = () => {
+const getLocalTranslations = (lang_code) => {
   let translation;
   const AVAILABLE_LANGS = ['ar', 'ru', 'en', 'fr', 'it', 'es', 'pt'];
 
-  if (AVAILABLE_LANGS.includes(settings.selectedLanguage.lang_code)) {
-    switch (settings.selectedLanguage.lang_code) {
+  if (AVAILABLE_LANGS.includes(lang_code)) {
+    switch (lang_code) {
       case 'ru':
         translation = require('../config/locales/ru.json');
         break;
@@ -77,41 +76,32 @@ export async function initApp() {
     payload: resLanguages.data.languages,
   });
 
-  const currentLanguage = JSON.parse(persist).settings.selectedLanguage
-    .lang_code;
-
-  console.log('currentLanguage: ', currentLanguage);
+  const currentLanguage = get(
+    JSON.parse(persist),
+    'settings.selectedLanguage.lang_code',
+    'en',
+  );
 
   I18nManager.allowRTL(true);
-  I18nManager.forceRTL(
-    ['ar', 'he'].includes(
-      currentLanguage || settings.selectedLanguage.lang_code,
-    ),
-  );
+  I18nManager.forceRTL(['ar', 'he'].includes(currentLanguage));
 
   try {
     // Load remote lang variables
     const transResult = await API.get(
-      `/sra_translations/?name=mobile_app.mobile_&lang_code=${
-        currentLanguage || settings.selectedLanguage.lang_code
-      }`,
+      `/sra_translations/?name=mobile_app.mobile_&lang_code=${currentLanguage}`,
     );
-    i18n.addResourceBundle(
-      currentLanguage || settings.selectedLanguage.lang_code,
-      'translation',
-      {
-        ...getLocalTranslations(),
-        ...covertLangCodes(transResult.data.langvars),
-      },
-    );
+    i18n.addResourceBundle(currentLanguage, 'translation', {
+      ...getLocalTranslations(currentLanguage),
+      ...covertLangCodes(transResult.data.langvars),
+    });
   } catch (error) {
     i18n.addResourceBundle(
-      currentLanguage || settings.selectedLanguage.lang_code,
+      currentLanguage,
       'translation',
-      getLocalTranslations(),
+      getLocalTranslations(currentLanguage),
     );
     console.log('Error loading translations', error);
   }
 
-  // i18n.changeLanguage(currentLanguage);
+  i18n.changeLanguage(currentLanguage);
 }
