@@ -52,14 +52,8 @@ export default {
   // It is not visible by default.
   $productBorderColor: '#FFF',
 
-  // Цвет бордера для пунктов меню
-  $menuItemsBorderColor: '#f3f3f3',
-
-  // Цвет иконок для пунктов меню
-  $menuIconsColor: '#d3d3d3',
-
-  // Цвет текста для пунктов меню
-  $menuTextColor: '#424040',
+  // Border color for menu items.
+  $menuItemsBorderColor: '#D6D6D6',
 
   // Category background color.
   $categoriesBackgroundColor: '#FAFAFA',

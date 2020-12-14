@@ -96,6 +96,7 @@ const styles = EStyleSheet.create({
     color: '$menuIconsColor',
   },
   hintText: {
+    fontSize: '0.8rem',
     color: '$menuIconsColor',
   },
 });
@@ -203,7 +204,7 @@ export class ProfileEdit extends Component {
           <Text style={styles.signInBtnText}>{i18n.t('Language')}</Text>
           <View style={styles.IconNameWrapper}>
             <Text style={styles.hintText}>
-              {settings.selectedLanguage.name}
+              {settings.selectedLanguage.lang_code.toUpperCase()}
             </Text>
             <Icon name="chevron-right" style={styles.rightArrowIcon} />
           </View>
@@ -215,7 +216,7 @@ export class ProfileEdit extends Component {
           <Text style={styles.signInBtnText}>{i18n.t('Currency')}</Text>
           <View style={styles.IconNameWrapper}>
             <Text style={styles.hintText}>
-              {settings.selectedCurrency.symbol}
+              {settings.selectedCurrency.symbol.toUpperCase()}
             </Text>
             <Icon name="chevron-right" style={styles.rightArrowIcon} />
           </View>

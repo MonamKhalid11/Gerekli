@@ -60,3 +60,7 @@ buck-out/
 
 # Docs
 docs/esdoc/
+
+#Users
+users/*
+!users/com.simtech.multivendor

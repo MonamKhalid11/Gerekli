@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  I18nManager, Image, Text, TouchableOpacity, View
-} from 'react-native';
+import { I18nManager, Image, Text, TouchableOpacity, View } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swiper from 'react-native-swiper';
 import { get } from 'lodash';
@@ -75,13 +73,14 @@ export default class BannerBlocks extends Component {
     const imageUri = get(item, 'main_pair.icon.image_path');
     const { onPress } = this.props;
     return (
-      <TouchableOpacity
-        key={index}
-        onPress={() => onPress(item)}
-      >
-        {imageUri
-          ? <Image source={{ uri: imageUri }} style={styles.img} />
-          : <View style={styles.textBannerWrapper}><Text style={styles.textBanner}>{stripTags(item.description)}</Text></View>}
+      <TouchableOpacity key={index} onPress={() => onPress(item)}>
+        {imageUri ? (
+          <Image source={{ uri: imageUri }} style={styles.img} />
+        ) : (
+          <View style={styles.textBannerWrapper}>
+            <Text style={styles.textBanner}>{stripTags(item.description)}</Text>
+          </View>
+        )}
       </TouchableOpacity>
     );
   };
@@ -97,7 +96,11 @@ export default class BannerBlocks extends Component {
     return (
       <View style={styles.container}>
         {wrapper !== '' && <Text style={styles.header}>{name}</Text>}
-        <Swiper horizontal height={200} style={styles.container}>
+        <Swiper
+          horizontal
+          height={200}
+          style={styles.container}
+          loadMinimal={6}>
           {itemsList}
         </Swiper>
       </View>

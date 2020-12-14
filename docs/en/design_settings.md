@@ -5,7 +5,6 @@ PS / All user settings are stored in the config folder, except images.
 
 API settings of the site, etc. are stored in the file /config/index.js
 
-* `username` - Admin username with the turned on option "Yes, allow this user to use the API".
 * `apiKey` - API access key (generated when the option" Yes, allow the user to use the API" on the editor's page of the user is enabled).
 * `baseUrl` - Base url to api. For example, `http://82.202.226.53/api/4.0/`
 * `siteUrl` - URL to the site. For example, `http://82.202.226.53/` PS / May differ as the API and web version of the store may be on different servers.
