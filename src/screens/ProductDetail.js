@@ -1061,6 +1061,16 @@ export class ProductDetail extends Component {
     }
   }
 
+  renderSellers() {
+    return (
+      <Section
+        title={i18n.t('Sellers')}
+        wrapperStyle={styles.noPadding}>
+          
+        </Section>
+    );
+  }
+
   /**
    * Renders component
    *
@@ -1093,6 +1103,7 @@ export class ProductDetail extends Component {
               {this.renderDesc()}
             </View>
             {this.renderOptions()}
+            {this.renderSellers()}
             {this.renderDiscussion()}
             {this.renderFeatures()}
             {this.renderVendorInfo()}
