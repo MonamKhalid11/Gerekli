@@ -21,12 +21,12 @@ const covertLangCodes = (translations = []) => {
   return result;
 };
 
-const getLocalTranslations = (lang_code) => {
+const getLocalTranslations = (langCode) => {
   let translation;
   const AVAILABLE_LANGS = ['ar', 'ru', 'en', 'fr', 'it', 'es', 'pt'];
 
-  if (AVAILABLE_LANGS.includes(lang_code)) {
-    switch (lang_code) {
+  if (AVAILABLE_LANGS.includes(langCode)) {
+    switch (langCode) {
       case 'ru':
         translation = require('../config/locales/ru.json');
         break;
@@ -78,7 +78,7 @@ export async function initApp() {
 
   const currentLanguage = get(
     JSON.parse(persist),
-    'settings.selectedLanguage.lang_code',
+    'settings.selectedLanguage.langCode',
     'en',
   );
 

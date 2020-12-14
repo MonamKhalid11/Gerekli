@@ -18,10 +18,10 @@ const deviceLanguage = platformLanguage.split('_')[0];
 const initialState = {
   selectedCurrency: {
     symbol: '$',
-    currency_code: 'USD',
+    currencyCode: 'USD',
   },
   selectedLanguage: {
-    lang_code: deviceLanguage,
+    langCode: deviceLanguage,
     name: deviceLanguage,
   },
   languages: null,
@@ -31,18 +31,20 @@ const initialState = {
 export default function (state = initialState, action) {
   switch (action.type) {
     case SET_CURRENCY:
+      const newSelectedCurrency = {
+        currencyCode: action.payload.currencyCode,
+        symbol: action.payload.symbol,
+      };
       return {
         ...state,
-        selectedCurrency: action.payload,
+        selectedCurrency: newSelectedCurrency,
       };
 
     case GET_CURRENCIES:
       action.payload.map((el) => {
-        if (el.currency_code === state.selectedCurrency.currency_code) {
-          el.selected = true;
-        } else {
-          el.selected = false;
-        }
+        el.currencyCode = el.currency_code;
+        delete el.currency_code;
+        el.selected = el.currencyCode === state.selectedCurrency.currencyCode;
         return el;
       });
       return {
@@ -51,18 +53,20 @@ export default function (state = initialState, action) {
       };
 
     case SET_LANGUAGE:
+      const newSelectedLanguage = {
+        langCode: action.payload.langCode,
+        name: action.payload.name,
+      };
       return {
         ...state,
-        selectedLanguage: action.payload,
+        selectedLanguage: newSelectedLanguage,
       };
 
     case GET_LANGUAGES:
       action.payload.map((el) => {
-        if (el.lang_code === state.selectedLanguage.lang_code) {
-          el.selected = true;
-        } else {
-          el.selected = false;
-        }
+        el.langCode = el.lang_code;
+        delete el.lang_code;
+        el.selected = el.langCode === state.selectedLanguage.langCode;
         return el;
       });
       return {

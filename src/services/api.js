@@ -18,11 +18,11 @@ AxiosInstance.interceptors.request.use((conf) => {
   newConf.headers.common['Cache-Control'] = 'no-cache';
 
   newConf.params = conf.params || {};
-  newConf.params.sl = state.settings.selectedLanguage.lang_code;
+  newConf.params.sl = state.settings.selectedLanguage.langCode;
   newConf.params.items_per_page = 20;
   newConf.params.s_layout = config.layoutId;
-  newConf.params.lang_code = state.settings.selectedLanguage.lang_code;
-  newConf.params.currency = state.settings.selectedCurrency.currency_code;
+  newConf.params.lang_code = state.settings.selectedLanguage.langCode;
+  newConf.params.currency = state.settings.selectedCurrency.currencyCode;
 
   if (state.auth.token) {
     newConf.headers.common.Authorization = `Basic ${base64.encode(

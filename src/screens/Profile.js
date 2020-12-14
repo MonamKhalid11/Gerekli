@@ -204,7 +204,7 @@ export class ProfileEdit extends Component {
           <Text style={styles.signInBtnText}>{i18n.t('Language')}</Text>
           <View style={styles.IconNameWrapper}>
             <Text style={styles.hintText}>
-              {settings.selectedLanguage.lang_code.toUpperCase()}
+              {settings.selectedLanguage.langCode.toUpperCase()}
             </Text>
             <Icon name="chevron-right" style={styles.rightArrowIcon} />
           </View>
