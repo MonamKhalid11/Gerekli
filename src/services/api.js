@@ -17,10 +17,10 @@ AxiosInstance.interceptors.request.use((conf) => {
   newConf.headers.common['Storefront-Api-Access-Key'] = config.apiKey;
   newConf.headers.common['Cache-Control'] = 'no-cache';
 
-  newConf.params = config.params || {};
+  newConf.params = conf.params || {};
   newConf.params.sl = state.settings.selectedLanguage.lang_code;
   newConf.params.items_per_page = 20;
-  newConf.params.s_layouts = config.layoutId;
+  newConf.params.s_layout = config.layoutId;
   newConf.params.lang_code = state.settings.selectedLanguage.lang_code;
   newConf.params.currency = state.settings.selectedCurrency.currency_code;
 
