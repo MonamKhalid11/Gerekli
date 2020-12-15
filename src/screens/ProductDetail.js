@@ -40,9 +40,11 @@ import InputOption from '../components/InputOption';
 import { QtyOption } from '../components/QtyOption';
 import SwitchOption from '../components/SwitchOption';
 import SectionRow from '../components/SectionRow';
+import { Seller } from '../components/Seller';
 import Spinner from '../components/Spinner';
 import Section from '../components/Section';
 import Rating from '../components/Rating';
+import { AddToCartButton } from '../components/AddToCartButton';
 
 import i18n from '../utils/i18n';
 import config from '../config';
@@ -134,19 +136,6 @@ const styles = EStyleSheet.create({
     paddingTop: 8,
     backgroundColor: '#fff',
     flexDirection: 'row',
-  },
-  addToCartBtn: {
-    backgroundColor: '$primaryColor',
-    padding: 10,
-    flex: 3,
-    borderRadius: 3,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  addToCartBtnText: {
-    textAlign: 'center',
-    color: '$primaryColorText',
-    fontSize: 16,
   },
   noPadding: {
     padding: 0,
@@ -1014,14 +1003,7 @@ export class ProductDetail extends Component {
             <InAppPayment onPress={this.handleApplePay} />
           </View>
         )}
-
-        <TouchableOpacity
-          style={styles.addToCartBtn}
-          onPress={() => this.handleAddToCart()}>
-          <Text style={styles.addToCartBtnText}>
-            {i18n.t('Add to cart').toUpperCase()}
-          </Text>
-        </TouchableOpacity>
+        <AddToCartButton onPress={() => this.handleAddToCart()} />
       </View>
     );
   }
@@ -1063,11 +1045,9 @@ export class ProductDetail extends Component {
 
   renderSellers() {
     return (
-      <Section
-        title={i18n.t('Sellers')}
-        wrapperStyle={styles.noPadding}>
-          
-        </Section>
+      <Section title={i18n.t('Sellers')} wrapperStyle={styles.noPadding}>
+        <Seller />
+      </Section>
     );
   }
 
