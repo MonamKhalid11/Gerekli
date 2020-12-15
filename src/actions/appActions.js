@@ -116,7 +116,7 @@ export async function initApp() {
   });
 
   I18nManager.allowRTL(true);
-  I18nManager.forceRTL(['ar', 'he'].includes(currentLanguage.langCode));
+  I18nManager.forceRTL(['ar', 'he', 'fa'].includes(currentLanguage.langCode));
 
   try {
     // Load remote lang variables
