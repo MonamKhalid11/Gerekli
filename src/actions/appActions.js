@@ -115,8 +115,6 @@ export async function initApp() {
     payload: resLanguages.data.languages,
   });
 
-  console.log('currentLanguafe: ', currentLanguage);
-
   I18nManager.allowRTL(true);
   I18nManager.forceRTL(['ar', 'he'].includes(currentLanguage.langCode));
 
