@@ -5,24 +5,15 @@ import {
   GET_LANGUAGES,
   RESTORE_STATE,
 } from '../constants';
-import { NativeModules, Platform } from 'react-native';
-
-const platformLanguage =
-  Platform.OS === 'ios'
-    ? NativeModules.SettingsManager.settings.AppleLocale ||
-      NativeModules.SettingsManager.settings.AppleLanguages[0]
-    : NativeModules.I18nManager.localeIdentifier;
-
-const deviceLanguage = platformLanguage.split('_')[0];
 
 const initialState = {
   selectedCurrency: {
-    symbol: '$',
-    currencyCode: 'USD',
+    symbol: '',
+    currencyCode: '',
   },
   selectedLanguage: {
-    langCode: deviceLanguage,
-    name: deviceLanguage,
+    langCode: '',
+    name: '',
   },
   languages: null,
   currencies: null,
@@ -41,15 +32,15 @@ export default function (state = initialState, action) {
       };
 
     case GET_CURRENCIES:
-      action.payload.map((el) => {
-        el.currencyCode = el.currency_code;
-        delete el.currency_code;
-        el.selected = el.currencyCode === state.selectedCurrency.currencyCode;
-        return el;
-      });
       return {
         ...state,
-        currencies: action.payload,
+        currencies: action.payload.map((el) => {
+          return {
+            selected: el.currency_code === state.selectedCurrency.currencyCode,
+            currencyCode: el.currency_code,
+            symbol: el.symbol,
+          };
+        }),
       };
 
     case SET_LANGUAGE:
@@ -63,15 +54,15 @@ export default function (state = initialState, action) {
       };
 
     case GET_LANGUAGES:
-      action.payload.map((el) => {
-        el.langCode = el.lang_code;
-        delete el.lang_code;
-        el.selected = el.langCode === state.selectedLanguage.langCode;
-        return el;
-      });
       return {
         ...state,
-        languages: action.payload,
+        languages: action.payload.map((el) => {
+          return {
+            selected: el.lang_code === state.selectedLanguage.langCode,
+            langCode: el.lang_code,
+            name: el.name,
+          };
+        }),
       };
 
     case RESTORE_STATE:

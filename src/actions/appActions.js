@@ -6,6 +6,8 @@ import {
   RESTORE_STATE,
   GET_LANGUAGES,
   GET_CURRENCIES,
+  SET_CURRENCY,
+  SET_LANGUAGE,
 } from '../constants';
 import API from '../services/api';
 import store from '../store';
@@ -62,10 +64,47 @@ export async function initApp() {
     });
   }
 
-  // Gets lists of languages and currencies and sets them to store.
+  // Gets lists of languages and currencies
   const resLanguages = await API.get('/sra_languages');
   const resCurrencies = await API.get('/sra_currencies');
 
+  // Set default currency
+  let currentCurrency = get(JSON.parse(persist), 'settings.selectedCurrency');
+
+  if (!currentCurrency?.currencyCode) {
+    resCurrencies.data.currencies.forEach((el) => {
+      if (el.is_primary) {
+        currentCurrency = {
+          currencyCode: el.currency_code,
+          symbol: el.symbol,
+        };
+      }
+    });
+    store.dispatch({
+      type: SET_CURRENCY,
+      payload: currentCurrency,
+    });
+  }
+
+  // Set default language
+  let currentLanguage = get(JSON.parse(persist), 'settings.selectedLanguage');
+
+  if (!currentLanguage?.langCode) {
+    resLanguages.data.languages.forEach((el) => {
+      if (el.is_default) {
+        currentLanguage = {
+          langCode: el.lang_code,
+          name: el.name,
+        };
+      }
+    });
+    store.dispatch({
+      type: SET_LANGUAGE,
+      payload: currentLanguage,
+    });
+  }
+
+  // Set list of languages and currencies to store
   store.dispatch({
     type: GET_CURRENCIES,
     payload: resCurrencies.data.currencies,
@@ -76,32 +115,28 @@ export async function initApp() {
     payload: resLanguages.data.languages,
   });
 
-  const currentLanguage = get(
-    JSON.parse(persist),
-    'settings.selectedLanguage.langCode',
-    'en',
-  );
+  console.log('currentLanguafe: ', currentLanguage);
 
   I18nManager.allowRTL(true);
-  I18nManager.forceRTL(['ar', 'he'].includes(currentLanguage));
+  I18nManager.forceRTL(['ar', 'he'].includes(currentLanguage.langCode));
 
   try {
     // Load remote lang variables
     const transResult = await API.get(
-      `/sra_translations/?name=mobile_app.mobile_&lang_code=${currentLanguage}`,
+      `/sra_translations/?name=mobile_app.mobile_&lang_code=${currentLanguage.langCode}`,
     );
-    i18n.addResourceBundle(currentLanguage, 'translation', {
-      ...getLocalTranslations(currentLanguage),
+    i18n.addResourceBundle(currentLanguage.langCode, 'translation', {
+      ...getLocalTranslations(currentLanguage.langCode),
       ...covertLangCodes(transResult.data.langvars),
     });
   } catch (error) {
     i18n.addResourceBundle(
-      currentLanguage,
+      currentLanguage.langCode,
       'translation',
-      getLocalTranslations(currentLanguage),
+      getLocalTranslations(currentLanguage.langCode),
     );
     console.log('Error loading translations', error);
   }
 
-  i18n.changeLanguage(currentLanguage);
+  i18n.changeLanguage(currentLanguage.langCode);
 }

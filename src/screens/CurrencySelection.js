@@ -12,7 +12,6 @@ export const CurrencySelection = ({ settingsActions, settings }) => {
     const omitCurrency = omit(currency, ['selected']);
     settingsActions.setCurrency(omitCurrency);
   };
-  console.log('currencies: ', settings.currencies);
   if (settings.currencies) {
     return Object.keys(settings.currencies).map((el, index) => (
       <RadioButtonItem
