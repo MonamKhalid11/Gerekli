@@ -81,6 +81,5 @@ export default {
   $discussionMessageColor: '#808080',
 
   // Store logo size 760x240.
-  $logoUrl:
-    'https://mobile.mve.demo.cs-cart.com/images/logos/logo-transparent.png',
+  $logoUrl: 'https://mobile.mve.demo.cs-cart.com/images/logos/logo-transparent.png',
 };

@@ -105,10 +105,6 @@ export async function initApp() {
     resLanguages.data.languages.forEach((el) => {
       if (el.lang_code === deviceLanguage) {
         isDeviceLanguage = true;
-        currentLanguage = {
-          langCode: deviceLanguage,
-          name: deviceLanguage,
-        };
       }
     });
 
