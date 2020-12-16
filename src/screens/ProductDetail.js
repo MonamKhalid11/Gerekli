@@ -286,6 +286,7 @@ export class ProductDetail extends Component {
       amount: 0,
       currentPid: false,
       showSwiper: true,
+      commonProducts: null,
     };
 
     Navigation.events().bindComponent(this);
@@ -404,30 +405,34 @@ export class ProductDetail extends Component {
     });
   }
 
-  productInit(productId = false) {
+  async productInit(productId = false) {
     const { productsActions, pid } = this.props;
 
-    productsActions
-      .fetch(productId || pid)
-      .then((product) => {
-        const minQty = parseInt(get(product.data, 'min_qty', 0), 10);
-        this.setState(
-          {
-            currentPid: productId || false,
-            amount: minQty || 1,
-            fetching: minQty !== 0,
-            showSwiper: false,
-          },
-          () => {
-            if (minQty !== 0) {
-              this.calculatePrice();
-            }
-          },
-        );
-      })
-      .then(() => {
-        this.setState({ showSwiper: true });
-      });
+    const product = await productsActions.fetch(productId || pid);
+
+    if (product.data.master_product_offers_count !== '0') {
+      const commonProducts = await productsActions.fetchCommonProducts(
+        productId || pid,
+      );
+
+      this.setState({ commonProducts: commonProducts.data });
+    }
+
+    const minQty = parseInt(get(product.data, 'min_qty', 0), 10);
+    this.setState(
+      {
+        currentPid: productId || false,
+        amount: minQty || 1,
+        fetching: minQty !== 0,
+        showSwiper: false,
+      },
+      () => {
+        if (minQty !== 0) {
+          this.calculatePrice();
+        }
+      },
+    );
+    this.setState({ showSwiper: true });
   }
 
   /**
@@ -497,7 +502,7 @@ export class ProductDetail extends Component {
    *
    * @param {boolean} showNotification - Showing notifications or not.
    */
-  handleAddToCart = (showNotification = true) => {
+  handleAddToCart = (showNotification = true, commonProduct) => {
     const productOptions = {};
     const { product, selectedOptions, amount } = this.state;
     const { auth, cartActions } = this.props;
@@ -505,6 +510,8 @@ export class ProductDetail extends Component {
     if (!auth.logged) {
       return nav.showLogin();
     }
+
+    const currentProduct = commonProduct || product;
 
     // Convert product options to the option_id: variant_id array.
     Object.keys(selectedOptions).forEach((k) => {
@@ -515,8 +522,8 @@ export class ProductDetail extends Component {
     });
 
     const products = {
-      [product.product_id]: {
-        product_id: product.product_id,
+      [currentProduct.product_id]: {
+        product_id: currentProduct.product_id,
         amount,
         product_options: productOptions,
       },
@@ -1044,9 +1051,22 @@ export class ProductDetail extends Component {
   }
 
   renderSellers() {
+    const { commonProducts } = this.state;
+
     return (
       <Section title={i18n.t('Sellers')} wrapperStyle={styles.noPadding}>
-        <Seller />
+        {commonProducts.products.map((el, index) => {
+          return (
+            <Seller
+              title={el.company_name}
+              stock={el.amount !== '0' ? true : false}
+              price={el.base_price_formatted.price}
+              lastVendor={commonProducts.products.length - 1 === index}
+              key={index}
+              onPress={() => this.handleAddToCart(true, el)}
+            />
+          );
+        })}
       </Section>
     );
   }
@@ -1057,7 +1077,7 @@ export class ProductDetail extends Component {
    * @return {JSX.Element}
    */
   render() {
-    const { fetching } = this.state;
+    const { fetching, commonProducts } = this.state;
 
     if (fetching) {
       return <Spinner visible />;
@@ -1072,7 +1092,9 @@ export class ProductDetail extends Component {
     return (
       <View style={styles.container}>
         <KeyboardAvoidingView
-          contentContainerStyle={styles.keyboardAvoidingContainer}
+          contentContainerStyle={
+            !commonProducts && styles.keyboardAvoidingContainer
+          }
           behavior="position">
           <ScrollView>
             {this.renderImage()}
@@ -1083,14 +1105,16 @@ export class ProductDetail extends Component {
               {this.renderDesc()}
             </View>
             {this.renderOptions()}
-            {this.renderSellers()}
+            {commonProducts && this.renderSellers()}
             {this.renderDiscussion()}
             {this.renderFeatures()}
             {this.renderVendorInfo()}
           </ScrollView>
-          <View style={styles.addToCartContainerWrapper}>
-            {this.renderAddToCart()}
-          </View>
+          {!commonProducts && (
+            <View style={styles.addToCartContainerWrapper}>
+              {this.renderAddToCart()}
+            </View>
+          )}
         </KeyboardAvoidingView>
         <ActionSheet
           ref={(ref) => {
