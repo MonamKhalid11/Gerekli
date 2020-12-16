@@ -14,12 +14,12 @@ export const LanguageSelection = ({ settingsActions, settings }) => {
   };
 
   if (settings.currencies) {
-    return Object.keys(settings.languages).map((el, index) => (
+    return settings.languages.map((el, index) => (
       <RadioButtonItem
         key={index}
-        item={settings.languages[el]}
-        onPress={changeLanguageHandler}
-        title={settings.languages[el].name}
+        item={el}
+        onPress={!el.selected && changeLanguageHandler}
+        title={el.name}
       />
     ));
   }

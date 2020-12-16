@@ -13,12 +13,12 @@ export const CurrencySelection = ({ settingsActions, settings }) => {
     settingsActions.setCurrency(omitCurrency);
   };
   if (settings.currencies) {
-    return Object.keys(settings.currencies).map((el, index) => (
+    return settings.currencies.map((el, index) => (
       <RadioButtonItem
         key={index}
-        item={settings.currencies[el]}
-        onPress={changeLanguageHandler}
-        title={settings.currencies[el].currencyCode}
+        item={el}
+        onPress={!el.selected && changeLanguageHandler}
+        title={el.currencyCode}
       />
     ));
   }
