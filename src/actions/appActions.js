@@ -12,6 +12,7 @@ import {
 import API from '../services/api';
 import store from '../store';
 import i18n from '../utils/i18n';
+import { NativeModules, Platform } from 'react-native';
 
 const covertLangCodes = (translations = []) => {
   const result = {};
@@ -90,14 +91,43 @@ export async function initApp() {
   let currentLanguage = get(JSON.parse(persist), 'settings.selectedLanguage');
 
   if (!currentLanguage?.langCode) {
+    const platformLanguage =
+      Platform.OS === 'ios'
+        ? NativeModules.SettingsManager.settings.AppleLocale ||
+          NativeModules.SettingsManager.settings.AppleLanguages[0]
+        : NativeModules.I18nManager.localeIdentifier;
+
+    const deviceLanguage = platformLanguage.split('_')[0];
+
+    // If the device language is among the languages of the store
+    // use device language.
+    let isDeviceLanguage = false;
     resLanguages.data.languages.forEach((el) => {
-      if (el.is_default) {
+      if (el.lang_code === deviceLanguage) {
+        isDeviceLanguage = true;
         currentLanguage = {
-          langCode: el.lang_code,
-          name: el.name,
+          langCode: deviceLanguage,
+          name: deviceLanguage,
         };
       }
     });
+
+    if (isDeviceLanguage) {
+      currentLanguage = {
+        langCode: deviceLanguage,
+        name: deviceLanguage,
+      };
+    } else {
+      resLanguages.data.languages.forEach((el) => {
+        if (el.is_default) {
+          currentLanguage = {
+            langCode: el.lang_code,
+            name: el.name,
+          };
+        }
+      });
+    }
+
     store.dispatch({
       type: SET_LANGUAGE,
       payload: currentLanguage,

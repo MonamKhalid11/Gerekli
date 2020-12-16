@@ -53,7 +53,13 @@ export default {
   $productBorderColor: '#FFF',
 
   // Border color for menu items.
-  $menuItemsBorderColor: '#D6D6D6',
+  $menuItemsBorderColor: '#f3f3f3',
+
+  // Icon color for menu items.
+  $menuIconsColor: '#d3d3d3',
+
+  // Text color for menu items.
+  $menuTextColor: '#424040',
 
   // Category background color.
   $categoriesBackgroundColor: '#FAFAFA',
@@ -75,5 +81,6 @@ export default {
   $discussionMessageColor: '#808080',
 
   // Store logo size 760x240.
-  $logoUrl: 'https://mobile.mve.demo.cs-cart.com/images/logos/logo-transparent.png',
+  $logoUrl:
+    'https://mobile.mve.demo.cs-cart.com/images/logos/logo-transparent.png',
 };
