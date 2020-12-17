@@ -3,6 +3,7 @@ import { View, Text } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Rating from './Rating';
 import { AddToCartButton } from './AddToCartButton';
+import i18n from '../utils/i18n';
 
 const styles = (isStock, lastBlock, lastVendor) =>
   EStyleSheet.create({
@@ -36,22 +37,25 @@ const styles = (isStock, lastBlock, lastVendor) =>
     },
   });
 
-export const Seller = ({ title, stock, price, lastVendor, onPress }) => {
+export const Seller = ({ seller, lastVendor, onPress }) => {
+  const isStock = parseInt(seller.amount, 10);
   return (
     <View style={styles(null, null, lastVendor).container}>
       <View style={{ ...styles().containerBlock }}>
         <View>
-          <Text style={styles().title}>{title}</Text>
+          <Text style={styles().title}>{seller.company_name}</Text>
         </View>
         <View>
           <Rating value={4} />
-          <Text style={styles(stock).stock}>
-            {stock ? 'In stock' : 'Out of stock'}
+          <Text style={styles(isStock).stock}>
+            {isStock ? i18n.t('In stock') : i18n.t('Out of stock')}
           </Text>
         </View>
       </View>
       <View style={styles(null, 'lastBlock').containerBlock}>
-        <Text style={styles().priceText}>{price}</Text>
+        <Text style={styles().priceText}>
+          {seller.base_price_formatted.price}
+        </Text>
         <AddToCartButton
           buttonStyle={styles().addTocCartBtn}
           onPress={onPress}

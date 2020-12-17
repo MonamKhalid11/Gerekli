@@ -286,7 +286,7 @@ export class ProductDetail extends Component {
       amount: 0,
       currentPid: false,
       showSwiper: true,
-      commonProducts: null,
+      productOffers: null,
     };
 
     Navigation.events().bindComponent(this);
@@ -410,12 +410,12 @@ export class ProductDetail extends Component {
 
     const product = await productsActions.fetch(productId || pid);
 
-    if (product.data.master_product_offers_count !== '0') {
-      const commonProducts = await productsActions.fetchCommonProducts(
+    if (parseInt(product.data.master_product_offers_count, 10)) {
+      const productOffers = await productsActions.fetchProductOffers(
         productId || pid,
       );
 
-      this.setState({ commonProducts: commonProducts.data });
+      this.setState({ productOffers: productOffers.data });
     }
 
     const minQty = parseInt(get(product.data, 'min_qty', 0), 10);
@@ -501,8 +501,9 @@ export class ProductDetail extends Component {
    * Adds the product to cart.
    *
    * @param {boolean} showNotification - Showing notifications or not.
+   * @param {object} productOffer - Product offer of the selected seller.
    */
-  handleAddToCart = (showNotification = true, commonProduct) => {
+  handleAddToCart = (showNotification = true, productOffer) => {
     const productOptions = {};
     const { product, selectedOptions, amount } = this.state;
     const { auth, cartActions } = this.props;
@@ -511,7 +512,7 @@ export class ProductDetail extends Component {
       return nav.showLogin();
     }
 
-    const currentProduct = commonProduct || product;
+    const currentProduct = productOffer || product;
 
     // Convert product options to the option_id: variant_id array.
     Object.keys(selectedOptions).forEach((k) => {
@@ -1051,24 +1052,26 @@ export class ProductDetail extends Component {
   }
 
   renderSellers() {
-    const { commonProducts } = this.state;
+    const { productOffers } = this.state;
 
-    return (
-      <Section title={i18n.t('Sellers')} wrapperStyle={styles.noPadding}>
-        {commonProducts.products.map((el, index) => {
-          return (
-            <Seller
-              title={el.company_name}
-              stock={el.amount !== '0' ? true : false}
-              price={el.base_price_formatted.price}
-              lastVendor={commonProducts.products.length - 1 === index}
-              key={index}
-              onPress={() => this.handleAddToCart(true, el)}
-            />
-          );
-        })}
-      </Section>
-    );
+    if (productOffers) {
+      return (
+        <Section title={i18n.t('Sellers')} wrapperStyle={styles.noPadding}>
+          {productOffers.products.map((el, index) => {
+            return (
+              <Seller
+                seller={el}
+                lastVendor={productOffers.products.length - 1 === index}
+                key={index}
+                onPress={() => this.handleAddToCart(true, el)}
+              />
+            );
+          })}
+        </Section>
+      );
+    } else {
+      return null;
+    }
   }
 
   /**
@@ -1077,7 +1080,7 @@ export class ProductDetail extends Component {
    * @return {JSX.Element}
    */
   render() {
-    const { fetching, commonProducts } = this.state;
+    const { fetching, productOffers } = this.state;
 
     if (fetching) {
       return <Spinner visible />;
@@ -1093,7 +1096,7 @@ export class ProductDetail extends Component {
       <View style={styles.container}>
         <KeyboardAvoidingView
           contentContainerStyle={
-            !commonProducts && styles.keyboardAvoidingContainer
+            !productOffers && styles.keyboardAvoidingContainer
           }
           behavior="position">
           <ScrollView>
@@ -1105,12 +1108,12 @@ export class ProductDetail extends Component {
               {this.renderDesc()}
             </View>
             {this.renderOptions()}
-            {commonProducts && this.renderSellers()}
+            {this.renderSellers()}
             {this.renderDiscussion()}
             {this.renderFeatures()}
             {this.renderVendorInfo()}
           </ScrollView>
-          {!commonProducts && (
+          {!productOffers && (
             <View style={styles.addToCartContainerWrapper}>
               {this.renderAddToCart()}
             </View>

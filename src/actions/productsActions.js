@@ -153,7 +153,7 @@ export function fetch(pid) {
   };
 }
 
-export function fetchCommonProducts(pid) {
+export function fetchProductOffers(pid) {
   return (dispatch) => {
     dispatch({ type: FETCH_COMMON_PRODUCTS_REQUEST });
 
