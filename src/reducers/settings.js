@@ -4,6 +4,7 @@ import {
   GET_CURRENCIES,
   GET_LANGUAGES,
   RESTORE_STATE,
+  LANGUAGE_CURRENCY_FEATURE_FLAG_OFF,
 } from '../constants';
 
 const initialState = {
@@ -15,6 +16,7 @@ const initialState = {
     langCode: '',
     name: '',
   },
+  languageCurrencyFeatureFlag: true,
   languages: null,
   currencies: null,
 };
@@ -63,6 +65,12 @@ export default function (state = initialState, action) {
             name: el.name,
           };
         }),
+      };
+
+    case LANGUAGE_CURRENCY_FEATURE_FLAG_OFF:
+      return {
+        ...state,
+        languageCurrencyFeatureFlag: false,
       };
 
     case RESTORE_STATE:

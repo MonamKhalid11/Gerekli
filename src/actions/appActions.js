@@ -8,6 +8,7 @@ import {
   GET_CURRENCIES,
   SET_CURRENCY,
   SET_LANGUAGE,
+  LANGUAGE_CURRENCY_FEATURE_FLAG_OFF,
 } from '../constants';
 import API from '../services/api';
 import store from '../store';
@@ -65,81 +66,97 @@ export async function initApp() {
     });
   }
 
-  // Gets lists of languages and currencies
-  const resLanguages = await API.get('/sra_languages');
-  const resCurrencies = await API.get('/sra_currencies');
+  const platformLanguage =
+    Platform.OS === 'ios'
+      ? NativeModules.SettingsManager.settings.AppleLocale ||
+        NativeModules.SettingsManager.settings.AppleLanguages[0]
+      : NativeModules.I18nManager.localeIdentifier;
 
-  // Set default currency
-  let currentCurrency = get(JSON.parse(persist), 'settings.selectedCurrency');
+  const deviceLanguage = platformLanguage.split('_')[0];
+  let currentLanguage;
 
-  if (!currentCurrency?.currencyCode) {
-    resCurrencies.data.currencies.forEach((el) => {
-      if (el.is_primary) {
-        currentCurrency = {
-          currencyCode: el.currency_code,
-          symbol: el.symbol,
-        };
-      }
-    });
-    store.dispatch({
-      type: SET_CURRENCY,
-      payload: currentCurrency,
-    });
-  }
+  try {
+    // Gets lists of languages and currencies
+    const resLanguages = await API.get('/sra_languages');
+    const resCurrencies = await API.get('/sra_currencies');
 
-  // Set default language
-  let currentLanguage = get(JSON.parse(persist), 'settings.selectedLanguage');
+    // Set default currency
+    let currentCurrency = get(JSON.parse(persist), 'settings.selectedCurrency');
 
-  if (!currentLanguage?.langCode) {
-    const platformLanguage =
-      Platform.OS === 'ios'
-        ? NativeModules.SettingsManager.settings.AppleLocale ||
-          NativeModules.SettingsManager.settings.AppleLanguages[0]
-        : NativeModules.I18nManager.localeIdentifier;
-
-    const deviceLanguage = platformLanguage.split('_')[0];
-
-    // If the device language is among the languages of the store
-    // use device language.
-    let isDeviceLanguage = false;
-    resLanguages.data.languages.forEach((el) => {
-      if (el.lang_code === deviceLanguage) {
-        isDeviceLanguage = true;
-      }
-    });
-
-    if (isDeviceLanguage) {
-      currentLanguage = {
-        langCode: deviceLanguage,
-        name: deviceLanguage,
-      };
-    } else {
-      resLanguages.data.languages.forEach((el) => {
-        if (el.is_default) {
-          currentLanguage = {
-            langCode: el.lang_code,
-            name: el.name,
+    if (!currentCurrency?.currencyCode) {
+      resCurrencies.data.currencies.forEach((el) => {
+        if (el.is_primary) {
+          currentCurrency = {
+            currencyCode: el.currency_code,
+            symbol: el.symbol,
           };
         }
       });
+      store.dispatch({
+        type: SET_CURRENCY,
+        payload: currentCurrency,
+      });
     }
 
+    // Set default language
+    currentLanguage = get(JSON.parse(persist), 'settings.selectedLanguage');
+
+    if (!currentLanguage?.langCode) {
+      // If the device language is among the languages of the store
+      // use device language.
+      let isDeviceLanguage = false;
+      resLanguages.data.languages.forEach((el) => {
+        if (el.lang_code === deviceLanguage) {
+          isDeviceLanguage = true;
+        }
+      });
+
+      if (isDeviceLanguage) {
+        currentLanguage = {
+          langCode: deviceLanguage,
+          name: deviceLanguage,
+        };
+      } else {
+        resLanguages.data.languages.forEach((el) => {
+          if (el.is_default) {
+            currentLanguage = {
+              langCode: el.lang_code,
+              name: el.name,
+            };
+          }
+        });
+      }
+
+      store.dispatch({
+        type: SET_LANGUAGE,
+        payload: currentLanguage,
+      });
+    }
+
+    // Set list of languages and currencies to store
+    store.dispatch({
+      type: GET_CURRENCIES,
+      payload: resCurrencies.data.currencies,
+    });
+
+    store.dispatch({
+      type: GET_LANGUAGES,
+      payload: resLanguages.data.languages,
+    });
+  } catch (e) {
+    currentLanguage = {
+      langCode: deviceLanguage,
+      name: deviceLanguage,
+    };
     store.dispatch({
       type: SET_LANGUAGE,
       payload: currentLanguage,
     });
+    store.dispatch({
+      type: LANGUAGE_CURRENCY_FEATURE_FLAG_OFF,
+    });
+    console.log('Error loading languages and currencies', e);
   }
-
-  // Set list of languages and currencies to store
-  store.dispatch({
-    type: GET_CURRENCIES,
-    payload: resCurrencies.data.currencies,
-  });
-
-  store.dispatch({
-    type: GET_LANGUAGES,
-    payload: resLanguages.data.languages,
-  });
 
   I18nManager.allowRTL(true);
   I18nManager.forceRTL(['ar', 'he', 'fa'].includes(currentLanguage.langCode));

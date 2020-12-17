@@ -395,7 +395,7 @@ export class ProfileEdit extends Component {
       <ScrollView style={styles.container}>
         {this.renderSignedIn(auth, cart)}
 
-        {this.renderSettings(settings)}
+        {settings.languageCurrencyFeatureFlag && this.renderSettings(settings)}
 
         {auth.logged && this.renderSignedInMenu(authActions)}
 

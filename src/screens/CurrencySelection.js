@@ -6,6 +6,7 @@ import { omit } from 'lodash';
 
 // Import actions.
 import * as settingsActions from '../actions/settingsActions';
+import { ScrollView } from 'react-native';
 
 export const CurrencySelection = ({ settingsActions, settings }) => {
   const changeLanguageHandler = (currency) => {
@@ -13,14 +14,18 @@ export const CurrencySelection = ({ settingsActions, settings }) => {
     settingsActions.setCurrency(omitCurrency);
   };
   if (settings.currencies) {
-    return settings.currencies.map((el, index) => (
-      <RadioButtonItem
-        key={index}
-        item={el}
-        onPress={!el.selected && changeLanguageHandler}
-        title={el.currencyCode}
-      />
-    ));
+    return (
+      <ScrollView>
+        {settings.currencies.map((el, index) => (
+          <RadioButtonItem
+            key={index}
+            item={el}
+            onPress={!el.selected && changeLanguageHandler}
+            title={el.currencyCode}
+          />
+        ))}
+      </ScrollView>
+    );
   }
   return null;
 };
