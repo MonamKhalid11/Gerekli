@@ -44,7 +44,7 @@ export class SettlementsCompleteWebView extends Component {
     const { payment_url, query_parameters, cart } = this.props;
     let url = payment_url;
 
-    if (query_parameters) {
+    if (Object.keys(query_parameters)?.length) {
       url = `${url}?${objectToQuerystring(query_parameters)}`;
     }
 
