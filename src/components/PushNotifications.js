@@ -2,7 +2,6 @@ import { Platform } from 'react-native';
 import { get } from 'lodash';
 import messaging from '@react-native-firebase/messaging';
 import { Notifications } from 'react-native-notifications';
-import { deviceLanguage } from '../utils/i18n';
 import { registerDrawerDeepLinks } from '../utils/deepLinks';
 
 import store from '../store';
@@ -67,13 +66,13 @@ async function Init() {
   const token = await messaging().getToken();
   console.log('TOKEN (getFCMToken)', token);
 
-  const { auth } = store.getState();
+  const { auth, settings } = store.getState();
   if (auth.deviceToken !== token) {
     store.dispatch(
       authActions.deviceInfo({
         token,
         platform: Platform.OS,
-        locale: deviceLanguage,
+        locale: settings.selectedLanguage.langCode,
         device_id: auth.uuid,
       }),
     );

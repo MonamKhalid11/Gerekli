@@ -452,6 +452,38 @@ export function pushVendorManageOrders(componentId, params = {}) {
   });
 }
 
+export function pushLanguageSelection(componentId, params = {}) {
+  Navigation.push(componentId, {
+    component: {
+      name: 'LanguageSelection',
+      passProps: params,
+      options: {
+        topBar: {
+          title: {
+            text: i18n.t('Select Language'),
+          },
+        },
+      },
+    },
+  });
+}
+
+export function pushCurrencySelection(componentId, params = {}) {
+  Navigation.push(componentId, {
+    component: {
+      name: 'CurrencySelection',
+      passProps: params,
+      options: {
+        topBar: {
+          title: {
+            text: i18n.t('Currency'),
+          },
+        },
+      },
+    },
+  });
+}
+
 export function pushVendorManageOrderDetail(componentId, params = {}) {
   Navigation.push(componentId, {
     component: {

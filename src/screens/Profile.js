@@ -25,7 +25,7 @@ const styles = EStyleSheet.create({
     height: 130,
   },
   signInSectionContainer: {
-    backgroundColor: theme.$grayColor,
+    backgroundColor: '$grayColor',
     width: '100%',
     padding: 15,
     borderBottomWidth: 1,
@@ -51,7 +51,7 @@ const styles = EStyleSheet.create({
     paddingVertical: 10,
   },
   signInBtnText: {
-    color: '#424040',
+    color: '$menuTextColor',
   },
   btn: {
     borderRadius: '$borderRadius',
@@ -62,7 +62,7 @@ const styles = EStyleSheet.create({
     justifyContent: 'center',
   },
   btnText: {
-    color: '#424040',
+    color: '$menuTextColor',
     fontSize: '1rem',
   },
   signInInfo: {
@@ -74,12 +74,12 @@ const styles = EStyleSheet.create({
     paddingBottom: 30,
   },
   userNameText: {
-    color: '#424040',
+    color: '$menuTextColor',
     fontSize: '1rem',
     fontWeight: 'bold',
   },
   userMailText: {
-    color: '#424040',
+    color: '$menuTextColor',
     fontSize: '1rem',
   },
   IconNameWrapper: {
@@ -88,12 +88,16 @@ const styles = EStyleSheet.create({
   },
   menuItemIcon: {
     fontSize: '1.2rem',
-    color: '$menuItemsBorderColor',
+    color: '$menuIconsColor',
     marginRight: 5,
   },
   rightArrowIcon: {
     fontSize: '1rem',
-    color: '$menuItemsBorderColor',
+    color: '$menuIconsColor',
+  },
+  hintText: {
+    fontSize: '0.8rem',
+    color: '$menuIconsColor',
   },
 });
 
@@ -181,6 +185,47 @@ export class ProfileEdit extends Component {
   }
 
   /**
+   * Renders Settings block.
+   *
+   * @return {JSX.Element}
+   */
+  renderSettings(settings) {
+    return (
+      <>
+        <View style={styles.signInSectionContainer}>
+          <Text style={styles.signInSectionText}>
+            {i18n.t('Settings').toUpperCase()}
+          </Text>
+        </View>
+
+        <TouchableOpacity
+          onPress={() => nav.pushLanguageSelection(this.props.componentId)}
+          style={styles.signInBtnContainer}>
+          <Text style={styles.signInBtnText}>{i18n.t('Language')}</Text>
+          <View style={styles.IconNameWrapper}>
+            <Text style={styles.hintText}>
+              {settings.selectedLanguage.langCode.toUpperCase()}
+            </Text>
+            <Icon name="chevron-right" style={styles.rightArrowIcon} />
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => nav.pushCurrencySelection(this.props.componentId)}
+          style={styles.signInBtnContainer}>
+          <Text style={styles.signInBtnText}>{i18n.t('Currency')}</Text>
+          <View style={styles.IconNameWrapper}>
+            <Text style={styles.hintText}>
+              {settings.selectedCurrency.symbol.toUpperCase()}
+            </Text>
+            <Icon name="chevron-right" style={styles.rightArrowIcon} />
+          </View>
+        </TouchableOpacity>
+      </>
+    );
+  }
+
+  /**
    * Renders pages.
    *
    * @param {object} pages - Pages information.
@@ -195,9 +240,10 @@ export class ProfileEdit extends Component {
             {i18n.t('Pages').toUpperCase()}
           </Text>
         </View>
-        {pages.items.map((page) => {
+        {pages.items.map((page, index) => {
           return (
             <TouchableOpacity
+              key={index}
               style={styles.signInBtnContainer}
               onPress={() =>
                 registerDrawerDeepLinks(
@@ -343,11 +389,13 @@ export class ProfileEdit extends Component {
    * @return {JSX.Element}
    */
   render() {
-    const { profile, pages, auth, cart, authActions } = this.props;
+    const { profile, pages, auth, cart, authActions, settings } = this.props;
 
     return (
       <ScrollView style={styles.container}>
         {this.renderSignedIn(auth, cart)}
+
+        {settings.languageCurrencyFeatureFlag && this.renderSettings(settings)}
 
         {auth.logged && this.renderSignedInMenu(authActions)}
 
@@ -365,6 +413,7 @@ export default connect(
     pages: state.pages,
     cart: state.cart,
     profile: state.profile,
+    settings: state.settings,
   }),
   (dispatch) => ({
     authActions: bindActionCreators(authActions, dispatch),

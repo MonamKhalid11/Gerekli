@@ -53,7 +53,13 @@ export default {
   $productBorderColor: '#FFF',
 
   // Border color for menu items.
-  $menuItemsBorderColor: '#D6D6D6',
+  $menuItemsBorderColor: '#f3f3f3',
+
+  // Icon color for menu items.
+  $menuIconsColor: '#d3d3d3',
+
+  // Text color for menu items.
+  $menuTextColor: '#424040',
 
   // Category background color.
   $categoriesBackgroundColor: '#FAFAFA',

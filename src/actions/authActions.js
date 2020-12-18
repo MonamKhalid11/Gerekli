@@ -30,16 +30,18 @@ import {
   AUTH_LOGOUT,
 } from '../constants';
 import Api from '../services/api';
-import i18n, { deviceLanguage } from '../utils/i18n';
+import i18n from '../utils/i18n';
 import store from '../store';
 
 import * as cartActions from './cartActions';
 import * as layoutsActions from './layoutsActions';
 import * as wishListActions from './wishListActions';
 
+const { settings } = store.getState();
+
 export function fetchProfile() {
   const params = {
-    lang_code: deviceLanguage,
+    langCode: settings.selectedLanguage.langCode,
   };
 
   return (dispatch) => {
@@ -67,7 +69,7 @@ export function profileFields(data = {}) {
   const params = {
     location: 'profile',
     action: 'add',
-    lang_code: deviceLanguage,
+    langCode: settings.selectedLanguage.langCode,
     ...data,
   };
 
@@ -244,7 +246,7 @@ export function login(data) {
           deviceInfo({
             token: auth.deviceToken,
             platform: Platform.OS,
-            locale: deviceLanguage,
+            locale: settings.selectedLanguage.langCode,
             device_id: auth.uuid,
           })(dispatch);
         }, 1000);
