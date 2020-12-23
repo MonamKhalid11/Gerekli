@@ -23,6 +23,14 @@ const styles = (isStock, lastBlock, lastVendor) =>
     title: {
       fontSize: '0.9rem',
     },
+    place: {
+      color: 'gray',
+    },
+    ratingText: {
+      textAlign: 'right',
+      marginRight: 10,
+      color: 'gray',
+    },
     stock: {
       textAlign: 'right',
       marginRight: 10,
@@ -39,14 +47,24 @@ const styles = (isStock, lastBlock, lastVendor) =>
 
 export const Seller = ({ seller, lastVendor, onPress }) => {
   const isStock = parseInt(seller.amount, 10);
+  console.log('seller: ', seller);
   return (
     <View style={styles(null, null, lastVendor).container}>
       <View style={{ ...styles().containerBlock }}>
         <View>
           <Text style={styles().title}>{seller.company_name}</Text>
+          {seller.company.city && seller.company.country && (
+            <Text style={styles().place}>
+              {seller.company.country}, {seller.company.city}
+            </Text>
+          )}
         </View>
         <View>
-          <Rating value={4} />
+          {seller.company.average_rating ? (
+            <Rating value={seller.company.average_rating} />
+          ) : (
+            <Text style={styles().ratingText}>Нет отзывов</Text>
+          )}
           <Text style={styles(isStock).stock}>
             {isStock ? i18n.t('In stock') : i18n.t('Out of stock')}
           </Text>
