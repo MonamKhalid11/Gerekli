@@ -42,7 +42,6 @@ const styles = (isStock, lastBlock, lastVendor) =>
 
 export const Seller = ({ seller, lastVendor, onPress }) => {
   const isStock = parseInt(seller.amount, 10);
-  console.log('seller: ', seller);
   return (
     <View style={styles(null, null, lastVendor).container}>
       <View style={{ ...styles().containerBlock }}>
