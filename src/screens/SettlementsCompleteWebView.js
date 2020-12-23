@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { Navigation } from 'react-native-navigation';
 
 // Import actions.
 import * as authActions from '../actions/authActions';
@@ -30,12 +31,18 @@ export class SettlementsCompleteWebView extends Component {
   };
 
   onNavigationStateChange = ({ url }, cart) => {
-    const { return_url, cartActions, orderId } = this.props;
+    const { return_url, cartActions, orderId, cancel_url } = this.props;
 
     if (url && return_url) {
       if (url.toLowerCase().startsWith(return_url.toLowerCase())) {
         cartActions.clear(cart);
         nav.pushCheckoutComplete(this.props.componentId, { orderId });
+      }
+    }
+
+    if (url && cancel_url) {
+      if (url.toLowerCase().startsWith(cancel_url.toLowerCase())) {
+        Navigation.pop(this.props.componentId);
       }
     }
   };
