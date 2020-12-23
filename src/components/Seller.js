@@ -40,22 +40,22 @@ const styles = (isStock, lastBlock, lastVendor) =>
     },
   });
 
-export const Seller = ({ seller, lastVendor, onPress }) => {
-  const isStock = parseInt(seller.amount, 10);
+export const Seller = ({ productOffer, lastVendor, onPress }) => {
+  const isStock = parseInt(productOffer.amount, 10);
   return (
     <View style={styles(null, null, lastVendor).container}>
       <View style={{ ...styles().containerBlock }}>
         <View>
-          <Text style={styles().title}>{seller.company_name}</Text>
-          {seller.company.city && seller.company.country && (
+          <Text style={styles().title}>{productOffer.company_name}</Text>
+          {productOffer.company.city && productOffer.company.country && (
             <Text style={styles().place}>
-              {seller.company.country}, {seller.company.city}
+              {productOffer.company.country}, {productOffer.company.city}
             </Text>
           )}
         </View>
         <View>
-          {seller.company.average_rating && (
-            <Rating value={seller.company.average_rating} />
+          {productOffer.company.average_rating && (
+            <Rating value={productOffer.company.average_rating} />
           )}
           <Text style={styles(isStock).stock}>
             {isStock ? i18n.t('In stock') : i18n.t('Out of stock')}
@@ -64,7 +64,7 @@ export const Seller = ({ seller, lastVendor, onPress }) => {
       </View>
       <View style={styles(null, 'lastBlock').containerBlock}>
         <Text style={styles().priceText}>
-          {seller.base_price_formatted.price}
+          {productOffer.base_price_formatted.price}
         </Text>
         <AddToCartButton
           buttonStyle={styles().addTocCartBtn}

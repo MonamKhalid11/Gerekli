@@ -1060,7 +1060,7 @@ export class ProductDetail extends Component {
           {productOffers.products.map((el, index) => {
             return (
               <Seller
-                seller={el}
+                productOffer={el}
                 lastVendor={productOffers.products.length - 1 === index}
                 key={index}
                 onPress={() => this.handleAddToCart(true, el)}
