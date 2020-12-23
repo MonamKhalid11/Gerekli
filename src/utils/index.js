@@ -80,6 +80,12 @@ export const getProductImagesPaths = (data = {}, size = '1000x1000') => {
 
 export const toArray = obj => Object.keys(obj).map(k => obj[k]);
 
+export const objectFilter = (obj, predicate) => {
+  return Object.keys(obj)
+    .filter((key) => predicate(obj[key]))
+    .reduce((res, key) => ((res[key] = obj[key]), res), {});
+};
+
 export function getCountries() {
   const result = {};
   countries.forEach((item) => {

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { View, Text, FlatList } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { get } from 'lodash';
+import { objectFilter } from '../utils/index';
 
 // Components
 import CartProductitem from './CartProductItem';
@@ -93,14 +94,12 @@ const CartProductList = ({
   /**
    * Moves to the next page.
    */
-  const handlePlaceOrder = (auth, products, cart) => {
-    const newProducts = {};
-    products.forEach((p) => {
-      newProducts[p.product_id] = {
-        product_id: p.product_id,
-        amount: p.amount,
-      };
-    });
+  const handlePlaceOrder = (auth, cart) => {
+    const newCartProducts = objectFilter(
+      cart.products,
+      (p) => !p.extra.exclude_from_calculate,
+    );
+    cart.products = { ...newCartProducts };
     if (!auth.logged) {
       nav.pushCheckoutAuth(componentId, { newProducts });
     } else {
@@ -124,7 +123,7 @@ const CartProductList = ({
       <CartFooter
         totalPrice={formatPrice(cart.total_formatted.price)}
         btnText={i18n.t('Checkout').toUpperCase()}
-        onBtnPress={() => handlePlaceOrder(auth, products, cart)}
+        onBtnPress={() => handlePlaceOrder(auth, cart)}
       />
     );
   };
