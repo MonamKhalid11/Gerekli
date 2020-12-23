@@ -26,11 +26,6 @@ const styles = (isStock, lastBlock, lastVendor) =>
     place: {
       color: 'gray',
     },
-    ratingText: {
-      textAlign: 'right',
-      marginRight: 10,
-      color: 'gray',
-    },
     stock: {
       textAlign: 'right',
       marginRight: 10,
@@ -60,10 +55,8 @@ export const Seller = ({ seller, lastVendor, onPress }) => {
           )}
         </View>
         <View>
-          {seller.company.average_rating ? (
+          {seller.company.average_rating && (
             <Rating value={seller.company.average_rating} />
-          ) : (
-            <Text style={styles().ratingText}>Нет отзывов</Text>
           )}
           <Text style={styles(isStock).stock}>
             {isStock ? i18n.t('In stock') : i18n.t('Out of stock')}
