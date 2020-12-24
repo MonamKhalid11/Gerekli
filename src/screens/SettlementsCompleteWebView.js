@@ -33,17 +33,21 @@ export class SettlementsCompleteWebView extends Component {
   onNavigationStateChange = ({ nativeEvent }, cart) => {
     const { return_url, cartActions, orderId, cancel_url } = this.props;
 
-    if (nativeEvent.url && return_url) {
-      if (nativeEvent.url.toLowerCase().startsWith(return_url.toLowerCase())) {
-        cartActions.clear(cart);
-        nav.pushCheckoutComplete(this.props.componentId, { orderId });
-      }
+    if (
+      nativeEvent.url &&
+      return_url &&
+      nativeEvent.url.toLowerCase().startsWith(return_url.toLowerCase())
+    ) {
+      cartActions.clear(cart);
+      nav.pushCheckoutComplete(this.props.componentId, { orderId });
     }
 
-    if (nativeEvent.url && cancel_url) {
-      if (nativeEvent.url.toLowerCase().startsWith(cancel_url.toLowerCase())) {
-        Navigation.pop(this.props.componentId);
-      }
+    if (
+      nativeEvent.url &&
+      cancel_url &&
+      nativeEvent.url.toLowerCase().startsWith(cancel_url.toLowerCase())
+    ) {
+      Navigation.pop(this.props.componentId);
     }
   };
 
