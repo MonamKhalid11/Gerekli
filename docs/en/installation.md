@@ -1,6 +1,6 @@
 # Requirements for software and computer.
 - For the release version and the android version, any pc is suitable
-- To build android and IOS applications, you need a mac. Better to have the latest OS and Xcode.
+- To build iOS applications, you need a mac. Better to have the latest OS and Xcode
 - Also requires nodejs at least 8.6 and npm at least 5.0
 
 # Setting up Linux environment (pure Ubuntu 18)
@@ -29,10 +29,9 @@
 6. Add the key to your account via https://github.com/
 
 ## Android Studio
-1. Connect to the server via Microsoft Remote Desctop (if the setting is on a remote server)
-2. https://developer.android.com/studio/install.html - download and install Android Studio
-3. `sudo apt-get install libc6:i386 libncurses5:i386 libstdc++6:i386 lib32z1 libbz2-1.0:i386` - install this library if you are using 64-bit Linux.
-4. During installation, install Google APIs, Android SDK Platform 23, Intel x86 Atom_64 System Image, Google APIs Intel x86 Atom_64 System Image
+1. https://developer.android.com/studio/install.html - download and install Android Studio
+2. `sudo apt-get install libc6:i386 libncurses5:i386 libstdc++6:i386 lib32z1 libbz2-1.0:i386` - install this library if you are using 64-bit Linux.
+3. During installation, install Google APIs, Android SDK Platform 23, Intel x86 Atom_64 System Image, Google APIs Intel x86 Atom_64 System Image
 
 # Building on linux.
 1. In the root of the project, run `npm i` - Installs dependencies
@@ -75,10 +74,3 @@
   - In the root of the project `rm -rf node_modules` - Remove old dependencies
   - At the root of the project `npm i` - Install new dependencies
   - iOS only: `cd ios` ->` rm -rf Pods` -> `pod install` - Remove old dependencies and install new ones
-
-# Configuring the builder (for building an application based on client folders)
-1. `cd ~` - Go to home directory
-2. `sudo apt install python-pip` - install pip
-3. `git clone git@github.com:cscart/mobile-app-builder.git` - clone the project
-4. `cd mobile-app-builder` - go to the folder with the project
-5. `pip install -r requirements.txt` - install dependencies
