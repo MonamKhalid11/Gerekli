@@ -855,7 +855,7 @@ export class ProductDetail extends Component {
    * @return {JSX.Element}
    */
   renderOptions() {
-    const { product } = this.state;
+    const { product, productOffers } = this.state;
 
     const step = parseInt(product.qty_step, 10) || 1;
     const max = parseInt(product.max_qty, 10) || parseInt(product.amount, 10);
@@ -864,15 +864,17 @@ export class ProductDetail extends Component {
     return (
       <Section>
         {product.options.map((o) => this.renderOptionItem(o))}
-        <QtyOption
-          max={max}
-          min={min}
-          initialValue={this.state.amount || min}
-          step={step}
-          onChange={(val) => {
-            this.setState({ amount: val }, this.calculatePrice);
-          }}
-        />
+        {!productOffers && (
+          <QtyOption
+            max={max}
+            min={min}
+            initialValue={this.state.amount || min}
+            step={step}
+            onChange={(val) => {
+              this.setState({ amount: val }, this.calculatePrice);
+            }}
+          />
+        )}
       </Section>
     );
   }
