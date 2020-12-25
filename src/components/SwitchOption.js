@@ -57,7 +57,7 @@ export default class extends Component {
   componentDidMount() {
     const { value, option } = this.props;
     this.setState({
-      value: value.variant_name === 'Yes',
+      value: value?.variant_name === 'Yes',
       title: option.option_name,
     });
   }
@@ -68,7 +68,7 @@ export default class extends Component {
   componentWillReceiveProps(nextProps) {
     const { value, option } = nextProps;
     this.setState({
-      value: value.variant_name === 'Yes',
+      value: value?.variant_name === 'Yes',
       title: option.option_name,
     });
   }
