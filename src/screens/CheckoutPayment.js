@@ -77,21 +77,26 @@ const styles = EStyleSheet.create({
   },
 });
 
-const PAYMENT_CREDIT_CARD = 'views/orders/components/payments/cc.tpl';
-const PAYMENT_EMPTY = 'views/orders/components/payments/empty.tpl';
-const PAYMENT_CHECK = 'views/orders/components/payments/check.tpl';
-const PAYMENT_PAYPAL_EXPRESS =
-  'addons/paypal/views/orders/components/payments/paypal_express.tpl';
-const PAYMENT_PHONE = 'views/orders/components/payments/phone.tpl';
-const PAYMENT_YANDEX_KASSA =
-  'addons/rus_payments/views/orders/components/payments/yandex_money.tpl';
-const PAYMENTS = [
-  PAYMENT_CREDIT_CARD,
-  PAYMENT_EMPTY,
-  PAYMENT_YANDEX_KASSA,
-  PAYMENT_CHECK,
-  PAYMENT_PAYPAL_EXPRESS,
-  PAYMENT_PHONE,
+const TPL_CREDIT_CARD = 'views/orders/components/payments/cc.tpl';
+const TPL_EMPTY = 'views/orders/components/payments/empty.tpl';
+const TPL_CHECK = 'views/orders/components/payments/check.tpl';
+const TPL_PHONE = 'views/orders/components/payments/phone.tpl';
+const SUPPORTED_PAYMENT_TPLS = [
+  TPL_CREDIT_CARD,
+  TPL_EMPTY,
+  TPL_CHECK,
+  TPL_PHONE,
+];
+
+const SCRIPT_YOOKASSA = 'yandex_checkout.php';
+const SCRIPT_YOOKASSA_FOR_MARKETPLACES = 'yandex_checkout_for_marketplaces.php';
+const SCRIPT_YOOKASSA_LEGACY = 'yandex_money.php';
+const SCRIPT_PAYPAL_EXPRESS = 'paypal_express.php';
+const SUPPORTED_PAYMENT_SCRIPTS = [
+  SCRIPT_YOOKASSA,
+  SCRIPT_YOOKASSA_FOR_MARKETPLACES,
+  SCRIPT_YOOKASSA_LEGACY,
+  SCRIPT_PAYPAL_EXPRESS,
 ];
 
 /**
@@ -136,7 +141,11 @@ export class CheckoutPayment extends Component {
     const { cart } = this.props;
     const items = Object.keys(cart.payments)
       .map((k) => cart.payments[k])
-      .filter((p) => PAYMENTS.includes(p.template));
+      .filter(
+        (p) =>
+          SUPPORTED_PAYMENT_TPLS.includes(p.template) ||
+          SUPPORTED_PAYMENT_SCRIPTS.includes(p.script),
+      );
     // FIXME: Default selected payment method.
     const selectedItem = items[0];
 
@@ -155,10 +164,7 @@ export class CheckoutPayment extends Component {
       return null;
     }
 
-    if (
-      selectedItem.template === PAYMENT_PAYPAL_EXPRESS ||
-      selectedItem.template === PAYMENT_YANDEX_KASSA
-    ) {
+    if (SUPPORTED_PAYMENT_SCRIPTS.includes(selectedItem.script)) {
       return this.placeSettlements();
     }
 
@@ -353,7 +359,7 @@ export class CheckoutPayment extends Component {
     let form = null;
     // FIXME: HARDCODE
     switch (selectedItem.template) {
-      case PAYMENT_EMPTY:
+      case TPL_EMPTY:
         form = (
           <PaymentEmpty
             onInit={(ref) => {
@@ -362,7 +368,7 @@ export class CheckoutPayment extends Component {
           />
         );
         break;
-      case PAYMENT_CREDIT_CARD:
+      case TPL_CREDIT_CARD:
         form = (
           <PaymentCreditCardForm
             onInit={(ref) => {
@@ -371,7 +377,7 @@ export class CheckoutPayment extends Component {
           />
         );
         break;
-      case PAYMENT_CHECK:
+      case TPL_CHECK:
         form = (
           <PaymentCheckForm
             onInit={(ref) => {
@@ -380,7 +386,23 @@ export class CheckoutPayment extends Component {
           />
         );
         break;
-      case PAYMENT_PAYPAL_EXPRESS:
+      case TPL_PHONE:
+        form = (
+          <PaymentPhoneForm
+            onInit={(ref) => {
+              this.paymentFormRef = ref;
+            }}
+            value={{ phone: cart.user_data.b_phone }}
+          />
+        );
+        break;
+
+      default:
+        break;
+    }
+
+    switch (selectedItem.script) {
+      case SCRIPT_PAYPAL_EXPRESS:
         form = (
           <PaymentPaypalForm
             onInit={(ref) => {
@@ -389,22 +411,14 @@ export class CheckoutPayment extends Component {
           />
         );
         break;
-      case PAYMENT_YANDEX_KASSA:
+      case SCRIPT_YOOKASSA:
+      case SCRIPT_YOOKASSA_FOR_MARKETPLACES:
+      case SCRIPT_YOOKASSA_LEGACY:
         form = (
           <PaymentYandexKassaForm
             onInit={(ref) => {
               this.paymentFormRef = ref;
             }}
-          />
-        );
-        break;
-      case PAYMENT_PHONE:
-        form = (
-          <PaymentPhoneForm
-            onInit={(ref) => {
-              this.paymentFormRef = ref;
-            }}
-            value={{ phone: cart.user_data.b_phone }}
           />
         );
         break;
