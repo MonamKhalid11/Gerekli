@@ -41,7 +41,7 @@ const styles = (isStock, lastBlock, lastVendor) =>
   });
 
 export const Seller = ({ productOffer, lastVendor, onPress }) => {
-  const isStock = parseInt(productOffer.amount, 10);
+  const isStock = !!parseInt(productOffer.amount, 10);
   return (
     <View style={styles(null, null, lastVendor).container}>
       <View style={{ ...styles().containerBlock }}>
@@ -66,10 +66,12 @@ export const Seller = ({ productOffer, lastVendor, onPress }) => {
         <Text style={styles().priceText}>
           {productOffer.base_price_formatted.price}
         </Text>
-        <AddToCartButton
-          buttonStyle={styles().addTocCartBtn}
-          onPress={onPress}
-        />
+        {isStock && (
+          <AddToCartButton
+            buttonStyle={styles().addTocCartBtn}
+            onPress={onPress}
+          />
+        )}
       </View>
     </View>
   );
