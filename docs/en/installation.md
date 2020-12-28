@@ -1,17 +1,17 @@
-# Requirements for software and computer.
-- For the release version and the android version, any pc is suitable
-- To build iOS applications, you need a mac. Better to have the latest OS and Xcode
-- Also requires nodejs at least 8.6 and npm at least 5.0
+# System Requirements.
+- To build release version and an Android version, any PC is suitable.
+- To build iOS applications, you will need a Mac. Is preferable to have the latest OS and Xcode versions.
+- Node.js at least 8.6v. and npm at least 5.0v. are also required.
 
-# Setting up Linux environment (pure Ubuntu 18)
+# Setting up Linux Environment (clean Ubuntu 18)
 ## NPM (6.14.8)
 1. `sudo apt install npm`
-2. `npm install -g npm` - update npm
+2. `npm install -g npm` — updates npm.
 
 ## NodeJs (12.18.3)
 1. `sudo apt install curl`
-2. `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.0/install.sh | bash` - install nvm
-3. `nvm install 12.18.3` - update nodejs (in this case - version 12.18.3)
+2. `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.0/install.sh | bash` — installs NVM.
+3. `nvm install 12.18.3` - updates Node.js (in this case it is version 12.18.3).
 
 ## React Native Cli (2.0.1)
 1. `sudo npm install -g react-native-cli`
@@ -24,53 +24,53 @@
 1. `sudo apt install git`
 2. `git config --global user.name "Your Name"`
 3. `git config --global user.email "youremail@domain.com"`
-4. `cd ~/.ssh && ssh-keygen` - create a key
-5. `cat id_rsa.pub` - output the key to the terminal, copy
-6. Add the key to your account via https://github.com/
+4. `cd ~/.ssh && ssh-keygen` — creates a key.
+5. `cat id_rsa.pub` — output the key to the terminal and copy the key.
+6. Add the key to your account on https://github.com/.
 
 ## Android Studio
-1. https://developer.android.com/studio/install.html - download and install Android Studio
-2. `sudo apt-get install libc6:i386 libncurses5:i386 libstdc++6:i386 lib32z1 libbz2-1.0:i386` - install this library if you are using 64-bit Linux.
-3. During installation, install Google APIs, Android SDK Platform 23, Intel x86 Atom_64 System Image, Google APIs Intel x86 Atom_64 System Image
+1. https://developer.android.com/studio/install.html — download and install Android Studio.
+2. `sudo apt-get install libc6:i386 libncurses5:i386 libstdc++6:i386 lib32z1 libbz2-1.0:i386` — install this library if you are using 64-bit Linux.
+3. During the installation, aslo install Google APIs, Android SDK Platform 23, Intel x86 Atom_64 System Image, Google APIs Intel x86 Atom_64 System Image.
 
-# Building on linux.
-1. In the root of the project, run `npm i` - Installs dependencies
-2. Run Android Studio
-3. Open Android Studio, go to `configure/AVD Manager/Create Virtual Device` - Create a default emulator
-4. In the root of the project, run `react-native run-android`
+# Building on Linux
+1. In the root of the project, run `npm i` — installs dependencies.
+2. Run Android Studio.
+3. Open Android Studio, go to `configure/AVD Manager/Create Virtual Device` — and create a default emulator.
+4. In the root of the project, run `react-native run-android`.
 
-# Setting up mac environment
+# Setting up Mac Environment
 ## NodeJs (12.18.3)
-1. https://nodejs.org/en/download/ -  Download and install Node.js
+1. https://nodejs.org/en/download/ — download and install Node.js.
 
 ## React Native Cli (2.0.1)
-1. `sudo npm install -g react-native-cli` - install react native cli
+1. `sudo npm install -g react-native-cli` — install React Native CLI.
 
 ## Java (11.0.9.1)
-1. https://www.oracle.com/java/technologies/javase-jdk11-downloads.html - Download and install jdk macOS Installer
+1. https://www.oracle.com/java/technologies/javase-jdk11-downloads.html — download and install JDK macOS Installer.
 
 ## Git (2.17.1)
 1. `sudo apt install git`
 2. `git config --global user.name "Your Name"`
 3. `git config --global user.email "youremail@domain.com"`
-4. `cd ~/.ssh && ssh-keygen` - create a key
-5. `cat id_rsa.pub` - output the key to the terminal, copy
-6. Add the key to your account via https://github.com/
+4. `cd ~/.ssh && ssh-keygen` — create a key.
+5. `cat id_rsa.pub` — output the key to the terminal and copy the key.
+6. Add the key to your account on https://github.com/.
 
 ## XCode
-1. Download and install Xcode
+1. Download and install Xcode.
 
-# Install and run macos in dev mode.
-1. In the root of the project, run `npm i` - Install dependencies
-2. `cd ios` - Go to the ios folder
-3. `pod install` - Install dependencies
-4. `cd ..` - Return to the root of the project
-5. At the root of the project, run `react-native run-ios`
+# Installing and Running macOS in Development Mode
+1. In the root of the project, run `npm i` — install dependencies.
+2. `cd ios` — go to the ios folder.
+3. `pod install` — installs dependencies.
+4. `cd ..` — return to the root of the project.
+5. In the root of the project, run `react-native run-ios`.
 
 # Notes
-- Sometimes yellow and red notes may appear in the emulator, you can hide them and update the application with `comand + R`
-- You can also open the dev console by pressing `comand + shift + Z` in the emulator and selecting the item there
+- Sometimes yellow and red notes may appear in the emulator, you can hide them and update the application using `command + R`.
+- You can also open the dev console by pressing `command + shift + Z` in the emulator and selecting the item there.
 - When switching to branches with a different version of the app:
-  - In the root of the project `rm -rf node_modules` - Remove old dependencies
-  - At the root of the project `npm i` - Install new dependencies
-  - iOS only: `cd ios` ->` rm -rf Pods` -> `pod install` - Remove old dependencies and install new ones
+  - In the root of the project `rm -rf node_modules` — removes old dependencies.
+  - At the root of the project `npm i` — installs new dependencies.
+  - iOS only: `cd ios` → ` rm -rf Pods` → `pod install` — removes old dependencies and installs the new ones.
