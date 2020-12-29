@@ -1,11 +1,13 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { useSelector } from 'react-redux';
+import { View, Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Rating from './Rating';
 import { AddToCartButton } from './AddToCartButton';
 import i18n from '../utils/i18n';
+import Icon from './Icon';
 
-const styles = (isStock, lastBlock, lastVendor) =>
+const styles = (isStock, lastBlock, lastVendor, wishListActive) =>
   EStyleSheet.create({
     container: {
       paddingVertical: '1rem',
@@ -34,14 +36,34 @@ const styles = (isStock, lastBlock, lastVendor) =>
     priceText: {
       fontSize: '1rem',
     },
+    buttonsWrapper: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+    },
     addTocCartBtn: {
       width: 130,
       marginLeft: 10,
     },
+    favoriteIcon: {
+      color: wishListActive ? '$primaryColor' : '$navBarButtonColor',
+    },
   });
 
-export const Seller = ({ productOffer, lastVendor, onPress }) => {
+export const Seller = ({
+  productOffer,
+  lastVendor,
+  onPress,
+  handleAddToWishList,
+}) => {
   const isStock = !!parseInt(productOffer.amount, 10);
+  const wishlist = useSelector((state) => state.wishList);
+  const wishListActive = wishlist.items.some(
+    (item) =>
+      parseInt(item.product_id, 10) === parseInt(productOffer.product_id, 10),
+  );
+
   return (
     <View style={styles(null, null, lastVendor).container}>
       <View style={{ ...styles().containerBlock }}>
@@ -66,12 +88,20 @@ export const Seller = ({ productOffer, lastVendor, onPress }) => {
         <Text style={styles().priceText}>
           {productOffer.base_price_formatted.price}
         </Text>
-        {isStock && (
-          <AddToCartButton
-            buttonStyle={styles().addTocCartBtn}
-            onPress={onPress}
-          />
-        )}
+        <View style={styles().buttonsWrapper}>
+          <TouchableOpacity onPress={handleAddToWishList}>
+            <Icon
+              name="favorite"
+              style={styles(null, null, null, wishListActive).favoriteIcon}
+            />
+          </TouchableOpacity>
+          {isStock && (
+            <AddToCartButton
+              buttonStyle={styles().addTocCartBtn}
+              onPress={onPress}
+            />
+          )}
+        </View>
       </View>
     </View>
   );

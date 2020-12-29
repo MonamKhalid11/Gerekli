@@ -314,6 +314,11 @@ export class ProductDetail extends Component {
     } = nextProps;
     const product = productDetail;
 
+    const isProductOffer = !!parseInt(
+      productDetail.master_product_offers_count,
+      10,
+    );
+
     if (!product) {
       return;
     }
@@ -381,23 +386,25 @@ export class ProductDetail extends Component {
       },
     };
 
-    if (!hideWishList) {
-      const wishListActive = wishList.items.some(
-        (item) => parseInt(item.product_id, 10) === productDetail.product_id,
-      );
+    if (!productDetail.fetching) {
       topBar.rightButtons = [
-        {
-          id: 'wishlist',
-          icon: iconsMap.favorite,
-          color: wishListActive
-            ? theme.$primaryColor
-            : theme.$navBarButtonColor,
-        },
         {
           id: 'share',
           icon: iconsMap.share,
         },
       ];
+      if (!hideWishList && !isProductOffer) {
+        const wishListActive = wishList.items.some(
+          (item) => parseInt(item.product_id, 10) === productDetail.product_id,
+        );
+        topBar.rightButtons.push({
+          id: 'wishlist',
+          icon: iconsMap.favorite,
+          color: wishListActive
+            ? theme.$primaryColor
+            : theme.$navBarButtonColor,
+        });
+      }
     }
 
     Navigation.mergeOptions(this.props.componentId, {
@@ -536,10 +543,12 @@ export class ProductDetail extends Component {
   /**
    * Adds the product to wishlist.
    */
-  handleAddToWishList() {
+  handleAddToWishList(productOffer) {
     const productOptions = {};
     const { product, selectedOptions } = this.state;
     const { auth, wishListActions, componentId } = this.props;
+
+    const currentProduct = productOffer || product;
 
     if (!auth.logged) {
       return nav.showLogin();
@@ -554,12 +563,13 @@ export class ProductDetail extends Component {
     });
 
     const products = {
-      [product.product_id]: {
-        product_id: product.product_id,
-        amount: product.selectedAmount,
+      [currentProduct.product_id]: {
+        product_id: currentProduct.product_id,
+        amount: currentProduct.selectedAmount || 1,
         product_options: productOptions,
       },
     };
+
     return wishListActions.add({ products }, componentId);
   }
 
@@ -1063,6 +1073,7 @@ export class ProductDetail extends Component {
             return (
               <Seller
                 productOffer={el}
+                handleAddToWishList={() => this.handleAddToWishList(el)}
                 lastVendor={productOffers.products.length - 1 === index}
                 key={index}
                 onPress={() => this.handleAddToCart(true, el)}
