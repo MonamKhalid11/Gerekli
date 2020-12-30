@@ -69,14 +69,14 @@ export const Seller = ({
       <View style={{ ...styles().containerBlock }}>
         <View>
           <Text style={styles().title}>{productOffer.company_name}</Text>
-          {productOffer.company.city && productOffer.company.country ? (
+          {productOffer.company?.city && productOffer.company?.country ? (
             <Text style={styles().place}>
               {productOffer.company.country}, {productOffer.company.city}
             </Text>
           ) : null}
         </View>
         <View>
-          {productOffer.company.average_rating && (
+          {productOffer.company?.average_rating && (
             <Rating value={productOffer.company.average_rating} />
           )}
           <Text style={styles(isStock).stock}>
