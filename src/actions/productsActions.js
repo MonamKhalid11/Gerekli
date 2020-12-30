@@ -157,7 +157,9 @@ export function fetchProductOffers(pid) {
   return (dispatch) => {
     dispatch({ type: FETCH_COMMON_PRODUCTS_REQUEST });
 
-    return Api.get(`/sra_products/?vendor_products_by_product_id=${pid}`)
+    return Api.get(
+      `/sra_products/?vendor_products_by_product_id=${pid}&sort_by=price`,
+    )
       .then((response) => {
         dispatch({
           type: FETCH_COMMON_PRODUCTS_SUCCESS,
