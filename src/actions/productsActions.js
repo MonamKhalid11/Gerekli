@@ -20,6 +20,9 @@ import {
   NOTIFICATION_SHOW,
   DISCUSSION_DISABLED,
   CHANGE_PRODUCTS_SORT,
+  FETCH_COMMON_PRODUCTS_REQUEST,
+  FETCH_COMMON_PRODUCTS_FAIL,
+  FETCH_COMMON_PRODUCTS_SUCCESS,
 } from '../constants';
 import Api from '../services/api';
 import i18n from '../utils/i18n';
@@ -144,6 +147,28 @@ export function fetch(pid) {
       .catch((error) => {
         dispatch({
           type: FETCH_ONE_PRODUCT_FAIL,
+          error,
+        });
+      });
+  };
+}
+
+export function fetchProductOffers(pid) {
+  return (dispatch) => {
+    dispatch({ type: FETCH_COMMON_PRODUCTS_REQUEST });
+
+    return Api.get(
+      `/sra_products/?vendor_products_by_product_id=${pid}&sort_by=price`,
+    )
+      .then((response) => {
+        dispatch({
+          type: FETCH_COMMON_PRODUCTS_SUCCESS,
+        });
+        return response;
+      })
+      .catch((error) => {
+        dispatch({
+          type: FETCH_COMMON_PRODUCTS_FAIL,
           error,
         });
       });

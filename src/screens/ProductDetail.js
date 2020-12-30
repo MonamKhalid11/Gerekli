@@ -40,9 +40,11 @@ import InputOption from '../components/InputOption';
 import { QtyOption } from '../components/QtyOption';
 import SwitchOption from '../components/SwitchOption';
 import SectionRow from '../components/SectionRow';
+import { Seller } from '../components/Seller';
 import Spinner from '../components/Spinner';
 import Section from '../components/Section';
 import Rating from '../components/Rating';
+import { AddToCartButton } from '../components/AddToCartButton';
 
 import i18n from '../utils/i18n';
 import config from '../config';
@@ -134,19 +136,6 @@ const styles = EStyleSheet.create({
     paddingTop: 8,
     backgroundColor: '#fff',
     flexDirection: 'row',
-  },
-  addToCartBtn: {
-    backgroundColor: '$primaryColor',
-    padding: 10,
-    flex: 3,
-    borderRadius: 3,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  addToCartBtnText: {
-    textAlign: 'center',
-    color: '$primaryColorText',
-    fontSize: 16,
   },
   noPadding: {
     padding: 0,
@@ -297,6 +286,7 @@ export class ProductDetail extends Component {
       amount: 0,
       currentPid: false,
       showSwiper: true,
+      productOffers: null,
     };
 
     Navigation.events().bindComponent(this);
@@ -323,6 +313,11 @@ export class ProductDetail extends Component {
       hideWishList,
     } = nextProps;
     const product = productDetail;
+
+    const isProductOffer = !!parseInt(
+      productDetail.master_product_offers_count,
+      10,
+    );
 
     if (!product) {
       return;
@@ -391,23 +386,25 @@ export class ProductDetail extends Component {
       },
     };
 
-    if (!hideWishList) {
-      const wishListActive = wishList.items.some(
-        (item) => parseInt(item.product_id, 10) === productDetail.product_id,
-      );
+    if (!productDetail.fetching) {
       topBar.rightButtons = [
-        {
-          id: 'wishlist',
-          icon: iconsMap.favorite,
-          color: wishListActive
-            ? theme.$primaryColor
-            : theme.$navBarButtonColor,
-        },
         {
           id: 'share',
           icon: iconsMap.share,
         },
       ];
+      if (!hideWishList && !isProductOffer) {
+        const wishListActive = wishList.items.some(
+          (item) => parseInt(item.product_id, 10) === productDetail.product_id,
+        );
+        topBar.rightButtons.push({
+          id: 'wishlist',
+          icon: iconsMap.favorite,
+          color: wishListActive
+            ? theme.$primaryColor
+            : theme.$navBarButtonColor,
+        });
+      }
     }
 
     Navigation.mergeOptions(this.props.componentId, {
@@ -415,30 +412,34 @@ export class ProductDetail extends Component {
     });
   }
 
-  productInit(productId = false) {
+  async productInit(productId = false) {
     const { productsActions, pid } = this.props;
 
-    productsActions
-      .fetch(productId || pid)
-      .then((product) => {
-        const minQty = parseInt(get(product.data, 'min_qty', 0), 10);
-        this.setState(
-          {
-            currentPid: productId || false,
-            amount: minQty || 1,
-            fetching: minQty !== 0,
-            showSwiper: false,
-          },
-          () => {
-            if (minQty !== 0) {
-              this.calculatePrice();
-            }
-          },
-        );
-      })
-      .then(() => {
-        this.setState({ showSwiper: true });
-      });
+    const product = await productsActions.fetch(productId || pid);
+
+    if (parseInt(product.data.master_product_offers_count, 10)) {
+      const productOffers = await productsActions.fetchProductOffers(
+        productId || pid,
+      );
+
+      this.setState({ productOffers: productOffers.data });
+    }
+
+    const minQty = parseInt(get(product.data, 'min_qty', 0), 10);
+    this.setState(
+      {
+        currentPid: productId || false,
+        amount: minQty || 1,
+        fetching: minQty !== 0,
+        showSwiper: false,
+      },
+      () => {
+        if (minQty !== 0) {
+          this.calculatePrice();
+        }
+      },
+    );
+    this.setState({ showSwiper: true });
   }
 
   /**
@@ -507,8 +508,9 @@ export class ProductDetail extends Component {
    * Adds the product to cart.
    *
    * @param {boolean} showNotification - Showing notifications or not.
+   * @param {object} productOffer - Product offer of the selected seller.
    */
-  handleAddToCart = (showNotification = true) => {
+  handleAddToCart = (showNotification = true, productOffer) => {
     const productOptions = {};
     const { product, selectedOptions, amount } = this.state;
     const { auth, cartActions } = this.props;
@@ -516,6 +518,8 @@ export class ProductDetail extends Component {
     if (!auth.logged) {
       return nav.showLogin();
     }
+
+    const currentProduct = productOffer || product;
 
     // Convert product options to the option_id: variant_id array.
     Object.keys(selectedOptions).forEach((k) => {
@@ -526,8 +530,8 @@ export class ProductDetail extends Component {
     });
 
     const products = {
-      [product.product_id]: {
-        product_id: product.product_id,
+      [currentProduct.product_id]: {
+        product_id: currentProduct.product_id,
         amount,
         product_options: productOptions,
       },
@@ -539,10 +543,12 @@ export class ProductDetail extends Component {
   /**
    * Adds the product to wishlist.
    */
-  handleAddToWishList() {
+  handleAddToWishList(productOffer) {
     const productOptions = {};
     const { product, selectedOptions } = this.state;
     const { auth, wishListActions, componentId } = this.props;
+
+    const currentProduct = productOffer || product;
 
     if (!auth.logged) {
       return nav.showLogin();
@@ -557,12 +563,13 @@ export class ProductDetail extends Component {
     });
 
     const products = {
-      [product.product_id]: {
-        product_id: product.product_id,
-        amount: product.selectedAmount,
+      [currentProduct.product_id]: {
+        product_id: currentProduct.product_id,
+        amount: currentProduct.selectedAmount || 1,
         product_options: productOptions,
       },
     };
+
     return wishListActions.add({ products }, componentId);
   }
 
@@ -858,7 +865,7 @@ export class ProductDetail extends Component {
    * @return {JSX.Element}
    */
   renderOptions() {
-    const { product } = this.state;
+    const { product, productOffers } = this.state;
 
     const step = parseInt(product.qty_step, 10) || 1;
     const max = parseInt(product.max_qty, 10) || parseInt(product.amount, 10);
@@ -867,15 +874,17 @@ export class ProductDetail extends Component {
     return (
       <Section>
         {product.options.map((o) => this.renderOptionItem(o))}
-        <QtyOption
-          max={max}
-          min={min}
-          initialValue={this.state.amount || min}
-          step={step}
-          onChange={(val) => {
-            this.setState({ amount: val }, this.calculatePrice);
-          }}
-        />
+        {!productOffers && (
+          <QtyOption
+            max={max}
+            min={min}
+            initialValue={this.state.amount || min}
+            step={step}
+            onChange={(val) => {
+              this.setState({ amount: val }, this.calculatePrice);
+            }}
+          />
+        )}
       </Section>
     );
   }
@@ -1014,14 +1023,7 @@ export class ProductDetail extends Component {
             <InAppPayment onPress={this.handleApplePay} />
           </View>
         )}
-
-        <TouchableOpacity
-          style={styles.addToCartBtn}
-          onPress={() => this.handleAddToCart()}>
-          <Text style={styles.addToCartBtnText}>
-            {i18n.t('Add to cart').toUpperCase()}
-          </Text>
-        </TouchableOpacity>
+        <AddToCartButton onPress={() => this.handleAddToCart()} />
       </View>
     );
   }
@@ -1061,13 +1063,37 @@ export class ProductDetail extends Component {
     }
   }
 
+  renderSellers() {
+    const { productOffers } = this.state;
+
+    if (productOffers) {
+      return (
+        <Section title={i18n.t('Sellers')} wrapperStyle={styles.noPadding}>
+          {productOffers.products.map((el, index) => {
+            return (
+              <Seller
+                productOffer={el}
+                handleAddToWishList={() => this.handleAddToWishList(el)}
+                lastVendor={productOffers.products.length - 1 === index}
+                key={index}
+                onPress={() => this.handleAddToCart(true, el)}
+              />
+            );
+          })}
+        </Section>
+      );
+    } else {
+      return null;
+    }
+  }
+
   /**
    * Renders component
    *
    * @return {JSX.Element}
    */
   render() {
-    const { fetching } = this.state;
+    const { fetching, productOffers } = this.state;
 
     if (fetching) {
       return <Spinner visible />;
@@ -1082,7 +1108,9 @@ export class ProductDetail extends Component {
     return (
       <View style={styles.container}>
         <KeyboardAvoidingView
-          contentContainerStyle={styles.keyboardAvoidingContainer}
+          contentContainerStyle={
+            !productOffers && styles.keyboardAvoidingContainer
+          }
           behavior="position">
           <ScrollView>
             {this.renderImage()}
@@ -1093,13 +1121,16 @@ export class ProductDetail extends Component {
               {this.renderDesc()}
             </View>
             {this.renderOptions()}
+            {this.renderSellers()}
             {this.renderDiscussion()}
             {this.renderFeatures()}
             {this.renderVendorInfo()}
           </ScrollView>
-          <View style={styles.addToCartContainerWrapper}>
-            {this.renderAddToCart()}
-          </View>
+          {!productOffers && (
+            <View style={styles.addToCartContainerWrapper}>
+              {this.renderAddToCart()}
+            </View>
+          )}
         </KeyboardAvoidingView>
         <ActionSheet
           ref={(ref) => {
