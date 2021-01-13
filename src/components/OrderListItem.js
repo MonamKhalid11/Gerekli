@@ -54,8 +54,8 @@ const OrderListItem = (props) => {
           <Text style={styles.orderItemEmail}>{item.email}</Text>
         </View>
         <View style={styles.orderItemStatus}>
-          <Text style={[styles.orderItemStatusText, status.style]}>
-            {status.text}
+          <Text style={[styles.orderItemStatusText, status?.style]}>
+            {status?.text}
           </Text>
           <Text style={styles.orderItemTotal}>
             {item.total_formatted
