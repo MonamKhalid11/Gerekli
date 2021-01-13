@@ -165,7 +165,6 @@ export async function initApp() {
     const transResult = await API.get(
       `/sra_translations/?name=mobile_app.mobile_&lang_code=${currentLanguage.langCode}`,
     );
-    console.log('transResult: ', transResult);
     i18n.addResourceBundle(currentLanguage.langCode, 'translation', {
       ...getLocalTranslations(currentLanguage.langCode),
       ...covertLangCodes(transResult.data.langvars),
