@@ -10,7 +10,6 @@ import Section from '../../components/Section';
 import CheckoutSteps from '../../components/CheckoutSteps';
 import BottomActions from '../../components/BottomActions';
 import Spinner from '../../components/Spinner';
-import { steps } from '../../services/vendors';
 
 // Action
 import * as productsActions from '../../actions/vendorManage/productsActions';
@@ -115,6 +114,23 @@ export class AddProductStep3 extends Component {
     }
   };
 
+  getFormOptions = () => {
+    return {
+      disableOrder: true,
+      fields: {
+        price: {
+          label: i18n.t('Price'),
+        },
+        in_stock: {
+          lable: i18n.t('In stock'),
+        },
+        list_price: {
+          label: i18n.t('List price'),
+        },
+      },
+    };
+  };
+
   /**
    * Renders header.
    *
@@ -122,7 +138,7 @@ export class AddProductStep3 extends Component {
    */
   renderHeader = () => (
     <View style={styles.header}>
-      <CheckoutSteps step={2} steps={steps} />
+      <CheckoutSteps step={2} steps={this.props.stepsData.steps} />
     </View>
   );
 
@@ -138,7 +154,11 @@ export class AddProductStep3 extends Component {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {this.renderHeader()}
           <Section>
-            <Form ref={this.formRef} type={formFields} options={formOptions} />
+            <Form
+              ref={this.formRef}
+              type={formFields}
+              options={this.getFormOptions()}
+            />
           </Section>
         </ScrollView>
         <BottomActions

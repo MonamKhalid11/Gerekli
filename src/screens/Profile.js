@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Navigation } from 'react-native-navigation';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -117,22 +118,18 @@ export class ProfileEdit extends Component {
   };
 
   /**
-   * @ignore
-   */
-  static options = {
-    topBar: {
-      title: {
-        text: i18n.t('Profile').toUpperCase(),
-      },
-    },
-  };
-
-  /**
    * Gets data for Pages block.
    */
   componentDidMount() {
     const { pagesActions } = this.props;
     pagesActions.fetch(config.layoutId);
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        title: {
+          text: i18n.t('Profile').toUpperCase(),
+        },
+      },
+    });
   }
 
   /**
@@ -176,7 +173,7 @@ export class ProfileEdit extends Component {
           style={styles.signInBtnContainer}>
           <View style={styles.IconNameWrapper}>
             <Icon name="add-circle" style={styles.menuItemIcon} />
-            <Text style={styles.signInBtnText}>{i18n.t('Add Products')}</Text>
+            <Text style={styles.signInBtnText}>{i18n.t('Add Product')}</Text>
           </View>
           <Icon name="chevron-right" style={styles.rightArrowIcon} />
         </TouchableOpacity>
