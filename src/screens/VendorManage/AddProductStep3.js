@@ -40,9 +40,6 @@ const formFields = t.struct({
   in_stock: t.Number,
   list_price: t.Number,
 });
-const formOptions = {
-  disableOrder: true,
-};
 
 /**
  * Renders add product screen step 3.
@@ -122,7 +119,7 @@ export class AddProductStep3 extends Component {
           label: i18n.t('Price'),
         },
         in_stock: {
-          lable: i18n.t('In stock'),
+          label: i18n.t('In stock'),
         },
         list_price: {
           label: i18n.t('List price'),

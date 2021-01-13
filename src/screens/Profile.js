@@ -162,7 +162,7 @@ export class ProfileEdit extends Component {
           <View style={styles.IconNameWrapper}>
             <Icon name="pages" style={styles.menuItemIcon} />
             <Text style={styles.signInBtnText}>
-              {i18n.t('Vendor Products')}
+              {i18n.t('Vendor products')}
             </Text>
           </View>
           <Icon name="chevron-right" style={styles.rightArrowIcon} />
@@ -173,7 +173,7 @@ export class ProfileEdit extends Component {
           style={styles.signInBtnContainer}>
           <View style={styles.IconNameWrapper}>
             <Icon name="add-circle" style={styles.menuItemIcon} />
-            <Text style={styles.signInBtnText}>{i18n.t('Add Product')}</Text>
+            <Text style={styles.signInBtnText}>{i18n.t('Add product')}</Text>
           </View>
           <Icon name="chevron-right" style={styles.rightArrowIcon} />
         </TouchableOpacity>
