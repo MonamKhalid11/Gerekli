@@ -26,13 +26,6 @@ import * as nav from '../../services/navigation';
 import { iconsMap } from '../../utils/navIcons';
 import { Navigation } from 'react-native-navigation';
 
-// const STATUS_ACTIONS_LIST = [
-//   i18n.t('Make Product Active'),
-//   i18n.t('Make Product Hidden'),
-//   i18n.t('Make Product Disabled'),
-//   i18n.t('Cancel'),
-// ];
-
 const styles = EStyleSheet.create({
   container: {
     flex: 1,

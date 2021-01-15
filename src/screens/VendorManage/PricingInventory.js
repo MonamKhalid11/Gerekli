@@ -31,20 +31,6 @@ const formFields = t.struct({
   list_price: t.Number,
   amount: t.Number,
 });
-// const formOptions = {
-//   disableOrder: true,
-//   fields: {
-//     product_code: {
-//       label: i18n.t('CODE'),
-//     },
-//     list_price: {
-//       label: i18n.t('List price ($)'),
-//     },
-//     amount: {
-//       label: i18n.t('In stock'),
-//     },
-//   },
-// };
 
 /**
  * Renders pricing inventory screen.
