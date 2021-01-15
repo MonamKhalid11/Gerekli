@@ -241,7 +241,7 @@ export class OrderDetail extends Component {
 
     return (
       <FormBlock style={styles.formBlockWraper}>
-        <View>{this.renderFieldRow(i18n.t('Status'), status.text)}</View>
+        <View>{this.renderFieldRow(i18n.t('Status'), status?.text)}</View>
       </FormBlock>
     );
   };
