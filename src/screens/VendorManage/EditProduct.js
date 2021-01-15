@@ -96,39 +96,6 @@ const formFields = t.struct({
   full_description: t.maybe(t.String),
   price: t.Number,
 });
-const formOptions = {
-  disableOrder: true,
-  fields: {
-    product: {
-      label: i18n.t('Name'),
-    },
-    full_description: {
-      label: i18n.t('Full description'),
-      numberOfLines: 4,
-      multiline: true,
-      stylesheet: {
-        ...Form.stylesheet,
-        textbox: {
-          ...Form.stylesheet.textbox,
-          normal: {
-            ...Form.stylesheet.textbox.normal,
-            height: 130,
-          },
-        },
-      },
-      clearButtonMode: 'while-editing',
-    },
-  },
-};
-
-const MORE_ACTIONS_LIST = [i18n.t('Delete This Product'), i18n.t('Cancel')];
-
-const STATUS_ACTIONS_LIST = [
-  i18n.t('Make Product Active'),
-  i18n.t('Make Product Hidden'),
-  i18n.t('Make Product Disabled'),
-  i18n.t('Cancel'),
-];
 
 /**
  * Renders categories picker.
@@ -172,6 +139,13 @@ export class EditProduct extends Component {
     this.formRef = React.createRef();
     Navigation.events().bindComponent(this);
   }
+
+  /**
+   * Returns field names for more action list.
+   */
+  getMoreActionsList = () => {
+    return [i18n.t('Delete This Product'), i18n.t('Cancel')];
+  };
 
   /**
    * Sets header setup.
@@ -226,6 +200,43 @@ export class EditProduct extends Component {
       Navigation.dismissAllModals();
     }
   }
+
+  /**
+   * Returns form options (field names, etc.)
+   */
+  getFormOptions = () => {
+    return {
+      disableOrder: true,
+      fields: {
+        product: {
+          label: i18n.t('Name'),
+        },
+        full_description: {
+          label: i18n.t('Full description'),
+          i18n: {
+            optional: '',
+            required: '',
+          },
+          numberOfLines: 4,
+          multiline: true,
+          stylesheet: {
+            ...Form.stylesheet,
+            textbox: {
+              ...Form.stylesheet.textbox,
+              normal: {
+                ...Form.stylesheet.textbox.normal,
+                height: 130,
+              },
+            },
+          },
+          clearButtonMode: 'while-editing',
+        },
+        price: {
+          label: i18n.t('Price'),
+        },
+      },
+    };
+  };
 
   handleMoreActionSheet = (index) => {
     const { product, productsActions, componentId, showClose } = this.props;
@@ -383,6 +394,18 @@ export class EditProduct extends Component {
   );
 
   /**
+   * Returns field names for changing the status of the order.
+   */
+  getStatusActionsList = () => {
+    return [
+      i18n.t('Make Product Active'),
+      i18n.t('Make Product Hidden'),
+      i18n.t('Make Product Disabled'),
+      i18n.t('Cancel'),
+    ];
+  };
+
+  /**
    * Renders component.
    *
    * @return {JSX.Element}
@@ -404,7 +427,7 @@ export class EditProduct extends Component {
                 ref={this.formRef}
                 type={formFields}
                 value={product}
-                options={formOptions}
+                options={this.getFormOptions()}
               />
             </Section>
             <Section wrapperStyle={{ padding: 0 }}>
@@ -462,7 +485,7 @@ export class EditProduct extends Component {
             ref={(ref) => {
               this.ActionSheet = ref;
             }}
-            options={MORE_ACTIONS_LIST}
+            options={this.getMoreActionsList()}
             cancelButtonIndex={1}
             destructiveButtonIndex={0}
             onPress={this.handleMoreActionSheet}
@@ -471,7 +494,7 @@ export class EditProduct extends Component {
             ref={(ref) => {
               this.StatusActionSheet = ref;
             }}
-            options={STATUS_ACTIONS_LIST}
+            options={this.getStatusActionsList()}
             cancelButtonIndex={3}
             destructiveButtonIndex={2}
             onPress={this.handleStatusActionSheet}

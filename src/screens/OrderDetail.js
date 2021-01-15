@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { format } from 'date-fns';
 import { View, Text, ScrollView, Image } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { Navigation } from 'react-native-navigation';
 
 // Import actions.
 import * as notificationsActions from '../actions/notificationsActions';
@@ -132,6 +133,19 @@ export class OrderDetail extends Component {
   }
 
   /**
+   * Gets wishlist. Sets header setup.
+   */
+  componentDidMount() {
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        title: {
+          text: i18n.t('Order Detail').toUpperCase(),
+        },
+      },
+    });
+  }
+
+  /**
    * Gets order information.
    */
   componentWillMount() {
@@ -245,8 +259,8 @@ export class OrderDetail extends Component {
                     {field.field_type === 'O' && country.name
                       ? country.name
                       : field.field_type === 'A' && state.name
-                        ? state.name
-                        : orderDetail[field.field_id]}
+                      ? state.name
+                      : orderDetail[field.field_id]}
                   </FormBlockField>
                 );
               }

@@ -650,7 +650,7 @@ export function pushVendorManagePricingInventory(componentId, params = {}) {
       options: {
         topBar: {
           title: {
-            text: params.title || i18n.t('Pricing / inventory'),
+            text: params.title || i18n.t('Pricing / Inventory'),
           },
         },
       },
@@ -666,7 +666,7 @@ export function pushVendorManageShippingProperties(componentId, params = {}) {
       options: {
         topBar: {
           title: {
-            text: params.title || i18n.t('Shipping Properties'),
+            text: params.title || i18n.t('Shipping properties'),
           },
         },
       },

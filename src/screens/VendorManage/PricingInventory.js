@@ -31,20 +31,20 @@ const formFields = t.struct({
   list_price: t.Number,
   amount: t.Number,
 });
-const formOptions = {
-  disableOrder: true,
-  fields: {
-    product_code: {
-      label: i18n.t('CODE'),
-    },
-    list_price: {
-      label: i18n.t('List price ($)'),
-    },
-    amount: {
-      label: i18n.t('In stock'),
-    },
-  },
-};
+// const formOptions = {
+//   disableOrder: true,
+//   fields: {
+//     product_code: {
+//       label: i18n.t('CODE'),
+//     },
+//     list_price: {
+//       label: i18n.t('List price ($)'),
+//     },
+//     amount: {
+//       label: i18n.t('In stock'),
+//     },
+//   },
+// };
 
 /**
  * Renders pricing inventory screen.
@@ -70,6 +70,26 @@ export class PricingInventory extends Component {
     super(props);
     this.formRef = React.createRef();
   }
+
+  /**
+   * Returns form options (field names, etc.)
+   */
+  getFormOptions = () => {
+    return {
+      disableOrder: true,
+      fields: {
+        product_code: {
+          label: i18n.t('CODE'),
+        },
+        list_price: {
+          label: i18n.t('List price ($)'),
+        },
+        amount: {
+          label: i18n.t('In stock'),
+        },
+      },
+    };
+  };
 
   /**
    * Saves changes.
@@ -99,7 +119,7 @@ export class PricingInventory extends Component {
             <Form
               ref={this.formRef}
               type={formFields}
-              options={formOptions}
+              options={this.getFormOptions()}
               value={product}
             />
           </Section>

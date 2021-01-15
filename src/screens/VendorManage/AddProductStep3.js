@@ -111,6 +111,9 @@ export class AddProductStep3 extends Component {
     }
   };
 
+  /**
+   * Returns form options (field names, etc.)
+   */
   getFormOptions = () => {
     return {
       disableOrder: true,

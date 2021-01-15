@@ -6,6 +6,7 @@ import { View, FlatList } from 'react-native';
 import ActionSheet from 'react-native-actionsheet';
 import Swipeout from 'react-native-swipeout';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { Navigation } from 'react-native-navigation';
 
 // Styles
 import theme from '../../config/theme';
@@ -69,17 +70,6 @@ export class Orders extends Component {
   /**
    * @ignore
    */
-  static options = {
-    topBar: {
-      title: {
-        text: i18n.t('Vendor Orders').toUpperCase(),
-      },
-    },
-  };
-
-  /**
-   * @ignore
-   */
   constructor(props) {
     super(props);
 
@@ -91,7 +81,7 @@ export class Orders extends Component {
   }
 
   /**
-   * Gets orders.
+   * Gets orders. Sets top bar options.
    */
   componentDidMount() {
     const {
@@ -99,6 +89,13 @@ export class Orders extends Component {
       orders: { page },
     } = this.props;
     ordersActions.fetch(page);
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        title: {
+          text: i18n.t('Vendor Orders').toUpperCase(),
+        },
+      },
+    });
   }
 
   /**
