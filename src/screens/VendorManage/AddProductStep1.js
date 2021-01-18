@@ -16,7 +16,6 @@ import CheckoutSteps from '../../components/CheckoutSteps';
 import Section from '../../components/Section';
 import BottomActions from '../../components/BottomActions';
 import * as imagePickerActions from '../../actions/imagePickerActions';
-import { steps } from '../../services/vendors';
 import * as nav from '../../services/navigation';
 import i18n from '../../utils/i18n';
 import { Navigation } from 'react-native-navigation';
@@ -76,8 +75,17 @@ export class AddProductStep1 extends Component {
       stepsData: {
         images,
         category_ids,
+        steps: this.getSteps(),
       },
     });
+  };
+
+  getSteps = () => {
+    return [
+      i18n.t('Image'),
+      i18n.t('Enter the name'),
+      i18n.t('Enter the price'),
+    ];
   };
 
   /**
@@ -101,7 +109,7 @@ export class AddProductStep1 extends Component {
     return (
       <View>
         <View style={styles.header}>
-          <CheckoutSteps step={0} steps={steps} />
+          <CheckoutSteps step={0} steps={this.getSteps()} />
         </View>
         <Section containerStyle={styles.containerStyle}>
           <TouchableOpacity

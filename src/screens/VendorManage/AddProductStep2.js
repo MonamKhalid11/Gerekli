@@ -8,7 +8,6 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import Section from '../../components/Section';
 import CheckoutSteps from '../../components/CheckoutSteps';
 import BottomActions from '../../components/BottomActions';
-import { steps } from '../../services/vendors';
 
 import i18n from '../../utils/i18n';
 import * as nav from '../../services/navigation';
@@ -34,28 +33,6 @@ const formFields = t.struct({
   name: t.String,
   description: t.maybe(t.String),
 });
-const formOptions = {
-  disableOrder: true,
-  fields: {
-    description: {
-      label: i18n.t('Description'),
-      clearButtonMode: 'while-editing',
-      multiline: true,
-      returnKeyType: 'done',
-      blurOnSubmit: true,
-      stylesheet: {
-        ...Form.stylesheet,
-        textbox: {
-          ...Form.stylesheet.textbox,
-          normal: {
-            ...Form.stylesheet.textbox.normal,
-            height: 150,
-          },
-        },
-      },
-    },
-  },
-};
 
 /**
  * Renders add product screen step 2.
@@ -93,9 +70,45 @@ export class AddProductStep2 extends Component {
           ...stepsData,
           name: value.name,
           description: value.description,
+          steps: this.props.stepsData.steps,
         },
       });
     }
+  };
+
+  /**
+   * Returns form options (field names, etc.)
+   */
+  getFormOptions = () => {
+    return {
+      disableOrder: true,
+      fields: {
+        description: {
+          label: i18n.t('Description'),
+          i18n: {
+            optional: '',
+            required: '',
+          },
+          clearButtonMode: 'while-editing',
+          multiline: true,
+          returnKeyType: 'done',
+          blurOnSubmit: true,
+          stylesheet: {
+            ...Form.stylesheet,
+            textbox: {
+              ...Form.stylesheet.textbox,
+              normal: {
+                ...Form.stylesheet.textbox.normal,
+                height: 150,
+              },
+            },
+          },
+        },
+        name: {
+          label: i18n.t('Name'),
+        },
+      },
+    };
   };
 
   /**
@@ -105,7 +118,7 @@ export class AddProductStep2 extends Component {
    */
   renderHeader = () => (
     <View style={styles.header}>
-      <CheckoutSteps step={1} steps={steps} />
+      <CheckoutSteps step={1} steps={this.props.stepsData.steps} />
     </View>
   );
 
@@ -120,7 +133,11 @@ export class AddProductStep2 extends Component {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {this.renderHeader()}
           <Section>
-            <Form ref={this.formRef} type={formFields} options={formOptions} />
+            <Form
+              ref={this.formRef}
+              type={formFields}
+              options={this.getFormOptions()}
+            />
           </Section>
         </ScrollView>
         <BottomActions

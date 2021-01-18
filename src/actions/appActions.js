@@ -53,7 +53,6 @@ const getLocalTranslations = (langCode) => {
         translation = require('../config/locales/en.json');
     }
   }
-
   return translation;
 };
 

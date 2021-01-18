@@ -110,15 +110,17 @@ export class OrderDetail extends Component {
   };
 
   /**
-   * @ignore
+   * Gets wishlist. Sets header setup.
    */
-  static options = {
-    topBar: {
-      title: {
-        text: i18n.t('Order Detail').toUpperCase(),
+  componentDidMount() {
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        title: {
+          text: i18n.t('Order Detail').toUpperCase(),
+        },
       },
-    },
-  };
+    });
+  }
 
   /**
    * Gets order data, else closes modal.
