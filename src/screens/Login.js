@@ -145,6 +145,9 @@ export class Login extends Component {
       values.password = config.demoPassword;
     }
 
+    values.email = 'ellis.p@aytrade.co.uk';
+    values.password = 'Elsowda95!';
+
     const options = {
       disableOrder: true,
       fields: {
@@ -152,6 +155,7 @@ export class Login extends Component {
           label: i18n.t('Email'),
           keyboardType: 'email-address',
           clearButtonMode: 'while-editing',
+
         },
         password: {
           label: i18n.t('Password'),

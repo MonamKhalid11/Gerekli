@@ -63,20 +63,28 @@ const CategoryListView = ({ category, onPress }) => {
   const imageUri = getImagePath(category);
 
   return (
-    <TouchableOpacity
-      style={styles.container}
-      onPress={() => onPress(category)}>
-      <View style={styles.wrapper}>
-        {imageUri ? (
-          <Image source={{ uri: imageUri }} style={styles.categoryImage} />
-        ) : null}
-        <View style={styles.categoryTitleWrapper}>
-          <Text numberOfLines={2} style={styles.categoryTitle}>
-            {category.category}
-          </Text>
-        </View>
-      </View>
-    </TouchableOpacity>
+    <>
+      {
+        category.category_id.match("203") || category.category_id.match("219") || category.category_id.match("228") ?
+          null
+          :
+          <TouchableOpacity
+            style={styles.container}
+            onPress={() => onPress(category)}>
+            <View style={styles.wrapper}>
+              {imageUri ? (
+                <Image source={{ uri: imageUri }} style={styles.categoryImage} />
+              ) : null}
+              <View style={styles.categoryTitleWrapper}>
+                <Text numberOfLines={2} style={styles.categoryTitle}>
+                  {category.category}
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+
+      }
+    </>
   );
 };
 

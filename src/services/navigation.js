@@ -55,7 +55,7 @@ export function setRoot() {
                 bottomTab: {
                   icon: iconsMap.home,
                   selectedIconColor: 'black',
-                  text: i18n.t('Home'),
+                  text: i18n.t('home'),
                 },
               },
             },

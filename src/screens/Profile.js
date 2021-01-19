@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-
+import { Navigation } from 'react-native-navigation';
 import * as authActions from '../actions/authActions';
 import i18n from '../utils/i18n';
 import theme from '../config/theme';
@@ -106,7 +106,9 @@ const styles = EStyleSheet.create({
  *
  * @reactProps {object} authActions - Auth actions.
  */
+
 export class ProfileEdit extends Component {
+
   /**
    * @ignore
    */
@@ -119,13 +121,15 @@ export class ProfileEdit extends Component {
   /**
    * @ignore
    */
-  static options = {
-    topBar: {
-      title: {
-        text: i18n.t('Profile').toUpperCase(),
-      },
-    },
-  };
+
+
+  // static options = {
+  //   topBar: {
+  //     title: {
+  //       text: i18n.t('Profile').toLocaleUpperCase()
+  //     },
+  //   },
+  // };
 
   /**
    * Gets data for Pages block.
@@ -133,7 +137,16 @@ export class ProfileEdit extends Component {
   componentDidMount() {
     const { pagesActions } = this.props;
     pagesActions.fetch(config.layoutId);
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        title: {
+          text: i18n.t('Profile').toUpperCase(),
+        },
+      },
+    });
+
   }
+
 
   /**
    * Renders Seller block if the user is vendor.
@@ -201,7 +214,7 @@ export class ProfileEdit extends Component {
         <TouchableOpacity
           onPress={() => nav.pushLanguageSelection(this.props.componentId)}
           style={styles.signInBtnContainer}>
-          <Text style={styles.signInBtnText}>{i18n.t('Language')}</Text>
+          <Text style={styles.signInBtnText}>{i18n.t('languages')}</Text>
           <View style={styles.IconNameWrapper}>
             <Text style={styles.hintText}>
               {settings.selectedLanguage.langCode.toUpperCase()}
@@ -241,6 +254,7 @@ export class ProfileEdit extends Component {
           </Text>
         </View>
         {pages.items.map((page, index) => {
+          { console.log("showing pages here", page) }
           return (
             <TouchableOpacity
               key={index}
@@ -256,7 +270,7 @@ export class ProfileEdit extends Component {
                   this.props.componentId,
                 )
               }>
-              <Text style={styles.signInBtnText}>{page.page}</Text>
+              <Text style={styles.signInBtnText}>{i18n.t(page.page)}</Text>
               <Icon name="chevron-right" style={styles.rightArrowIcon} />
             </TouchableOpacity>
           );
@@ -390,6 +404,8 @@ export class ProfileEdit extends Component {
    */
   render() {
     const { profile, pages, auth, cart, authActions, settings } = this.props;
+
+    console.log("showing props selected ", this.props)
 
     return (
       <ScrollView style={styles.container}>

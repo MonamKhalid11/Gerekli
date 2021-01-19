@@ -16,7 +16,7 @@ export default {
   // SHOP NAME
   shopName: 'Gerekli',
   // SHOP DEFAULT LAYOUT ID
-  layoutId: 4, // Default www.mobile.demo.cs-cart.com layout id
+  layoutId: 6, // Default www.mobile.demo.cs-cart.com layout id
   // VERSION MVE OR ULT
   version: 'MVE',
   // Enable push notifications
@@ -24,9 +24,9 @@ export default {
   pushNotificationChannelId: 'cscart.default',
   pushNotificationsColor: '#26323e',
   // Demo app features
-  demo: true,
-  demoUsername: 'acmecorp@example.com',
-  demoPassword: 'vendor',
+  demo: false,
+  demoUsername: 'ellis.p@aytrade.co.uk',
+  demoPassword: 'Elsowda95!',
 
   // Apple pay payments
   applePay: false,

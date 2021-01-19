@@ -94,6 +94,7 @@ const CartProductList = ({
    * Moves to the next page.
    */
   const handlePlaceOrder = (auth, products, cart) => {
+    console.log("shwoing auth", auth, "shwoing Products", products, "shwoing Carts", cart)
     const newProducts = {};
     products.forEach((p) => {
       newProducts[p.product_id] = {

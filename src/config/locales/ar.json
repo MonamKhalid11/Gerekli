@@ -1,7 +1,7 @@
 {
   "": {
-  "language": "ar",
-  "plural-forms": "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);"
+    "language": "ar",
+    "plural-forms": "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);"
   },
   "Address:": "العنوان:",
   "Add to cart": "إضافة للسلة",
@@ -43,7 +43,7 @@
   "Feautures": "الخصائص",
   "First name:": "الإسم الأول:",
   "Go To Store": "الذهاب للمتجر",
-  "Home": "الرئيسية",
+  "home": "الرئيسية",
   "Information": "المعلومات",
   "{{count}} item(s)": "{{count}} العناصر",
   "Last name:": "الإسم الأخير:",

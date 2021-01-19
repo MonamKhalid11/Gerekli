@@ -27,6 +27,8 @@ export default function (state = initialState, action) {
           return action.payload.blocks[k];
         })
         .sort((a, b) => a.order - b.order);
+
+      console.log("shwoing new states here after adding it ", newState)
       return {
         ...state,
         blocks: newState,

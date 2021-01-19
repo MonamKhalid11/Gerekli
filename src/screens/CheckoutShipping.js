@@ -124,6 +124,7 @@ export class CheckoutShipping extends Component {
    */
   componentDidMount() {
     const { cart } = this.props;
+    console.log("showing carts ", cart)
     this.setDefaults(cart);
 
     setTimeout(() => this.handleLoadInitial(), 500);
@@ -143,8 +144,12 @@ export class CheckoutShipping extends Component {
    * @param {object} cart - Cart information.
    */
   setDefaults(cart) {
+
     const items = this.normalizeData(cart.product_groups);
     const shippings = [];
+    console.log("[SetDefaults]showing items here ", items)
+
+    console.log("[SetDefaults]showing shippings here ", shippings)
 
     items.forEach((item) => {
       if (item) {
@@ -277,6 +282,7 @@ export class CheckoutShipping extends Component {
    * @return {JSX.Element}
    */
   renderItem = (shipping, shippingIndex, itemIndex) => {
+    console.log("showing shipping", shipping)
     return (
       <TouchableOpacity
         key={uniqueId('item_')}
@@ -287,8 +293,8 @@ export class CheckoutShipping extends Component {
             {shipping.isSelected ? (
               <Icon name="radio-button-checked" style={styles.checkIcon} />
             ) : (
-              <Icon name="radio-button-unchecked" style={styles.uncheckIcon} />
-            )}
+                <Icon name="radio-button-unchecked" style={styles.uncheckIcon} />
+              )}
             <Text style={styles.shippingItemText}>
               {shipping.shipping} {shipping.delivery_time}
             </Text>
@@ -339,6 +345,9 @@ export class CheckoutShipping extends Component {
   render() {
     const { items, isNextDisabled, total } = this.state;
     const { stateCart } = this.props;
+    console.log("[Checkout items]showing items :", items)
+    console.log("[Checkout StateCarts]showing state carts", stateCart)
+
 
     if (stateCart.fetching) {
       return <Spinner visible />;

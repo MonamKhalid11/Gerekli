@@ -107,11 +107,13 @@ export class Checkout extends Component {
   handleNextPress(values) {
     const { cart, cartActions } = this.props;
 
+
     cartActions.saveUserData({
       ...cart.user_data,
       ...values,
     });
 
+    console.log("showing values cart: ", values, "Showing cart details here", cart)
     nav.pushCheckoutShipping(this.props.componentId, {
       cart,
       total: cart.subtotal,

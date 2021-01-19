@@ -13,6 +13,7 @@ export function fetch(location = 'index.index') {
       `/sra_bm_layouts/${config.layoutId}/sra_bm_locations/${location}/sra_bm_blocks`,
     )
       .then((response) => {
+        console.log("showing layouts api data ", response.data)
         dispatch({
           type: FETCH_LAYOUTS_BLOCKS_SUCCESS,
           payload: {
@@ -30,4 +31,4 @@ export function fetch(location = 'index.index') {
   };
 }
 
-export function dummy() {}
+export function dummy() { }
