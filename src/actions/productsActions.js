@@ -128,7 +128,12 @@ export function recalculatePrice(pid, options) {
 
 export function fetch(pid) {
   return (dispatch) => {
-    dispatch({ type: FETCH_ONE_PRODUCT_REQUEST });
+    dispatch({
+      type: FETCH_ONE_PRODUCT_REQUEST,
+      payload: {
+        pid,
+      },
+    });
 
     return Api.get(`/sra_products/${pid}`)
       .then((response) => {
@@ -136,6 +141,7 @@ export function fetch(pid) {
           type: FETCH_ONE_PRODUCT_SUCCESS,
           payload: {
             product: response.data,
+            pid,
           },
         });
         // Load discussion if it is not disabled.
@@ -147,6 +153,9 @@ export function fetch(pid) {
       .catch((error) => {
         dispatch({
           type: FETCH_ONE_PRODUCT_FAIL,
+          payload: {
+            pid,
+          },
           error,
         });
       });
