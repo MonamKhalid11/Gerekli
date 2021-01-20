@@ -138,7 +138,7 @@ export default class extends Component {
     }
     return [
       i18n.t('Authentication'),
-      i18n.t('Delivery'),
+      i18n.t('Profile'),
       i18n.t('Shipping'),
       i18n.t('Payment method'),
     ];

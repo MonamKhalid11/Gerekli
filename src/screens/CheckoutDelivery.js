@@ -19,6 +19,7 @@ import { formatPrice } from '../utils';
 import ProfileForm from '../components/ProfileForm';
 import { iconsMap } from '../utils/navIcons';
 import * as nav from '../services/navigation';
+import { objectFilter } from '../utils/index';
 
 const styles = EStyleSheet.create({
   container: {
@@ -107,16 +108,56 @@ export class Checkout extends Component {
   handleNextPress(values) {
     const { cart, cartActions } = this.props;
 
+    console.log('cart: ', cart);
+
     cartActions.saveUserData({
       ...cart.user_data,
       ...values,
     });
+
+    if (true) {
+      nav.pushCheckoutPayment(this.props.componentId, {
+        cart,
+        shipping_id: this.state.shipping_id,
+      });
+    }
 
     nav.pushCheckoutShipping(this.props.componentId, {
       cart,
       total: cart.subtotal,
     });
   }
+
+  getStepsForDigitalProducts = () => {
+    return [
+      i18n.t('Authentication'),
+      i18n.t('Profile'),
+      i18n.t('Payment method'),
+    ];
+  };
+
+  fieldsFilter = (cart, fields) => {
+    let isShipping = false;
+    cart.product_groups.forEach((el) => {
+      if (
+        el.all_edp_free_shipping ||
+        el.shipping_no_required ||
+        el.free_shipping ||
+        !el.shippings.length
+      ) {
+        isShipping = true;
+      }
+    });
+
+    if (isShipping) {
+      fields = objectFilter(
+        fields,
+        (fields) => fields.description !== 'Shipping address',
+      );
+    }
+
+    return fields;
+  };
 
   /**
    * Renders component
@@ -135,14 +176,19 @@ export class Checkout extends Component {
       );
     }
 
+    const filteredFields = this.fieldsFilter(cart, fields);
+
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.contentContainer}>
-          <CheckoutSteps step={1} />
+          <CheckoutSteps
+            step={1}
+            steps={true ? this.getStepsForDigitalProducts() : false}
+          />
         </View>
 
         <ProfileForm
-          fields={fields}
+          fields={filteredFields}
           cartFooterEnabled
           showTitles
           totalPrice={formatPrice(cart.total_formatted.price)}
