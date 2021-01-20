@@ -311,17 +311,15 @@ export class ProductDetail extends Component {
       auth,
       vendorActions,
       hideWishList,
+      pid,
     } = nextProps;
-    const product = productDetail;
-
-    const isProductOffer = !!parseInt(
-      productDetail.master_product_offers_count,
-      10,
-    );
+    const product = productDetail.byId[pid];
 
     if (!product) {
       return;
     }
+
+    const isProductOffer = !!parseInt(product.master_product_offers_count, 10);
 
     // If we haven't images put main image.
     const images = getProductImagesPaths(product);
@@ -376,7 +374,7 @@ export class ProductDetail extends Component {
       vendor: vendors.items[product.company_id] || null,
       canWriteComments:
         !activeDiscussion.disable_adding &&
-        productDetail.discussion_type !== DISCUSSION_DISABLED &&
+        product.discussion_type !== DISCUSSION_DISABLED &&
         auth.logged,
     });
 
@@ -386,7 +384,7 @@ export class ProductDetail extends Component {
       },
     };
 
-    if (!productDetail.fetching) {
+    if (!product.fetching) {
       topBar.rightButtons = [
         {
           id: 'share',
@@ -395,7 +393,7 @@ export class ProductDetail extends Component {
       ];
       if (!hideWishList && !isProductOffer) {
         const wishListActive = wishList.items.some(
-          (item) => parseInt(item.product_id, 10) === productDetail.product_id,
+          (item) => parseInt(item.product_id, 10) === product.product_id,
         );
         topBar.rightButtons.push({
           id: 'wishlist',
@@ -756,13 +754,14 @@ export class ProductDetail extends Component {
    * @return {JSX.Element}
    */
   renderDiscussion() {
-    const { productDetail } = this.props;
+    const { productDetail, pid } = this.props;
     const { discussion, canWriteComments } = this.state;
+
     if (
       discussion.average_rating === '' ||
       discussion.type === DISCUSSION_DISABLED ||
-      productDetail.discussion_type === DISCUSSION_DISABLED ||
-      !productDetail.discussion_type
+      productDetail.byId[pid].discussion_type === DISCUSSION_DISABLED ||
+      !productDetail.byId[pid].discussion_type
     ) {
       return null;
     }
@@ -785,7 +784,7 @@ export class ProductDetail extends Component {
           nav.pushWriteReview(this.props.componentId, {
             activeDiscussion: discussion,
             discussionType: 'P',
-            discussionId: productDetail.product_id,
+            discussionId: productDetail.byId[pid].product_id,
           });
         }}>
         <DiscussionList
