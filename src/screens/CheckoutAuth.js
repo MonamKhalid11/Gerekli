@@ -68,7 +68,7 @@ export class CheckoutAuth extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.auth.logged && !nextProps.auth.fetching) {
       setTimeout(() => {
-        nav.showCheckoutDelivery({});
+        nav.showCheckoutProfile({});
       }, 1000);
     } else if (nextProps.auth.error && !nextProps.auth.fetching) {
       this.props.navigator.showInAppNotification({

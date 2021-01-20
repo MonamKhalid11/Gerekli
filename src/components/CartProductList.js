@@ -103,7 +103,7 @@ const CartProductList = ({
     if (!auth.logged) {
       nav.pushCheckoutAuth(componentId, { newProducts });
     } else {
-      nav.showCheckoutDelivery({
+      nav.showCheckoutProfile({
         newProducts,
         cart,
       });

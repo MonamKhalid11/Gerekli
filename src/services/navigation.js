@@ -304,13 +304,13 @@ export function showGallery(params = {}) {
   });
 }
 
-export function showCheckoutDelivery(params) {
+export function showCheckoutProfile(params) {
   Navigation.showModal({
     stack: {
       children: [
         {
           component: {
-            name: 'CheckoutDelivery',
+            name: 'CheckoutProfile',
             passProps: params,
           },
         },

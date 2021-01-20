@@ -40,7 +40,7 @@ const styles = EStyleSheet.create({
  * @reactProps {object} cart - Cart information.
  * @reactProps {object} authActions - Auth actions.
  */
-export class Checkout extends Component {
+export class CheckoutProfile extends Component {
   /**
    * @ignore
    */
@@ -214,4 +214,4 @@ export default connect(
     authActions: bindActionCreators(authActions, dispatch),
     cartActions: bindActionCreators(cartActions, dispatch),
   }),
-)(Checkout);
+)(CheckoutProfile);
