@@ -76,7 +76,7 @@ export const getProductDetail = (id) => {
       }
     }
   `;
-  return gql(QUERY, { id }).then(result => result.data);
+  return gql(QUERY, { id }).then((result) => result.data);
 };
 
 export const updateProduct = (id, product) => {
@@ -101,7 +101,7 @@ export const updateProduct = (id, product) => {
                 upload: $main
               }
             }
-          `
+          `,
         );
       }
 
@@ -139,9 +139,7 @@ export const updateProduct = (id, product) => {
         return params.push('$main: FileUpload');
       }
 
-      return params.push(
-        `$image_${index}: FileUpload`
-      );
+      return params.push(`$image_${index}: FileUpload`);
     });
     return params.join(', ');
   };
@@ -187,7 +185,7 @@ export const updateProduct = (id, product) => {
       ...omit(product, ['images']),
       main: null,
       image_0: null,
-    }
+    },
   });
 
   data.append('operations', serializedData);
@@ -203,7 +201,7 @@ export const updateProduct = (id, product) => {
     });
   }
 
-  return AxiosInstance.post('', data).then(result => result.data);
+  return AxiosInstance.post('', data).then((result) => result.data);
 };
 
 export const deleteProduct = (id) => {
@@ -212,7 +210,7 @@ export const deleteProduct = (id) => {
       delete_product(id: $id)
     }
   `;
-  return gql(QUERY, { id }).then(result => result.data);
+  return gql(QUERY, { id }).then((result) => result.data);
 };
 
 export const createProduct = (product) => {
@@ -237,7 +235,7 @@ export const createProduct = (product) => {
                 upload: $main
               }
             }
-          `
+          `,
         );
       }
 
@@ -275,9 +273,7 @@ export const createProduct = (product) => {
         return params.push('$main: FileUpload');
       }
 
-      return params.push(
-        `$image_${index}: FileUpload`
-      );
+      return params.push(`$image_${index}: FileUpload`);
     });
     return params.join(', ');
   };
@@ -310,7 +306,7 @@ export const createProduct = (product) => {
       ...omit(product, ['images']),
       main: null,
       image_0: null,
-    }
+    },
   });
   data.append('operations', serializedData);
 
@@ -323,7 +319,7 @@ export const createProduct = (product) => {
     data.append(index, photo);
   });
 
-  return AxiosInstance.post('', data).then(result => result.data);
+  return AxiosInstance.post('', data).then((result) => result.data);
 };
 
 export const getProductsList = (page = 1) => {
@@ -343,7 +339,7 @@ export const getProductsList = (page = 1) => {
     }
   }`;
 
-  return gql(QUERY, { page }).then(result => result.data);
+  return gql(QUERY, { page }).then((result) => result.data);
 };
 
 export const getCategoriesList = (parent = 0, page = 1) => {
@@ -358,9 +354,8 @@ export const getCategoriesList = (parent = 0, page = 1) => {
     }
   `;
 
-  return gql(QUERY, { parent, page }).then(result => result.data);
+  return gql(QUERY, { parent, page }).then((result) => result.data);
 };
-
 
 export const getOrdersList = (page = 1) => {
   const QUERY = `query getOrders($page: Int) {
@@ -404,7 +399,7 @@ export const getOrdersList = (page = 1) => {
   }
 `;
 
-  return gql(QUERY, { page }).then(result => result.data);
+  return gql(QUERY, { page }).then((result) => result.data);
 };
 
 export const getOrder = (id) => {
@@ -487,9 +482,8 @@ export const getOrder = (id) => {
   }
 `;
 
-  return gql(QUERY, { id }).then(result => result.data);
+  return gql(QUERY, { id }).then((result) => result.data);
 };
-
 
 export const updateStatus = (id, status) => {
   const QUERY = `
@@ -505,5 +499,5 @@ export const updateStatus = (id, status) => {
       )
     }
   `;
-  return gql(QUERY, { id, status }).then(result => result.data);
+  return gql(QUERY, { id, status }).then((result) => result.data);
 };
