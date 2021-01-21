@@ -131,12 +131,15 @@ export default function (state = initialState, action) {
       };
 
     case CART_RECALCULATE_SUCCESS:
+
+
       return {
         ...state,
         total: action.payload.total,
         total_formatted: action.payload.total_formatted,
         subtotal: action.payload.total_formatted,
         subtotal_formatted: action.payload.subtotal_formatted,
+        shipping: action.payload.shipping,
         coupons: Object.keys(action.payload.coupons).map((k) => k),
       };
 

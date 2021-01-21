@@ -144,10 +144,6 @@ export class Login extends Component {
       values.email = config.demoUsername;
       values.password = config.demoPassword;
     }
-
-    values.email = 'ellis.p@aytrade.co.uk';
-    values.password = 'Elsowda95!';
-
     const options = {
       disableOrder: true,
       fields: {

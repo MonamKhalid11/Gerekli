@@ -70,6 +70,7 @@ export default class PaymentEmpty extends Component {
   };
 
   componentDidMount() {
+    console.log("showing refrences passed here ", this.formRef)
     this.props.onInit(this.refs.formRef);
   }
 

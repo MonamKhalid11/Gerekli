@@ -77,6 +77,7 @@ const styles = EStyleSheet.create({
   },
 });
 
+const PAYMENT_CASH_ONLY = 'views/orders/components/payments/cod.tpl';
 const PAYMENT_CREDIT_CARD = 'views/orders/components/payments/cc.tpl';
 const PAYMENT_EMPTY = 'views/orders/components/payments/empty.tpl';
 const PAYMENT_CHECK = 'views/orders/components/payments/check.tpl';
@@ -92,6 +93,7 @@ const PAYMENTS = [
   PAYMENT_CHECK,
   PAYMENT_PAYPAL_EXPRESS,
   PAYMENT_PHONE,
+  PAYMENT_CASH_ONLY
 ];
 
 /**
@@ -133,10 +135,15 @@ export class CheckoutPayment extends Component {
    * Defines the available payment methods.
    */
   componentDidMount() {
-    const { cart } = this.props;
+    const { cart, stateCart } = this.props;
+
+    console.log("[Payments]shwoing existing carts here ", cart)
+
     const items = Object.keys(cart.payments)
       .map((k) => cart.payments[k])
       .filter((p) => PAYMENTS.includes(p.template));
+
+    console.log("showing items here", items)
     // FIXME: Default selected payment method.
     const selectedItem = items[0];
 
@@ -169,71 +176,81 @@ export class CheckoutPayment extends Component {
    * Redirects to CheckoutComplete.
    */
   placeOrderAndComplete() {
-    const { cart, shipping_id, ordersActions, cartActions } = this.props;
-    const values = this.paymentFormRef.getValue();
+    try {
+      const { cart, shipping_id, ordersActions, cartActions } = this.props;
+      console.log("showing values here ", this.paymentFormRef)
 
-    if (!values) {
-      return null;
-    }
+      const values = this.paymentFormRef.getValue();
 
-    this.setState({
-      fetching: true,
-    });
+      if (!values) {
+        return null;
+      }
 
-    const orderInfo = {
-      products: {},
-      coupon_codes: cart.coupons,
-      shipping_id,
-      payment_id: this.state.selectedItem.payment_id,
-      user_data: cart.user_data,
-      ...values,
-    };
-    Object.keys(cart.products).map((key) => {
-      const p = cart.products[key];
-      orderInfo.products[p.product_id] = {
-        product_id: p.product_id,
-        amount: p.amount,
-        product_options: p.product_options,
-      };
-      return orderInfo;
-    });
-
-    if (values.phone) {
-      orderInfo.payment_info = {
-        ...orderInfo.payment_info,
-        customer_phone: values.phone,
-      };
-    } else if (values.cardNumber) {
-      orderInfo.payment_info = {
-        ...orderInfo.payment_info,
-        card_number: values.cardNumber,
-        expiry_month: values.expiryMonth,
-        expiry_year: values.expiryYear,
-        cardholder_name: values.cardholderName,
-        cvv2: values.ccv,
-      };
-    }
-
-    ordersActions
-      .create(orderInfo)
-      .then(({ data }) => {
-        this.setState({
-          fetching: false,
-        });
-        if (!data) {
-          return;
-        }
-        cartActions.clear(cart);
-        nav.pushCheckoutComplete(this.props.componentId, {
-          orderId: data.order_id,
-        });
-      })
-      .catch(() => {
-        this.setState({
-          fetching: false,
-        });
+      this.setState({
+        fetching: true,
       });
-    return null;
+
+      const orderInfo = {
+        products: {},
+        coupon_codes: cart.coupons,
+        shipping_id,
+        payment_id: this.state.selectedItem.payment_id,
+        user_data: cart.user_data,
+        ...values,
+      };
+      Object.keys(cart.products).map((key) => {
+        const p = cart.products[key];
+        orderInfo.products[p.product_id] = {
+          product_id: p.product_id,
+          amount: p.amount,
+          product_options: p.product_options,
+        };
+        return orderInfo;
+      });
+
+      if (values.phone) {
+        orderInfo.payment_info = {
+          ...orderInfo.payment_info,
+          customer_phone: values.phone,
+        };
+      } else if (values.cardNumber) {
+        orderInfo.payment_info = {
+          ...orderInfo.payment_info,
+          card_number: values.cardNumber,
+          expiry_month: values.expiryMonth,
+          expiry_year: values.expiryYear,
+          cardholder_name: values.cardholderName,
+          cvv2: values.ccv,
+        };
+      }
+      console.log("Hey machine show me placed order info:", orderInfo)
+
+
+      ordersActions
+        .create(orderInfo)
+        .then(({ data }) => {
+          this.setState({
+            fetching: false,
+          });
+          if (!data) {
+            return;
+          }
+          cartActions.clear(cart);
+          nav.pushCheckoutComplete(this.props.componentId, {
+            orderId: data.order_id,
+          });
+        })
+        .catch(() => {
+          this.setState({
+            fetching: false,
+          });
+        });
+      return null;
+    } catch (error) {
+      console.log("whats the issue with payment passing on", error)
+
+    }
+
   }
 
   /**
@@ -321,8 +338,8 @@ export class CheckoutPayment extends Component {
         {isSelected ? (
           <Icon name="radio-button-checked" style={styles.checkIcon} />
         ) : (
-          <Icon name="radio-button-unchecked" style={styles.uncheckIcon} />
-        )}
+            <Icon name="radio-button-unchecked" style={styles.uncheckIcon} />
+          )}
         <Text style={styles.paymentItemText}>{stripTags(item.payment)}</Text>
       </TouchableOpacity>
     );
@@ -352,6 +369,7 @@ export class CheckoutPayment extends Component {
     }
     let form = null;
     // FIXME: HARDCODE
+    console.log("selected item passeed with template", selectedItem.template)
     switch (selectedItem.template) {
       case PAYMENT_EMPTY:
         form = (
@@ -399,6 +417,16 @@ export class CheckoutPayment extends Component {
         );
         break;
       case PAYMENT_PHONE:
+        form = (
+          <PaymentPhoneForm
+            onInit={(ref) => {
+              this.paymentFormRef = ref;
+            }}
+            value={{ phone: cart.user_data.b_phone }}
+          />
+        );
+        break;
+      case PAYMENT_CASH_ONLY:
         form = (
           <PaymentPhoneForm
             onInit={(ref) => {
@@ -494,6 +522,7 @@ export class CheckoutPayment extends Component {
 export default connect(
   (state) => ({
     auth: state.auth,
+    stateCart: state.cart,
   }),
   (dispatch) => ({
     ordersActions: bindActionCreators(ordersActions, dispatch),
