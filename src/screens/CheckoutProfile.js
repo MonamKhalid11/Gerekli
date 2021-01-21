@@ -108,33 +108,16 @@ export class CheckoutProfile extends Component {
   handleNextPress(values) {
     const { cart, cartActions } = this.props;
 
-    console.log('cart: ', cart);
-
     cartActions.saveUserData({
       ...cart.user_data,
       ...values,
     });
-
-    if (true) {
-      nav.pushCheckoutPayment(this.props.componentId, {
-        cart,
-        shipping_id: this.state.shipping_id,
-      });
-    }
 
     nav.pushCheckoutShipping(this.props.componentId, {
       cart,
       total: cart.subtotal,
     });
   }
-
-  getStepsForDigitalProducts = () => {
-    return [
-      i18n.t('Authentication'),
-      i18n.t('Profile'),
-      i18n.t('Payment method'),
-    ];
-  };
 
   fieldsFilter = (cart, fields) => {
     let isShipping = false;
@@ -181,10 +164,7 @@ export class CheckoutProfile extends Component {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.contentContainer}>
-          <CheckoutSteps
-            step={1}
-            steps={true ? this.getStepsForDigitalProducts() : false}
-          />
+          <CheckoutSteps step={1} />
         </View>
 
         <ProfileForm
@@ -208,6 +188,7 @@ export class CheckoutProfile extends Component {
 export default connect(
   (state) => ({
     auth: state.auth,
+    stateSteps: state.steps,
     state,
   }),
   (dispatch) => ({

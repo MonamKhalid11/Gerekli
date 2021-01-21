@@ -1,9 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View, Text, FlatList } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { get } from 'lodash';
 import { objectFilter } from '../utils/index';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
 // Components
 import CartProductitem from './CartProductItem';
@@ -14,6 +15,9 @@ import EmptyCart from './EmptyCart';
 import i18n from '../utils/i18n';
 import { formatPrice } from '../utils';
 import * as nav from '../services/navigation';
+
+// Import actions
+import * as stepsActions from '../actions/stepsActions';
 
 // Styles
 const styles = EStyleSheet.create({
@@ -74,13 +78,14 @@ const renderOrderDetail = (products, cart) => {
  *
  * @return {JSX.Element}
  */
-const CartProductList = ({
+export const CartProductList = ({
   cart,
   auth,
   componentId,
   handleRefresh,
   refreshing,
   cartActions,
+  stepsActions,
 }) => {
   let newProducts = [];
   if (cart) {
@@ -92,6 +97,32 @@ const CartProductList = ({
   }
 
   /**
+   * Gets steps for checkout flow.
+   */
+  const getCheckoutSteps = (cart) => {
+    let checkoutSteps = [
+      i18n.t('Authentication'),
+      i18n.t('Profile'),
+      i18n.t('Shipping'),
+      i18n.t('Payment method'),
+    ];
+
+    // Filter steps if the order doesn't need delivery
+    cart.product_groups.forEach((el) => {
+      if (
+        el.all_edp_free_shipping ||
+        el.shipping_no_required ||
+        el.free_shipping ||
+        !Object.keys(el.shippings).length
+      ) {
+        checkoutSteps = checkoutSteps.filter((step) => step !== 'Shipping');
+      }
+    });
+
+    return checkoutSteps;
+  };
+
+  /**
    * Moves to the next page.
    */
   const handlePlaceOrder = (auth, cart) => {
@@ -100,6 +131,9 @@ const CartProductList = ({
       (p) => !p.extra.exclude_from_calculate,
     );
     cart.products = { ...newCartProducts };
+
+    stepsActions.getSteps(getCheckoutSteps(cart));
+
     if (!auth.logged) {
       nav.pushCheckoutAuth(componentId, { newProducts });
     } else {
@@ -146,14 +180,11 @@ const CartProductList = ({
   );
 };
 
-CartProductList.propTypes = {
-  cart: PropTypes.shape({}),
-  auth: PropTypes.shape({
-    token: PropTypes.string,
+export default connect(
+  (state) => ({
+    steps: state.steps,
   }),
-  refreshing: PropTypes.bool,
-  handleRefresh: PropTypes.func,
-  cartActions: PropTypes.shape({}),
-};
-
-export default CartProductList;
+  (dispatch) => ({
+    stepsActions: bindActionCreators(stepsActions, dispatch),
+  }),
+)(CartProductList);

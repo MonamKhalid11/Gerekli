@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, I18nManager } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-
 import i18n from '../utils/i18n';
+import { connect } from 'react-redux';
 
 // Component
 import Icon from './Icon';
@@ -94,7 +94,7 @@ const styles = EStyleSheet.create({
  * @reactProps {string[]} steps - Steps to follow to place an order.
  * @reactProps {number} step - Step number.
  */
-export default class extends Component {
+export class CheckoutSteps extends Component {
   /**
    * @ignore
    */
@@ -131,19 +131,6 @@ export default class extends Component {
     });
   }
 
-  getSteps() {
-    const { steps } = this.props;
-    if (steps.length) {
-      return steps;
-    }
-    return [
-      i18n.t('Authentication'),
-      i18n.t('Profile'),
-      i18n.t('Shipping'),
-      i18n.t('Payment method'),
-    ];
-  }
-
   /**
    * Renders the step as an arrow.
    *
@@ -163,9 +150,10 @@ export default class extends Component {
    */
   renderPassedSteps() {
     const { stepId } = this.state;
-    const steps = this.getSteps();
+    const { stateSteps } = this.props;
     const stepsList = [];
-    for (let i = 0; i < steps.length; i += 1) {
+
+    for (let i = 0; i < stateSteps.currentSteps.length; i += 1) {
       if (i === stepId) {
         break;
       }
@@ -187,9 +175,10 @@ export default class extends Component {
    * @return {JSX.Element}
    */
   renderActiveStep() {
-    const steps = this.getSteps();
+    const { stateSteps } = this.props;
     const { stepId } = this.state;
-    const activeStep = steps[stepId];
+    const activeStep = stateSteps.currentSteps[stepId];
+
     return (
       <View style={styles.stepContainer}>
         <View style={styles.stepContent}>
@@ -209,10 +198,11 @@ export default class extends Component {
    * @return {JSX.Element[]}
    */
   renderNextSteps() {
-    const steps = this.getSteps();
+    const { stateSteps } = this.props;
     const { stepId } = this.state;
     const stepsList = [];
-    for (let i = stepId + 1; i < steps.length; i += 1) {
+
+    for (let i = stepId + 1; i < stateSteps.currentSteps.length; i += 1) {
       stepsList.push(
         <View style={styles.stepContainer} key={i}>
           <View style={styles.stepContent}>
@@ -242,3 +232,13 @@ export default class extends Component {
     );
   }
 }
+
+export default connect(
+  (state) => ({
+    stateSteps: state.steps,
+  }),
+  // (dispatch) => ({
+  //   authActions: bindActionCreators(authActions, dispatch),
+  //   cartActions: bindActionCreators(cartActions, dispatch),
+  // }),
+)(CheckoutSteps);

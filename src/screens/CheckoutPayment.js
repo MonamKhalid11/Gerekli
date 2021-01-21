@@ -334,28 +334,15 @@ export class CheckoutPayment extends Component {
     );
   };
 
-  getStepsForDigitalProducts = () => {
-    return [
-      i18n.t('Authentication'),
-      i18n.t('Profile'),
-      i18n.t('Payment method'),
-    ];
-  };
-
   /**
    * Renders header.
    *
    * @return {JSX.Element}
    */
   renderHeader = () => {
-    const { cart } = this.props;
-
     return (
       <View style={styles.stepsWrapper}>
-        <CheckoutSteps
-          step={2}
-          steps={true ? this.getStepsForDigitalProducts() : false}
-        />
+        <CheckoutSteps step={3} />
       </View>
     );
   };
