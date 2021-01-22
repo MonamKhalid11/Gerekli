@@ -5,6 +5,7 @@ import { get } from 'lodash';
 import { objectFilter } from '../utils/index';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Navigation } from 'react-native-navigation';
 
 // Components
 import CartProductitem from './CartProductItem';
@@ -86,6 +87,7 @@ export const CartProductList = ({
   refreshing,
   cartActions,
   stepsActions,
+  stateSteps,
 }) => {
   let newProducts = [];
   if (cart) {
@@ -97,49 +99,55 @@ export const CartProductList = ({
   }
 
   /**
-   * Gets steps for checkout flow.
-   */
-  const getCheckoutSteps = (cart) => {
-    let checkoutSteps = [
-      i18n.t('Authentication'),
-      i18n.t('Profile'),
-      i18n.t('Shipping'),
-      i18n.t('Payment method'),
-    ];
-
-    // Filter steps if the order doesn't need delivery
-    cart.product_groups.forEach((el) => {
-      if (
-        el.all_edp_free_shipping ||
-        el.shipping_no_required ||
-        el.free_shipping ||
-        !Object.keys(el.shippings).length
-      ) {
-        checkoutSteps = checkoutSteps.filter((step) => step !== 'Shipping');
-      }
-    });
-
-    return checkoutSteps;
-  };
-
-  /**
    * Moves to the next page.
    */
-  const handlePlaceOrder = (auth, cart) => {
+  const handlePlaceOrder = async (auth, cart) => {
     const newCartProducts = objectFilter(
       cart.products,
       (p) => !p.extra.exclude_from_calculate,
     );
     cart.products = { ...newCartProducts };
 
-    stepsActions.getSteps(getCheckoutSteps(cart));
+    const checkoutFlow = stateSteps.flows.checkoutFlow;
+
+    // We get all possible steps of this flow.
+    const checkoutSteps = Object.keys(checkoutFlow).map(
+      (el) => checkoutFlow[el].title,
+    );
+
+    // Set the flow, filter steps and define the first step.
+    const startStep = await stepsActions.setFlow(
+      'checkoutFlow',
+      checkoutSteps,
+      {
+        newProducts,
+        cart,
+      },
+    );
+
+    // Define the name of the first step component for navigation.
+    let startScreenName;
+    Object.keys(checkoutFlow).map((el) => {
+      if (checkoutFlow[el].title === startStep) {
+        startScreenName = checkoutFlow[el].screenName;
+      }
+    });
+
+    // Set payload for the first step.
+    stepsActions.setPayload({ newProducts, cart });
 
     if (!auth.logged) {
       nav.pushCheckoutAuth(componentId, { newProducts });
     } else {
-      nav.showCheckoutProfile({
-        newProducts,
-        cart,
+      // nav.showCheckoutProfile({
+      //   newProducts,
+      //   cart,
+      // });
+      Navigation.push(componentId, {
+        component: {
+          name: startScreenName,
+          passProps: { newProducts, cart },
+        },
       });
     }
   };
@@ -182,7 +190,7 @@ export const CartProductList = ({
 
 export default connect(
   (state) => ({
-    steps: state.steps,
+    stateSteps: state.steps,
   }),
   (dispatch) => ({
     stepsActions: bindActionCreators(stepsActions, dispatch),
