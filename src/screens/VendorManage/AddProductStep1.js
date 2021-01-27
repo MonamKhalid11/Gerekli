@@ -109,7 +109,7 @@ export class AddProductStep1 extends Component {
     return (
       <View>
         <View style={styles.header}>
-          <ArrowSteps step={0} steps={this.getSteps()} />
+          <ArrowSteps steps={this.getSteps()} />
         </View>
         <Section containerStyle={styles.containerStyle}>
           <TouchableOpacity

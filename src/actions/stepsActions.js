@@ -1,4 +1,4 @@
-import { SET_FLOW, SET_PAYLOAD } from '../constants';
+import { SET_FLOW, SET_PAYLOAD, SET_NEXT_STEP } from '../constants';
 import { filterObject } from '../utils';
 
 const filterSteps = (flowSteps, payload) => {
@@ -41,6 +41,15 @@ export const setPayload = (payload) => {
     dispatch({
       type: SET_PAYLOAD,
       payload,
+    });
+  };
+};
+
+export const setNextStep = (nextStep) => {
+  return (dispatch) => {
+    dispatch({
+      type: SET_NEXT_STEP,
+      payload: nextStep,
     });
   };
 };

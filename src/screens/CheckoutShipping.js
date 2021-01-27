@@ -17,6 +17,7 @@ import flatten from 'lodash/flatten';
 
 // Import actions.
 import * as cartActions from '../actions/cartActions';
+import * as stepsActions from '../actions/stepsActions';
 
 // Components
 import ArrowSteps from '../components/ArrowSteps';
@@ -28,8 +29,8 @@ import Icon from '../components/Icon';
 import i18n from '../utils/i18n';
 
 import { stripTags, formatPrice } from '../utils';
-// import { Navigation } from 'react-native-navigation';
-import * as nav from '../services/navigation';
+import { Navigation } from 'react-native-navigation';
+// import * as nav from '../services/navigation';
 
 const styles = EStyleSheet.create({
   container: {
@@ -224,11 +225,20 @@ export class CheckoutShipping extends Component {
    * Redirects to CheckoutPayment.
    */
   handleNextPress() {
-    const { cart } = this.props;
+    const { cart, stepsActions, stateSteps } = this.props;
 
-    nav.pushCheckoutPayment(this.props.componentId, {
-      cart,
-      shipping_id: this.state.shipping_id,
+    // Define next step
+    const nextStep =
+      stateSteps.flowSteps[
+        Object.keys(stateSteps.flowSteps)[stateSteps.currentStepNumber + 1]
+      ];
+    stepsActions.setNextStep(nextStep);
+
+    Navigation.push(this.props.componentId, {
+      component: {
+        name: nextStep.screenName,
+        passProps: { cart, shipping_id: this.state.shipping_id },
+      },
     });
   }
 
@@ -312,7 +322,7 @@ export class CheckoutShipping extends Component {
    */
   renderSteps = () => (
     <View style={styles.stepsWrapper}>
-      <ArrowSteps step={2} />
+      <ArrowSteps />
     </View>
   );
 
@@ -375,8 +385,10 @@ export default connect(
   (state) => ({
     stateCart: state.cart,
     shippings: state.shippings,
+    stateSteps: state.steps,
   }),
   (dispatch) => ({
     cartActions: bindActionCreators(cartActions, dispatch),
+    stepsActions: bindActionCreators(stepsActions, dispatch),
   }),
 )(CheckoutShipping);

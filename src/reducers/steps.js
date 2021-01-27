@@ -1,4 +1,4 @@
-import { SET_FLOW, SET_PAYLOAD } from '../constants';
+import { SET_FLOW, SET_PAYLOAD, SET_NEXT_STEP } from '../constants';
 
 const initialState = {
   currentFlow: '',
@@ -14,10 +14,12 @@ const initialState = {
       },
       shipping: {
         title: 'Shipping',
+        screenName: 'CheckoutShipping',
         payload: {},
       },
       payment: {
         title: 'Payment method',
+        screenName: 'CheckoutPayment',
         payload: {},
       },
     },
@@ -47,6 +49,13 @@ export default function (state = initialState, action) {
       });
 
       return { ...newState };
+
+    case SET_NEXT_STEP:
+      return {
+        ...state,
+        currentStep: action.payload,
+        currentStepNumber: state.currentStepNumber + 1,
+      };
 
     default:
       return state;

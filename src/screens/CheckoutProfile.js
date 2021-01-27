@@ -13,6 +13,7 @@ import Spinner from '../components/Spinner';
 // Import actions.
 import * as authActions from '../actions/authActions';
 import * as cartActions from '../actions/cartActions';
+import * as stepsActions from '../actions/stepsActions';
 
 import i18n from '../utils/i18n';
 import { formatPrice } from '../utils';
@@ -106,16 +107,25 @@ export class CheckoutProfile extends Component {
    * @param {object} values - Form data.
    */
   handleNextPress(values) {
-    const { cart, cartActions } = this.props;
+    const { cart, cartActions, stateSteps, stepsActions } = this.props;
 
     cartActions.saveUserData({
       ...cart.user_data,
       ...values,
     });
 
-    nav.pushCheckoutShipping(this.props.componentId, {
-      cart,
-      total: cart.subtotal,
+    // Define next step
+    const nextStep =
+      stateSteps.flowSteps[
+        Object.keys(stateSteps.flowSteps)[stateSteps.currentStepNumber + 1]
+      ];
+    stepsActions.setNextStep(nextStep);
+
+    Navigation.push(this.props.componentId, {
+      component: {
+        name: nextStep.screenName,
+        passProps: { cart, total: cart.subtotal },
+      },
     });
   }
 
@@ -164,7 +174,7 @@ export class CheckoutProfile extends Component {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.contentContainer}>
-          <ArrowSteps step={1} />
+          <ArrowSteps />
         </View>
 
         <ProfileForm
@@ -194,5 +204,6 @@ export default connect(
   (dispatch) => ({
     authActions: bindActionCreators(authActions, dispatch),
     cartActions: bindActionCreators(cartActions, dispatch),
+    stepsActions: bindActionCreators(stepsActions, dispatch),
   }),
 )(CheckoutProfile);

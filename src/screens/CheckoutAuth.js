@@ -118,7 +118,7 @@ export class CheckoutAuth extends Component {
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.contentContainer}>
-          <ArrowSteps step={0} />
+          <ArrowSteps />
           {auth.logged ? this.renderReLogin() : this.renderLoginForm()}
         </ScrollView>
         <Spinner visible={auth.fetching} mode="modal" />

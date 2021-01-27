@@ -215,3 +215,4 @@ export const LANGUAGE_CURRENCY_FEATURE_FLAG_OFF =
 
 export const SET_FLOW = 'SET_FLOW';
 export const SET_PAYLOAD = 'SET_PAYLOAD';
+export const SET_NEXT_STEP = 'SET_NEXT_STEP';

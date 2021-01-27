@@ -138,7 +138,7 @@ export class AddProductStep3 extends Component {
    */
   renderHeader = () => (
     <View style={styles.header}>
-      <ArrowSteps step={2} steps={this.props.stepsData.steps} />
+      <ArrowSteps />
     </View>
   );
 

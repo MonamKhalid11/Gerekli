@@ -342,7 +342,7 @@ export class CheckoutPayment extends Component {
   renderHeader = () => {
     return (
       <View style={styles.stepsWrapper}>
-        <ArrowSteps step={3} />
+        <ArrowSteps />
       </View>
     );
   };
