@@ -1,6 +1,8 @@
 import { SET_FLOW, SET_PAYLOAD } from '../constants';
+import { filterObject } from '../utils';
 
-const filterCheckoutSteps = (currentSteps, payload) => {
+const filterSteps = (flowSteps, payload) => {
+  let filterFlowSteps = { ...flowSteps };
   // Filter steps if the order doesn't need delivery
   payload.cart.product_groups.forEach((el) => {
     if (
@@ -9,27 +11,28 @@ const filterCheckoutSteps = (currentSteps, payload) => {
       el.free_shipping ||
       !Object.keys(el.shippings).length
     ) {
-      currentSteps = currentSteps.filter((step) => step !== 'Shipping');
+      filterFlowSteps = filterObject(
+        flowSteps,
+        (step) => step.title !== 'Shipping',
+      );
     }
   });
 
-  return currentSteps;
+  return filterFlowSteps;
 };
 
-export const setFlow = (flow, currentSteps, payload) => {
+export const setFlow = (flowName, flowSteps, payload) => {
   return async (dispatch) => {
-    if (flow === 'checkoutFlow') {
-      currentSteps = filterCheckoutSteps(currentSteps, payload);
-    }
-
+    const filterFlowSteps = filterSteps(flowSteps, payload);
     dispatch({
       type: SET_FLOW,
       payload: {
-        flow,
-        currentSteps,
+        flowName,
+        filterFlowSteps,
       },
     });
-    return currentSteps[0];
+
+    return filterFlowSteps[Object.keys(filterFlowSteps)[0]];
   };
 };
 

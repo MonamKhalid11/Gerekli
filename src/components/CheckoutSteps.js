@@ -153,7 +153,7 @@ export class CheckoutSteps extends Component {
     const { stateSteps } = this.props;
     const stepsList = [];
 
-    for (let i = 0; i < stateSteps.currentSteps.length; i += 1) {
+    for (let i = 0; i < Object.keys(stateSteps.flowSteps).length; i += 1) {
       if (i === stepId) {
         break;
       }
@@ -177,7 +177,7 @@ export class CheckoutSteps extends Component {
   renderActiveStep() {
     const { stateSteps } = this.props;
     const { stepId } = this.state;
-    const activeStep = stateSteps.currentSteps[stepId];
+    const activeStep = stateSteps.currentStep;
 
     return (
       <View style={styles.stepContainer}>
@@ -185,7 +185,7 @@ export class CheckoutSteps extends Component {
           <View style={styles.roundNumber}>
             <Text style={styles.roundNumberText}>{stepId + 1}</Text>
           </View>
-          <Text>{activeStep}</Text>
+          <Text>{activeStep.title}</Text>
         </View>
         {this.renderArrow()}
       </View>
@@ -202,7 +202,11 @@ export class CheckoutSteps extends Component {
     const { stepId } = this.state;
     const stepsList = [];
 
-    for (let i = stepId + 1; i < stateSteps.currentSteps.length; i += 1) {
+    for (
+      let i = stepId + 1;
+      i < Object.keys(stateSteps.flowSteps).length;
+      i += 1
+    ) {
       stepsList.push(
         <View style={styles.stepContainer} key={i}>
           <View style={styles.stepContent}>

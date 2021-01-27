@@ -110,27 +110,10 @@ export const CartProductList = ({
 
     const checkoutFlow = stateSteps.flows.checkoutFlow;
 
-    // We get all possible steps of this flow.
-    const checkoutSteps = Object.keys(checkoutFlow).map(
-      (el) => checkoutFlow[el].title,
-    );
-
     // Set the flow, filter steps and define the first step.
-    const startStep = await stepsActions.setFlow(
-      'checkoutFlow',
-      checkoutSteps,
-      {
-        newProducts,
-        cart,
-      },
-    );
-
-    // Define the name of the first step component for navigation.
-    let startScreenName;
-    Object.keys(checkoutFlow).map((el) => {
-      if (checkoutFlow[el].title === startStep) {
-        startScreenName = checkoutFlow[el].screenName;
-      }
+    const startStep = await stepsActions.setFlow('checkoutFlow', checkoutFlow, {
+      newProducts,
+      cart,
     });
 
     // Set payload for the first step.
@@ -139,13 +122,9 @@ export const CartProductList = ({
     if (!auth.logged) {
       nav.pushCheckoutAuth(componentId, { newProducts });
     } else {
-      // nav.showCheckoutProfile({
-      //   newProducts,
-      //   cart,
-      // });
       Navigation.push(componentId, {
         component: {
-          name: startScreenName,
+          name: startStep.screenName,
           passProps: { newProducts, cart },
         },
       });

@@ -2,8 +2,8 @@ import { SET_FLOW, SET_PAYLOAD } from '../constants';
 
 const initialState = {
   currentFlow: '',
-  currentSteps: [],
-  currentStep: '',
+  flowSteps: {},
+  currentStep: {},
   flows: {
     checkoutFlow: {
       profile: {
@@ -26,17 +26,18 @@ const initialState = {
 export default function (state = initialState, action) {
   switch (action.type) {
     case SET_FLOW:
-      const { flow, currentSteps } = action.payload;
+      const { flowName, filterFlowSteps } = action.payload;
 
       return {
         ...state,
-        currentFlow: flow,
-        currentSteps,
-        currentStep: currentSteps[0],
+        currentFlow: flowName,
+        flowSteps: filterFlowSteps,
+        currentStep: filterFlowSteps[Object.keys(filterFlowSteps)[0]],
       };
 
     case SET_PAYLOAD:
       const newState = { ...state };
+      // Writing payload to the current step.
       Object.keys(newState.flows[state.currentFlow]).forEach((el) => {
         if (newState.flows[state.currentFlow][el].title === state.currentStep) {
           newState.flows[state.currentFlow][el].payload = action.payload;
