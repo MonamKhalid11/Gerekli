@@ -153,7 +153,7 @@ export class ArrowSteps extends Component {
               {currentStep.stepNumber + 1}
             </Text>
           </View>
-          <Text>{currentStep.title}</Text>
+          <Text>{i18n.t(currentStep.title)}</Text>
         </View>
         {this.renderArrow()}
       </View>

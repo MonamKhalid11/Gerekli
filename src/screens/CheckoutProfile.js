@@ -19,7 +19,6 @@ import i18n from '../utils/i18n';
 import { formatPrice } from '../utils';
 import ProfileForm from '../components/ProfileForm';
 import { iconsMap } from '../utils/navIcons';
-import * as nav from '../services/navigation';
 import { objectFilter } from '../utils/index';
 
 const styles = EStyleSheet.create({

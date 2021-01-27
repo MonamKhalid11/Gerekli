@@ -3,8 +3,6 @@ import { SET_FLOW, SET_PAYLOAD, SET_NEXT_STEP } from '../constants';
 const initialState = {
   currentFlow: '',
   flowSteps: {},
-  // currentStep: {},
-  currentStepNumber: 0,
   flows: {
     checkoutFlow: {
       profile: {
