@@ -18,7 +18,7 @@ import * as cartActions from '../actions/cartActions';
 import * as paymentsActions from '../actions/paymentsActions';
 
 // Components
-import CheckoutSteps from '../components/CheckoutSteps';
+import ArrowSteps from '../components/ArrowSteps';
 import CartFooter from '../components/CartFooter';
 import FormBlock from '../components/FormBlock';
 import PaymentPhoneForm from '../components/PaymentPhoneForm';
@@ -342,7 +342,7 @@ export class CheckoutPayment extends Component {
   renderHeader = () => {
     return (
       <View style={styles.stepsWrapper}>
-        <CheckoutSteps step={3} />
+        <ArrowSteps step={3} />
       </View>
     );
   };

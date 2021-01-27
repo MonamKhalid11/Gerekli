@@ -94,7 +94,7 @@ const styles = EStyleSheet.create({
  * @reactProps {string[]} steps - Steps to follow to place an order.
  * @reactProps {number} step - Step number.
  */
-export class CheckoutSteps extends Component {
+export class ArrowSteps extends Component {
   /**
    * @ignore
    */
@@ -117,18 +117,8 @@ export class CheckoutSteps extends Component {
     super(props);
 
     this.state = {
-      stepId: 0,
+      currentStepNumber: 0,
     };
-  }
-
-  /**
-   * Changes step number.
-   */
-  componentDidMount() {
-    const { step } = this.props;
-    this.setState({
-      stepId: step,
-    });
   }
 
   /**
@@ -149,14 +139,10 @@ export class CheckoutSteps extends Component {
    * @return {JSX.Element[]}
    */
   renderPassedSteps() {
-    const { stepId } = this.state;
     const { stateSteps } = this.props;
     const stepsList = [];
 
-    for (let i = 0; i < Object.keys(stateSteps.flowSteps).length; i += 1) {
-      if (i === stepId) {
-        break;
-      }
+    for (let i = 0; i !== stateSteps.currentStepNumber; i += 1) {
       stepsList.push(
         <View style={styles.stepContainer} key={i}>
           <View style={styles.stepContent}>
@@ -176,14 +162,15 @@ export class CheckoutSteps extends Component {
    */
   renderActiveStep() {
     const { stateSteps } = this.props;
-    const { stepId } = this.state;
     const activeStep = stateSteps.currentStep;
 
     return (
       <View style={styles.stepContainer}>
         <View style={styles.stepContent}>
           <View style={styles.roundNumber}>
-            <Text style={styles.roundNumberText}>{stepId + 1}</Text>
+            <Text style={styles.roundNumberText}>
+              {stateSteps.currentStepNumber + 1}
+            </Text>
           </View>
           <Text>{activeStep.title}</Text>
         </View>
@@ -199,11 +186,10 @@ export class CheckoutSteps extends Component {
    */
   renderNextSteps() {
     const { stateSteps } = this.props;
-    const { stepId } = this.state;
     const stepsList = [];
 
     for (
-      let i = stepId + 1;
+      let i = stateSteps.currentStepNumber + 1;
       i < Object.keys(stateSteps.flowSteps).length;
       i += 1
     ) {
@@ -237,12 +223,6 @@ export class CheckoutSteps extends Component {
   }
 }
 
-export default connect(
-  (state) => ({
-    stateSteps: state.steps,
-  }),
-  // (dispatch) => ({
-  //   authActions: bindActionCreators(authActions, dispatch),
-  //   cartActions: bindActionCreators(cartActions, dispatch),
-  // }),
-)(CheckoutSteps);
+export default connect((state) => ({
+  stateSteps: state.steps,
+}))(ArrowSteps);

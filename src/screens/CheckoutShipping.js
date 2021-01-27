@@ -19,7 +19,7 @@ import flatten from 'lodash/flatten';
 import * as cartActions from '../actions/cartActions';
 
 // Components
-import CheckoutSteps from '../components/CheckoutSteps';
+import ArrowSteps from '../components/ArrowSteps';
 import CartFooter from '../components/CartFooter';
 import EmptyList from '../components/EmptyList';
 import Spinner from '../components/Spinner';
@@ -312,7 +312,7 @@ export class CheckoutShipping extends Component {
    */
   renderSteps = () => (
     <View style={styles.stepsWrapper}>
-      <CheckoutSteps step={2} />
+      <ArrowSteps step={2} />
     </View>
   );
 

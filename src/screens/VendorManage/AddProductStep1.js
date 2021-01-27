@@ -12,7 +12,7 @@ import {
   Dimensions,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import CheckoutSteps from '../../components/CheckoutSteps';
+import ArrowSteps from '../../components/ArrowSteps';
 import Section from '../../components/Section';
 import BottomActions from '../../components/BottomActions';
 import * as imagePickerActions from '../../actions/imagePickerActions';
@@ -109,7 +109,7 @@ export class AddProductStep1 extends Component {
     return (
       <View>
         <View style={styles.header}>
-          <CheckoutSteps step={0} steps={this.getSteps()} />
+          <ArrowSteps step={0} steps={this.getSteps()} />
         </View>
         <Section containerStyle={styles.containerStyle}>
           <TouchableOpacity

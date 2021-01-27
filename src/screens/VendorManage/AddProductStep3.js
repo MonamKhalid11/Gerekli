@@ -7,7 +7,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Components
 import Section from '../../components/Section';
-import CheckoutSteps from '../../components/CheckoutSteps';
+import ArrowSteps from '../../components/ArrowSteps';
 import BottomActions from '../../components/BottomActions';
 import Spinner from '../../components/Spinner';
 
@@ -138,7 +138,7 @@ export class AddProductStep3 extends Component {
    */
   renderHeader = () => (
     <View style={styles.header}>
-      <CheckoutSteps step={2} steps={this.props.stepsData.steps} />
+      <ArrowSteps step={2} steps={this.props.stepsData.steps} />
     </View>
   );
 

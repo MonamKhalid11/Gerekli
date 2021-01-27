@@ -4,6 +4,7 @@ const initialState = {
   currentFlow: '',
   flowSteps: {},
   currentStep: {},
+  currentStepNumber: 0,
   flows: {
     checkoutFlow: {
       profile: {
@@ -33,6 +34,7 @@ export default function (state = initialState, action) {
         currentFlow: flowName,
         flowSteps: filterFlowSteps,
         currentStep: filterFlowSteps[Object.keys(filterFlowSteps)[0]],
+        currentStepNumber: 0,
       };
 
     case SET_PAYLOAD:

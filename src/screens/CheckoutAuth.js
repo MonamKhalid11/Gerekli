@@ -8,7 +8,7 @@ import * as authActions from '../actions/authActions';
 import Spinner from '../components/Spinner';
 import FormBlock from '../components/FormBlock';
 import Button from '../components/Button';
-import CheckoutSteps from '../components/CheckoutSteps';
+import ArrowSteps from '../components/ArrowSteps';
 import i18n from '../utils/i18n';
 import * as nav from '../services/navigation';
 
@@ -118,7 +118,7 @@ export class CheckoutAuth extends Component {
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.contentContainer}>
-          <CheckoutSteps step={0} />
+          <ArrowSteps step={0} />
           {auth.logged ? this.renderReLogin() : this.renderLoginForm()}
         </ScrollView>
         <Spinner visible={auth.fetching} mode="modal" />
