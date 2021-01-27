@@ -16,7 +16,7 @@ AxiosInstance.interceptors.request.use((conf) => {
 
   newConf.headers.common['Storefront-Api-Access-Key'] = config.apiKey;
   newConf.headers.common['Cache-Control'] = 'no-cache';
-  newConf.headers.common['authorization'] = 'Basic dnN0ZXBhbm92QGNzLWNhcnQuY29tOjZxN1MxNDVMNGY2bjVQOTlsMkdiNTE0MjRyTjg2ZDJT'
+  // newConf.headers.common['authorization'] = 'Basic dnN0ZXBhbm92QGNzLWNhcnQuY29tOjZxN1MxNDVMNGY2bjVQOTlsMkdiNTE0MjRyTjg2ZDJT'
 
 
   newConf.params = conf.params || {};

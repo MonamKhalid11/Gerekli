@@ -94,8 +94,7 @@ export function recalculatePrice(pid, options) {
     const options = [];
     Object.keys(selectedOptions).forEach((optionId) => {
       options.push(
-        `${encodeURIComponent(`selected_options[${optionId}]`)}=${
-          selectedOptions[optionId].variant_id
+        `${encodeURIComponent(`selected_options[${optionId}]`)}=${selectedOptions[optionId].variant_id
         }`,
       );
     });

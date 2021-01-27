@@ -108,24 +108,26 @@ export async function initApp() {
     if (!currentLanguage?.langCode) {
       // If the device language is among the languages of the store
       // use device language.
+      console.log("show me translations response here", resLanguages.data.languages)
       let isDeviceLanguage = false;
+
       resLanguages.data.languages.forEach((el) => {
-        if (el.lang_code === deviceLanguage) {
+        if (el.lang_code.match('ru')) {
           isDeviceLanguage = true;
         }
       });
 
       if (isDeviceLanguage) {
         currentLanguage = {
-          langCode: deviceLanguage,
-          name: deviceLanguage,
+          langCode: 'ru',
+          name: 'ru',
         };
       } else {
         resLanguages.data.languages.forEach((el) => {
-          if (el.is_default) {
+          if (el.lang_code.match('ru')) {
             currentLanguage = {
-              langCode: el.lang_code,
-              name: el.name,
+              langCode: 'ru',
+              name: 'ru',
             };
           }
         });
@@ -149,8 +151,8 @@ export async function initApp() {
     });
   } catch (e) {
     currentLanguage = {
-      langCode: deviceLanguage,
-      name: deviceLanguage,
+      langCode: 'ru',
+      name: 'ru',
     };
     store.dispatch({
       type: SET_LANGUAGE,

@@ -190,7 +190,7 @@ export class WishList extends Component {
         [
           {
             text: i18n.t('Cancel'),
-            onPress: () => {},
+            onPress: () => { },
             style: 'cancel',
           },
           {
@@ -304,10 +304,13 @@ export class WishList extends Component {
    */
   renderList() {
     const { wishList } = this.props;
+
+    console.log("showing data in the wishlist", wishList)
     return (
       <View style={styles.container}>
         <FlatList
           data={wishList.items}
+          extraData={wishList.items}
           keyExtractor={(item, index) => `wishlist_${index}`}
           renderItem={({ item }) => this.renderProductItem(item)}
           onRefresh={() => this.handleRefresh()}

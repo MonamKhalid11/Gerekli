@@ -229,6 +229,7 @@ export function deviceInfo(data) {
 }
 
 export function login(data) {
+  console.log("shwoing data here", data)
   return (dispatch) => {
     dispatch({ type: AUTH_LOGIN_REQUEST });
 

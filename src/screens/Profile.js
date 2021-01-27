@@ -254,26 +254,28 @@ export class ProfileEdit extends Component {
           </Text>
         </View>
         {pages.items.map((page, index) => {
-          { console.log("showing pages here", page) }
-          return (
-            <TouchableOpacity
-              key={index}
-              style={styles.signInBtnContainer}
-              onPress={() =>
-                registerDrawerDeepLinks(
-                  {
-                    link: `dispatch=pages.view&page_id=${page.page_id}`,
-                    payload: {
-                      title: page.page,
+          { console.log("showing pages here for vendores", page) }
+          if (!page.page_id.match("44")) {
+            return (
+              <TouchableOpacity
+                key={index}
+                style={styles.signInBtnContainer}
+                onPress={() =>
+                  registerDrawerDeepLinks(
+                    {
+                      link: `dispatch=pages.view&page_id=${page.page_id}`,
+                      payload: {
+                        title: i18n.t(page.page),
+                      },
                     },
-                  },
-                  this.props.componentId,
-                )
-              }>
-              <Text style={styles.signInBtnText}>{i18n.t(page.page)}</Text>
-              <Icon name="chevron-right" style={styles.rightArrowIcon} />
-            </TouchableOpacity>
-          );
+                    this.props.componentId,
+                  )
+                }>
+                <Text style={styles.signInBtnText}>{i18n.t(page.page)}</Text>
+                <Icon name="chevron-right" style={styles.rightArrowIcon} />
+              </TouchableOpacity>
+            );
+          }
         })}
       </View>
     );
@@ -411,7 +413,8 @@ export class ProfileEdit extends Component {
       <ScrollView style={styles.container}>
         {this.renderSignedIn(auth, cart)}
 
-        {settings.languageCurrencyFeatureFlag && this.renderSettings(settings)}
+        {/* {settings.languageCurrencyFeatureFlag && this.renderSettings(settings)} */}
+        {this.renderSettings(settings)}
 
         {auth.logged && this.renderSignedInMenu(authActions)}
 

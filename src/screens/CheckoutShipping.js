@@ -10,6 +10,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { Navigation } from 'react-native-navigation';
 
 import values from 'lodash/values';
 import uniqueId from 'lodash/uniqueId';
@@ -100,13 +101,7 @@ export class CheckoutShipping extends Component {
     cart: PropTypes.shape({}),
   };
 
-  static options = {
-    topBar: {
-      title: {
-        text: i18n.t('Checkout').toUpperCase(),
-      },
-    },
-  };
+
 
   constructor(props) {
     super(props);
@@ -125,6 +120,13 @@ export class CheckoutShipping extends Component {
   componentDidMount() {
     const { cart } = this.props;
     console.log("showing carts ", cart)
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        title: {
+          text: i18n.t('Checkout').toUpperCase(),
+        },
+      },
+    });
     this.setDefaults(cart);
 
     setTimeout(() => this.handleLoadInitial(), 500);

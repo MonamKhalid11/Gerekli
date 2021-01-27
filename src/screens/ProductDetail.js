@@ -732,10 +732,10 @@ export class ProductDetail extends Component {
             </Text>
           </>
         ) : (
-          <Text style={styles.zeroPrice}>
-            {i18n.t('Contact us for a price')}
-          </Text>
-        )}
+            <Text style={styles.zeroPrice}>
+              {i18n.t('Contact us for a price')}
+            </Text>
+          )}
         {inStock && (
           <Text style={styles.outOfStockText}>{i18n.t('Out of stock')}</Text>
         )}
@@ -941,10 +941,10 @@ export class ProductDetail extends Component {
             ),
           )
         ) : (
-          <Text style={styles.noFeaturesText}>
-            {` ${i18n.t('There are no features.')} `}
-          </Text>
-        )}
+            <Text style={styles.noFeaturesText}>
+              {` ${i18n.t('There are no features.')} `}
+            </Text>
+          )}
       </Section>
     );
   }
