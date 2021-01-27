@@ -99,27 +99,9 @@ export class ArrowSteps extends Component {
    * @ignore
    */
   static propTypes = {
-    steps: PropTypes.arrayOf(PropTypes.string),
-    step: PropTypes.number,
+    currentStep: PropTypes.object,
+    stateSteps: PropTypes.object,
   };
-
-  /**
-   * @ignore
-   */
-  static defaultProps = {
-    steps: [],
-  };
-
-  /**
-   * @ignore
-   */
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      currentStepNumber: 0,
-    };
-  }
 
   /**
    * Renders the step as an arrow.
@@ -139,10 +121,10 @@ export class ArrowSteps extends Component {
    * @return {JSX.Element[]}
    */
   renderPassedSteps() {
-    const { stateSteps } = this.props;
+    const { currentStep } = this.props;
     const stepsList = [];
 
-    for (let i = 0; i !== stateSteps.currentStepNumber; i += 1) {
+    for (let i = 0; i !== currentStep.stepNumber; i += 1) {
       stepsList.push(
         <View style={styles.stepContainer} key={i}>
           <View style={styles.stepContent}>
@@ -161,18 +143,17 @@ export class ArrowSteps extends Component {
    * @return {JSX.Element}
    */
   renderActiveStep() {
-    const { stateSteps } = this.props;
-    const activeStep = stateSteps.currentStep;
+    const { currentStep } = this.props;
 
     return (
       <View style={styles.stepContainer}>
         <View style={styles.stepContent}>
           <View style={styles.roundNumber}>
             <Text style={styles.roundNumberText}>
-              {stateSteps.currentStepNumber + 1}
+              {currentStep.stepNumber + 1}
             </Text>
           </View>
-          <Text>{activeStep.title}</Text>
+          <Text>{currentStep.title}</Text>
         </View>
         {this.renderArrow()}
       </View>
@@ -185,11 +166,11 @@ export class ArrowSteps extends Component {
    * @return {JSX.Element[]}
    */
   renderNextSteps() {
-    const { stateSteps } = this.props;
+    const { stateSteps, currentStep } = this.props;
     const stepsList = [];
 
     for (
-      let i = stateSteps.currentStepNumber + 1;
+      let i = currentStep.stepNumber + 1;
       i < Object.keys(stateSteps.flowSteps).length;
       i += 1
     ) {

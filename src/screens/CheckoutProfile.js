@@ -107,7 +107,13 @@ export class CheckoutProfile extends Component {
    * @param {object} values - Form data.
    */
   handleNextPress(values) {
-    const { cart, cartActions, stateSteps, stepsActions } = this.props;
+    const {
+      cart,
+      cartActions,
+      stateSteps,
+      stepsActions,
+      currentStep,
+    } = this.props;
 
     cartActions.saveUserData({
       ...cart.user_data,
@@ -117,14 +123,14 @@ export class CheckoutProfile extends Component {
     // Define next step
     const nextStep =
       stateSteps.flowSteps[
-        Object.keys(stateSteps.flowSteps)[stateSteps.currentStepNumber + 1]
+        Object.keys(stateSteps.flowSteps)[currentStep.stepNumber + 1]
       ];
     stepsActions.setNextStep(nextStep);
 
     Navigation.push(this.props.componentId, {
       component: {
         name: nextStep.screenName,
-        passProps: { cart, total: cart.subtotal },
+        passProps: { cart, total: cart.subtotal, currentStep: nextStep },
       },
     });
   }
@@ -158,7 +164,7 @@ export class CheckoutProfile extends Component {
    * @return {JSX.Element}
    */
   render() {
-    const { cart } = this.props;
+    const { cart, currentStep } = this.props;
     const { fieldsFetching, fields } = this.state;
 
     if (fieldsFetching) {
@@ -174,7 +180,7 @@ export class CheckoutProfile extends Component {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.contentContainer}>
-          <ArrowSteps />
+          <ArrowSteps currentStep={currentStep} />
         </View>
 
         <ProfileForm

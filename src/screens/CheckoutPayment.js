@@ -340,9 +340,10 @@ export class CheckoutPayment extends Component {
    * @return {JSX.Element}
    */
   renderHeader = () => {
+    const { currentStep } = this.props;
     return (
       <View style={styles.stepsWrapper}>
-        <ArrowSteps />
+        <ArrowSteps currentStep={currentStep} />
       </View>
     );
   };

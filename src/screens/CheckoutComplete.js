@@ -158,7 +158,11 @@ export class CheckoutComplete extends Component {
    */
   navigationButtonPressed({ buttonId }) {
     if (buttonId === 'close') {
-      Navigation.dismissModal(this.props.componentId);
+      Navigation.setStackRoot(this.props.componentId, {
+        component: {
+          name: 'Cart',
+        },
+      });
     }
   }
 
@@ -236,8 +240,8 @@ export class CheckoutComplete extends Component {
                     {field.field_type === 'O' && country.name
                       ? country.name
                       : field.field_type === 'A' && state.name
-                        ? state.name
-                        : orderDetail[field.field_id]}
+                      ? state.name
+                      : orderDetail[field.field_id]}
                   </FormBlockField>
                 );
               }

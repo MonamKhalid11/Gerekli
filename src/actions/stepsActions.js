@@ -18,6 +18,11 @@ const filterSteps = (flowSteps, payload) => {
     }
   });
 
+  // Add step numbers
+  Object.keys(filterFlowSteps).forEach((el, index) => {
+    filterFlowSteps[el].stepNumber = index;
+  });
+
   return filterFlowSteps;
 };
 

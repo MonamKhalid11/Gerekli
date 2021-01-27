@@ -225,19 +225,23 @@ export class CheckoutShipping extends Component {
    * Redirects to CheckoutPayment.
    */
   handleNextPress() {
-    const { cart, stepsActions, stateSteps } = this.props;
+    const { cart, stepsActions, stateSteps, currentStep } = this.props;
 
     // Define next step
     const nextStep =
       stateSteps.flowSteps[
-        Object.keys(stateSteps.flowSteps)[stateSteps.currentStepNumber + 1]
+        Object.keys(stateSteps.flowSteps)[currentStep.stepNumber + 1]
       ];
     stepsActions.setNextStep(nextStep);
 
     Navigation.push(this.props.componentId, {
       component: {
         name: nextStep.screenName,
-        passProps: { cart, shipping_id: this.state.shipping_id },
+        passProps: {
+          cart,
+          shipping_id: this.state.shipping_id,
+          currentStep: nextStep,
+        },
       },
     });
   }
@@ -320,11 +324,14 @@ export class CheckoutShipping extends Component {
    *
    * @return {JSX.Element}
    */
-  renderSteps = () => (
-    <View style={styles.stepsWrapper}>
-      <ArrowSteps />
-    </View>
-  );
+  renderSteps = () => {
+    const { currentStep } = this.props;
+    return (
+      <View style={styles.stepsWrapper}>
+        <ArrowSteps currentStep={currentStep} />
+      </View>
+    );
+  };
 
   /**
    * Renders company title.

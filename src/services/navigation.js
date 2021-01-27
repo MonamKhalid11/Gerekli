@@ -328,24 +328,6 @@ export function pushCheckoutAuth(componentId, params) {
   });
 }
 
-export function pushCheckoutShipping(componentId, params) {
-  Navigation.push(componentId, {
-    component: {
-      name: 'CheckoutShipping',
-      passProps: params,
-    },
-  });
-}
-
-export function pushCheckoutPayment(componentId, params) {
-  Navigation.push(componentId, {
-    component: {
-      name: 'CheckoutPayment',
-      passProps: params,
-    },
-  });
-}
-
 export function pushCheckoutComplete(componentId, params) {
   Navigation.push(componentId, {
     component: {

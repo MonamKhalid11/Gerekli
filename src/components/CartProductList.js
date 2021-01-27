@@ -125,7 +125,7 @@ export const CartProductList = ({
       Navigation.push(componentId, {
         component: {
           name: startStep.screenName,
-          passProps: { newProducts, cart },
+          passProps: { newProducts, cart, currentStep: startStep },
         },
       });
     }
