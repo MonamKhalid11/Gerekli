@@ -277,6 +277,23 @@ export class ProfileEdit extends Component {
             );
           }
         })}
+        <TouchableOpacity
+          key={Math.random()}
+          style={styles.signInBtnContainer}
+          onPress={() =>
+            registerDrawerDeepLinks(
+              {
+                link: `https://gerekli.com.tm/index.php?dispatch=companies.apply_for_vendor&sl=ru`,
+                payload: {
+                  title: i18n.t('Becomeaseller'),
+                },
+              },
+              this.props.componentId,
+            )
+          }>
+          <Text style={styles.signInBtnText}>{i18n.t('Becomeaseller')}</Text>
+          <Icon name="chevron-right" style={styles.rightArrowIcon} />
+        </TouchableOpacity>
       </View>
     );
   };

@@ -15,15 +15,22 @@ export const LanguageSelection = ({ settingsActions, settings }) => {
   };
 
   if (settings.currencies) {
+    settings.languages.map((el) => {
+      console.log("showing el here is ", el)
+
+    })
     return (
       <ScrollView>
         {settings.languages.map((el, index) => (
-          <RadioButtonItem
-            key={index}
-            item={el}
-            onPress={!el.selected && changeLanguageHandler}
-            title={el.name}
-          />
+          el.langCode == "ru" || el.langCode == "en" ?
+            <RadioButtonItem
+              key={index}
+              item={el}
+              onPress={!el.selected && changeLanguageHandler}
+              title={el.name}
+            />
+            :
+            null
         ))}
       </ScrollView>
     );
