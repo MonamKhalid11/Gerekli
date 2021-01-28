@@ -38,9 +38,9 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Gerekli will use your location ,  locations are used to calculate shipping rates and tax charges.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Photo Library Access Warning</string>
+	<string>Gerekli will use your photos to store images of the products so you can check them later </string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>MaterialIcons.ttf</string>

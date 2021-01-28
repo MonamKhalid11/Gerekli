@@ -63,4 +63,4 @@ docs/esdoc/
 
 #Users
 users/*
-!users/com.simtech.multivendor
+!users/com.simtech.multivendor.mk

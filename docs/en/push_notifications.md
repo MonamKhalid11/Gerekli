@@ -6,7 +6,7 @@ PS / Google proxies sending notifications to Apple (apns)
 
 # Configuring Android
 1. You need to register on firebase.google.com and create a project.
-2. In the project, create a new application for android. Specify bundleId (com.simtech.multivendor) as the name
+2. In the project, create a new application for android. Specify bundleId (com.simtech.multivendor.mk) as the name
 3. Click next, download the google-services.json file and save it to android/app
 4. Go to the settings of the application in the Cloud messaging tab and copy the "Outdated Server Key"
 5. Test the sending

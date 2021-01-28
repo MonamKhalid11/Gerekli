@@ -144,9 +144,9 @@ export class Login extends Component {
       values.email = config.demoUsername;
       values.password = config.demoPassword;
     }
-    // Testhere
-    values.email = 'Ellis.p@aytrade.co.uk';
-    values.password = 'Elsowda95!';
+    //Testhere
+    // values.email = 'Ellis.p@aytrade.co.uk';
+    // values.password = 'Elsowda95!';
     const options = {
       disableOrder: true,
       fields: {

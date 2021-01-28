@@ -209,6 +209,8 @@ export class Search extends Component {
             style={Platform.os === 'ios' ? styles.input : styles.inputAndroid}
             clearButtonMode="while-editing"
             placeholder={i18n.t('Search')}
+            placeholderTextColor={'grey'}
+
           />
         </View>
         <View style={styles.content}>
