@@ -1,10 +1,10 @@
-import { SET_FLOW, SET_PAYLOAD, SET_NEXT_STEP } from '../constants';
+import { SET_FLOW, SET_NEXT_STEP } from '../constants';
 import { filterObject } from '../utils';
 
 const filterSteps = (flowSteps, payload) => {
   let filterFlowSteps = { ...flowSteps };
   // Filter steps if the order doesn't need delivery
-  payload.cart.product_groups.forEach((el) => {
+  payload.cart?.product_groups.forEach((el) => {
     if (
       el.all_edp_free_shipping ||
       el.shipping_no_required ||
@@ -38,15 +38,6 @@ export const setFlow = (flowName, flowSteps, payload) => {
     });
 
     return filterFlowSteps[Object.keys(filterFlowSteps)[0]];
-  };
-};
-
-export const setPayload = (payload) => {
-  return async (dispatch) => {
-    dispatch({
-      type: SET_PAYLOAD,
-      payload,
-    });
   };
 };
 

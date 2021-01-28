@@ -116,9 +116,6 @@ export const CartProductList = ({
       cart,
     });
 
-    // Set payload for the first step.
-    stepsActions.setPayload({ newProducts, cart });
-
     if (!auth.logged) {
       nav.pushCheckoutAuth(componentId, { newProducts });
     } else {

@@ -136,11 +136,15 @@ export class AddProductStep3 extends Component {
    *
    * @return {JSX.Element}
    */
-  renderHeader = () => (
-    <View style={styles.header}>
-      <ArrowSteps />
-    </View>
-  );
+  renderHeader = () => {
+    const { currentStep } = this.props;
+
+    return (
+      <View style={styles.header}>
+        <ArrowSteps currentStep={currentStep} />
+      </View>
+    );
+  };
 
   /**
    * Renders component.

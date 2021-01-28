@@ -554,22 +554,6 @@ export function pushVendorManageCategoriesPicker(componentId, params = {}) {
   });
 }
 
-export function pushVendorManageAddProductStep1(componentId, params = {}) {
-  Navigation.push(componentId, {
-    component: {
-      name: 'VendorManageAddProductStep1',
-      passProps: params,
-      options: {
-        topBar: {
-          title: {
-            text: params.title || i18n.t('Select product image'),
-          },
-        },
-      },
-    },
-  });
-}
-
 export function showImagePicker(params = {}) {
   Navigation.showModal({
     stack: {
@@ -588,38 +572,6 @@ export function showImagePicker(params = {}) {
           },
         },
       ],
-    },
-  });
-}
-
-export function pushVendorManageAddProductStep2(componentId, params = {}) {
-  Navigation.push(componentId, {
-    component: {
-      name: 'VendorManageAddProductStep2',
-      passProps: params,
-      options: {
-        topBar: {
-          title: {
-            text: params.title || i18n.t('Enter the name'),
-          },
-        },
-      },
-    },
-  });
-}
-
-export function pushVendorManageAddProductStep3(componentId, params = {}) {
-  Navigation.push(componentId, {
-    component: {
-      name: 'VendorManageAddProductStep3',
-      passProps: params,
-      options: {
-        topBar: {
-          title: {
-            text: params.title || i18n.t('Enter the price'),
-          },
-        },
-      },
     },
   });
 }

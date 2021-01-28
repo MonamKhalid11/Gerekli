@@ -1,24 +1,37 @@
-import { SET_FLOW, SET_PAYLOAD, SET_NEXT_STEP } from '../constants';
+import { SET_FLOW, SET_NEXT_STEP } from '../constants';
 
 const initialState = {
   currentFlow: '',
   flowSteps: {},
+  currentStep: '',
+  currentStepNumber: 0,
   flows: {
     checkoutFlow: {
       profile: {
         title: 'Profile',
         screenName: 'CheckoutProfile',
-        payload: {},
       },
       shipping: {
         title: 'Shipping',
         screenName: 'CheckoutShipping',
-        payload: {},
       },
       payment: {
         title: 'Payment method',
         screenName: 'CheckoutPayment',
-        payload: {},
+      },
+    },
+    addProductFlow: {
+      image: {
+        title: 'Image',
+        screenName: 'VendorManageAddProductStep1',
+      },
+      name: {
+        title: 'Enter the name',
+        screenName: 'VendorManageAddProductStep2',
+      },
+      price: {
+        title: 'Enter the price',
+        screenName: 'VendorManageAddProductStep3',
       },
     },
   },
@@ -36,17 +49,6 @@ export default function (state = initialState, action) {
         currentStep: filterFlowSteps[Object.keys(filterFlowSteps)[0]],
         currentStepNumber: 0,
       };
-
-    case SET_PAYLOAD:
-      const newState = { ...state };
-      // Writing payload to the current step.
-      Object.keys(newState.flows[state.currentFlow]).forEach((el) => {
-        if (newState.flows[state.currentFlow][el].title === state.currentStep) {
-          newState.flows[state.currentFlow][el].payload = action.payload;
-        }
-      });
-
-      return { ...newState };
 
     case SET_NEXT_STEP:
       return {

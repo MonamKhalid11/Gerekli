@@ -10,6 +10,7 @@ import Spinner from '../../components/Spinner';
 
 // Action
 import * as categoriesActions from '../../actions/vendorManage/categoriesActions';
+import * as stepsActions from '../../actions/stepsActions';
 import { getCategoriesList } from '../../services/vendors';
 
 import i18n from '../../utils/i18n';
@@ -159,7 +160,13 @@ export class CategoriesPicker extends Component {
    * @param {object} item - Category information.
    */
   handleToggle = async (item) => {
-    const { categoriesActions, onCategoryPress } = this.props;
+    const {
+      categoriesActions,
+      onCategoryPress,
+      stateSteps,
+      stepsActions,
+      componentId,
+    } = this.props;
     try {
       const response = await getCategoriesList(item.category_id);
       if (response.data.categories.length) {
@@ -180,10 +187,28 @@ export class CategoriesPicker extends Component {
         return;
       }
 
-      nav.pushVendorManageAddProductStep1(this.props.componentId, {
-        category_ids: [item.category_id],
+      const addProductFlow = stateSteps.flows.addProductFlow;
+
+      // Set the flow, filter steps and define the first step.
+      const startStep = await stepsActions.setFlow(
+        'addProductFlow',
+        addProductFlow,
+        {
+          category_ids: [item.category_id],
+        },
+      );
+
+      Navigation.push(componentId, {
+        component: {
+          name: startStep.screenName,
+          passProps: {
+            category_ids: [item.category_id],
+            currentStep: startStep,
+          },
+        },
       });
     } catch (error) {
+      console.log('CategoriesPicker handleToggle error: ', error);
       this.setState({ loading: false });
     }
   };
@@ -246,8 +271,10 @@ export class CategoriesPicker extends Component {
 export default connect(
   (state) => ({
     selected: state.vendorManageCategories.selected,
+    stateSteps: state.steps,
   }),
   (dispatch) => ({
     categoriesActions: bindActionCreators(categoriesActions, dispatch),
+    stepsActions: bindActionCreators(stepsActions, dispatch),
   }),
 )(CategoriesPicker);
