@@ -73,7 +73,7 @@ export class Layouts extends Component {
     this.isFetchBlocksSend = false;
     this.pushNotificationListener = null;
     this.pushNotificationOpenListener = null;
-    this.bottomTabEventListener = null;
+    this.backToHomeScreenHandler = null;
   }
 
   /**
@@ -83,12 +83,15 @@ export class Layouts extends Component {
    */
   componentDidMount() {
     const { layoutsActions, componentId } = this.props;
-    // Listener for bottom tabs.
-    // Removes last screen from navigation stack
-    this.bottomTabEventListener = Navigation.events().registerBottomTabSelectedListener(
+    // Listener for home button. Returns to home screen.
+    this.backToHomeScreenHandler = Navigation.events().registerBottomTabSelectedListener(
       ({ selectedTabIndex, unselectedTabIndex }) => {
         if (selectedTabIndex === 0 && unselectedTabIndex === 0) {
-          Navigation.pop(componentId);
+          Navigation.setStackRoot(componentId, {
+            component: {
+              name: 'Layouts',
+            },
+          });
         }
       },
     );
@@ -148,7 +151,7 @@ export class Layouts extends Component {
     if (config.pushNotifications) {
       this.pushNotificationListener();
     }
-    this.bottomTabEventListener.remove();
+    this.backToHomeScreenHandler.remove();
   }
 
   /**
