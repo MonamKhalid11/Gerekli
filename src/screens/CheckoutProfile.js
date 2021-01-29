@@ -19,7 +19,6 @@ import i18n from '../utils/i18n';
 import { formatPrice } from '../utils';
 import ProfileForm from '../components/ProfileForm';
 import { iconsMap } from '../utils/navIcons';
-import { objectFilter } from '../utils/index';
 
 const styles = EStyleSheet.create({
   container: {
@@ -134,27 +133,26 @@ export class CheckoutProfile extends Component {
     });
   }
 
-  fieldsFilter = (cart, fields) => {
+  filterProfileFormFields = (cart, fields) => {
+    let filteredFields = { ...fields };
     let isShippingRequired = true;
+
     cart.product_groups.forEach((productGroup) => {
       if (
         productGroup.all_edp_free_shipping ||
         productGroup.shipping_no_required ||
         productGroup.free_shipping ||
-        !productGroup.shippings.length
+        !Object.keys(productGroup.shippings).length
       ) {
         isShippingRequired = false;
       }
     });
 
     if (!isShippingRequired) {
-      fields = objectFilter(
-        fields,
-        (fields) => fields.description !== 'Shipping address',
-      );
+      delete filteredFields.S;
     }
 
-    return fields;
+    return filteredFields;
   };
 
   /**
@@ -174,7 +172,7 @@ export class CheckoutProfile extends Component {
       );
     }
 
-    const filteredFields = this.fieldsFilter(cart, fields);
+    const filteredFields = this.filterProfileFormFields(cart, fields);
 
     return (
       <SafeAreaView style={styles.container}>
