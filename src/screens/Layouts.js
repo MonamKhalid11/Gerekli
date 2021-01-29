@@ -74,7 +74,6 @@ export class Layouts extends Component {
     this.pushNotificationListener = null;
     this.pushNotificationOpenListener = null;
     this.backToHomeScreenHandler = null;
-    this.test = null;
   }
 
   /**
