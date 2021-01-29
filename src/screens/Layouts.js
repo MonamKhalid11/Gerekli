@@ -74,6 +74,7 @@ export class Layouts extends Component {
     this.pushNotificationListener = null;
     this.pushNotificationOpenListener = null;
     this.backToHomeScreenHandler = null;
+    this.test = null;
   }
 
   /**
@@ -87,11 +88,7 @@ export class Layouts extends Component {
     this.backToHomeScreenHandler = Navigation.events().registerBottomTabSelectedListener(
       ({ selectedTabIndex, unselectedTabIndex }) => {
         if (selectedTabIndex === 0 && unselectedTabIndex === 0) {
-          Navigation.setStackRoot(componentId, {
-            component: {
-              name: 'Layouts',
-            },
-          });
+          Navigation.popToRoot(componentId);
         }
       },
     );
