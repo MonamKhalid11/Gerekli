@@ -135,19 +135,19 @@ export class CheckoutProfile extends Component {
   }
 
   fieldsFilter = (cart, fields) => {
-    let isShipping = false;
-    cart.product_groups.forEach((el) => {
+    let isShippingRequired = true;
+    cart.product_groups.forEach((productGroup) => {
       if (
-        el.all_edp_free_shipping ||
-        el.shipping_no_required ||
-        el.free_shipping ||
-        !el.shippings.length
+        productGroup.all_edp_free_shipping ||
+        productGroup.shipping_no_required ||
+        productGroup.free_shipping ||
+        !productGroup.shippings.length
       ) {
-        isShipping = true;
+        isShippingRequired = false;
       }
     });
 
-    if (isShipping) {
+    if (!isShippingRequired) {
       fields = objectFilter(
         fields,
         (fields) => fields.description !== 'Shipping address',

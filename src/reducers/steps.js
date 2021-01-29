@@ -40,13 +40,13 @@ const initialState = {
 export default function (state = initialState, action) {
   switch (action.type) {
     case SET_FLOW:
-      const { flowName, filterFlowSteps } = action.payload;
+      const { flowName, filteredFlowSteps } = action.payload;
 
       return {
         ...state,
         currentFlow: flowName,
-        flowSteps: filterFlowSteps,
-        currentStep: filterFlowSteps[Object.keys(filterFlowSteps)[0]],
+        flowSteps: filteredFlowSteps,
+        currentStep: filteredFlowSteps[Object.keys(filteredFlowSteps)[0]],
         currentStepNumber: 0,
       };
 

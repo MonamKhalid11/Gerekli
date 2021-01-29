@@ -1,17 +1,17 @@
 import { SET_FLOW, SET_NEXT_STEP } from '../constants';
 import { filterObject } from '../utils';
 
-const filterSteps = (flowSteps, payload) => {
-  let filterFlowSteps = { ...flowSteps };
+const filterFlowSteps = (flowSteps, payload) => {
+  let filteredFlowSteps = { ...flowSteps };
   // Filter steps if the order doesn't need delivery
-  payload.cart?.product_groups.forEach((el) => {
+  payload.cart?.product_groups.forEach((productGroup) => {
     if (
-      el.all_edp_free_shipping ||
-      el.shipping_no_required ||
-      el.free_shipping ||
-      !Object.keys(el.shippings).length
+      productGroup.all_edp_free_shipping ||
+      productGroup.shipping_no_required ||
+      productGroup.free_shipping ||
+      !Object.keys(productGroup.shippings).length
     ) {
-      filterFlowSteps = filterObject(
+      filteredFlowSteps = filterObject(
         flowSteps,
         (step) => step.title !== 'Shipping',
       );
@@ -19,25 +19,25 @@ const filterSteps = (flowSteps, payload) => {
   });
 
   // Add step numbers
-  Object.keys(filterFlowSteps).forEach((el, index) => {
-    filterFlowSteps[el].stepNumber = index;
+  Object.keys(filteredFlowSteps).forEach((stepKey, index) => {
+    filteredFlowSteps[stepKey].stepNumber = index;
   });
 
-  return filterFlowSteps;
+  return filteredFlowSteps;
 };
 
 export const setFlow = (flowName, flowSteps, payload) => {
   return async (dispatch) => {
-    const filterFlowSteps = filterSteps(flowSteps, payload);
+    const filteredFlowSteps = filterFlowSteps(flowSteps, payload);
     dispatch({
       type: SET_FLOW,
       payload: {
         flowName,
-        filterFlowSteps,
+        filteredFlowSteps,
       },
     });
 
-    return filterFlowSteps[Object.keys(filterFlowSteps)[0]];
+    return filteredFlowSteps[Object.keys(filteredFlowSteps)[0]];
   };
 };
 
