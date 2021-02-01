@@ -7,7 +7,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { Navigation } from 'react-native-navigation';
 
 // Import components
-import ArrowSteps from '../components/ArrowSteps';
+import StepByStepSwitcher from '../components/StepByStepSwitcher';
 import Spinner from '../components/Spinner';
 
 // Import actions.
@@ -177,7 +177,7 @@ export class CheckoutProfile extends Component {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.contentContainer}>
-          <ArrowSteps currentStep={currentStep} />
+          <StepByStepSwitcher currentStep={currentStep} />
         </View>
 
         <ProfileForm

@@ -7,7 +7,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Components
 import Section from '../../components/Section';
-import ArrowSteps from '../../components/ArrowSteps';
+import StepByStepSwitcher from '../../components/StepByStepSwitcher';
 import BottomActions from '../../components/BottomActions';
 import Spinner from '../../components/Spinner';
 
@@ -141,7 +141,7 @@ export class AddProductStep3 extends Component {
 
     return (
       <View style={styles.header}>
-        <ArrowSteps currentStep={currentStep} />
+        <StepByStepSwitcher currentStep={currentStep} />
       </View>
     );
   };

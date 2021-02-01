@@ -20,7 +20,7 @@ import * as cartActions from '../actions/cartActions';
 import * as stepsActions from '../actions/stepsActions';
 
 // Components
-import ArrowSteps from '../components/ArrowSteps';
+import StepByStepSwitcher from '../components/StepByStepSwitcher';
 import CartFooter from '../components/CartFooter';
 import EmptyList from '../components/EmptyList';
 import Spinner from '../components/Spinner';
@@ -328,7 +328,7 @@ export class CheckoutShipping extends Component {
     const { currentStep } = this.props;
     return (
       <View style={styles.stepsWrapper}>
-        <ArrowSteps currentStep={currentStep} />
+        <StepByStepSwitcher currentStep={currentStep} />
       </View>
     );
   };

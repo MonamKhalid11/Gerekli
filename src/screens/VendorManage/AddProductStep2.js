@@ -9,7 +9,7 @@ import { Navigation } from 'react-native-navigation';
 
 // Components
 import Section from '../../components/Section';
-import ArrowSteps from '../../components/ArrowSteps';
+import StepByStepSwitcher from '../../components/StepByStepSwitcher';
 import BottomActions from '../../components/BottomActions';
 
 // Import actions
@@ -136,7 +136,7 @@ export class AddProductStep2 extends Component {
 
     return (
       <View style={styles.header}>
-        <ArrowSteps currentStep={currentStep} />
+        <StepByStepSwitcher currentStep={currentStep} />
       </View>
     );
   };

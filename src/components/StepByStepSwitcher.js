@@ -94,7 +94,7 @@ const styles = EStyleSheet.create({
  * @reactProps {string[]} steps - Steps to follow to place an order.
  * @reactProps {number} step - Step number.
  */
-export class ArrowSteps extends Component {
+export class StepByStepSwitcher extends Component {
   /**
    * @ignore
    */
@@ -206,4 +206,4 @@ export class ArrowSteps extends Component {
 
 export default connect((state) => ({
   stateSteps: state.steps,
-}))(ArrowSteps);
+}))(StepByStepSwitcher);

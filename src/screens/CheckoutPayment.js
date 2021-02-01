@@ -18,7 +18,7 @@ import * as cartActions from '../actions/cartActions';
 import * as paymentsActions from '../actions/paymentsActions';
 
 // Components
-import ArrowSteps from '../components/ArrowSteps';
+import StepByStepSwitcher from '../components/StepByStepSwitcher';
 import CartFooter from '../components/CartFooter';
 import FormBlock from '../components/FormBlock';
 import PaymentPhoneForm from '../components/PaymentPhoneForm';
@@ -343,7 +343,7 @@ export class CheckoutPayment extends Component {
     const { currentStep } = this.props;
     return (
       <View style={styles.stepsWrapper}>
-        <ArrowSteps currentStep={currentStep} />
+        <StepByStepSwitcher currentStep={currentStep} />
       </View>
     );
   };

@@ -18,7 +18,7 @@ import {
 
 // Import components
 import BottomActions from '../../components/BottomActions';
-import ArrowSteps from '../../components/ArrowSteps';
+import StepByStepSwitcher from '../../components/StepByStepSwitcher';
 import Section from '../../components/Section';
 
 // Import actions
@@ -118,7 +118,7 @@ export class AddProductStep1 extends Component {
     return (
       <View>
         <View style={styles.header}>
-          <ArrowSteps currentStep={currentStep} />
+          <StepByStepSwitcher currentStep={currentStep} />
         </View>
         <Section containerStyle={styles.containerStyle}>
           <TouchableOpacity
