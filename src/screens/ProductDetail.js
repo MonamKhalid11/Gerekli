@@ -32,13 +32,11 @@ import * as wishListActions from '../actions/wishListActions';
 import * as vendorActions from '../actions/vendorActions';
 
 // Components
+import { ProductDetailOptions } from '../components/ProductDetailOptions';
 import ProductImageSwiper from '../components/ProductImageSwiper';
 import DiscussionList from '../components/DiscussionList';
 import InAppPayment from '../components/InAppPayment';
-import SelectOption from '../components/SelectOption';
-import InputOption from '../components/InputOption';
 import { QtyOption } from '../components/QtyOption';
-import SwitchOption from '../components/SwitchOption';
 import SectionRow from '../components/SectionRow';
 import { Seller } from '../components/Seller';
 import Spinner from '../components/Spinner';
@@ -578,6 +576,7 @@ export class ProductDetail extends Component {
    * @param {string} val - Option value.
    */
   handleOptionChange(name, val) {
+    console.log('state: ', this.state);
     const { selectedOptions } = this.state;
     const newOptions = { ...selectedOptions };
     newOptions[name] = val;
@@ -805,65 +804,11 @@ export class ProductDetail extends Component {
   }
 
   /**
-   * Renders different options.
-   * "Memory capacity" for example.
-   *
-   * @param {object} item - Option information.
-   *
-   * @return {JSX.Element}
-   */
-  renderOptionItem = (item) => {
-    const option = { ...item };
-    const { selectedOptions } = this.state;
-    // FIXME: Brainfuck code to convert object to array.
-    option.variants = Object.keys(option.variants).map(
-      (k) => option.variants[k],
-    );
-    const defaultValue = selectedOptions[option.option_id];
-
-    switch (item.option_type) {
-      case 'I':
-      case 'T':
-        return (
-          <InputOption
-            option={option}
-            value={defaultValue}
-            key={item.option_id}
-            onChange={(val) => this.handleOptionChange(option.option_id, val)}
-          />
-        );
-
-      case 'S':
-      case 'R':
-        return (
-          <SelectOption
-            option={option}
-            value={defaultValue}
-            key={item.option_id}
-            onChange={(val) => this.handleOptionChange(option.option_id, val)}
-          />
-        );
-
-      case 'C':
-        return (
-          <SwitchOption
-            option={option}
-            value={defaultValue}
-            key={item.option_id}
-            onChange={(val) => this.handleOptionChange(option.option_id, val)}
-          />
-        );
-      default:
-        return null;
-    }
-  };
-
-  /**
    * Renders options list.
    *
    * @return {JSX.Element}
    */
-  renderOptions() {
+  renderQuantitySwitcher() {
     const { product, productOffers } = this.state;
 
     const step = parseInt(product.qty_step, 10) || 1;
@@ -872,7 +817,6 @@ export class ProductDetail extends Component {
 
     return (
       <Section>
-        {product.options.map((o) => this.renderOptionItem(o))}
         {!productOffers && (
           <QtyOption
             max={max}
@@ -1086,6 +1030,20 @@ export class ProductDetail extends Component {
     }
   }
 
+  renderSelect() {
+    const { product, selectedOptions } = this.state;
+
+    return (
+      <Section title={i18n.t('Select')}>
+        <ProductDetailOptions
+          options={product.options}
+          selectedOptions={selectedOptions}
+          changeOptionHandler={this.handleOptionChange.bind(this)}
+        />
+      </Section>
+    );
+  }
+
   /**
    * Renders component
    *
@@ -1119,7 +1077,8 @@ export class ProductDetail extends Component {
               {this.renderPrice()}
               {this.renderDesc()}
             </View>
-            {this.renderOptions()}
+            {this.renderQuantitySwitcher()}
+            {this.renderSelect()}
             {this.renderSellers()}
             {this.renderDiscussion()}
             {this.renderFeatures()}

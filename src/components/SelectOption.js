@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { capitalizeFirstLetter } from '../utils/index';
+import theme from '../config/theme';
 
 const styles = EStyleSheet.create({
   container: {
@@ -10,12 +12,11 @@ const styles = EStyleSheet.create({
   },
   title: {
     fontSize: '0.9rem',
-    fontWeight: 'bold',
     textAlign: 'left',
   },
   titleSub: {
     fontWeight: 'normal',
-    color: 'gray',
+    color: theme.$mediumGrayColor,
   },
   commentText: {
     color: '#9cb0c4',
@@ -29,19 +30,18 @@ const styles = EStyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'baseline',
     flexWrap: 'wrap',
-    marginTop: 8,
+    marginTop: 15,
   },
   optionsItem: {
     padding: 8,
-    borderWidth: 2,
-    borderColor: '#EEEEEE',
-    borderRadius: 3,
+    borderWidth: 1,
+    borderColor: theme.$mediumGrayColor,
+    borderRadius: 5,
     marginBottom: 6,
     marginRight: 6,
   },
   optionsItemBtnText: {
-    color: '#6d90b3',
-    fontWeight: 'bold',
+    color: theme.$mediumGrayColor,
     fontSize: '0.8rem',
   },
   optionsItemBtnTextActive: {
@@ -154,7 +154,7 @@ export default class extends Component {
             styles.optionsItemBtnText,
             active && styles.optionsItemBtnTextActive,
           ]}>
-          {v.variant_name}
+          {capitalizeFirstLetter(v.variant_name)}
         </Text>
       );
       if (img) {
@@ -173,8 +173,10 @@ export default class extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>
-          {option.option_name}:{' '}
-          <Text style={styles.titleSub}>{value.variant_name}</Text>
+          {capitalizeFirstLetter(option.option_name)}:{' '}
+          <Text style={styles.titleSub}>
+            {capitalizeFirstLetter(value.variant_name)}
+          </Text>
         </Text>
         <View style={styles.optionsVariants}>{optionsVariantsList}</View>
         {this.renderComment(option)}
