@@ -175,7 +175,8 @@ export class CheckoutPayment extends Component {
    * Redirects to CheckoutComplete.
    */
   placeOrderAndComplete() {
-    const { cart, shipping_id, ordersActions, cartActions } = this.props;
+    const { cart, ordersActions, cartActions } = this.props;
+    let { shipping_id } = this.props;
     const values = this.paymentFormRef.getValue();
 
     if (!values) {
@@ -184,6 +185,17 @@ export class CheckoutPayment extends Component {
 
     this.setState({
       fetching: true,
+    });
+
+    cart?.product_groups.forEach((productGroup) => {
+      if (
+        productGroup.all_edp_free_shipping ||
+        productGroup.shipping_no_required ||
+        productGroup.free_shipping ||
+        !Object.keys(productGroup.shippings).length
+      ) {
+        shipping_id = 0;
+      }
     });
 
     const orderInfo = {

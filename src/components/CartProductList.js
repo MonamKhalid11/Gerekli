@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, FlatList } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { get } from 'lodash';
-import { objectFilter } from '../utils/index';
+import { filterObject } from '../utils/index';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Navigation } from 'react-native-navigation';
@@ -102,7 +102,7 @@ export const CartProductList = ({
    * Moves to the next page.
    */
   const handlePlaceOrder = async (auth, cart) => {
-    const newCartProducts = objectFilter(
+    const newCartProducts = filterObject(
       cart.products,
       (p) => !p.extra.exclude_from_calculate,
     );
