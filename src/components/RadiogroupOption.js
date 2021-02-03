@@ -8,7 +8,6 @@ import theme from '../config/theme';
 const styles = EStyleSheet.create({
   container: {
     width: '100%',
-    marginBottom: 14,
   },
   title: {
     fontSize: '0.9rem',
@@ -23,7 +22,6 @@ const styles = EStyleSheet.create({
     marginTop: 3,
     textAlign: 'left',
   },
-  optionsList: {},
   optionsVariants: {
     flex: 1,
     flexDirection: 'row',
@@ -135,7 +133,7 @@ export default class extends Component {
    * @return {JSX.Element}
    */
   render() {
-    const { option } = this.props;
+    const { option, style } = this.props;
     const { value } = this.state;
 
     if (!value || !option) {
@@ -171,7 +169,7 @@ export default class extends Component {
     });
 
     return (
-      <View style={styles.container}>
+      <View style={{ ...styles.container, ...style }}>
         <Text style={styles.title}>
           {capitalizeFirstLetter(option.option_name)}:{' '}
           <Text style={styles.titleSub}>

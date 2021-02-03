@@ -2,19 +2,19 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, Switch } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { capitalizeFirstLetter } from '../utils/index';
 
 const styles = EStyleSheet.create({
   container: {
     width: '100%',
-    marginBottom: 14,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   title: {
     fontSize: '0.9rem',
-    fontWeight: 'bold',
     textAlign: 'left',
-  },
-  wrapper: {
-    marginTop: 10,
   },
 });
 
@@ -90,12 +90,11 @@ export default class extends Component {
    */
   render() {
     const { value, title } = this.state;
+    const { style } = this.props;
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>{title}</Text>
-        <View style={styles.wrapper}>
-          <Switch value={value} onValueChange={(v) => this.handleChange(v)} />
-        </View>
+      <View style={{ ...styles.container, ...style }}>
+        <Text style={styles.title}>{capitalizeFirstLetter(title)}: </Text>
+        <Switch value={value} onValueChange={(v) => this.handleChange(v)} />
       </View>
     );
   }

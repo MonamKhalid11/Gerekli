@@ -2,7 +2,7 @@ import React from 'react';
 
 // Components
 import InputOption from './InputOption';
-import RadiogroupOption from './SelectOption';
+import RadiogroupOption from './RadiogroupOption';
 import SwitchOption from './SwitchOption';
 
 export const ProductDetailOptions = ({
@@ -18,13 +18,16 @@ export const ProductDetailOptions = ({
    *
    * @return {JSX.Element}
    */
-  const renderOptionItem = (item) => {
+  const renderOptionItem = (item, isLastOption) => {
     const option = { ...item };
     // FIXME: Brainfuck code to convert object to array.
     option.variants = Object.keys(option.variants).map(
       (k) => option.variants[k],
     );
     const defaultValue = selectedOptions[option.option_id];
+    const style = {
+      marginBottom: isLastOption ? 0 : 30,
+    };
 
     switch (item.option_type) {
       case 'I':
@@ -35,6 +38,7 @@ export const ProductDetailOptions = ({
             value={defaultValue}
             key={item.option_id}
             onChange={(val) => changeOptionHandler(option.option_id, val)}
+            style={style}
           />
         );
 
@@ -46,6 +50,7 @@ export const ProductDetailOptions = ({
             value={defaultValue}
             key={item.option_id}
             onChange={(val) => changeOptionHandler(option.option_id, val)}
+            style={style}
           />
         );
 
@@ -56,6 +61,7 @@ export const ProductDetailOptions = ({
             value={defaultValue}
             key={item.option_id}
             onChange={(val) => changeOptionHandler(option.option_id, val)}
+            style={style}
           />
         );
       default:
@@ -63,5 +69,14 @@ export const ProductDetailOptions = ({
     }
   };
 
-  return <>{options.map((option) => renderOptionItem(option))}</>;
+  const lastOptionNumber = options.length - 1;
+
+  return (
+    <>
+      {options.map((option, index) => {
+        const isLastOption = index === lastOptionNumber;
+        return renderOptionItem(option, isLastOption);
+      })}
+    </>
+  );
 };
