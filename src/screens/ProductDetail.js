@@ -576,7 +576,6 @@ export class ProductDetail extends Component {
    * @param {string} val - Option value.
    */
   handleOptionChange(name, val) {
-    console.log('state: ', this.state);
     const { selectedOptions } = this.state;
     const newOptions = { ...selectedOptions };
     newOptions[name] = val;

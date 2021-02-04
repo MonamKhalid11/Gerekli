@@ -21,7 +21,7 @@ const styles = EStyleSheet.create({
     fontSize: '0.9rem',
     height: 60,
     borderColor: '#EEEEEE',
-    borderWidth: 2,
+    borderWidth: 1,
     borderRadius: 10,
     marginTop: 8,
     padding: 8,

@@ -2,8 +2,9 @@ import React from 'react';
 
 // Components
 import InputOption from './InputOption';
-import RadiogroupOption from './RadiogroupOption';
-import SwitchOption from './SwitchOption';
+import RadioGroupOption from './RadioGroupOption';
+import CheckboxOption from './CheckboxOption';
+import SelectBoxOption from './SelectBoxOption';
 
 export const ProductDetailOptions = ({
   options,
@@ -43,9 +44,19 @@ export const ProductDetailOptions = ({
         );
 
       case 'S':
+        return (
+          <SelectBoxOption
+            option={option}
+            value={defaultValue}
+            key={item.option_id}
+            onChange={(val) => changeOptionHandler(option.option_id, val)}
+            style={style}
+          />
+        );
+
       case 'R':
         return (
-          <RadiogroupOption
+          <RadioGroupOption
             option={option}
             value={defaultValue}
             key={item.option_id}
@@ -56,7 +67,7 @@ export const ProductDetailOptions = ({
 
       case 'C':
         return (
-          <SwitchOption
+          <CheckboxOption
             option={option}
             value={defaultValue}
             key={item.option_id}
