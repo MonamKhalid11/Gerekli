@@ -135,20 +135,8 @@ export class CheckoutProfile extends Component {
 
   filterProfileFormFields = (cart, fields) => {
     let filteredFields = { ...fields };
-    let isShippingRequired = true;
 
-    cart.product_groups.forEach((productGroup) => {
-      if (
-        productGroup.all_edp_free_shipping ||
-        productGroup.shipping_no_required ||
-        productGroup.free_shipping ||
-        !Object.keys(productGroup.shippings).length
-      ) {
-        isShippingRequired = false;
-      }
-    });
-
-    if (!isShippingRequired) {
+    if (!cart.isShippingRequired) {
       delete filteredFields.S;
     }
 

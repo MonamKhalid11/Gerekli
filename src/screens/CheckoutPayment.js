@@ -187,16 +187,9 @@ export class CheckoutPayment extends Component {
       fetching: true,
     });
 
-    cart?.product_groups.forEach((productGroup) => {
-      if (
-        productGroup.all_edp_free_shipping ||
-        productGroup.shipping_no_required ||
-        productGroup.free_shipping ||
-        !Object.keys(productGroup.shippings).length
-      ) {
-        shipping_id = 0;
-      }
-    });
+    if (!cart?.isShippingRequired) {
+      shipping_id = 0;
+    }
 
     const orderInfo = {
       products: {},
@@ -241,10 +234,10 @@ export class CheckoutPayment extends Component {
         if (!data) {
           return;
         }
-        cartActions.clear(cart);
-        nav.pushCheckoutComplete(this.props.componentId, {
-          orderId: data.order_id,
-        });
+        // cartActions.clear(cart);
+        // nav.pushCheckoutComplete(this.props.componentId, {
+        //   orderId: data.order_id,
+        // });
       })
       .catch(() => {
         this.setState({

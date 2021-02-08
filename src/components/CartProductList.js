@@ -110,6 +110,29 @@ export const CartProductList = ({
 
     const checkoutFlow = stateSteps.flows.checkoutFlow;
 
+    cart.isShippingRequired = false;
+
+    cart.product_groups.forEach((productGroup) => {
+      if (
+        !productGroup.all_edp_free_shipping &&
+        !productGroup.shipping_no_required &&
+        !productGroup.free_shipping &&
+        Object.keys(productGroup.shippings).length
+      ) {
+        productGroup.isShippingRequired = true;
+        cart.isShippingRequired = true;
+      } else {
+        productGroup.isShippingRequired = false;
+      }
+      if (
+        !productGroup.shipping_no_required &&
+        !Object.keys(productGroup.shippings).length
+      ) {
+        productGroup.isShippingForbidden = true;
+        productGroup.isShippingRequired = true;
+      }
+    });
+
     // Set the flow, filter steps and define the first step.
     const startStep = await stepsActions.setFlow('checkoutFlow', checkoutFlow, {
       newProducts,

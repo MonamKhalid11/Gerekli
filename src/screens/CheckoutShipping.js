@@ -10,6 +10,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import theme from '../config/theme';
 
 import values from 'lodash/values';
 import uniqueId from 'lodash/uniqueId';
@@ -30,7 +31,6 @@ import i18n from '../utils/i18n';
 
 import { stripTags, formatPrice } from '../utils';
 import { Navigation } from 'react-native-navigation';
-// import * as nav from '../services/navigation';
 
 const styles = EStyleSheet.create({
   container: {
@@ -86,6 +86,16 @@ const styles = EStyleSheet.create({
   },
   stepsWrapper: {
     padding: 14,
+  },
+  shippingForbiddenContainer: {
+    justifyContent: 'center',
+    marginHorizontal: 20,
+    paddingVertical: 15,
+    marginBottom: 20,
+  },
+  shippingForbiddenText: {
+    textAlign: 'center',
+    color: theme.$dangerColor,
   },
 });
 
@@ -146,6 +156,7 @@ export class CheckoutShipping extends Component {
   setDefaults(cart) {
     const items = this.normalizeData(cart.product_groups);
     const shippings = [];
+    let isShippingForbidden = false;
 
     items.forEach((item) => {
       if (item) {
@@ -153,12 +164,15 @@ export class CheckoutShipping extends Component {
           shippings.push(shipping);
         });
       }
+      if (item.isShippingForbidden) {
+        isShippingForbidden = true;
+      }
     });
 
     this.setState({
       items,
       total: cart.total_formatted.price,
-      isNextDisabled: shippings.length === 0,
+      isNextDisabled: isShippingForbidden || shippings.length === 0,
     });
   }
 
@@ -349,6 +363,21 @@ export class CheckoutShipping extends Component {
   };
 
   /**
+   * Renders shipping not available message.
+   *
+   * @return {JSX.Element}
+   */
+  renderShippingNotAvailableMessage = () => {
+    return (
+      <View style={styles.shippingForbiddenContainer}>
+        <Text style={styles.shippingForbiddenText}>
+          {i18n.t('Sorry, delivery is not available for this seller.')}
+        </Text>
+      </View>
+    );
+  };
+
+  /**
    * Renders component
    *
    * @return {JSX.Element}
@@ -361,21 +390,33 @@ export class CheckoutShipping extends Component {
       return <Spinner visible />;
     }
 
-    const shippingsCount = flatten(items.map((s) => s.shippings)).length;
+    // items.forEach((item) => {
+    //   if (item.isShippingForbidden) {
+    //     this.setState({ isNextDisabled: true });
+    //   }
+    // });
+
+    const shippingsCount = flatten(
+      items.filter((item) => item.isShippingRequired).map((s) => s.shippings),
+    ).length;
 
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.contentContainer}>
           {this.renderSteps()}
           {!shippingsCount && <EmptyList />}
-          {items.map((item, itemIndex) => (
-            <View key={item.company_id}>
-              {this.renderCompany(item.name)}
-              {item.shippings.map((shipping, shippingIndex) =>
-                this.renderItem(shipping, shippingIndex, itemIndex),
-              )}
-            </View>
-          ))}
+          {items
+            .filter((item) => item.isShippingRequired)
+            .map((item, itemIndex) => (
+              <View key={item.company_id}>
+                {this.renderCompany(item.name)}
+                {item.isShippingForbidden
+                  ? this.renderShippingNotAvailableMessage()
+                  : item.shippings.map((shipping, shippingIndex) =>
+                      this.renderItem(shipping, shippingIndex, itemIndex),
+                    )}
+              </View>
+            ))}
         </ScrollView>
         <CartFooter
           totalPrice={`${formatPrice(total)}`}

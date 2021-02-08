@@ -61,7 +61,7 @@ export default class extends PureComponent {
           <Text style={styles.cartInfoTotal}>{formatPrice(totalPrice)}</Text>
         </View>
         <Button
-          type="primary"
+          type={isBtnDisabled ? 'disabledPrimary' : 'primary'}
           onPress={() => onBtnPress()}
           disabled={isBtnDisabled}>
           <Text style={styles.placeOrderBtnText}>{btnText}</Text>

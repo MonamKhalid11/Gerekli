@@ -4,19 +4,12 @@ import { filterObject } from '../utils';
 const filterFlowSteps = (flowSteps, payload) => {
   let filteredFlowSteps = { ...flowSteps };
   // Filter steps if the order doesn't need delivery
-  payload.cart?.product_groups.forEach((productGroup) => {
-    if (
-      productGroup.all_edp_free_shipping ||
-      productGroup.shipping_no_required ||
-      productGroup.free_shipping ||
-      !Object.keys(productGroup.shippings).length
-    ) {
-      filteredFlowSteps = filterObject(
-        flowSteps,
-        (step) => step.title !== 'Shipping',
-      );
-    }
-  });
+  if (!payload.cart.isShippingRequired) {
+    filteredFlowSteps = filterObject(
+      flowSteps,
+      (step) => step.title !== 'Shipping',
+    );
+  }
 
   // Add step numbers
   Object.keys(filteredFlowSteps).forEach((stepKey, index) => {
