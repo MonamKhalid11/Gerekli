@@ -68,7 +68,11 @@ export class Cart extends Component {
       refreshing: false,
     };
 
-    Navigation.events().bindComponent(this);
+    Navigation.events().registerNavigationButtonPressedListener(
+      ({ buttonId }) => {
+        this.topNavigationButtonPressed(buttonId);
+      },
+    );
   }
 
   /**
@@ -136,7 +140,7 @@ export class Cart extends Component {
    *
    * @param {object} event - Information about the element on which the event occurred.
    */
-  navigationButtonPressed({ buttonId }) {
+  topNavigationButtonPressed(buttonId) {
     const { cartActions } = this.props;
     if (buttonId === 'clearCart') {
       Alert.alert(

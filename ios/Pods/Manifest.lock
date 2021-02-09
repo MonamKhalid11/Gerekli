@@ -360,12 +360,12 @@ PODS:
     - React-Core (= 0.63.3)
     - React-cxxreact (= 0.63.3)
     - React-jsi (= 0.63.3)
-  - ReactNativeNavigation (6.12.1):
+  - ReactNativeNavigation (6.12.2):
     - React
     - React-RCTImage
     - React-RCTText
-    - ReactNativeNavigation/Core (= 6.12.1)
-  - ReactNativeNavigation/Core (6.12.1):
+    - ReactNativeNavigation/Core (= 6.12.2)
+  - ReactNativeNavigation/Core (6.12.2):
     - React
     - React-RCTImage
     - React-RCTText
@@ -380,10 +380,6 @@ PODS:
     - RNFBApp
   - RNVectorIcons (7.0.0):
     - React
-  - Stripe (14.0.1)
-  - tipsi-stripe (7.5.3):
-    - React
-    - Stripe (~> 14.0.1)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -443,7 +439,6 @@ DEPENDENCIES:
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
-  - tipsi-stripe (from `../node_modules/tipsi-stripe`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -470,7 +465,6 @@ SPEC REPOS:
     - OpenSSL-Universal
     - PromisesObjC
     - Protobuf
-    - Stripe
     - YogaKit
 
 EXTERNAL SOURCES:
@@ -540,8 +534,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/messaging"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
-  tipsi-stripe:
-    :path: "../node_modules/tipsi-stripe"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -596,16 +588,14 @@ SPEC CHECKSUMS:
   React-RCTText: 65a6de06a7389098ce24340d1d3556015c38f746
   React-RCTVibration: 8e9fb25724a0805107fc1acc9075e26f814df454
   ReactCommon: 4167844018c9ed375cc01a843e9ee564399e53c3
-  ReactNativeNavigation: 67d1f3d7f335f39873a5cf26058f03d0511dd0de
+  ReactNativeNavigation: aefc8debafb4a374575adafb44a3352b9d5b618a
   RNCAsyncStorage: 3eea36d9460c5159b592f9ecbe5a77f8aca98006
   RNFBApp: 570b136767f588b7eef0ab918284e9fe364d0c3e
   RNFBMessaging: dc3849747c2c61bfcd3c1ce6b5390f27ff4f7756
   RNVectorIcons: da6fe858f5a65d7bbc3379540a889b0b12aa5976
-  Stripe: 4305b646743612854819fb5d5cf67aaeb93577c0
-  tipsi-stripe: 41299d30e9b906413315eeb1b94607aaac9b6781
   Yoga: 7d13633d129fd179e01b8953d38d47be90db185a
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
 PODFILE CHECKSUM: e1c779d9967d742678b878b33d41864ea0bcc55d
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.9.3
