@@ -390,21 +390,10 @@ export class CheckoutShipping extends Component {
       return <Spinner visible />;
     }
 
-    // items.forEach((item) => {
-    //   if (item.isShippingForbidden) {
-    //     this.setState({ isNextDisabled: true });
-    //   }
-    // });
-
-    const shippingsCount = flatten(
-      items.filter((item) => item.isShippingRequired).map((s) => s.shippings),
-    ).length;
-
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.contentContainer}>
           {this.renderSteps()}
-          {!shippingsCount && <EmptyList />}
           {items
             .filter((item) => item.isShippingRequired)
             .map((item, itemIndex) => (

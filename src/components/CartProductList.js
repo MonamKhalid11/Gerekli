@@ -130,6 +130,7 @@ export const CartProductList = ({
       ) {
         productGroup.isShippingForbidden = true;
         productGroup.isShippingRequired = true;
+        cart.isShippingRequired = true;
       }
     });
 

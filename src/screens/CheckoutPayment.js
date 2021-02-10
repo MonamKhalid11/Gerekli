@@ -234,10 +234,10 @@ export class CheckoutPayment extends Component {
         if (!data) {
           return;
         }
-        // cartActions.clear(cart);
-        // nav.pushCheckoutComplete(this.props.componentId, {
-        //   orderId: data.order_id,
-        // });
+        cartActions.clear(cart);
+        nav.pushCheckoutComplete(this.props.componentId, {
+          orderId: data.order_id,
+        });
       })
       .catch(() => {
         this.setState({
