@@ -1,28 +1,29 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from '../components/Icon';
+import Picker from 'react-native-picker-view';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import { capitalizeFirstLetter } from '../utils/index';
 
 const styles = EStyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'stretch',
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F1F1',
     paddingBottom: 8,
     paddingTop: 8,
-  },
-  lastRow: {
-    borderBottomWidth: 0,
-  },
-  nameText: {
-    fontWeight: 'bold',
+    marginBottom: 15,
   },
   valueWrapper: {
+    width: '100%',
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  pickerValueText: {
+    fontSize: '0.9rem',
   },
   menuItemIcon: {
     fontSize: '1.2rem',
@@ -35,25 +36,56 @@ const styles = EStyleSheet.create({
  *
  * @param {object} option - Option information.
  * @param {string} value - Option value.
- * @param {boolean} last - Last row in the list or not.
  *
  * @return {JSX.Element}
  */
-const SelectBoxOption = ({ option, value, onChange, style }) => {
+const SelectBoxOption = ({ option, value, onChange }) => {
+  const refRBSheet = useRef();
+  const [selectBoxIndex, setSelectBoxIndex] = useState(0);
+  const pickerValues = option.variants.map((variant) =>
+    capitalizeFirstLetter(variant.variant_name),
+  );
+
+  const changePickerValueHandler = (value) => {
+    const selectedVariant = option.variants.find(
+      (variant) => variant.variant_name.toLowerCase() === value.toLowerCase(),
+    );
+    onChange(selectedVariant);
+  };
+
   return (
-    <TouchableOpacity
-      onPress={() => console.log('it works')}
-      style={{ ...styles.container, ...style }}>
-      <View style={styles.name}>
-        <Text style={styles.nameText}>{option.name}</Text>
-      </View>
-      <View style={styles.valueWrapper}>
-        <View style={styles.value}>
-          {/* <Text style={styles.valueText}>{value}</Text> */}
+    <>
+      <TouchableOpacity
+        onPress={() => refRBSheet.current.open()}
+        style={styles.container}>
+        <View style={styles.valueWrapper}>
+          <Text style={styles.pickerValueText}>
+            {capitalizeFirstLetter(value.variant_name)}
+          </Text>
+          <Icon name="arrow-drop-down" style={styles.menuItemIcon} />
         </View>
-        <Icon name="arrow-drop-down" style={styles.menuItemIcon} />
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+
+      <RBSheet
+        ref={refRBSheet}
+        customStyles={{
+          wrapper: {
+            backgroundColor: 'transparent',
+          },
+          draggableIcon: {
+            backgroundColor: '#000',
+          },
+        }}>
+        <Picker
+          values={pickerValues}
+          selected={selectBoxIndex}
+          onSelect={(value, index) => {
+            setSelectBoxIndex(index);
+            changePickerValueHandler(value);
+          }}
+        />
+      </RBSheet>
+    </>
   );
 };
 
@@ -61,9 +93,7 @@ const SelectBoxOption = ({ option, value, onChange, style }) => {
  * @ignore
  */
 SelectBoxOption.propTypes = {
-  name: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-  last: PropTypes.bool,
+  value: PropTypes.object,
 };
 
 export default SelectBoxOption;
