@@ -114,9 +114,6 @@ const styles = EStyleSheet.create({
     color: 'gray',
     textAlign: 'left',
   },
-  noFeaturesText: {
-    textAlign: 'left',
-  },
   addToCartContainerWrapper: {
     shadowColor: '#000',
     shadowOffset: {
@@ -880,21 +877,19 @@ export class ProductDetail extends Component {
     const lastElement = features.length - 1;
     const isVariation = product.variation_features_variants ? true : false;
 
+    if (!features.length) {
+      return null;
+    }
+
     return (
       <Section title={i18n.t('Features')}>
-        {features.length !== 0 ? (
-          features.map((item, index) =>
-            this.renderFeatureItem(
-              item,
-              index,
-              index === lastElement && true,
-              isVariation,
-            ),
-          )
-        ) : (
-          <Text style={styles.noFeaturesText}>
-            {` ${i18n.t('There are no features.')} `}
-          </Text>
+        {features.map((item, index) =>
+          this.renderFeatureItem(
+            item,
+            index,
+            index === lastElement && true,
+            isVariation,
+          ),
         )}
       </Section>
     );
@@ -1031,6 +1026,10 @@ export class ProductDetail extends Component {
 
   renderSelect() {
     const { product, selectedOptions } = this.state;
+
+    if (!product.options.length) {
+      return null;
+    }
 
     return (
       <Section title={i18n.t('Select')}>

@@ -17,9 +17,6 @@ const styles = EStyleSheet.create({
   lastRow: {
     borderBottomWidth: 0,
   },
-  nameText: {
-    fontWeight: 'bold',
-  },
   valueWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -28,7 +25,6 @@ const styles = EStyleSheet.create({
     fontSize: '1.2rem',
     marginHorizontal: 5,
   },
-  valueText: {},
 });
 
 /**
@@ -67,10 +63,10 @@ const SectionRow = ({
     return (
       <View style={[styles.row, last && styles.lastRow]}>
         <View style={styles.name}>
-          <Text style={styles.nameText}>{name}</Text>
+          <Text>{name}</Text>
         </View>
         <View style={styles.value}>
-          <Text style={styles.valueText}>{value}</Text>
+          <Text>{value}</Text>
         </View>
       </View>
     );
