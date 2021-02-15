@@ -35,6 +35,7 @@ export const stripTags = (str) => {
 };
 
 export const formatPrice = (str) => {
+  console.log("str here is ", str)
   if (str) {
     return String(str).replace(/&nbsp;/, '');
   }

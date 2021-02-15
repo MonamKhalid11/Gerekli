@@ -8,7 +8,8 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Import actions.
 import * as authActions from '../actions/authActions';
-
+import * as appStorage from '../services/AppStorage'
+import { SAVE_LOGGED_IN_DATA } from '../constants'
 // Components
 import Spinner from '../components/Spinner';
 import i18n from '../utils/i18n';
@@ -49,6 +50,14 @@ const styles = EStyleSheet.create({
  * @reactProps {object} authActions - Auth functions.
  * @reactProps {object} auth - Auth setup.
  */
+const values = {};
+const t = require('tcomb-form-native');
+
+const Form = t.form.Form;
+const FormFields = t.struct({
+  email: t.String,
+  password: t.String,
+});
 export class Login extends Component {
   /**
    * @ignore
@@ -70,6 +79,9 @@ export class Login extends Component {
   constructor(props) {
     super(props);
     Navigation.events().bindComponent(this);
+    this.state = {
+      loading: false
+    }
   }
 
   /**
@@ -120,6 +132,23 @@ export class Login extends Component {
     }
   }
 
+  async componentDidMount() {
+
+    await appStorage.getFromStorage(SAVE_LOGGED_IN_DATA, (credentials) => {
+      if (credentials) {
+        console.log("showing credentials to be opened ", credentials)
+        values.email = credentials.email;
+        values.password = credentials.password;
+        this.setState({
+          loading: false
+        })
+      }
+    }, (error) => {
+      this.setState({
+        loading: false
+      })
+    })
+  }
   /**
    * Renders component.
    *
@@ -127,26 +156,15 @@ export class Login extends Component {
    */
   render() {
     const { auth } = this.props;
-    const values = {};
-    const t = require('tcomb-form-native');
 
-    if (!t.form) {
-      return null;
-    }
-
-    const Form = t.form.Form;
-    const FormFields = t.struct({
-      email: t.String,
-      password: t.String,
-    });
 
     if (config.demo) {
       values.email = config.demoUsername;
       values.password = config.demoPassword;
     }
+
     //Testhere
-    // values.email = 'Ellis.p@aytrade.co.uk';
-    // values.password = 'Elsowda95!';
+
     const options = {
       disableOrder: true,
       fields: {
@@ -163,7 +181,6 @@ export class Login extends Component {
         },
       },
     };
-
     return (
       <View style={styles.container}>
         <Form ref="form" type={FormFields} options={options} value={values} />

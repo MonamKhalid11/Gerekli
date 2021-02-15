@@ -4,6 +4,8 @@ import { Navigation } from 'react-native-navigation';
 import { format, isDate } from 'date-fns';
 import pickBy from 'lodash/pickBy';
 import identity from 'lodash/identity';
+import * as appStorage from '../services/AppStorage'
+
 
 import {
   AUTH_LOGIN_REQUEST,
@@ -28,6 +30,7 @@ import {
   UPDATE_PROFILE_FAIL,
   STORE_KEY,
   AUTH_LOGOUT,
+  SAVE_LOGGED_IN_DATA
 } from '../constants';
 import Api from '../services/api';
 import i18n from '../utils/i18n';
@@ -235,6 +238,7 @@ export function login(data) {
 
     return Api.post('/auth_tokens', data)
       .then((response) => {
+        appStorage.addToStorage(SAVE_LOGGED_IN_DATA, data)
         cartActions.fetch()(dispatch);
         wishListActions.fetch(false)(dispatch);
         dispatch({

@@ -689,6 +689,7 @@ export class ProductDetail extends Component {
    */
   renderPrice() {
     const { product } = this.state;
+    console.log("showing product here in logger", product)
     let discountPrice = null;
     let discountTitle = null;
     let showDiscount = false;
