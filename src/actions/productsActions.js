@@ -169,6 +169,8 @@ const convertProductVariants = (oldProductVariants) => {
           };
           selectVariant.selectValue = selectVariant.variant;
           selectVariant.selectId = selectVariant.variant_id;
+          // test
+          selectVariant.option_type = 'S';
           return selectVariant;
         });
 

@@ -311,7 +311,7 @@ export class ProductDetail extends Component {
     } = nextProps;
 
     const { currentPid } = this.state;
-    console.log('currentPid: ', currentPid)
+    console.log('componentWillReceiveProps: ', nextProps);
     const product = productDetail.byId[currentPid || pid];
 
     if (!product) {
@@ -352,6 +352,7 @@ export class ProductDetail extends Component {
     console.log('defaultVariants: ', defaultVariants);
 
     if (!Object.keys(defaultVariants).length) {
+      console.log('componentWillReceiveProps2: ', this.state);
       product.convertedVariants.forEach((variant) => {
         if (!variant.selectVariants) {
           variant.selectVariants = [];
@@ -426,7 +427,7 @@ export class ProductDetail extends Component {
     const { productsActions, pid } = this.props;
 
     const product = await productsActions.fetch(productId || pid);
-    console.log('productInit: ', pid);
+    console.log('productInit: ', this.state);
 
     if (parseInt(product.data.master_product_offers_count, 10)) {
       const productOffers = await productsActions.fetchProductOffers(
@@ -526,6 +527,8 @@ export class ProductDetail extends Component {
     const { product, selectedOptions, amount } = this.state;
     const { auth, cartActions } = this.props;
 
+    console.log('handleAddToCart: ', product);
+
     if (!auth.logged) {
       return nav.showLogin();
     }
@@ -548,7 +551,7 @@ export class ProductDetail extends Component {
       },
     };
 
-    return cartActions.add({ products }, showNotification);
+    // return cartActions.add({ products }, showNotification);
   };
 
   /**
@@ -989,20 +992,23 @@ export class ProductDetail extends Component {
   };
 
   changeVariationHandler(variantId, variantOption) {
-    const { currentFeatureVariants, currentPid, selectedVariants } = this.state;
-
-    console.log('selectedVariants: ', selectedVariants);
-
+    const { selectedVariants } = this.state;
     const pid = variantOption.product_id;
-    console.log('variantOption: ', variantOption);
+    const newVariant = { ...selectedVariants };
+    newVariant[variantId] = variantOption;
 
-    // if 'cancel', do nothing
+    // If selected the same variant, do nothing.
     if (selectedVariants[variantId].product_id !== pid) {
-      this.setState({ currentPid: pid });
-      this.productInit(pid);
+      this.setState(
+        {
+          currentPid: pid,
+          selectedVariants: newVariant,
+        },
+        () => {
+          this.productInit(pid);
+        },
+      );
     }
-
-    console.log('this.staet: ', this.state);
   }
 
   /**
@@ -1025,16 +1031,16 @@ export class ProductDetail extends Component {
   }
 
   renderSelect() {
-    const {
-      product,
-      selectedOptions,
-      selectedVariants,
-      currentFeatureVariants,
-    } = this.state;
+    const { product, selectedOptions, selectedVariants } = this.state;
 
-    if (!product.options.length) {
-      return null;
-    }
+    console.log('renderSelect: ', selectedOptions, selectedVariants);
+
+    // if (
+    //   !Object.keys(selectedOptions).length &&
+    //   !Object.keys(selectedVariants).length
+    // ) {
+    //   return null;
+    // }
 
     return (
       <Section title={i18n.t('Select')}>

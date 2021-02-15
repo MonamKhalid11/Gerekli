@@ -22,10 +22,6 @@ export const ProductDetailOptions = ({
   const renderOptionItem = (item, isLastOption) => {
     console.log('item: ', item)
     const option = { ...item };
-    // FIXME: Brainfuck code to convert object to array.
-    // option.variants = Object.keys(option.variants).map(
-    //   (k) => option.variants[k],
-    // );
     const defaultValue = selectedOptions[item.selectDefaultId];
     const style = {
       marginBottom: isLastOption ? 0 : 30,
@@ -45,6 +41,7 @@ export const ProductDetailOptions = ({
         );
 
       case 'S':
+        console.log('im here: ')
         return (
           <SelectBoxOption
             option={option}
