@@ -25,6 +25,7 @@ const styles = EStyleSheet.create({
     fontSize: '1.2rem',
     marginHorizontal: 5,
   },
+  valueText: '0.9rem',
 });
 
 /**

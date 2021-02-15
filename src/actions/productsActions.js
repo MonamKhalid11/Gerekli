@@ -126,6 +126,62 @@ export function recalculatePrice(pid, options) {
   };
 }
 
+const convertProductOptions = (oldProductOptions) => {
+  const newProductOptions = Object.keys(oldProductOptions).map((option) => {
+    const newProductOption = { ...oldProductOptions[option] };
+    newProductOption.selectTitle = oldProductOptions[option].option_name;
+    newProductOption.selectDefaultId = oldProductOptions[option].option_id;
+
+    newProductOption.selectVariants = Object.keys(
+      oldProductOptions[option].variants,
+    ).map((variantId) => {
+      const selectVariant = {
+        ...oldProductOptions[option].variants[variantId],
+      };
+      selectVariant.selectValue = selectVariant.variant_name;
+      selectVariant.selectId = selectVariant.option_id;
+      return selectVariant;
+    });
+
+    return newProductOption;
+  });
+
+  return newProductOptions;
+};
+
+const convertProductVariants = (oldProductVariants) => {
+  if (oldProductVariants) {
+    const newProductVariants = Object.keys(oldProductVariants).map(
+      (variant) => {
+        const newProductVariant = { ...oldProductVariants[variant] };
+        newProductVariant.selectTitle =
+          oldProductVariants[variant].internal_name;
+        newProductVariant.selectDefaultId =
+          oldProductVariants[variant].variant_id;
+        // Test
+        newProductVariant.option_type = 'S';
+
+        newProductVariant.selectVariants = Object.keys(
+          oldProductVariants[variant].variants,
+        ).map((variantId) => {
+          const selectVariant = {
+            ...oldProductVariants[variant].variants[variantId],
+          };
+          selectVariant.selectValue = selectVariant.variant;
+          selectVariant.selectId = selectVariant.variant_id;
+          return selectVariant;
+        });
+
+        return newProductVariant;
+      },
+    );
+
+    return newProductVariants;
+  }
+
+  return [];
+};
+
 export function fetch(pid) {
   return (dispatch) => {
     dispatch({
@@ -137,6 +193,16 @@ export function fetch(pid) {
 
     return Api.get(`/sra_products/${pid}`)
       .then((response) => {
+        console.log('respone: ', response);
+
+        response.data.convertedOptions = convertProductOptions(
+          response.data.product_options,
+        );
+
+        response.data.convertedVariants = convertProductVariants(
+          response.data.variation_features_variants,
+        );
+
         dispatch({
           type: FETCH_ONE_PRODUCT_SUCCESS,
           payload: {
@@ -151,6 +217,7 @@ export function fetch(pid) {
         return response;
       })
       .catch((error) => {
+        console.log('error: ', error);
         dispatch({
           type: FETCH_ONE_PRODUCT_FAIL,
           payload: {

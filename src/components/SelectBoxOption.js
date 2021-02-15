@@ -16,13 +16,17 @@ const styles = EStyleSheet.create({
     paddingTop: 8,
     marginBottom: 15,
   },
-  valueWrapper: {
+  selectWrapper: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  pickerValueText: {
+  iconAndValueWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  selectBoxText: {
     fontSize: '0.9rem',
   },
   menuItemIcon: {
@@ -42,14 +46,19 @@ const styles = EStyleSheet.create({
 const SelectBoxOption = ({ option, value, onChange }) => {
   const refRBSheet = useRef();
   const [selectBoxIndex, setSelectBoxIndex] = useState(0);
-  const pickerValues = option.variants.map((variant) =>
-    capitalizeFirstLetter(variant.variant_name),
+  if (!value) {
+    return null;
+  }
+
+  const pickerValues = option.selectVariants.map((variant) =>
+    capitalizeFirstLetter(variant.selectValue),
   );
 
   const changePickerValueHandler = (value) => {
-    const selectedVariant = option.variants.find(
-      (variant) => variant.variant_name.toLowerCase() === value.toLowerCase(),
+    const selectedVariant = option.selectVariants.find(
+      (variant) => variant.selectValue.toLowerCase() === value.toLowerCase(),
     );
+    console.log('selectedVariant: ', selectedVariant)
     onChange(selectedVariant);
   };
 
@@ -58,11 +67,16 @@ const SelectBoxOption = ({ option, value, onChange }) => {
       <TouchableOpacity
         onPress={() => refRBSheet.current.open()}
         style={styles.container}>
-        <View style={styles.valueWrapper}>
-          <Text style={styles.pickerValueText}>
-            {capitalizeFirstLetter(value.variant_name)}
+        <View style={styles.selectWrapper}>
+          <Text style={styles.selectBoxText}>
+            {capitalizeFirstLetter(option.selectTitle)}
           </Text>
-          <Icon name="arrow-drop-down" style={styles.menuItemIcon} />
+          <View style={styles.iconAndValueWrapper}>
+            <Text style={styles.selectBoxText}>
+              {capitalizeFirstLetter(value.selectValue)}
+            </Text>
+            <Icon name="arrow-drop-down" style={styles.menuItemIcon} />
+          </View>
         </View>
       </TouchableOpacity>
 

@@ -20,12 +20,13 @@ export const ProductDetailOptions = ({
    * @return {JSX.Element}
    */
   const renderOptionItem = (item, isLastOption) => {
+    console.log('item: ', item)
     const option = { ...item };
     // FIXME: Brainfuck code to convert object to array.
-    option.variants = Object.keys(option.variants).map(
-      (k) => option.variants[k],
-    );
-    const defaultValue = selectedOptions[option.option_id];
+    // option.variants = Object.keys(option.variants).map(
+    //   (k) => option.variants[k],
+    // );
+    const defaultValue = selectedOptions[item.selectDefaultId];
     const style = {
       marginBottom: isLastOption ? 0 : 30,
     };
@@ -37,8 +38,8 @@ export const ProductDetailOptions = ({
           <InputOption
             option={option}
             value={defaultValue}
-            key={item.option_id}
-            onChange={(val) => changeOptionHandler(option.option_id, val)}
+            key={item.selectDefaultId}
+            onChange={(val) => changeOptionHandler(option.selectDefaultId, val)}
             style={style}
           />
         );
@@ -48,8 +49,8 @@ export const ProductDetailOptions = ({
           <SelectBoxOption
             option={option}
             value={defaultValue}
-            key={item.option_id}
-            onChange={(val) => changeOptionHandler(option.option_id, val)}
+            key={item.selectDefaultId}
+            onChange={(val) => changeOptionHandler(option.selectDefaultId, val)}
             style={style}
           />
         );
@@ -59,8 +60,8 @@ export const ProductDetailOptions = ({
           <RadioGroupOption
             option={option}
             value={defaultValue}
-            key={item.option_id}
-            onChange={(val) => changeOptionHandler(option.option_id, val)}
+            key={item.selectDefaultId}
+            onChange={(val) => changeOptionHandler(option.selectDefaultId, val)}
             style={style}
           />
         );
@@ -70,8 +71,8 @@ export const ProductDetailOptions = ({
           <CheckboxOption
             option={option}
             value={defaultValue}
-            key={item.option_id}
-            onChange={(val) => changeOptionHandler(option.option_id, val)}
+            key={item.selectDefaultId}
+            onChange={(val) => changeOptionHandler(option.selectDefaultId, val)}
             style={style}
           />
         );

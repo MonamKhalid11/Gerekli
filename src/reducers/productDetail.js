@@ -9,6 +9,8 @@ const productInstance = {
   fetching: true,
   amount: 1,
   options: [],
+  convertedOptions: [],
+  convertedVariants: [],
   price_formatted: {
     price: '',
   },
@@ -42,6 +44,7 @@ export default function (state = initialState, action) {
             selectedAmount: 1,
             discount_prc: 0,
             discount: null,
+            product_features: {},
           },
         },
       };

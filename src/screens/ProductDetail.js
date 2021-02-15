@@ -277,6 +277,7 @@ export class ProductDetail extends Component {
       vendor: null,
       fetching: true,
       selectedOptions: {},
+      selectedVariants: {},
       canWriteComments: false,
       amount: 0,
       currentPid: false,
@@ -308,7 +309,10 @@ export class ProductDetail extends Component {
       hideWishList,
       pid,
     } = nextProps;
-    const product = productDetail.byId[pid];
+
+    const { currentPid } = this.state;
+    console.log('currentPid: ', currentPid)
+    const product = productDetail.byId[currentPid || pid];
 
     if (!product) {
       return;
@@ -332,18 +336,30 @@ export class ProductDetail extends Component {
     }
 
     const defaultOptions = { ...this.state.selectedOptions };
+    const defaultVariants = { ...this.state.selectedVariants };
     if (!Object.keys(defaultOptions).length) {
-      product.options.forEach((option) => {
-        // Fixme: Server returned inconsistent data.
-        if (!option.variants) {
-          option.variants = [];
+      product.convertedOptions.forEach((option) => {
+        if (!option.selectVariants) {
+          option.selectVariants = [];
         }
 
-        if (option.variants[option.value]) {
-          defaultOptions[option.option_id] = option.variants[option.value];
-        } else if (Object.values(option.variants).length) {
-          defaultOptions[option.option_id] = Object.values(option.variants)[0];
+        defaultOptions[option.selectDefaultId] = option.selectVariants.find(
+          (el) => el.selectId === option.selectDefaultId,
+        );
+      });
+    }
+
+    console.log('defaultVariants: ', defaultVariants);
+
+    if (!Object.keys(defaultVariants).length) {
+      product.convertedVariants.forEach((variant) => {
+        if (!variant.selectVariants) {
+          variant.selectVariants = [];
         }
+
+        defaultVariants[variant.selectDefaultId] = variant.selectVariants.find(
+          (el) => el.selectId === variant.selectDefaultId,
+        );
       });
     }
 
@@ -366,6 +382,7 @@ export class ProductDetail extends Component {
       product,
       discussion: activeDiscussion,
       selectedOptions: defaultOptions,
+      selectedVariants: defaultVariants,
       vendor: vendors.items[product.company_id] || null,
       canWriteComments:
         !activeDiscussion.disable_adding &&
@@ -409,6 +426,7 @@ export class ProductDetail extends Component {
     const { productsActions, pid } = this.props;
 
     const product = await productsActions.fetch(productId || pid);
+    console.log('productInit: ', pid);
 
     if (parseInt(product.data.master_product_offers_count, 10)) {
       const productOffers = await productsActions.fetchProductOffers(
@@ -564,25 +582,6 @@ export class ProductDetail extends Component {
     };
 
     return wishListActions.add({ products }, componentId);
-  }
-
-  /**
-   * Adds the selected option.
-   *
-   * @param {string} name - Option name.
-   * @param {string} val - Option value.
-   */
-  handleOptionChange(name, val) {
-    const { selectedOptions } = this.state;
-    const newOptions = { ...selectedOptions };
-    newOptions[name] = val;
-
-    this.setState(
-      {
-        selectedOptions: newOptions,
-      },
-      debounce(this.calculatePrice, 1000, { trailing: true }),
-    );
   }
 
   /**
@@ -874,6 +873,7 @@ export class ProductDetail extends Component {
     const features = Object.keys(product.product_features).map(
       (k) => product.product_features[k],
     );
+
     const lastElement = features.length - 1;
     const isVariation = product.variation_features_variants ? true : false;
 
@@ -988,16 +988,68 @@ export class ProductDetail extends Component {
     );
   };
 
-  variationChangeHandler(index) {
-    const { currentFeatureVariants, currentPid } = this.state;
+  changeVariationHandler(variantId, variantOption) {
+    const { currentFeatureVariants, currentPid, selectedVariants } = this.state;
 
-    const featuresArray = Object.keys(currentFeatureVariants);
-    const pid = currentFeatureVariants[featuresArray[index]];
+    console.log('selectedVariants: ', selectedVariants);
+
+    const pid = variantOption.product_id;
+    console.log('variantOption: ', variantOption);
 
     // if 'cancel', do nothing
-    if (index !== featuresArray.length && pid !== currentPid) {
+    if (selectedVariants[variantId].product_id !== pid) {
+      this.setState({ currentPid: pid });
       this.productInit(pid);
     }
+
+    console.log('this.staet: ', this.state);
+  }
+
+  /**
+   * Adds the selected option.
+   *
+   * @param {string} name - Option name.
+   * @param {string} val - Option value.
+   */
+  changeOptionHandler(name, val) {
+    const { selectedOptions } = this.state;
+    const newOptions = { ...selectedOptions };
+    newOptions[name] = val;
+
+    this.setState(
+      {
+        selectedOptions: newOptions,
+      },
+      debounce(this.calculatePrice, 1000, { trailing: true }),
+    );
+  }
+
+  renderSelect() {
+    const {
+      product,
+      selectedOptions,
+      selectedVariants,
+      currentFeatureVariants,
+    } = this.state;
+
+    if (!product.options.length) {
+      return null;
+    }
+
+    return (
+      <Section title={i18n.t('Select')}>
+        <ProductDetailOptions
+          options={product.convertedVariants}
+          selectedOptions={selectedVariants}
+          changeOptionHandler={this.changeVariationHandler.bind(this)}
+        />
+        <ProductDetailOptions
+          options={product.convertedOptions}
+          selectedOptions={selectedOptions}
+          changeOptionHandler={this.changeOptionHandler.bind(this)}
+        />
+      </Section>
+    );
   }
 
   renderSellers() {
@@ -1022,24 +1074,6 @@ export class ProductDetail extends Component {
     } else {
       return null;
     }
-  }
-
-  renderSelect() {
-    const { product, selectedOptions } = this.state;
-
-    if (!product.options.length) {
-      return null;
-    }
-
-    return (
-      <Section title={i18n.t('Select')}>
-        <ProductDetailOptions
-          options={product.options}
-          selectedOptions={selectedOptions}
-          changeOptionHandler={this.handleOptionChange.bind(this)}
-        />
-      </Section>
-    );
   }
 
   /**
@@ -1095,7 +1129,7 @@ export class ProductDetail extends Component {
           options={[...actionSheetOptions, i18n.t('Cancel')]}
           cancelButtonIndex={cancelButtonIndex}
           destructiveButtonIndex={cancelButtonIndex}
-          onPress={(index) => this.variationChangeHandler(index)}
+          onPress={(index) => this.changeVariationHandler(index)}
         />
       </View>
     );
