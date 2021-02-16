@@ -26,6 +26,7 @@ import {
 } from '../constants';
 import Api from '../services/api';
 import i18n from '../utils/i18n';
+import { objectFilter } from '../utils/index';
 
 export function fetchDiscussion(id, params = { page: 1 }, type = 'P') {
   return (dispatch) => {
@@ -105,6 +106,8 @@ export function recalculatePrice(pid, options) {
     return options.join('&');
   }
 
+  console.log('recalculatePrice: ', options);
+
   return (dispatch) => {
     dispatch({ type: RECALCULATE_PRODUCT_PRICE_REQUEST });
 
@@ -125,6 +128,28 @@ export function recalculatePrice(pid, options) {
       });
   };
 }
+
+const filterFeaturesAndVariations = (oldProductData) => {
+  const newProductData = { ...oldProductData };
+
+  newProductData.variation_features_variants = objectFilter(
+    newProductData.variation_features_variants,
+    (featuresVariant) => {
+      return Object.keys(featuresVariant.variants).length > 1;
+    },
+  );
+
+  newProductData.product_features = objectFilter(
+    newProductData.product_features,
+    (feature) => {
+      return !Object.keys(newProductData.variation_features_variants).includes(
+        feature.feature_id,
+      );
+    },
+  );
+
+  return newProductData;
+};
 
 const convertProductOptions = (oldProductOptions) => {
   const newProductOptions = Object.keys(oldProductOptions).map((option) => {
@@ -195,7 +220,9 @@ export function fetch(pid) {
 
     return Api.get(`/sra_products/${pid}`)
       .then((response) => {
-        console.log('response: ', response)
+        console.log('response: ', response);
+        response.data = filterFeaturesAndVariations(response.data);
+
         response.data.convertedOptions = convertProductOptions(
           response.data.product_options,
         );
