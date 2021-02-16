@@ -195,8 +195,7 @@ export function fetch(pid) {
 
     return Api.get(`/sra_products/${pid}`)
       .then((response) => {
-        console.log('respone: ', response);
-
+        console.log('response: ', response)
         response.data.convertedOptions = convertProductOptions(
           response.data.product_options,
         );

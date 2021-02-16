@@ -15,7 +15,6 @@ import {
 } from 'react-native';
 import format from 'date-fns/format';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import ActionSheet from 'react-native-actionsheet';
 import get from 'lodash/get';
 import {
   stripTags,
@@ -311,7 +310,6 @@ export class ProductDetail extends Component {
     } = nextProps;
 
     const { currentPid } = this.state;
-    console.log('componentWillReceiveProps: ', nextProps);
     const product = productDetail.byId[currentPid || pid];
 
     if (!product) {
@@ -349,10 +347,7 @@ export class ProductDetail extends Component {
       });
     }
 
-    console.log('defaultVariants: ', defaultVariants);
-
     if (!Object.keys(defaultVariants).length) {
-      console.log('componentWillReceiveProps2: ', this.state);
       product.convertedVariants.forEach((variant) => {
         if (!variant.selectVariants) {
           variant.selectVariants = [];
@@ -427,7 +422,6 @@ export class ProductDetail extends Component {
     const { productsActions, pid } = this.props;
 
     const product = await productsActions.fetch(productId || pid);
-    console.log('productInit: ', this.state);
 
     if (parseInt(product.data.master_product_offers_count, 10)) {
       const productOffers = await productsActions.fetchProductOffers(
@@ -527,8 +521,6 @@ export class ProductDetail extends Component {
     const { product, selectedOptions, amount } = this.state;
     const { auth, cartActions } = this.props;
 
-    console.log('handleAddToCart: ', product);
-
     if (!auth.logged) {
       return nav.showLogin();
     }
@@ -551,7 +543,7 @@ export class ProductDetail extends Component {
       },
     };
 
-    // return cartActions.add({ products }, showNotification);
+    return cartActions.add({ products }, showNotification);
   };
 
   /**
@@ -839,7 +831,7 @@ export class ProductDetail extends Component {
    *
    * @return {JSX.Element}
    */
-  renderFeatureItem = (feature, index, last, isVariation) => {
+  renderFeatureItem = (feature, index, last) => {
     const { description, feature_type, value_int, value, variant } = feature;
 
     let newValue = null;
@@ -855,14 +847,7 @@ export class ProductDetail extends Component {
     }
 
     return (
-      <SectionRow
-        name={description}
-        value={newValue}
-        last={last}
-        key={index}
-        onPress={this.showActionSheet}
-        isVariation={isVariation}
-      />
+      <SectionRow name={description} value={newValue} last={last} key={index} />
     );
   };
 
@@ -873,12 +858,12 @@ export class ProductDetail extends Component {
    */
   renderFeatures() {
     const { product } = this.state;
+    console.log('product: ', product);
     const features = Object.keys(product.product_features).map(
       (k) => product.product_features[k],
     );
 
     const lastElement = features.length - 1;
-    const isVariation = product.variation_features_variants ? true : false;
 
     if (!features.length) {
       return null;
@@ -887,12 +872,7 @@ export class ProductDetail extends Component {
     return (
       <Section title={i18n.t('Features')}>
         {features.map((item, index) =>
-          this.renderFeatureItem(
-            item,
-            index,
-            index === lastElement && true,
-            isVariation,
-          ),
+          this.renderFeatureItem(item, index, index === lastElement && true),
         )}
       </Section>
     );
@@ -968,34 +948,11 @@ export class ProductDetail extends Component {
     );
   }
 
-  showActionSheet = (value) => {
-    const { product } = this.state;
-
-    // Gets all variations and product_ids for the selected feature.
-    // {white: "123", black: "124"}
-    const featureVariants = {};
-    Object.keys(product.variation_features_variants).forEach((feature) => {
-      const currentFeature = product.variation_features_variants[feature];
-      if (currentFeature.description === value) {
-        Object.keys(currentFeature.variants).forEach((variant) => {
-          const currentVariant = currentFeature.variants[variant];
-          if (currentVariant.product_id) {
-            featureVariants[currentVariant.variant] = currentVariant.product_id;
-          }
-        });
-      }
-    });
-
-    this.setState({ currentFeatureVariants: featureVariants }, () =>
-      this.ActionSheet.show(),
-    );
-  };
-
   changeVariationHandler(variantId, variantOption) {
     const { selectedVariants } = this.state;
     const pid = variantOption.product_id;
     const newVariant = { ...selectedVariants };
-    newVariant[variantId] = variantOption;
+    newVariant[variantOption.variant_id] = variantOption;
 
     // If selected the same variant, do nothing.
     if (selectedVariants[variantId].product_id !== pid) {
@@ -1017,10 +974,18 @@ export class ProductDetail extends Component {
    * @param {string} name - Option name.
    * @param {string} val - Option value.
    */
-  changeOptionHandler(name, val) {
+  changeOptionHandler(optionId, selectedOptionValue) {
     const { selectedOptions } = this.state;
     const newOptions = { ...selectedOptions };
-    newOptions[name] = val;
+    newOptions[optionId] = selectedOptionValue;
+
+    console.log('changeOptionHandler optionId: ', optionId);
+    console.log(
+      'changeOptionHandler: selectedOptionValue',
+      selectedOptionValue,
+    );
+    console.log('changeOptionHandler: selectedOptions', selectedOptions);
+    console.log('changeOptionHandler: newOptions', newOptions);
 
     this.setState(
       {
@@ -1033,14 +998,12 @@ export class ProductDetail extends Component {
   renderSelect() {
     const { product, selectedOptions, selectedVariants } = this.state;
 
-    console.log('renderSelect: ', selectedOptions, selectedVariants);
-
-    // if (
-    //   !Object.keys(selectedOptions).length &&
-    //   !Object.keys(selectedVariants).length
-    // ) {
-    //   return null;
-    // }
+    if (
+      !Object.keys(selectedOptions).length &&
+      !Object.keys(selectedVariants).length
+    ) {
+      return null;
+    }
 
     return (
       <Section title={i18n.t('Select')}>
@@ -1094,12 +1057,6 @@ export class ProductDetail extends Component {
       return <Spinner visible />;
     }
 
-    const cancelButtonIndex = Object.keys(this.state.currentFeatureVariants)
-      .length;
-    const actionSheetOptions = Object.keys(
-      this.state.currentFeatureVariants,
-    ).map((el) => i18n.t(el));
-
     return (
       <View style={styles.container}>
         <KeyboardAvoidingView
@@ -1128,15 +1085,6 @@ export class ProductDetail extends Component {
             </View>
           )}
         </KeyboardAvoidingView>
-        <ActionSheet
-          ref={(ref) => {
-            this.ActionSheet = ref;
-          }}
-          options={[...actionSheetOptions, i18n.t('Cancel')]}
-          cancelButtonIndex={cancelButtonIndex}
-          destructiveButtonIndex={cancelButtonIndex}
-          onPress={(index) => this.changeVariationHandler(index)}
-        />
       </View>
     );
   }

@@ -76,11 +76,11 @@ export default class extends Component {
   /**
    * Switches option value.
    *
-   * @param {object} value -  Selected value.
+   * @param {boolean} v -  Switcher value.
    */
   handleChange(v) {
     const { option, onChange } = this.props;
-    return onChange(option.variants[v ? 0 : 1]);
+    return onChange(option.selectVariants[v ? 0 : 1]);
   }
 
   /**
@@ -91,6 +91,7 @@ export default class extends Component {
   render() {
     const { value, title } = this.state;
     const { style } = this.props;
+
     return (
       <View style={{ ...styles.container, ...style }}>
         <Text style={styles.title}>{capitalizeFirstLetter(title)}: </Text>

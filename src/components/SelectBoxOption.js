@@ -58,7 +58,6 @@ const SelectBoxOption = ({ option, value, onChange }) => {
     const selectedVariant = option.selectVariants.find(
       (variant) => variant.selectValue.toLowerCase() === value.toLowerCase(),
     );
-    console.log('selectedVariant: ', selectedVariant)
     onChange(selectedVariant);
   };
 

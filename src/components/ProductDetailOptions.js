@@ -20,7 +20,6 @@ export const ProductDetailOptions = ({
    * @return {JSX.Element}
    */
   const renderOptionItem = (item, isLastOption) => {
-    console.log('item: ', item)
     const option = { ...item };
     const defaultValue = selectedOptions[item.selectDefaultId];
     const style = {
@@ -41,7 +40,6 @@ export const ProductDetailOptions = ({
         );
 
       case 'S':
-        console.log('im here: ')
         return (
           <SelectBoxOption
             option={option}

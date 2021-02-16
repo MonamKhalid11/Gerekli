@@ -140,7 +140,7 @@ export default class extends Component {
       return null;
     }
 
-    const optionsVariantsList = option.variants.map((v) => {
+    const optionsVariantsList = option.selectVariants.map((v) => {
       const active = value.variant_id === v.variant_id;
       let img = null;
       if ('icon' in v.image_pair) {
