@@ -5,6 +5,7 @@ import InputOption from './InputOption';
 import RadioGroupOption from './RadioGroupOption';
 import CheckboxOption from './CheckboxOption';
 import SelectBoxOption from './SelectBoxOption';
+import ImageOption from './ImageOption';
 
 export const ProductDetailOptions = ({
   options,
@@ -28,6 +29,16 @@ export const ProductDetailOptions = ({
 
     switch (item.option_type) {
       case 'I':
+        return (
+          <ImageOption
+            option={option}
+            value={defaultValue}
+            key={item.selectDefaultId}
+            onChange={(val) => changeOptionHandler(option.selectDefaultId, val)}
+            style={style}
+          />
+        );
+
       case 'T':
         return (
           <InputOption

@@ -184,7 +184,7 @@ const convertProductVariants = (oldProductVariants) => {
         newProductVariant.selectDefaultId =
           oldProductVariants[variant].variant_id;
         // Test
-        newProductVariant.option_type = 'S';
+        newProductVariant.option_type = 'I';
 
         newProductVariant.selectVariants = Object.keys(
           oldProductVariants[variant].variants,
@@ -195,7 +195,7 @@ const convertProductVariants = (oldProductVariants) => {
           selectVariant.selectValue = selectVariant.variant;
           selectVariant.selectId = selectVariant.variant_id;
           // test
-          selectVariant.option_type = 'S';
+          selectVariant.option_type = 'I';
           return selectVariant;
         });
 

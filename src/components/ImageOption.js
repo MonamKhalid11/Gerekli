@@ -142,14 +142,9 @@ export default class extends Component {
 
     const optionsVariantsList = option.selectVariants.map((v) => {
       const active = value.variant_id === v.variant_id;
-      let content = (
-        <Text
-          style={[
-            styles.optionsItemBtnText,
-            active && styles.optionsItemBtnTextActive,
-          ]}>
-          {capitalizeFirstLetter(v.variant_name)}
-        </Text>
+      let imgPath = v.product.main_pair.detailed.image_path;
+      const content = (
+        <Image source={{ uri: imgPath }} style={styles.optionImage} />
       );
 
       return (
@@ -165,9 +160,9 @@ export default class extends Component {
     return (
       <View style={{ ...styles.container, ...style }}>
         <Text style={styles.title}>
-          {capitalizeFirstLetter(option.option_name)}:{' '}
+          {capitalizeFirstLetter(option.selectTitle)}:{' '}
           <Text style={styles.titleSub}>
-            {capitalizeFirstLetter(value.variant_name)}
+            {capitalizeFirstLetter(value.variant)}
           </Text>
         </Text>
         <View style={styles.optionsVariants}>{optionsVariantsList}</View>
