@@ -304,7 +304,7 @@ export class CheckoutShipping extends Component {
    *
    * @return {JSX.Element}
    */
-  renderItem = (shipping, shippingIndex, itemIndex) => {
+  renderItem = (shipping, shippingIndex, itemIndex, item) => {
     return (
       <TouchableOpacity
         key={uniqueId('item_')}
@@ -323,7 +323,7 @@ export class CheckoutShipping extends Component {
           </View>
 
           <Text style={styles.shippingItemRate}>
-            {shipping.rate_formatted.price}
+            {item.free_shipping ? '$0.00' : shipping.rate_formatted.price}
           </Text>
         </View>
         <Text style={styles.shippingItemDesc}>
@@ -371,7 +371,9 @@ export class CheckoutShipping extends Component {
     return (
       <View style={styles.shippingForbiddenContainer}>
         <Text style={styles.shippingForbiddenText}>
-          {i18n.t('Sorry, delivery is not available for this seller.')}
+          {i18n.t(
+            'Sorry, it seems that we have no shipping options available for your location.Please check your shipping address and contact us if everything is okay. We`ll see what we can do about it.',
+          )}
         </Text>
       </View>
     );
@@ -402,7 +404,7 @@ export class CheckoutShipping extends Component {
                 {item.isShippingForbidden
                   ? this.renderShippingNotAvailableMessage()
                   : item.shippings.map((shipping, shippingIndex) =>
-                      this.renderItem(shipping, shippingIndex, itemIndex),
+                      this.renderItem(shipping, shippingIndex, itemIndex, item),
                     )}
               </View>
             ))}
