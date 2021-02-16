@@ -106,8 +106,6 @@ export function recalculatePrice(pid, options) {
     return options.join('&');
   }
 
-  console.log('recalculatePrice: ', options);
-
   return (dispatch) => {
     dispatch({ type: RECALCULATE_PRODUCT_PRICE_REQUEST });
 
@@ -175,6 +173,11 @@ const convertProductOptions = (oldProductOptions) => {
 };
 
 const convertProductVariants = (oldProductVariants) => {
+  const featureStyleValues = {
+    dropdown_images: 'I',
+    dropdown_labels: 'S',
+  };
+
   if (oldProductVariants) {
     const newProductVariants = Object.keys(oldProductVariants).map(
       (variant) => {
@@ -183,8 +186,8 @@ const convertProductVariants = (oldProductVariants) => {
           oldProductVariants[variant].internal_name;
         newProductVariant.selectDefaultId =
           oldProductVariants[variant].variant_id;
-        // Test
-        newProductVariant.option_type = 'I';
+        newProductVariant.option_type =
+          featureStyleValues[oldProductVariants[variant].feature_style];
 
         newProductVariant.selectVariants = Object.keys(
           oldProductVariants[variant].variants,
@@ -194,8 +197,6 @@ const convertProductVariants = (oldProductVariants) => {
           };
           selectVariant.selectValue = selectVariant.variant;
           selectVariant.selectId = selectVariant.variant_id;
-          // test
-          selectVariant.option_type = 'I';
           return selectVariant;
         });
 
@@ -220,7 +221,6 @@ export function fetch(pid) {
 
     return Api.get(`/sra_products/${pid}`)
       .then((response) => {
-        console.log('response: ', response);
         response.data = filterFeaturesAndVariations(response.data);
 
         response.data.convertedOptions = convertProductOptions(

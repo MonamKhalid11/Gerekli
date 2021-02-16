@@ -858,7 +858,6 @@ export class ProductDetail extends Component {
    */
   renderFeatures() {
     const { product } = this.state;
-    console.log('product: ', product);
     const features = Object.keys(product.product_features).map(
       (k) => product.product_features[k],
     );
@@ -978,14 +977,6 @@ export class ProductDetail extends Component {
     const { selectedOptions } = this.state;
     const newOptions = { ...selectedOptions };
     newOptions[optionId] = selectedOptionValue;
-
-    console.log('changeOptionHandler optionId: ', optionId);
-    console.log(
-      'changeOptionHandler: selectedOptionValue',
-      selectedOptionValue,
-    );
-    console.log('changeOptionHandler: selectedOptions', selectedOptions);
-    console.log('changeOptionHandler: newOptions', newOptions);
 
     this.setState(
       {
