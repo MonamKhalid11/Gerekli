@@ -112,8 +112,6 @@ export const CartProductList = ({
 
     cart.isShippingRequired = false;
 
-    console.log('cart: ', cart)
-
     cart.product_groups.forEach((productGroup) => {
       if (
         !productGroup.all_edp_free_shipping &&

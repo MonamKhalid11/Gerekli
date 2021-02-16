@@ -14,7 +14,6 @@ import theme from '../config/theme';
 
 import values from 'lodash/values';
 import uniqueId from 'lodash/uniqueId';
-import flatten from 'lodash/flatten';
 
 // Import actions.
 import * as cartActions from '../actions/cartActions';
@@ -23,7 +22,6 @@ import * as stepsActions from '../actions/stepsActions';
 // Components
 import StepByStepSwitcher from '../components/StepByStepSwitcher';
 import CartFooter from '../components/CartFooter';
-import EmptyList from '../components/EmptyList';
 import Spinner from '../components/Spinner';
 import Icon from '../components/Icon';
 
@@ -323,7 +321,9 @@ export class CheckoutShipping extends Component {
           </View>
 
           <Text style={styles.shippingItemRate}>
-            {item.free_shipping ? '$0.00' : shipping.rate_formatted.price}
+            {item.free_shipping
+              ? i18n.t('Free')
+              : shipping.rate_formatted.price}
           </Text>
         </View>
         <Text style={styles.shippingItemDesc}>
