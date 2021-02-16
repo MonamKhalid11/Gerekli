@@ -44,8 +44,17 @@ const styles = EStyleSheet.create({
  * @return {JSX.Element}
  */
 const SelectBoxOption = ({ option, value, onChange }) => {
+  // console.log('option: ', option);
+  // console.log('value: ', value);
+
+  const currentSelectBoxIndex = option.selectVariants
+    .map((variant) => variant.selectValue)
+    .indexOf(value.selectValue);
+
+  // console.log('currentSelectBoxIndex: ', currentSelectBoxIndex);
+
   const refRBSheet = useRef();
-  const [selectBoxIndex, setSelectBoxIndex] = useState(0);
+  const [selectBoxIndex, setSelectBoxIndex] = useState(currentSelectBoxIndex);
   if (!value) {
     return null;
   }

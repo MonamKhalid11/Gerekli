@@ -130,6 +130,22 @@ export function recalculatePrice(pid, options) {
 const filterFeaturesAndVariations = (oldProductData) => {
   const newProductData = { ...oldProductData };
 
+  // Filters variants field of variation_features_variants elements.
+  // If the variant doesn`t have product_id, we just delete this variant from the list.
+  Object.keys(newProductData.variation_features_variants).forEach(
+    (featureVariant) => {
+      newProductData.variation_features_variants[
+        featureVariant
+      ].variants = objectFilter(
+        newProductData.variation_features_variants[featureVariant].variants,
+        (variant) => {
+          return variant.product_id;
+        },
+      );
+    },
+  );
+
+  // Checking if the variation has options. If not, we make it a feature.
   newProductData.variation_features_variants = objectFilter(
     newProductData.variation_features_variants,
     (featuresVariant) => {
@@ -137,6 +153,7 @@ const filterFeaturesAndVariations = (oldProductData) => {
     },
   );
 
+  // We remove features, if they are in variations.
   newProductData.product_features = objectFilter(
     newProductData.product_features,
     (feature) => {
