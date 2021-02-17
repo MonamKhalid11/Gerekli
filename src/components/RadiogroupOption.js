@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { capitalizeFirstLetter } from '../utils/index';
 import theme from '../config/theme';
 
 const styles = EStyleSheet.create({
@@ -148,7 +147,7 @@ export default class extends Component {
             styles.optionsItemBtnText,
             active && styles.optionsItemBtnTextActive,
           ]}>
-          {capitalizeFirstLetter(v.variant_name)}
+          {v.variant_name}
         </Text>
       );
 
@@ -165,10 +164,8 @@ export default class extends Component {
     return (
       <View style={{ ...styles.container, ...style }}>
         <Text style={styles.title}>
-          {capitalizeFirstLetter(option.option_name)}:{' '}
-          <Text style={styles.titleSub}>
-            {capitalizeFirstLetter(value.variant_name)}
-          </Text>
+          {option.option_name}:{' '}
+          <Text style={styles.titleSub}>{value.variant_name}</Text>
         </Text>
         <View style={styles.optionsVariants}>{optionsVariantsList}</View>
         {this.renderComment(option)}

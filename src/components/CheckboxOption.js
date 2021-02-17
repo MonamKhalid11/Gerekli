@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, Switch } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { capitalizeFirstLetter } from '../utils/index';
 
 const styles = EStyleSheet.create({
   container: {
@@ -94,7 +93,7 @@ export default class extends Component {
 
     return (
       <View style={{ ...styles.container, ...style }}>
-        <Text style={styles.title}>{capitalizeFirstLetter(title)}: </Text>
+        <Text style={styles.title}>{title}: </Text>
         <Switch value={value} onValueChange={(v) => this.handleChange(v)} />
       </View>
     );

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, TextInput } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { capitalizeFirstLetter } from '../utils/index';
 
 const styles = EStyleSheet.create({
   container: {
@@ -114,9 +113,7 @@ export default class extends Component {
     const { value } = this.state;
     return (
       <View style={{ ...styles.container, ...style }}>
-        <Text style={styles.title}>
-          {capitalizeFirstLetter(option.option_name)}:
-        </Text>
+        <Text style={styles.title}>{option.option_name}:</Text>
         <View style={styles.optionsVariants}>
           <TextInput
             multiline

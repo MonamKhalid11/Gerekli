@@ -5,7 +5,6 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from '../components/Icon';
 import Picker from 'react-native-picker-view';
 import RawBottomSheet from 'react-native-raw-bottom-sheet';
-import { capitalizeFirstLetter } from '../utils/index';
 
 const styles = EStyleSheet.create({
   container: {
@@ -54,8 +53,8 @@ const SelectBoxOption = ({ option, value, onChange }) => {
     return null;
   }
 
-  const pickerValues = option.selectVariants.map((variant) =>
-    capitalizeFirstLetter(variant.selectValue),
+  const pickerValues = option.selectVariants.map(
+    (variant) => variant.selectValue,
   );
 
   const changePickerValueHandler = (value) => {
@@ -71,13 +70,9 @@ const SelectBoxOption = ({ option, value, onChange }) => {
         onPress={() => refRawBottomSheet.current.open()}
         style={styles.container}>
         <View style={styles.selectWrapper}>
-          <Text style={styles.selectBoxText}>
-            {capitalizeFirstLetter(option.selectTitle)}
-          </Text>
+          <Text style={styles.selectBoxText}>{option.selectTitle}</Text>
           <View style={styles.iconAndValueWrapper}>
-            <Text style={styles.selectBoxText}>
-              {capitalizeFirstLetter(value.selectValue)}
-            </Text>
+            <Text style={styles.selectBoxText}>{value.selectValue}</Text>
             <Icon name="arrow-drop-down" style={styles.menuItemIcon} />
           </View>
         </View>
