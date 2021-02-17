@@ -207,18 +207,18 @@ export class EditProduct extends Component {
   getFormOptions = () => {
     const { product } = this.props;
 
-    const isCommonProduct = product.master_product_id ? true : false;
+    const isProductOffer = !!product.master_product_id;
 
     return {
       disableOrder: true,
       fields: {
         product: {
           label: i18n.t('Name'),
-          editable: !isCommonProduct,
+          editable: !isProductOffer,
         },
         full_description: {
           label: i18n.t('Full description'),
-          editable: !isCommonProduct,
+          editable: !isProductOffer,
           i18n: {
             optional: '',
             required: '',
@@ -327,7 +327,7 @@ export class EditProduct extends Component {
    */
   renderImages = () => {
     const { product, selectedImages } = this.props;
-    const isCommonProduct = product.master_product_id ? true : false;
+    const isProductOffer = !!product.master_product_id;
     const images = [];
 
     if (product.main_pair) {
@@ -342,7 +342,7 @@ export class EditProduct extends Component {
 
     return (
       <ScrollView contentContainerStyle={styles.horizontalScroll} horizontal>
-        {!isCommonProduct && (
+        {!isProductOffer && (
           <View style={styles.imgWrapper}>
             <TouchableOpacity
               onPress={() => {
@@ -421,7 +421,7 @@ export class EditProduct extends Component {
    */
   render() {
     const { loading, product, productsActions, isUpdating } = this.props;
-    const isCommonProduct = product.master_product_id ? true : false;
+    const isProductOffer = !!product.master_product_id;
 
     if (loading) {
       return <Spinner visible />;
@@ -457,7 +457,7 @@ export class EditProduct extends Component {
                   nav.pushVendorManagePricingInventory(this.props.componentId);
                 },
               )}
-              {!isCommonProduct &&
+              {!isProductOffer &&
                 this.renderMenuItem(
                   i18n.t('Categories'),
                   product.categories.map((item) => item.category).join(', '),
