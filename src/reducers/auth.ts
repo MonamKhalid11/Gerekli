@@ -10,7 +10,9 @@ import {
   RESTORE_STATE,
 } from '../constants';
 
-const initialState = {
+import { authState } from './authTypes.ts';
+
+const initialState: authState = {
   token: null,
   ttl: null,
   logged: false,
@@ -35,6 +37,8 @@ export default function (state = initialState, action) {
 
     case AUTH_LOGIN_SUCCESS:
     case AUTH_REGESTRATION_SUCCESS:
+      console.log(action.payload);
+
       return {
         ...state,
         token: action.payload.token,
