@@ -79,8 +79,8 @@ export async function initApp() {
 
   try {
     // Gets lists of languages and currencies
-    const resLanguages = await TransAPI.get('/sra_languages');
-    const resCurrencies = await TransAPI.get('/sra_currencies');
+    const resLanguages = await API.get('/sra_languages');
+    const resCurrencies = await API.get('/sra_currencies');
 
 
 

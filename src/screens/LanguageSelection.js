@@ -22,15 +22,12 @@ export const LanguageSelection = ({ settingsActions, settings }) => {
     return (
       <ScrollView>
         {settings.languages.map((el, index) => (
-          el.langCode == "ru" || el.langCode == "en" ?
-            <RadioButtonItem
-              key={index}
-              item={el}
-              onPress={!el.selected && changeLanguageHandler}
-              title={el.name}
-            />
-            :
-            null
+          <RadioButtonItem
+            key={index}
+            item={el}
+            onPress={!el.selected && changeLanguageHandler}
+            title={el.name}
+          />
         ))}
       </ScrollView>
     );
