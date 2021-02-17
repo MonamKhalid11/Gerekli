@@ -48,6 +48,7 @@ export const getProductDetail = (id) => {
         list_price
         status
         product_code
+        master_product_id
         amount
         weight
         free_shipping

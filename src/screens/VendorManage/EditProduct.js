@@ -205,14 +205,20 @@ export class EditProduct extends Component {
    * Returns form options (field names, etc.)
    */
   getFormOptions = () => {
+    const { product } = this.props;
+
+    const isCommonProduct = product.master_product_id ? true : false;
+
     return {
       disableOrder: true,
       fields: {
         product: {
           label: i18n.t('Name'),
+          editable: !isCommonProduct,
         },
         full_description: {
           label: i18n.t('Full description'),
+          editable: !isCommonProduct,
           i18n: {
             optional: '',
             required: '',
@@ -321,6 +327,7 @@ export class EditProduct extends Component {
    */
   renderImages = () => {
     const { product, selectedImages } = this.props;
+    const isCommonProduct = product.master_product_id ? true : false;
     const images = [];
 
     if (product.main_pair) {
@@ -335,14 +342,16 @@ export class EditProduct extends Component {
 
     return (
       <ScrollView contentContainerStyle={styles.horizontalScroll} horizontal>
-        <View style={styles.imgWrapper}>
-          <TouchableOpacity
-            onPress={() => {
-              nav.showImagePicker({});
-            }}>
-            <Icon name="add" style={styles.addImageIcon} />
-          </TouchableOpacity>
-        </View>
+        {!isCommonProduct && (
+          <View style={styles.imgWrapper}>
+            <TouchableOpacity
+              onPress={() => {
+                nav.showImagePicker({});
+              }}>
+              <Icon name="add" style={styles.addImageIcon} />
+            </TouchableOpacity>
+          </View>
+        )}
         {selectedImages.map((image) => (
           <View style={styles.imgWrapper} key={uniqueId('image-')}>
             <TouchableOpacity
@@ -412,6 +421,7 @@ export class EditProduct extends Component {
    */
   render() {
     const { loading, product, productsActions, isUpdating } = this.props;
+    const isCommonProduct = product.master_product_id ? true : false;
 
     if (loading) {
       return <Spinner visible />;
@@ -447,19 +457,20 @@ export class EditProduct extends Component {
                   nav.pushVendorManagePricingInventory(this.props.componentId);
                 },
               )}
-              {this.renderMenuItem(
-                i18n.t('Categories'),
-                product.categories.map((item) => item.category).join(', '),
-                () => {
-                  nav.showVendorManageCategoriesPicker({
-                    selected: product.categories,
-                    parent: 0,
-                    onCategoryPress: (item) => {
-                      productsActions.changeProductCategory(item);
-                    },
-                  });
-                },
-              )}
+              {!isCommonProduct &&
+                this.renderMenuItem(
+                  i18n.t('Categories'),
+                  product.categories.map((item) => item.category).join(', '),
+                  () => {
+                    nav.showVendorManageCategoriesPicker({
+                      selected: product.categories,
+                      parent: 0,
+                      onCategoryPress: (item) => {
+                        productsActions.changeProductCategory(item);
+                      },
+                    });
+                  },
+                )}
               {this.renderMenuItem(
                 i18n.t('Shipping properties'),
                 `${i18n.t('Weight (lbs)')}: ${product.weight}${
