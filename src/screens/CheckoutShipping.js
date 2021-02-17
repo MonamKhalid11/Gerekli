@@ -10,26 +10,25 @@ import {
   SafeAreaView,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import theme from '../config/theme';
 
 import values from 'lodash/values';
 import uniqueId from 'lodash/uniqueId';
-import flatten from 'lodash/flatten';
 
 // Import actions.
 import * as cartActions from '../actions/cartActions';
+import * as stepsActions from '../actions/stepsActions';
 
 // Components
-import CheckoutSteps from '../components/CheckoutSteps';
+import StepByStepSwitcher from '../components/StepByStepSwitcher';
 import CartFooter from '../components/CartFooter';
-import EmptyList from '../components/EmptyList';
 import Spinner from '../components/Spinner';
 import Icon from '../components/Icon';
 
 import i18n from '../utils/i18n';
 
 import { stripTags, formatPrice } from '../utils';
-// import { Navigation } from 'react-native-navigation';
-import * as nav from '../services/navigation';
+import { Navigation } from 'react-native-navigation';
 
 const styles = EStyleSheet.create({
   container: {
@@ -85,6 +84,16 @@ const styles = EStyleSheet.create({
   },
   stepsWrapper: {
     padding: 14,
+  },
+  shippingForbiddenContainer: {
+    justifyContent: 'center',
+    marginHorizontal: 20,
+    paddingVertical: 15,
+    marginBottom: 20,
+  },
+  shippingForbiddenText: {
+    textAlign: 'center',
+    color: theme.$dangerColor,
   },
 });
 
@@ -145,6 +154,7 @@ export class CheckoutShipping extends Component {
   setDefaults(cart) {
     const items = this.normalizeData(cart.product_groups);
     const shippings = [];
+    let isShippingForbidden = false;
 
     items.forEach((item) => {
       if (item) {
@@ -152,12 +162,15 @@ export class CheckoutShipping extends Component {
           shippings.push(shipping);
         });
       }
+      if (item.isShippingForbidden) {
+        isShippingForbidden = true;
+      }
     });
 
     this.setState({
       items,
       total: cart.total_formatted.price,
-      isNextDisabled: shippings.length === 0,
+      isNextDisabled: isShippingForbidden || shippings.length === 0,
     });
   }
 
@@ -224,11 +237,24 @@ export class CheckoutShipping extends Component {
    * Redirects to CheckoutPayment.
    */
   handleNextPress() {
-    const { cart } = this.props;
+    const { cart, stepsActions, stateSteps, currentStep } = this.props;
 
-    nav.pushCheckoutPayment(this.props.componentId, {
-      cart,
-      shipping_id: this.state.shipping_id,
+    // Define next step
+    const nextStep =
+      stateSteps.flowSteps[
+        Object.keys(stateSteps.flowSteps)[currentStep.stepNumber + 1]
+      ];
+    stepsActions.setNextStep(nextStep);
+
+    Navigation.push(this.props.componentId, {
+      component: {
+        name: nextStep.screenName,
+        passProps: {
+          cart,
+          shipping_id: this.state.shipping_id,
+          currentStep: nextStep,
+        },
+      },
     });
   }
 
@@ -276,7 +302,7 @@ export class CheckoutShipping extends Component {
    *
    * @return {JSX.Element}
    */
-  renderItem = (shipping, shippingIndex, itemIndex) => {
+  renderItem = (shipping, shippingIndex, itemIndex, item) => {
     return (
       <TouchableOpacity
         key={uniqueId('item_')}
@@ -295,7 +321,9 @@ export class CheckoutShipping extends Component {
           </View>
 
           <Text style={styles.shippingItemRate}>
-            {shipping.rate_formatted.price}
+            {item.free_shipping && shipping.free_shipping
+              ? i18n.t('Free')
+              : shipping.rate_formatted.price}
           </Text>
         </View>
         <Text style={styles.shippingItemDesc}>
@@ -310,11 +338,14 @@ export class CheckoutShipping extends Component {
    *
    * @return {JSX.Element}
    */
-  renderSteps = () => (
-    <View style={styles.stepsWrapper}>
-      <CheckoutSteps step={2} />
-    </View>
-  );
+  renderSteps = () => {
+    const { currentStep } = this.props;
+    return (
+      <View style={styles.stepsWrapper}>
+        <StepByStepSwitcher currentStep={currentStep} />
+      </View>
+    );
+  };
 
   /**
    * Renders company title.
@@ -332,6 +363,23 @@ export class CheckoutShipping extends Component {
   };
 
   /**
+   * Renders shipping not available message.
+   *
+   * @return {JSX.Element}
+   */
+  renderShippingNotAvailableMessage = () => {
+    return (
+      <View style={styles.shippingForbiddenContainer}>
+        <Text style={styles.shippingForbiddenText}>
+          {i18n.t(
+            'Sorry, it seems that we have no shipping options available for your location.Please check your shipping address and contact us if everything is okay. We`ll see what we can do about it.',
+          )}
+        </Text>
+      </View>
+    );
+  };
+
+  /**
    * Renders component
    *
    * @return {JSX.Element}
@@ -344,21 +392,22 @@ export class CheckoutShipping extends Component {
       return <Spinner visible />;
     }
 
-    const shippingsCount = flatten(items.map((s) => s.shippings)).length;
-
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.contentContainer}>
           {this.renderSteps()}
-          {!shippingsCount && <EmptyList />}
-          {items.map((item, itemIndex) => (
-            <View key={item.company_id}>
-              {this.renderCompany(item.name)}
-              {item.shippings.map((shipping, shippingIndex) =>
-                this.renderItem(shipping, shippingIndex, itemIndex),
-              )}
-            </View>
-          ))}
+          {items
+            .filter((item) => item.isShippingRequired)
+            .map((item, itemIndex) => (
+              <View key={item.company_id}>
+                {this.renderCompany(item.name)}
+                {item.isShippingForbidden
+                  ? this.renderShippingNotAvailableMessage()
+                  : item.shippings.map((shipping, shippingIndex) =>
+                      this.renderItem(shipping, shippingIndex, itemIndex, item),
+                    )}
+              </View>
+            ))}
         </ScrollView>
         <CartFooter
           totalPrice={`${formatPrice(total)}`}
@@ -375,8 +424,10 @@ export default connect(
   (state) => ({
     stateCart: state.cart,
     shippings: state.shippings,
+    stateSteps: state.steps,
   }),
   (dispatch) => ({
     cartActions: bindActionCreators(cartActions, dispatch),
+    stepsActions: bindActionCreators(stepsActions, dispatch),
   }),
 )(CheckoutShipping);

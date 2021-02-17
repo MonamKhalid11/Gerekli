@@ -122,7 +122,8 @@ const CartProductItem = ({ cartActions, item }) => {
    * Calculates price of product including taxes.
    */
   const productTaxedPrice = get(item, 'display_price_formatted.price', '');
-  const productPrice = productTaxedPrice || get(item, 'price_formatted.price', '');
+  const productPrice =
+    productTaxedPrice || get(item, 'price_formatted.price', '');
   const showTaxedPrice = isPriceIncludesTax(item);
 
   /**
@@ -158,7 +159,10 @@ const CartProductItem = ({ cartActions, item }) => {
               initialValue={initialValue}
               step={step}
               onChange={(val) => {
-                if (val <= parseInt(item.in_stock, 10) || item.out_of_stock_actions === 'B') {
+                if (
+                  val <= parseInt(item.in_stock, 10) ||
+                  item.out_of_stock_actions === 'B'
+                ) {
                   cartActions.changeAmount(item.cartId, val, item.company_id);
                   handleChangeAmountRequest(item, val);
                 }

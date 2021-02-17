@@ -3,15 +3,17 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, ScrollView } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { bindActionCreators } from 'redux';
+import i18n from '../../utils/i18n';
+import { Navigation } from 'react-native-navigation';
 
 // Components
 import Section from '../../components/Section';
-import CheckoutSteps from '../../components/CheckoutSteps';
+import StepByStepSwitcher from '../../components/StepByStepSwitcher';
 import BottomActions from '../../components/BottomActions';
 
-import i18n from '../../utils/i18n';
-import * as nav from '../../services/navigation';
-import { Navigation } from 'react-native-navigation';
+// Import actions
+import * as stepsActions from '../../actions/stepsActions';
 
 const styles = EStyleSheet.create({
   container: {
@@ -61,16 +63,29 @@ export class AddProductStep2 extends Component {
    * Moves to the next screen.
    */
   handleGoNext = () => {
-    const { stepsData } = this.props;
+    const { stepsData, stateSteps, currentStep } = this.props;
 
     const value = this.formRef.current.getValue();
     if (value) {
-      nav.pushVendorManageAddProductStep3(this.props.componentId, {
-        stepsData: {
-          ...stepsData,
-          name: value.name,
-          description: value.description,
-          steps: this.props.stepsData.steps,
+      // Define next step
+      const nextStep =
+        stateSteps.flowSteps[
+          Object.keys(stateSteps.flowSteps)[currentStep.stepNumber + 1]
+        ];
+      stepsActions.setNextStep(nextStep);
+
+      Navigation.push(this.props.componentId, {
+        component: {
+          name: nextStep.screenName,
+          passProps: {
+            stepsData: {
+              ...stepsData,
+              name: value.name,
+              description: value.description,
+              steps: this.props.stepsData.steps,
+            },
+            currentStep: nextStep,
+          },
         },
       });
     }
@@ -116,11 +131,15 @@ export class AddProductStep2 extends Component {
    *
    * @return {JSX.Element}
    */
-  renderHeader = () => (
-    <View style={styles.header}>
-      <CheckoutSteps step={1} steps={this.props.stepsData.steps} />
-    </View>
-  );
+  renderHeader = () => {
+    const { currentStep } = this.props;
+
+    return (
+      <View style={styles.header}>
+        <StepByStepSwitcher currentStep={currentStep} />
+      </View>
+    );
+  };
 
   /**
    * Renders component.
@@ -149,4 +168,11 @@ export class AddProductStep2 extends Component {
   }
 }
 
-export default connect(() => ({}))(AddProductStep2);
+export default connect(
+  (state) => ({
+    stateSteps: state.steps,
+  }),
+  (dispatch) => ({
+    stepsActions: bindActionCreators(stepsActions, dispatch),
+  }),
+)(AddProductStep2);

@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, I18nManager } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-
 import i18n from '../utils/i18n';
+import { connect } from 'react-redux';
 
 // Component
 import Icon from './Icon';
@@ -94,55 +94,14 @@ const styles = EStyleSheet.create({
  * @reactProps {string[]} steps - Steps to follow to place an order.
  * @reactProps {number} step - Step number.
  */
-export default class extends Component {
+export class StepByStepSwitcher extends Component {
   /**
    * @ignore
    */
   static propTypes = {
-    steps: PropTypes.arrayOf(PropTypes.string),
-    step: PropTypes.number,
+    currentStep: PropTypes.object,
+    stateSteps: PropTypes.object,
   };
-
-  /**
-   * @ignore
-   */
-  static defaultProps = {
-    steps: [],
-  };
-
-  /**
-   * @ignore
-   */
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      stepId: 0,
-    };
-  }
-
-  /**
-   * Changes step number.
-   */
-  componentDidMount() {
-    const { step } = this.props;
-    this.setState({
-      stepId: step,
-    });
-  }
-
-  getSteps() {
-    const { steps } = this.props;
-    if (steps.length) {
-      return steps;
-    }
-    return [
-      i18n.t('Authentication'),
-      i18n.t('Delivery'),
-      i18n.t('Shipping'),
-      i18n.t('Payment method'),
-    ];
-  }
 
   /**
    * Renders the step as an arrow.
@@ -162,13 +121,10 @@ export default class extends Component {
    * @return {JSX.Element[]}
    */
   renderPassedSteps() {
-    const { stepId } = this.state;
-    const steps = this.getSteps();
+    const { currentStep } = this.props;
     const stepsList = [];
-    for (let i = 0; i < steps.length; i += 1) {
-      if (i === stepId) {
-        break;
-      }
+
+    for (let i = 0; i !== currentStep.stepNumber; i += 1) {
       stepsList.push(
         <View style={styles.stepContainer} key={i}>
           <View style={styles.stepContent}>
@@ -187,16 +143,17 @@ export default class extends Component {
    * @return {JSX.Element}
    */
   renderActiveStep() {
-    const steps = this.getSteps();
-    const { stepId } = this.state;
-    const activeStep = steps[stepId];
+    const { currentStep } = this.props;
+
     return (
       <View style={styles.stepContainer}>
         <View style={styles.stepContent}>
           <View style={styles.roundNumber}>
-            <Text style={styles.roundNumberText}>{stepId + 1}</Text>
+            <Text style={styles.roundNumberText}>
+              {currentStep.stepNumber + 1}
+            </Text>
           </View>
-          <Text>{activeStep}</Text>
+          <Text>{i18n.t(currentStep.title)}</Text>
         </View>
         {this.renderArrow()}
       </View>
@@ -209,10 +166,14 @@ export default class extends Component {
    * @return {JSX.Element[]}
    */
   renderNextSteps() {
-    const steps = this.getSteps();
-    const { stepId } = this.state;
+    const { stateSteps, currentStep } = this.props;
     const stepsList = [];
-    for (let i = stepId + 1; i < steps.length; i += 1) {
+
+    for (
+      let i = currentStep.stepNumber + 1;
+      i < Object.keys(stateSteps.flowSteps).length;
+      i += 1
+    ) {
       stepsList.push(
         <View style={styles.stepContainer} key={i}>
           <View style={styles.stepContent}>
@@ -242,3 +203,7 @@ export default class extends Component {
     );
   }
 }
+
+export default connect((state) => ({
+  stateSteps: state.steps,
+}))(StepByStepSwitcher);

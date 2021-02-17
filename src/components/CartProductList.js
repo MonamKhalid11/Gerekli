@@ -1,9 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View, Text, FlatList } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { get } from 'lodash';
-import { objectFilter } from '../utils/index';
+import { filterObject } from '../utils/index';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { Navigation } from 'react-native-navigation';
 
 // Components
 import CartProductitem from './CartProductItem';
@@ -14,6 +16,9 @@ import EmptyCart from './EmptyCart';
 import i18n from '../utils/i18n';
 import { formatPrice } from '../utils';
 import * as nav from '../services/navigation';
+
+// Import actions
+import * as stepsActions from '../actions/stepsActions';
 
 // Styles
 const styles = EStyleSheet.create({
@@ -74,13 +79,15 @@ const renderOrderDetail = (products, cart) => {
  *
  * @return {JSX.Element}
  */
-const CartProductList = ({
+export const CartProductList = ({
   cart,
   auth,
   componentId,
   handleRefresh,
   refreshing,
   cartActions,
+  stepsActions,
+  stateSteps,
 }) => {
   let newProducts = [];
   if (cart) {
@@ -94,18 +101,52 @@ const CartProductList = ({
   /**
    * Moves to the next page.
    */
-  const handlePlaceOrder = (auth, cart) => {
-    const newCartProducts = objectFilter(
+  const handlePlaceOrder = async (auth, cart) => {
+    const newCartProducts = filterObject(
       cart.products,
       (p) => !p.extra.exclude_from_calculate,
     );
     cart.products = { ...newCartProducts };
+
+    const checkoutFlow = stateSteps.flows.checkoutFlow;
+
+    cart.isShippingRequired = false;
+
+    cart.product_groups.forEach((productGroup) => {
+      if (
+        !productGroup.all_edp_free_shipping &&
+        !productGroup.shipping_no_required &&
+        Object.keys(productGroup.shippings).length
+      ) {
+        productGroup.isShippingRequired = true;
+        cart.isShippingRequired = true;
+      } else {
+        productGroup.isShippingRequired = false;
+      }
+      if (
+        !productGroup.shipping_no_required &&
+        !Object.keys(productGroup.shippings).length
+      ) {
+        productGroup.isShippingForbidden = true;
+        productGroup.isShippingRequired = true;
+        cart.isShippingRequired = true;
+      }
+    });
+
+    // Set the flow, filter steps and define the first step.
+    const startStep = await stepsActions.setFlow('checkoutFlow', checkoutFlow, {
+      newProducts,
+      cart,
+    });
+
     if (!auth.logged) {
       nav.pushCheckoutAuth(componentId, { newProducts });
     } else {
-      nav.showCheckoutDelivery({
-        newProducts,
-        cart,
+      Navigation.push(componentId, {
+        component: {
+          name: startStep.screenName,
+          passProps: { newProducts, cart, currentStep: startStep },
+        },
       });
     }
   };
@@ -146,14 +187,11 @@ const CartProductList = ({
   );
 };
 
-CartProductList.propTypes = {
-  cart: PropTypes.shape({}),
-  auth: PropTypes.shape({
-    token: PropTypes.string,
+export default connect(
+  (state) => ({
+    stateSteps: state.steps,
   }),
-  refreshing: PropTypes.bool,
-  handleRefresh: PropTypes.func,
-  cartActions: PropTypes.shape({}),
-};
-
-export default CartProductList;
+  (dispatch) => ({
+    stepsActions: bindActionCreators(stepsActions, dispatch),
+  }),
+)(CartProductList);

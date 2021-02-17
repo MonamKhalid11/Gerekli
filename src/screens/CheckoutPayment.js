@@ -18,7 +18,7 @@ import * as cartActions from '../actions/cartActions';
 import * as paymentsActions from '../actions/paymentsActions';
 
 // Components
-import CheckoutSteps from '../components/CheckoutSteps';
+import StepByStepSwitcher from '../components/StepByStepSwitcher';
 import CartFooter from '../components/CartFooter';
 import FormBlock from '../components/FormBlock';
 import PaymentPhoneForm from '../components/PaymentPhoneForm';
@@ -175,7 +175,8 @@ export class CheckoutPayment extends Component {
    * Redirects to CheckoutComplete.
    */
   placeOrderAndComplete() {
-    const { cart, shipping_id, ordersActions, cartActions } = this.props;
+    const { cart, ordersActions, cartActions } = this.props;
+    let { shipping_id } = this.props;
     const values = this.paymentFormRef.getValue();
 
     if (!values) {
@@ -185,6 +186,10 @@ export class CheckoutPayment extends Component {
     this.setState({
       fetching: true,
     });
+
+    if (!cart?.isShippingRequired) {
+      shipping_id = 0;
+    }
 
     const orderInfo = {
       products: {},
@@ -339,11 +344,14 @@ export class CheckoutPayment extends Component {
    *
    * @return {JSX.Element}
    */
-  renderHeader = () => (
-    <View style={styles.stepsWrapper}>
-      <CheckoutSteps step={3} />
-    </View>
-  );
+  renderHeader = () => {
+    const { currentStep } = this.props;
+    return (
+      <View style={styles.stepsWrapper}>
+        <StepByStepSwitcher currentStep={currentStep} />
+      </View>
+    );
+  };
 
   /**
    * Renders form fields.
