@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from '../components/Icon';
 import Picker from 'react-native-picker-view';
-import RBSheet from 'react-native-raw-bottom-sheet';
+import RawBottomSheet from 'react-native-raw-bottom-sheet';
 import { capitalizeFirstLetter } from '../utils/index';
 
 const styles = EStyleSheet.create({
@@ -44,16 +44,11 @@ const styles = EStyleSheet.create({
  * @return {JSX.Element}
  */
 const SelectBoxOption = ({ option, value, onChange }) => {
-  // console.log('option: ', option);
-  // console.log('value: ', value);
-
   const currentSelectBoxIndex = option.selectVariants
     .map((variant) => variant.selectValue)
     .indexOf(value.selectValue);
 
-  // console.log('currentSelectBoxIndex: ', currentSelectBoxIndex);
-
-  const refRBSheet = useRef();
+  const refRawBottomSheet = useRef();
   const [selectBoxIndex, setSelectBoxIndex] = useState(currentSelectBoxIndex);
   if (!value) {
     return null;
@@ -73,7 +68,7 @@ const SelectBoxOption = ({ option, value, onChange }) => {
   return (
     <>
       <TouchableOpacity
-        onPress={() => refRBSheet.current.open()}
+        onPress={() => refRawBottomSheet.current.open()}
         style={styles.container}>
         <View style={styles.selectWrapper}>
           <Text style={styles.selectBoxText}>
@@ -88,8 +83,8 @@ const SelectBoxOption = ({ option, value, onChange }) => {
         </View>
       </TouchableOpacity>
 
-      <RBSheet
-        ref={refRBSheet}
+      <RawBottomSheet
+        ref={refRawBottomSheet}
         customStyles={{
           wrapper: {
             backgroundColor: 'transparent',
@@ -106,7 +101,7 @@ const SelectBoxOption = ({ option, value, onChange }) => {
             changePickerValueHandler(value);
           }}
         />
-      </RBSheet>
+      </RawBottomSheet>
     </>
   );
 };

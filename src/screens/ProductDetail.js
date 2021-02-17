@@ -337,10 +337,6 @@ export class ProductDetail extends Component {
     const defaultVariants = { ...this.state.selectedVariants };
     if (!Object.keys(defaultOptions).length) {
       product.convertedOptions.forEach((option) => {
-        if (!option.selectVariants) {
-          option.selectVariants = [];
-        }
-
         defaultOptions[option.selectDefaultId] = option.selectVariants.find(
           (el) => el.selectId === option.selectDefaultId,
         );
@@ -349,10 +345,6 @@ export class ProductDetail extends Component {
 
     if (!Object.keys(defaultVariants).length) {
       product.convertedVariants.forEach((variant) => {
-        if (!variant.selectVariants) {
-          variant.selectVariants = [];
-        }
-
         defaultVariants[variant.selectDefaultId] = variant.selectVariants.find(
           (el) => el.selectId === variant.selectDefaultId,
         );
@@ -871,7 +863,7 @@ export class ProductDetail extends Component {
     return (
       <Section title={i18n.t('Features')}>
         {features.map((item, index) =>
-          this.renderFeatureItem(item, index, index === lastElement && true),
+          this.renderFeatureItem(item, index, index === lastElement),
         )}
       </Section>
     );
@@ -953,18 +945,19 @@ export class ProductDetail extends Component {
     const newVariant = { ...selectedVariants };
     newVariant[variantOption.variant_id] = variantOption;
 
-    // If selected the same variant, do nothing.
-    if (selectedVariants[variantId].product_id !== pid) {
-      this.setState(
-        {
-          currentPid: pid,
-          selectedVariants: newVariant,
-        },
-        () => {
-          this.productInit(pid);
-        },
-      );
+    if (selectedVariants[variantId].product_id === pid) {
+      return null;
     }
+
+    this.setState(
+      {
+        currentPid: pid,
+        selectedVariants: newVariant,
+      },
+      () => {
+        this.productInit(pid);
+      },
+    );
   }
 
   /**
@@ -986,7 +979,7 @@ export class ProductDetail extends Component {
     );
   }
 
-  renderSelect() {
+  renderVariationsAndOptions() {
     const { product, selectedOptions, selectedVariants } = this.state;
 
     if (
@@ -1064,7 +1057,7 @@ export class ProductDetail extends Component {
               {this.renderDesc()}
             </View>
             {this.renderQuantitySwitcher()}
-            {this.renderSelect()}
+            {this.renderVariationsAndOptions()}
             {this.renderSellers()}
             {this.renderDiscussion()}
             {this.renderFeatures()}
