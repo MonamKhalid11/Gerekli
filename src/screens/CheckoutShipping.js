@@ -321,7 +321,7 @@ export class CheckoutShipping extends Component {
           </View>
 
           <Text style={styles.shippingItemRate}>
-            {item.free_shipping
+            {item.free_shipping && shipping.free_shipping
               ? i18n.t('Free')
               : shipping.rate_formatted.price}
           </Text>
