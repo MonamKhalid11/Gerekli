@@ -10,22 +10,22 @@ import {
   RESTORE_STATE,
 } from '../constants';
 
-import { authState } from './authTypes.ts';
+import { authState, authLoginRequestAction } from './authTypes';
 
 const initialState: authState = {
-  token: null,
-  ttl: null,
+  token: '',
+  ttl: 0,
   logged: false,
-  uuid: null,
+  uuid: '',
   fetching: false,
-  error: null,
-  errorStatus: null,
-  deviceToken: null,
-  profile_id: null,
-  user_id: null,
+  error: '',
+  errorStatus: 0,
+  deviceToken: '',
+  profile_id: '',
+  user_id: 0,
 };
 
-export default function (state = initialState, action) {
+export default function (state = initialState, action: authLoginRequestAction) {
   switch (action.type) {
     case AUTH_LOGIN_REQUEST:
       return {
@@ -37,8 +37,6 @@ export default function (state = initialState, action) {
 
     case AUTH_LOGIN_SUCCESS:
     case AUTH_REGESTRATION_SUCCESS:
-      console.log(action.payload);
-
       return {
         ...state,
         token: action.payload.token,
