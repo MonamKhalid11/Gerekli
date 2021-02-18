@@ -61,14 +61,19 @@ export class PricingInventory extends Component {
    * Returns form options (field names, etc.)
    */
   getFormOptions = () => {
+    const { product } = this.props;
+    const isProductOffer = !!product.master_product_id;
+
     return {
       disableOrder: true,
       fields: {
         product_code: {
           label: i18n.t('CODE'),
+          editable: !isProductOffer,
         },
         list_price: {
           label: i18n.t('List price ($)'),
+          editable: !isProductOffer,
         },
         amount: {
           label: i18n.t('In stock'),

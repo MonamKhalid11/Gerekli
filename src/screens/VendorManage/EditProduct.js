@@ -218,12 +218,12 @@ export class EditProduct extends Component {
         },
         full_description: {
           label: i18n.t('Full description'),
+          numberOfLines: 4,
           editable: !isProductOffer,
           i18n: {
             optional: '',
             required: '',
           },
-          numberOfLines: 4,
           multiline: true,
           stylesheet: {
             ...Form.stylesheet,
