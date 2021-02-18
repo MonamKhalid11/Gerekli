@@ -392,13 +392,18 @@ export class EditProduct extends Component {
    *
    * @return {JSX.Element}
    */
-  renderMenuItem = (title, subTitle, fn = () => {}) => (
-    <TouchableOpacity style={styles.menuItem} onPress={fn}>
+  renderMenuItem = (title, subTitle, fn = () => {}, isProductOffer = false) => (
+    <TouchableOpacity
+      style={styles.menuItem}
+      activeOpacity={isProductOffer ? 1 : 0}
+      onPress={isProductOffer ? null : fn}>
       <View style={styles.menuItemText}>
         <Text style={styles.menuItemTitle}>{title}</Text>
         <Text style={styles.menuItemSubTitle}>{subTitle}</Text>
       </View>
-      <Icon name="keyboard-arrow-right" style={styles.btnIcon} />
+      {!isProductOffer && (
+        <Icon name="keyboard-arrow-right" style={styles.btnIcon} />
+      )}
     </TouchableOpacity>
   );
 
@@ -457,20 +462,20 @@ export class EditProduct extends Component {
                   nav.pushVendorManagePricingInventory(this.props.componentId);
                 },
               )}
-              {!isProductOffer &&
-                this.renderMenuItem(
-                  i18n.t('Categories'),
-                  product.categories.map((item) => item.category).join(', '),
-                  () => {
-                    nav.showVendorManageCategoriesPicker({
-                      selected: product.categories,
-                      parent: 0,
-                      onCategoryPress: (item) => {
-                        productsActions.changeProductCategory(item);
-                      },
-                    });
-                  },
-                )}
+              {this.renderMenuItem(
+                i18n.t('Categories'),
+                product.categories.map((item) => item.category).join(', '),
+                () => {
+                  nav.showVendorManageCategoriesPicker({
+                    selected: product.categories,
+                    parent: 0,
+                    onCategoryPress: (item) => {
+                      productsActions.changeProductCategory(item);
+                    },
+                  });
+                },
+                isProductOffer,
+              )}
               {this.renderMenuItem(
                 i18n.t('Shipping properties'),
                 `${i18n.t('Weight (lbs)')}: ${product.weight}${
