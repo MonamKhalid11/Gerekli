@@ -47,10 +47,6 @@ const styles = EStyleSheet.create({
   optionsItemActive: {
     borderColor: '#ff5319',
   },
-  optionImage: {
-    height: 70,
-    width: 70,
-  },
 });
 
 /**
