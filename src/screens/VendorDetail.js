@@ -347,8 +347,8 @@ export class VendorDetail extends Component {
       <ScrollView style={styles.container}>
         {this.renderLogo()}
         {this.renderDesc()}
-        {this.renderContacts()}
-        {this.renderShipping()}
+        {/* {this.renderContacts()} */}
+        {/* {this.renderShipping()} */}
         {this.renderDiscussion()}
       </ScrollView>
     );
