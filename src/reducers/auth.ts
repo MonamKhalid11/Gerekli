@@ -10,9 +10,9 @@ import {
   RESTORE_STATE,
 } from '../constants';
 
-import { authState, authLoginRequestAction } from './authTypes';
+import { AuthState, AuthLoginRequestAction } from './authTypes';
 
-const initialState: authState = {
+const initialState: AuthState = {
   token: '',
   ttl: 0,
   logged: false,
@@ -25,7 +25,7 @@ const initialState: authState = {
   user_id: 0,
 };
 
-export default function (state = initialState, action: authLoginRequestAction) {
+export default function (state = initialState, action: AuthLoginRequestAction) {
   switch (action.type) {
     case AUTH_LOGIN_REQUEST:
       return {

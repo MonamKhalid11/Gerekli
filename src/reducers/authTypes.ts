@@ -1,4 +1,4 @@
-export interface authState {
+export interface AuthState {
   token: string;
   ttl: number;
   logged: boolean;
@@ -11,7 +11,19 @@ export interface authState {
   user_id: number;
 }
 
-export interface authLoginRequestAction {
+interface PayloadAuth {
+  uuid: number;
+}
+
+interface Payload {
+  token: string;
+  ttl: number;
+  message: string;
+  status: number;
+  auth: PayloadAuth;
+}
+
+export interface AuthLoginRequestAction {
   type: string;
-  payload: authState;
+  payload: Payload;
 }
