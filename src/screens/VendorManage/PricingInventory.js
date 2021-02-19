@@ -27,8 +27,8 @@ const styles = EStyleSheet.create({
 const t = require('tcomb-form-native');
 const Form = t.form.Form;
 const formFields = t.struct({
-  product_code: t.String,
-  list_price: t.Number,
+  product_code: t.maybe(t.String),
+  list_price: t.maybe(t.Number),
   amount: t.Number,
 });
 
@@ -61,14 +61,27 @@ export class PricingInventory extends Component {
    * Returns form options (field names, etc.)
    */
   getFormOptions = () => {
+    const { product } = this.props;
+    const isProductOffer = !!product.master_product_id;
+
     return {
       disableOrder: true,
       fields: {
         product_code: {
           label: i18n.t('CODE'),
+          editable: !isProductOffer,
+          i18n: {
+            optional: '',
+            required: '',
+          },
         },
         list_price: {
           label: i18n.t('List price ($)'),
+          editable: !isProductOffer,
+          i18n: {
+            optional: '',
+            required: '',
+          },
         },
         amount: {
           label: i18n.t('In stock'),
