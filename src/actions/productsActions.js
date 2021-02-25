@@ -115,6 +115,7 @@ export function recalculatePrice(pid, options) {
           type: RECALCULATE_PRODUCT_PRICE_SUCCESS,
           payload: {
             product: response.data,
+            pid,
           },
         });
       })

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import toInteger from 'lodash/toInteger';
-import debounce from 'lodash/debounce';
 import { connect } from 'react-redux';
 import {
   View,
@@ -337,9 +336,15 @@ export class ProductDetail extends Component {
     const defaultVariants = { ...this.state.selectedVariants };
     if (!Object.keys(defaultOptions).length) {
       product.convertedOptions.forEach((option) => {
-        defaultOptions[option.selectDefaultId] = option.selectVariants.find(
-          (el) => el.selectId === option.selectDefaultId,
-        );
+        if (option.option_type === 'C') {
+          defaultOptions[option.selectDefaultId] = option.selectVariants.find(
+            (el) => el.variant_name === 'No',
+          );
+        } else {
+          defaultOptions[option.selectDefaultId] = option.selectVariants.find(
+            (el) => el.selectId === option.selectDefaultId,
+          );
+        }
       });
     }
 
@@ -975,7 +980,9 @@ export class ProductDetail extends Component {
       {
         selectedOptions: newOptions,
       },
-      debounce(this.calculatePrice, 1000, { trailing: true }),
+      () => {
+        this.calculatePrice();
+      },
     );
   }
 
