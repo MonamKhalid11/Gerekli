@@ -57,6 +57,8 @@ import {
 import { Navigation } from 'react-native-navigation';
 import theme from '../config/theme';
 
+const OPTION_TYPE_CHECKBOX = 'C';
+
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
@@ -336,9 +338,9 @@ export class ProductDetail extends Component {
     const defaultVariants = { ...this.state.selectedVariants };
     if (!Object.keys(defaultOptions).length) {
       product.convertedOptions.forEach((option) => {
-        if (option.option_type === 'C') {
+        if (option.option_type === OPTION_TYPE_CHECKBOX) {
           defaultOptions[option.selectDefaultId] = option.selectVariants.find(
-            (el) => el.position === '0',
+            (el) => parseInt(el.position, 10) === 0,
           );
         } else {
           defaultOptions[option.selectDefaultId] = option.selectVariants.find(
