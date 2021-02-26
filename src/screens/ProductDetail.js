@@ -338,7 +338,7 @@ export class ProductDetail extends Component {
       product.convertedOptions.forEach((option) => {
         if (option.option_type === 'C') {
           defaultOptions[option.selectDefaultId] = option.selectVariants.find(
-            (el) => el.variant_name === 'No',
+            (el) => el.position === '0',
           );
         } else {
           defaultOptions[option.selectDefaultId] = option.selectVariants.find(
