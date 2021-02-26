@@ -13,7 +13,7 @@ const styles = EStyleSheet.create({
     alignItems: 'stretch',
     paddingBottom: 8,
     paddingTop: 8,
-    marginBottom: 15,
+    marginVertical: 10,
   },
   selectWrapper: {
     width: '100%',

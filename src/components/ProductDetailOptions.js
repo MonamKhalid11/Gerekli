@@ -20,12 +20,9 @@ export const ProductDetailOptions = ({
    *
    * @return {JSX.Element}
    */
-  const renderOptionItem = (item, isLastOption) => {
+  const renderOptionItem = (item) => {
     const option = { ...item };
     const defaultValue = selectedOptions[item.selectDefaultId];
-    const style = {
-      marginBottom: isLastOption ? 0 : 30,
-    };
 
     switch (item.option_type) {
       case 'I':
@@ -35,7 +32,6 @@ export const ProductDetailOptions = ({
             value={defaultValue}
             key={item.selectDefaultId}
             onChange={(val) => changeOptionHandler(option.selectDefaultId, val)}
-            style={style}
           />
         );
 
@@ -46,7 +42,6 @@ export const ProductDetailOptions = ({
             value={defaultValue}
             key={item.selectDefaultId}
             onChange={(val) => changeOptionHandler(option.selectDefaultId, val)}
-            style={style}
           />
         );
 
@@ -57,7 +52,6 @@ export const ProductDetailOptions = ({
             value={defaultValue}
             key={item.selectDefaultId}
             onChange={(val) => changeOptionHandler(option.selectDefaultId, val)}
-            style={style}
           />
         );
 
@@ -68,7 +62,6 @@ export const ProductDetailOptions = ({
             value={defaultValue}
             key={item.selectDefaultId}
             onChange={(val) => changeOptionHandler(option.selectDefaultId, val)}
-            style={style}
           />
         );
 
@@ -79,7 +72,6 @@ export const ProductDetailOptions = ({
             value={defaultValue}
             key={item.selectDefaultId}
             onChange={(val) => changeOptionHandler(option.selectDefaultId, val)}
-            style={style}
           />
         );
       default:
@@ -87,13 +79,10 @@ export const ProductDetailOptions = ({
     }
   };
 
-  const lastOptionNumber = options.length - 1;
-
   return (
     <>
-      {options.map((option, index) => {
-        const isLastOption = index === lastOptionNumber;
-        return renderOptionItem(option, isLastOption);
+      {options.map((option) => {
+        return renderOptionItem(option);
       })}
     </>
   );

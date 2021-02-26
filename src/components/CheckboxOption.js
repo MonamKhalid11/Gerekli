@@ -10,6 +10,7 @@ const styles = EStyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginVertical: 10,
   },
   title: {
     fontSize: '0.9rem',
@@ -89,10 +90,9 @@ export default class extends Component {
    */
   render() {
     const { value, title } = this.state;
-    const { style } = this.props;
 
     return (
-      <View style={{ ...styles.container, ...style }}>
+      <View style={styles.container}>
         <Text style={styles.title}>{title}: </Text>
         <Switch value={value} onValueChange={(v) => this.handleChange(v)} />
       </View>

@@ -7,6 +7,7 @@ import theme from '../config/theme';
 const styles = EStyleSheet.create({
   container: {
     width: '100%',
+    marginVertical: 10,
   },
   title: {
     fontSize: '0.9rem',
@@ -128,7 +129,7 @@ export default class extends Component {
    * @return {JSX.Element}
    */
   render() {
-    const { option, style } = this.props;
+    const { option } = this.props;
     const { value } = this.state;
 
     if (!value || !option) {
@@ -158,7 +159,7 @@ export default class extends Component {
     });
 
     return (
-      <View style={{ ...styles.container, ...style }}>
+      <View style={styles.container}>
         <Text style={styles.title}>
           {option.option_name}:{' '}
           <Text style={styles.titleSub}>{value.variant_name}</Text>
