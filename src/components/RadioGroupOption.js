@@ -9,13 +9,17 @@ const styles = EStyleSheet.create({
     width: '100%',
     marginVertical: 10,
   },
+  titleAndTitleSubWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   title: {
     fontSize: '0.9rem',
     textAlign: 'left',
   },
   titleSub: {
-    fontWeight: 'normal',
-    color: theme.$mediumGrayColor,
+    fontSize: '0.9rem',
+    marginRight: 10,
   },
   commentText: {
     color: '#9cb0c4',
@@ -160,10 +164,10 @@ export default class extends Component {
 
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>
-          {option.option_name}:{' '}
+        <View style={styles.titleAndTitleSubWrapper}>
+          <Text style={styles.title}>{option.option_name}</Text>
           <Text style={styles.titleSub}>{value.variant_name}</Text>
-        </Text>
+        </View>
         <View style={styles.optionsVariants}>{optionsVariantsList}</View>
         {this.renderComment(option)}
       </View>

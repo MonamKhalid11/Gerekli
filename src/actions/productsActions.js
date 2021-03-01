@@ -174,6 +174,18 @@ const filterFeaturesAndVariations = (oldProductData) => {
 const convertProductOptions = (oldProductOptions) => {
   const newProductOptions = Object.keys(oldProductOptions).map((option) => {
     const newProductOption = { ...oldProductOptions[option] };
+    const OPTION_TYPE_IMAGES = 'I';
+
+    // If option has images, we change option type to 'I'
+    if (
+      Object.keys(
+        newProductOption.variants[Object.keys(newProductOption.variants)[0]]
+          .image_pair,
+      ).length
+    ) {
+      newProductOption.option_type = OPTION_TYPE_IMAGES;
+    }
+
     newProductOption.selectTitle = oldProductOptions[option].option_name;
     newProductOption.selectDefaultId = oldProductOptions[option].option_id;
 
@@ -185,6 +197,7 @@ const convertProductOptions = (oldProductOptions) => {
       };
       selectVariant.selectValue = selectVariant.variant_name;
       selectVariant.selectId = selectVariant.option_id;
+
       return selectVariant;
     });
 
@@ -198,6 +211,7 @@ const convertProductVariants = (oldProductVariants) => {
   const featureStyleValues = {
     dropdown_images: 'I',
     dropdown_labels: 'S',
+    dropdown: 'S',
   };
 
   if (oldProductVariants) {

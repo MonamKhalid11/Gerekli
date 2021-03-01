@@ -9,13 +9,17 @@ const styles = EStyleSheet.create({
     width: '100%',
     marginVertical: 10,
   },
+  titleAndTitleSubWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   title: {
     fontSize: '0.9rem',
     textAlign: 'left',
   },
   titleSub: {
-    fontWeight: 'normal',
-    color: theme.$mediumGrayColor,
+    fontSize: '0.9rem',
+    marginRight: 10,
   },
   commentText: {
     color: '#9cb0c4',
@@ -142,7 +146,16 @@ export default class extends Component {
 
     const optionsVariantsList = option.selectVariants.map((v) => {
       const active = value.variant_id === v.variant_id;
-      let imgPath = v.product.main_pair.detailed.image_path;
+      let imgPath;
+
+      // Variations and options have different structures.
+      // We need to get a link to a picture in different ways.
+      if (v.product) {
+        imgPath = v.product.main_pair.detailed.image_path;
+      } else {
+        imgPath = v.image_pair.icon.image_path;
+      }
+
       const content = (
         <Image source={{ uri: imgPath }} style={styles.optionImage} />
       );
@@ -159,10 +172,12 @@ export default class extends Component {
 
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>
-          {option.selectTitle}:{' '}
-          <Text style={styles.titleSub}>{value.variant}</Text>
-        </Text>
+        <View style={styles.titleAndTitleSubWrapper}>
+          <Text style={styles.title}>{option.selectTitle}</Text>
+          <Text style={styles.titleSub}>
+            {value.variant || value.variant_name}
+          </Text>
+        </View>
         <View style={styles.optionsVariants}>{optionsVariantsList}</View>
         {this.renderComment(option)}
       </View>
