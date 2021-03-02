@@ -179,7 +179,7 @@ const convertProductOptions = (oldProductOptions) => {
     // If option has images, we change option type to 'I'
     if (
       Object.keys(
-        newProductOption.variants[Object.keys(newProductOption.variants)[0]]
+        newProductOption?.variants[Object.keys(newProductOption.variants)[0]]
           .image_pair,
       ).length
     ) {
@@ -195,6 +195,8 @@ const convertProductOptions = (oldProductOptions) => {
       const selectVariant = {
         ...oldProductOptions[option].variants[variantId],
       };
+      selectVariant.selectVariantName = selectVariant.variant_name;
+      selectVariant.selectImgPath = selectVariant.image_pair.icon.image_path;
       selectVariant.selectValue = selectVariant.variant_name;
       selectVariant.selectId = selectVariant.option_id;
 
@@ -231,6 +233,9 @@ const convertProductVariants = (oldProductVariants) => {
           const selectVariant = {
             ...oldProductVariants[variant].variants[variantId],
           };
+          selectVariant.selectVariantName = selectVariant.variant;
+          selectVariant.selectImgPath =
+            selectVariant.product.main_pair.detailed.image_path;
           selectVariant.selectValue = selectVariant.variant;
           selectVariant.selectId = selectVariant.variant_id;
           return selectVariant;

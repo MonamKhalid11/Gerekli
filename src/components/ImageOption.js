@@ -146,15 +146,7 @@ export default class extends Component {
 
     const optionsVariantsList = option.selectVariants.map((v) => {
       const active = value.variant_id === v.variant_id;
-      let imgPath;
-
-      // Variations and options have different structures.
-      // We need to get a link to a picture in different ways.
-      if (v.product) {
-        imgPath = v.product.main_pair.detailed.image_path;
-      } else {
-        imgPath = v.image_pair.icon.image_path;
-      }
+      const imgPath = v.selectImgPath;
 
       const content = (
         <Image source={{ uri: imgPath }} style={styles.optionImage} />
@@ -174,9 +166,7 @@ export default class extends Component {
       <View style={styles.container}>
         <View style={styles.titleAndTitleSubWrapper}>
           <Text style={styles.title}>{option.selectTitle}</Text>
-          <Text style={styles.titleSub}>
-            {value.variant || value.variant_name}
-          </Text>
+          <Text style={styles.titleSub}>{value.selectVariantName}</Text>
         </View>
         <View style={styles.optionsVariants}>{optionsVariantsList}</View>
         {this.renderComment(option)}
