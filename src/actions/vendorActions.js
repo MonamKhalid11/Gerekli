@@ -20,12 +20,17 @@ export function fetch(id, type = 'M', params) {
     });
 
     try {
-      const result = await Api.get(`/sra_vendors/${id}/`);
+      const sraVendorsResult = await Api.get(`/sra_vendors/${id}/`);
+      const sraProfileFieldsResult = await Api.get(
+        '/sra_profile_fields/?profile_type=S',
+      );
+      sraVendorsResult.data.contactInformationFields =
+        sraProfileFieldsResult.data;
       dispatch({
         type: FETCH_VENDOR_SUCCESS,
-        payload: result.data,
+        payload: sraVendorsResult.data,
       });
-      if (result.data.discussion_type !== DISCUSSION_DISABLED) {
+      if (sraVendorsResult.data.discussion_type !== DISCUSSION_DISABLED) {
         productsActions.fetchDiscussion(id, params, type)(dispatch);
       }
     } catch (error) {

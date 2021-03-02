@@ -243,25 +243,34 @@ export class VendorDetail extends Component {
    */
   renderContacts() {
     const { vendors } = this.props;
+
+    // Define field names for contact information section.
+    const contactInformationFieldNames = {
+      email: 'E-mail',
+    };
+    vendors.currentVendor.contactInformationFields.C.fields.forEach((field) => {
+      contactInformationFieldNames[field.field_name] = field.description;
+    });
+
     return (
       <Section title={i18n.t('Contact Information')}>
-        <SectionRow
-          name={i18n.t('E-mail')}
-          value={vendors.currentVendor.contact_information.email}
-        />
-        <SectionRow
-          name={i18n.t('Phone')}
-          value={vendors.currentVendor.contact_information.phone}
-        />
-        <SectionRow
-          name={i18n.t('Fax')}
-          value={vendors.currentVendor.contact_information.fax}
-        />
-        <SectionRow
-          name={i18n.t('Website')}
-          value={vendors.currentVendor.contact_information.url}
-          last
-        />
+        {Object.keys(vendors.currentVendor.contact_information).map(
+          (information) => {
+            if (
+              !vendors.currentVendor.contact_information[information] ||
+              contactInformationFieldNames[information] === 'Description'
+            ) {
+              return null;
+            }
+
+            return (
+              <SectionRow
+                name={i18n.t(contactInformationFieldNames[information])}
+                value={vendors.currentVendor.contact_information[information]}
+              />
+            );
+          },
+        )}
       </Section>
     );
   }
@@ -347,8 +356,8 @@ export class VendorDetail extends Component {
       <ScrollView style={styles.container}>
         {this.renderLogo()}
         {this.renderDesc()}
-        {/* {this.renderContacts()} */}
-        {/* {this.renderShipping()} */}
+        {this.renderContacts()}
+        {this.renderShipping()}
         {this.renderDiscussion()}
       </ScrollView>
     );
