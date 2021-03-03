@@ -58,7 +58,6 @@ export default function (state = initialState, action) {
           [action.payload.pid]: {
             ...state.byId[action.payload.pid],
             ...action.payload.product,
-            product_features: state.byId[action.payload.pid].product_features,
             options: Object.keys(action.payload.product.product_options).map(
               (k) => action.payload.product.product_options[k],
             ),

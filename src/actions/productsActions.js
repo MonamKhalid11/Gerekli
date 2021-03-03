@@ -111,6 +111,7 @@ export function recalculatePrice(pid, options) {
 
     return Api.get(`sra_products/${pid}/?${formatOptionsToUrl(options)}`)
       .then((response) => {
+        response.data = filterFeaturesAndVariations(response.data);
         dispatch({
           type: RECALCULATE_PRODUCT_PRICE_SUCCESS,
           payload: {
@@ -196,7 +197,9 @@ const convertProductOptions = (oldProductOptions) => {
         ...oldProductOptions[option].variants[variantId],
       };
       selectVariant.selectVariantName = selectVariant.variant_name;
-      selectVariant.selectImgPath = selectVariant.image_pair.icon.image_path;
+      if (Object.keys(selectVariant.image_pair).length) {
+        selectVariant.selectImgPath = selectVariant.image_pair.icon.image_path;
+      }
       selectVariant.selectValue = selectVariant.variant_name;
       selectVariant.selectId = selectVariant.option_id;
 
@@ -234,8 +237,10 @@ const convertProductVariants = (oldProductVariants) => {
             ...oldProductVariants[variant].variants[variantId],
           };
           selectVariant.selectVariantName = selectVariant.variant;
-          selectVariant.selectImgPath =
-            selectVariant.product.main_pair.detailed.image_path;
+          if (selectVariant.product?.main_pair?.detailed?.image_path) {
+            selectVariant.selectImgPath =
+              selectVariant.product.main_pair.detailed.image_path;
+          }
           selectVariant.selectValue = selectVariant.variant;
           selectVariant.selectId = selectVariant.variant_id;
           return selectVariant;
