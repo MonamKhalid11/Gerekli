@@ -13,25 +13,30 @@ const MIN_TABLET_WIDTH = 480;
 const IMAGE_PADDING_PHONE = 16;
 const IMAGE_PADDING_TABLET = 32;
 
-const PRODUCT_AVERAGE_SIZE = (WINDOW_WIDTH > MIN_TABLET_WIDTH)
-  ? PRODUCT_AVERAGE_SIZE_TABLET
-  : PRODUCT_AVERAGE_SIZE_PHONE;
+const PRODUCT_AVERAGE_SIZE =
+  WINDOW_WIDTH > MIN_TABLET_WIDTH
+    ? PRODUCT_AVERAGE_SIZE_TABLET
+    : PRODUCT_AVERAGE_SIZE_PHONE;
 
-const IMAGE_PADDING = (WINDOW_WIDTH > MIN_TABLET_WIDTH)
-  ? IMAGE_PADDING_PHONE
-  : IMAGE_PADDING_TABLET;
+const IMAGE_PADDING =
+  WINDOW_WIDTH > MIN_TABLET_WIDTH ? IMAGE_PADDING_PHONE : IMAGE_PADDING_TABLET;
 
-export const PRODUCT_NUM_COLUMNS = Math.floor(WINDOW_WIDTH / PRODUCT_AVERAGE_SIZE);
-export const PRODUCT_IMAGE_WIDTH = (
-  Math.floor((WINDOW_WIDTH / PRODUCT_NUM_COLUMNS) * 10000) / 10000
-) - IMAGE_PADDING;
+export const PRODUCT_NUM_COLUMNS = Math.floor(
+  WINDOW_WIDTH / PRODUCT_AVERAGE_SIZE,
+);
+export const PRODUCT_IMAGE_WIDTH =
+  Math.floor((WINDOW_WIDTH / PRODUCT_NUM_COLUMNS) * 10000) / 10000 -
+  IMAGE_PADDING;
 
 // Strip tags
 export const stripTags = (str) => {
   if (!str) {
     return str;
   }
-  return str.replace(/<br[^>]*>/gi, '\n').replace(/(<([^>]+)>)/ig, '').trimLeft();
+  return str
+    .replace(/<br[^>]*>/gi, '\n')
+    .replace(/(<([^>]+)>)/gi, '')
+    .trimLeft();
 };
 
 export const formatPrice = (str) => {
@@ -78,7 +83,7 @@ export const getProductImagesPaths = (data = {}, size = '1000x1000') => {
   return images;
 };
 
-export const toArray = obj => Object.keys(obj).map(k => obj[k]);
+export const toArray = (obj) => Object.keys(obj).map((k) => obj[k]);
 
 export const filterObject = (obj, predicate) => {
   return Object.keys(obj)
@@ -99,7 +104,7 @@ export function getCountries() {
 
 export function getStates(code) {
   const result = {};
-  const country = countries.find(i => i.code === code);
+  const country = countries.find((i) => i.code === code);
   if (!country || !country.states.length) {
     return null;
   }
@@ -114,11 +119,11 @@ export function getStates(code) {
 export function isPriceIncludesTax(data) {
   const taxes = values(get(data, 'taxes', {}));
 
-  return taxes.some(item => get(item, 'price_includes_tax', 'N') === 'Y');
+  return taxes.some((item) => get(item, 'price_includes_tax', 'N') === 'Y');
 }
 
 export function getCountryByCode(code) {
-  const country = countries.find(i => i.code === code);
+  const country = countries.find((i) => i.code === code);
   if (!country) {
     return null;
   }
@@ -129,19 +134,19 @@ export function objectToQuerystring(obj) {
   const str = [];
   for (let p in obj)
     if (obj.hasOwnProperty(p)) {
-      str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+      str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
     }
   return str.join('&');
 }
 
 export function parseQueryString(query) {
   const obj = {};
-  const qPos = query.indexOf("?");
+  const qPos = query.indexOf('?');
   const tokens = query.substr(qPos + 1).split('&');
 
   i = tokens.length - 1;
 
-  if (qPos !== -1 || query.indexOf("=") !== -1) {
+  if (qPos !== -1 || query.indexOf('=') !== -1) {
     for (; i >= 0; i--) {
       const s = tokens[i].split('=');
       obj[unescape(s[0])] = s.hasOwnProperty(1) ? unescape(s[1]) : null;
@@ -155,25 +160,25 @@ export function getProductStatus(status) {
     case 'A':
       return {
         text: i18n.t('Active'),
-        style: { color: '#97cf4d' }
+        style: { color: '#97cf4d' },
       };
 
     case 'H':
       return {
         text: i18n.t('Hidden'),
-        style: { color: '#000000' }
+        style: { color: '#000000' },
       };
 
     case 'D':
       return {
         text: i18n.t('Disabled'),
-        style: { color: '#ff0000' }
+        style: { color: '#ff0000' },
       };
 
     default:
       return {
         text: i18n.t(''),
-        style: { color: '#000000' }
+        style: { color: '#000000' },
       };
   }
 }
@@ -182,47 +187,47 @@ export const orderStatuses = [
   {
     code: 'P',
     text: i18n.t('Processed'),
-    style: { color: '#97cf4d' }
+    style: { color: '#97cf4d' },
   },
   {
     code: 'C',
     text: i18n.t('Complete'),
-    style: { color: '#97cf4d' }
+    style: { color: '#97cf4d' },
   },
   {
     code: 'O',
     text: i18n.t('Open'),
-    style: { color: '#ff9522' }
+    style: { color: '#ff9522' },
   },
   {
     code: 'F',
     text: i18n.t('Failed'),
-    style: { color: '#ff5215' }
+    style: { color: '#ff5215' },
   },
   {
     code: 'D',
     text: i18n.t('Declined'),
-    style: { color: '#ff5215' }
+    style: { color: '#ff5215' },
   },
   {
     code: 'B',
     text: i18n.t('Backordered'),
-    style: { color: '#28abf6' }
+    style: { color: '#28abf6' },
   },
   {
     code: 'I',
     text: i18n.t('Canceled'),
-    style: { color: '#c2c2c2' }
+    style: { color: '#c2c2c2' },
   },
   {
     code: 'Y',
     text: i18n.t('Awaiting call'),
-    style: { color: '#b63a21' }
-  }
+    style: { color: '#b63a21' },
+  },
 ];
 
 export function getOrderStatus(status) {
-  return orderStatuses.find(item => item.code === status);
+  return orderStatuses.find((item) => item.code === status);
 }
 
 export const getPaymentId = (res) => {
@@ -231,3 +236,7 @@ export const getPaymentId = (res) => {
   });
   return res;
 };
+
+export function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import toInteger from 'lodash/toInteger';
-import debounce from 'lodash/debounce';
 import { connect } from 'react-redux';
 import {
   View,
@@ -15,7 +14,6 @@ import {
 } from 'react-native';
 import format from 'date-fns/format';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import ActionSheet from 'react-native-actionsheet';
 import get from 'lodash/get';
 import {
   stripTags,
@@ -32,13 +30,11 @@ import * as wishListActions from '../actions/wishListActions';
 import * as vendorActions from '../actions/vendorActions';
 
 // Components
+import { ProductDetailOptions } from '../components/ProductDetailOptions';
 import ProductImageSwiper from '../components/ProductImageSwiper';
 import DiscussionList from '../components/DiscussionList';
 import InAppPayment from '../components/InAppPayment';
-import SelectOption from '../components/SelectOption';
-import InputOption from '../components/InputOption';
 import { QtyOption } from '../components/QtyOption';
-import SwitchOption from '../components/SwitchOption';
 import SectionRow from '../components/SectionRow';
 import { Seller } from '../components/Seller';
 import Spinner from '../components/Spinner';
@@ -60,6 +56,8 @@ import {
 } from '../constants';
 import { Navigation } from 'react-native-navigation';
 import theme from '../config/theme';
+
+const OPTION_TYPE_CHECKBOX = 'C';
 
 const styles = EStyleSheet.create({
   container: {
@@ -114,9 +112,6 @@ const styles = EStyleSheet.create({
   descText: {
     marginTop: 10,
     color: 'gray',
-    textAlign: 'left',
-  },
-  noFeaturesText: {
     textAlign: 'left',
   },
   addToCartContainerWrapper: {
@@ -282,6 +277,7 @@ export class ProductDetail extends Component {
       vendor: null,
       fetching: true,
       selectedOptions: {},
+      selectedVariants: {},
       canWriteComments: false,
       amount: 0,
       currentPid: false,
@@ -313,7 +309,9 @@ export class ProductDetail extends Component {
       hideWishList,
       pid,
     } = nextProps;
-    const product = productDetail.byId[pid];
+
+    const { currentPid } = this.state;
+    const product = productDetail.byId[currentPid || pid];
 
     if (!product) {
       return;
@@ -337,18 +335,26 @@ export class ProductDetail extends Component {
     }
 
     const defaultOptions = { ...this.state.selectedOptions };
+    const defaultVariants = { ...this.state.selectedVariants };
     if (!Object.keys(defaultOptions).length) {
-      product.options.forEach((option) => {
-        // Fixme: Server returned inconsistent data.
-        if (!option.variants) {
-          option.variants = [];
+      product.convertedOptions.forEach((option) => {
+        if (option.option_type === OPTION_TYPE_CHECKBOX) {
+          defaultOptions[option.selectDefaultId] = option.selectVariants.find(
+            (el) => parseInt(el.position, 10) === 0,
+          );
+        } else {
+          defaultOptions[option.selectDefaultId] = option.selectVariants.find(
+            (el) => el.selectId === option.selectDefaultId,
+          );
         }
+      });
+    }
 
-        if (option.variants[option.value]) {
-          defaultOptions[option.option_id] = option.variants[option.value];
-        } else if (Object.values(option.variants).length) {
-          defaultOptions[option.option_id] = Object.values(option.variants)[0];
-        }
+    if (!Object.keys(defaultVariants).length) {
+      product.convertedVariants.forEach((variant) => {
+        defaultVariants[variant.selectDefaultId] = variant.selectVariants.find(
+          (el) => el.selectId === variant.selectDefaultId,
+        );
       });
     }
 
@@ -371,6 +377,7 @@ export class ProductDetail extends Component {
       product,
       discussion: activeDiscussion,
       selectedOptions: defaultOptions,
+      selectedVariants: defaultVariants,
       vendor: vendors.items[product.company_id] || null,
       canWriteComments:
         !activeDiscussion.disable_adding &&
@@ -569,25 +576,6 @@ export class ProductDetail extends Component {
     };
 
     return wishListActions.add({ products }, componentId);
-  }
-
-  /**
-   * Adds the selected option.
-   *
-   * @param {string} name - Option name.
-   * @param {string} val - Option value.
-   */
-  handleOptionChange(name, val) {
-    const { selectedOptions } = this.state;
-    const newOptions = { ...selectedOptions };
-    newOptions[name] = val;
-
-    this.setState(
-      {
-        selectedOptions: newOptions,
-      },
-      debounce(this.calculatePrice, 1000, { trailing: true }),
-    );
   }
 
   /**
@@ -805,65 +793,11 @@ export class ProductDetail extends Component {
   }
 
   /**
-   * Renders different options.
-   * "Memory capacity" for example.
-   *
-   * @param {object} item - Option information.
-   *
-   * @return {JSX.Element}
-   */
-  renderOptionItem = (item) => {
-    const option = { ...item };
-    const { selectedOptions } = this.state;
-    // FIXME: Brainfuck code to convert object to array.
-    option.variants = Object.keys(option.variants).map(
-      (k) => option.variants[k],
-    );
-    const defaultValue = selectedOptions[option.option_id];
-
-    switch (item.option_type) {
-      case 'I':
-      case 'T':
-        return (
-          <InputOption
-            option={option}
-            value={defaultValue}
-            key={item.option_id}
-            onChange={(val) => this.handleOptionChange(option.option_id, val)}
-          />
-        );
-
-      case 'S':
-      case 'R':
-        return (
-          <SelectOption
-            option={option}
-            value={defaultValue}
-            key={item.option_id}
-            onChange={(val) => this.handleOptionChange(option.option_id, val)}
-          />
-        );
-
-      case 'C':
-        return (
-          <SwitchOption
-            option={option}
-            value={defaultValue}
-            key={item.option_id}
-            onChange={(val) => this.handleOptionChange(option.option_id, val)}
-          />
-        );
-      default:
-        return null;
-    }
-  };
-
-  /**
    * Renders options list.
    *
    * @return {JSX.Element}
    */
-  renderOptions() {
+  renderQuantitySwitcher() {
     const { product, productOffers } = this.state;
 
     const step = parseInt(product.qty_step, 10) || 1;
@@ -872,7 +806,6 @@ export class ProductDetail extends Component {
 
     return (
       <Section>
-        {product.options.map((o) => this.renderOptionItem(o))}
         {!productOffers && (
           <QtyOption
             max={max}
@@ -897,7 +830,7 @@ export class ProductDetail extends Component {
    *
    * @return {JSX.Element}
    */
-  renderFeatureItem = (feature, index, last, isVariation) => {
+  renderFeatureItem = (feature, index, last) => {
     const { description, feature_type, value_int, value, variant } = feature;
 
     let newValue = null;
@@ -913,14 +846,7 @@ export class ProductDetail extends Component {
     }
 
     return (
-      <SectionRow
-        name={description}
-        value={newValue}
-        last={last}
-        key={index}
-        onPress={this.showActionSheet}
-        isVariation={isVariation}
-      />
+      <SectionRow name={description} value={newValue} last={last} key={index} />
     );
   };
 
@@ -934,24 +860,17 @@ export class ProductDetail extends Component {
     const features = Object.keys(product.product_features).map(
       (k) => product.product_features[k],
     );
+
     const lastElement = features.length - 1;
-    const isVariation = product.variation_features_variants ? true : false;
+
+    if (!features.length) {
+      return null;
+    }
 
     return (
       <Section title={i18n.t('Features')}>
-        {features.length !== 0 ? (
-          features.map((item, index) =>
-            this.renderFeatureItem(
-              item,
-              index,
-              index === lastElement && true,
-              isVariation,
-            ),
-          )
-        ) : (
-          <Text style={styles.noFeaturesText}>
-            {` ${i18n.t('There are no features.')} `}
-          </Text>
+        {features.map((item, index) =>
+          this.renderFeatureItem(item, index, index === lastElement),
         )}
       </Section>
     );
@@ -1027,39 +946,73 @@ export class ProductDetail extends Component {
     );
   }
 
-  showActionSheet = (value) => {
-    const { product } = this.state;
+  changeVariationHandler(variantId, variantOption) {
+    const { selectedVariants } = this.state;
+    const pid = variantOption.product_id;
+    const newVariant = { ...selectedVariants };
+    newVariant[variantOption.variant_id] = variantOption;
 
-    // Gets all variations and product_ids for the selected feature.
-    // {white: "123", black: "124"}
-    const featureVariants = {};
-    Object.keys(product.variation_features_variants).forEach((feature) => {
-      const currentFeature = product.variation_features_variants[feature];
-      if (currentFeature.description === value) {
-        Object.keys(currentFeature.variants).forEach((variant) => {
-          const currentVariant = currentFeature.variants[variant];
-          if (currentVariant.product_id) {
-            featureVariants[currentVariant.variant] = currentVariant.product_id;
-          }
-        });
-      }
-    });
-
-    this.setState({ currentFeatureVariants: featureVariants }, () =>
-      this.ActionSheet.show(),
-    );
-  };
-
-  variationChangeHandler(index) {
-    const { currentFeatureVariants, currentPid } = this.state;
-
-    const featuresArray = Object.keys(currentFeatureVariants);
-    const pid = currentFeatureVariants[featuresArray[index]];
-
-    // if 'cancel', do nothing
-    if (index !== featuresArray.length && pid !== currentPid) {
-      this.productInit(pid);
+    if (selectedVariants[variantId].product_id === pid) {
+      return null;
     }
+
+    this.setState(
+      {
+        currentPid: pid,
+        selectedVariants: newVariant,
+        selectedOptions: {},
+      },
+      () => {
+        this.productInit(pid);
+      },
+    );
+  }
+
+  /**
+   * Adds the selected option.
+   *
+   * @param {string} name - Option name.
+   * @param {string} val - Option value.
+   */
+  changeOptionHandler(optionId, selectedOptionValue) {
+    const { selectedOptions } = this.state;
+    const newOptions = { ...selectedOptions };
+    newOptions[optionId] = selectedOptionValue;
+
+    this.setState(
+      {
+        selectedOptions: newOptions,
+      },
+      () => {
+        this.calculatePrice();
+      },
+    );
+  }
+
+  renderVariationsAndOptions() {
+    const { product, selectedOptions, selectedVariants } = this.state;
+
+    if (
+      !Object.keys(selectedOptions).length &&
+      !Object.keys(selectedVariants).length
+    ) {
+      return null;
+    }
+
+    return (
+      <Section title={i18n.t('Select')}>
+        <ProductDetailOptions
+          options={product.convertedVariants}
+          selectedOptions={selectedVariants}
+          changeOptionHandler={this.changeVariationHandler.bind(this)}
+        />
+        <ProductDetailOptions
+          options={product.convertedOptions}
+          selectedOptions={selectedOptions}
+          changeOptionHandler={this.changeOptionHandler.bind(this)}
+        />
+      </Section>
+    );
   }
 
   renderSellers() {
@@ -1098,12 +1051,6 @@ export class ProductDetail extends Component {
       return <Spinner visible />;
     }
 
-    const cancelButtonIndex = Object.keys(this.state.currentFeatureVariants)
-      .length;
-    const actionSheetOptions = Object.keys(
-      this.state.currentFeatureVariants,
-    ).map((el) => i18n.t(el));
-
     return (
       <View style={styles.container}>
         <KeyboardAvoidingView
@@ -1119,7 +1066,8 @@ export class ProductDetail extends Component {
               {this.renderPrice()}
               {this.renderDesc()}
             </View>
-            {this.renderOptions()}
+            {this.renderQuantitySwitcher()}
+            {this.renderVariationsAndOptions()}
             {this.renderSellers()}
             {this.renderDiscussion()}
             {this.renderFeatures()}
@@ -1131,15 +1079,6 @@ export class ProductDetail extends Component {
             </View>
           )}
         </KeyboardAvoidingView>
-        <ActionSheet
-          ref={(ref) => {
-            this.ActionSheet = ref;
-          }}
-          options={[...actionSheetOptions, i18n.t('Cancel')]}
-          cancelButtonIndex={cancelButtonIndex}
-          destructiveButtonIndex={cancelButtonIndex}
-          onPress={(index) => this.variationChangeHandler(index)}
-        />
       </View>
     );
   }

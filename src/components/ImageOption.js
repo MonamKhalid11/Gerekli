@@ -2,46 +2,48 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import theme from '../config/theme';
 
 const styles = EStyleSheet.create({
   container: {
     width: '100%',
-    marginBottom: 14,
+    marginVertical: 10,
+  },
+  titleAndTitleSubWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   title: {
     fontSize: '0.9rem',
-    fontWeight: 'bold',
     textAlign: 'left',
   },
   titleSub: {
-    fontWeight: 'normal',
-    color: 'gray',
+    fontSize: '0.9rem',
+    marginRight: 10,
   },
   commentText: {
     color: '#9cb0c4',
     marginTop: 3,
     textAlign: 'left',
   },
-  optionsList: {},
   optionsVariants: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'baseline',
     flexWrap: 'wrap',
-    marginTop: 8,
+    marginTop: 15,
   },
   optionsItem: {
     padding: 8,
-    borderWidth: 2,
-    borderColor: '#EEEEEE',
-    borderRadius: 3,
+    borderWidth: 1,
+    borderColor: theme.$mediumGrayColor,
+    borderRadius: 5,
     marginBottom: 6,
     marginRight: 6,
   },
   optionsItemBtnText: {
-    color: '#6d90b3',
-    fontWeight: 'bold',
+    color: theme.$mediumGrayColor,
     fontSize: '0.8rem',
   },
   optionsItemBtnTextActive: {
@@ -142,24 +144,14 @@ export default class extends Component {
       return null;
     }
 
-    const optionsVariantsList = option.variants.map((v) => {
+    const optionsVariantsList = option.selectVariants.map((v) => {
       const active = value.variant_id === v.variant_id;
-      let img = null;
-      if ('icon' in v.image_pair) {
-        img = v.image_pair.icon.http_image_path;
-      }
-      let content = (
-        <Text
-          style={[
-            styles.optionsItemBtnText,
-            active && styles.optionsItemBtnTextActive,
-          ]}>
-          {v.variant_name}
-        </Text>
+      const imgPath = v.selectImgPath;
+
+      const content = (
+        <Image source={{ uri: imgPath }} style={styles.optionImage} />
       );
-      if (img) {
-        content = <Image source={{ uri: img }} style={styles.optionImage} />;
-      }
+
       return (
         <TouchableOpacity
           key={v.variant_id}
@@ -172,10 +164,10 @@ export default class extends Component {
 
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>
-          {option.option_name}:{' '}
-          <Text style={styles.titleSub}>{value.variant_name}</Text>
-        </Text>
+        <View style={styles.titleAndTitleSubWrapper}>
+          <Text style={styles.title}>{option.selectTitle}</Text>
+          <Text style={styles.titleSub}>{value.selectVariantName}</Text>
+        </View>
         <View style={styles.optionsVariants}>{optionsVariantsList}</View>
         {this.renderComment(option)}
       </View>
