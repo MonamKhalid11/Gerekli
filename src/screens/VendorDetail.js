@@ -243,13 +243,18 @@ export class VendorDetail extends Component {
    */
   renderContacts() {
     const { vendors } = this.props;
+    const CONTACT_INFORMATION = 'C';
 
     // Define field names for contact information section.
     const contactInformationFieldNames = {
       email: 'E-mail',
     };
-    vendors.currentVendor.contactInformationFields.C.fields.forEach((field) => {
-      contactInformationFieldNames[field.field_name] = field.description;
+    vendors.currentVendor.contactInformationFields[
+      CONTACT_INFORMATION
+    ].fields.forEach((field) => {
+      if (field.field_id !== 'company_description') {
+        contactInformationFieldNames[field.field_name] = field.description;
+      }
     });
 
     return (
@@ -258,7 +263,7 @@ export class VendorDetail extends Component {
           (information) => {
             if (
               !vendors.currentVendor.contact_information[information] ||
-              contactInformationFieldNames[information] === 'Description'
+              !contactInformationFieldNames.hasOwnProperty(information)
             ) {
               return null;
             }

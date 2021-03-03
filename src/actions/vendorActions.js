@@ -13,6 +13,8 @@ import {
 import Api from '../services/api';
 import * as productsActions from './productsActions';
 
+const PROFILE_TYPE_SELLER = 'S';
+
 export function fetch(id, type = 'M', params) {
   return async (dispatch) => {
     dispatch({
@@ -22,7 +24,7 @@ export function fetch(id, type = 'M', params) {
     try {
       const sraVendorsResult = await Api.get(`/sra_vendors/${id}/`);
       const sraProfileFieldsResult = await Api.get(
-        '/sra_profile_fields/?profile_type=S',
+        `/sra_profile_fields/?profile_type=${PROFILE_TYPE_SELLER}`,
       );
       sraVendorsResult.data.contactInformationFields =
         sraProfileFieldsResult.data;
