@@ -133,8 +133,8 @@ android {
         applicationId "com.simtech.multivendor.mk"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
-        versionName "2.0"
+        versionCode 4
+        versionName "2.2"
         multiDexEnabled true
     }
     splits {
@@ -195,6 +195,7 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
+    implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"

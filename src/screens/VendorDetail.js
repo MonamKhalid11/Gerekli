@@ -244,25 +244,26 @@ export class VendorDetail extends Component {
   renderContacts() {
     const { vendors } = this.props;
     return (
-      <Section title={i18n.t('Contact Information')}>
-        <SectionRow
-          name={i18n.t('E-mail')}
-          value={vendors.currentVendor.contact_information.email}
-        />
-        <SectionRow
-          name={i18n.t('Phone')}
-          value={vendors.currentVendor.contact_information.phone}
-        />
-        <SectionRow
-          name={i18n.t('Fax')}
-          value={vendors.currentVendor.contact_information.fax}
-        />
-        <SectionRow
-          name={i18n.t('Website')}
-          value={vendors.currentVendor.contact_information.url}
-          last
-        />
-      </Section>
+      // <Section title={i18n.t('Contact Information')}>
+      //   <SectionRow
+      //     name={i18n.t('E-mail')}
+      //     value={vendors.currentVendor.contact_information.email}
+      //   />
+      //   <SectionRow
+      //     name={i18n.t('Phone')}
+      //     value={vendors.currentVendor.contact_information.phone}
+      //   />
+      //   <SectionRow
+      //     name={i18n.t('Fax')}
+      //     value={vendors.currentVendor.contact_information.fax}
+      //   />
+      //   <SectionRow
+      //     name={i18n.t('Website')}
+      //     value={vendors.currentVendor.contact_information.url}
+      //     last
+      //   />
+      // </Section>
+      <></>
     );
   }
 
@@ -275,18 +276,20 @@ export class VendorDetail extends Component {
     const { vendors } = this.props;
 
     return (
-      <Section title={i18n.t('Shipping address')}>
-        <Text style={styles.address}>
-          {vendors.currentVendor.shipping_address.address},
-        </Text>
-        <Text style={styles.address}>
-          {vendors.currentVendor.shipping_address.state}{' '}
-          {vendors.currentVendor.shipping_address.zipcode},
-        </Text>
-        <Text style={styles.address}>
-          {vendors.currentVendor.shipping_address.country}
-        </Text>
-      </Section>
+      // <Section title={i18n.t('Shipping address')}>
+      //   <Text style={styles.address}>
+      //     {vendors.currentVendor.shipping_address.address},
+      //   </Text>
+      //   <Text style={styles.address}>
+      //     {vendors.currentVendor.shipping_address.state}{' '}
+      //     {vendors.currentVendor.shipping_address.zipcode},
+      //   </Text>
+      //   <Text style={styles.address}>
+      //     {vendors.currentVendor.shipping_address.country}
+      //   </Text>
+      // </Section>
+      <>
+      </>
     );
   }
 

@@ -71,6 +71,7 @@ export default {
   $categoryBorderRadius: 6,
   $categoryEmptyImage: '#989898',
 
+
   // The background color of the add to wishlist button.
   $addToWishListColor: '#989898',
 
