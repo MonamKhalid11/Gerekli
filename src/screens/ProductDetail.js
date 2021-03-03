@@ -960,6 +960,7 @@ export class ProductDetail extends Component {
       {
         currentPid: pid,
         selectedVariants: newVariant,
+        selectedOptions: {},
       },
       () => {
         this.productInit(pid);
