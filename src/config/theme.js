@@ -40,6 +40,7 @@ export default {
 
   // Shades of gray. Used to display dividers and borders.
   $darkColor: '#242424',
+  $mediumGrayColor: '#B8B8B8',
   $grayColor: '#FAFAFA',
 
   // The radius of the rounding of buttons and form elements.

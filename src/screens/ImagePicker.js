@@ -153,7 +153,6 @@ export class AddProductStep1 extends Component {
     try {
       const params = {
         first: 40,
-        // batchSize: 5,
         assetType: 'Photos',
         groupTypes: 'All',
       };

@@ -6,15 +6,15 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 const styles = EStyleSheet.create({
   container: {
     width: '100%',
-    marginBottom: 14,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginVertical: 10,
   },
   title: {
     fontSize: '0.9rem',
-    fontWeight: 'bold',
     textAlign: 'left',
-  },
-  wrapper: {
-    marginTop: 10,
   },
 });
 
@@ -57,7 +57,7 @@ export default class extends Component {
   componentDidMount() {
     const { value, option } = this.props;
     this.setState({
-      value: value?.variant_name === 'Yes',
+      value: !!parseInt(value?.position, 10),
       title: option.option_name,
     });
   }
@@ -68,7 +68,7 @@ export default class extends Component {
   componentWillReceiveProps(nextProps) {
     const { value, option } = nextProps;
     this.setState({
-      value: value?.variant_name === 'Yes',
+      value: !!parseInt(value?.position, 10),
       title: option.option_name,
     });
   }
@@ -76,11 +76,11 @@ export default class extends Component {
   /**
    * Switches option value.
    *
-   * @param {object} value -  Selected value.
+   * @param {boolean} v -  Switcher value.
    */
   handleChange(v) {
     const { option, onChange } = this.props;
-    return onChange(option.variants[v ? 0 : 1]);
+    return onChange(option.selectVariants[v ? 0 : 1]);
   }
 
   /**
@@ -90,12 +90,11 @@ export default class extends Component {
    */
   render() {
     const { value, title } = this.state;
+
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>{title}</Text>
-        <View style={styles.wrapper}>
-          <Switch value={value} onValueChange={(v) => this.handleChange(v)} />
-        </View>
+        <Text style={styles.title}>{title}: </Text>
+        <Switch value={value} onValueChange={(v) => this.handleChange(v)} />
       </View>
     );
   }
