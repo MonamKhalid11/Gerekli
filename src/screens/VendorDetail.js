@@ -245,37 +245,48 @@ export class VendorDetail extends Component {
     const { vendors } = this.props;
     const CONTACT_INFORMATION = 'C';
 
+    const vendorContacts = vendors.currentVendor.contact_information;
+
     // Define field names for contact information section.
-    const contactInformationFieldNames = {
-      email: 'E-mail',
+    const contactInformationData = {
+      email: {
+        fieldName: 'E-mail',
+        fieldValue: vendorContacts.email,
+      },
     };
+
     vendors.currentVendor.contactInformationFields[
       CONTACT_INFORMATION
     ].fields.forEach((field) => {
       if (field.field_id !== 'company_description') {
-        contactInformationFieldNames[field.field_name] = field.description;
+        contactInformationData[field.field_name] = {
+          fieldName: field.description,
+          fieldValue: vendorContacts[field.field_name],
+        };
+        if (field.field_id === 'country') {
+          contactInformationData[field.field_name].fieldValue =
+            field.values[vendorContacts.country];
+        }
+        if (field.field_id === 'state') {
+          contactInformationData[field.field_name].fieldValue =
+            field.values[vendorContacts.country][vendorContacts.state];
+        }
       }
     });
 
     return (
       <Section title={i18n.t('Contact Information')}>
-        {Object.keys(vendors.currentVendor.contact_information).map(
-          (information) => {
-            if (
-              !vendors.currentVendor.contact_information[information] ||
-              !contactInformationFieldNames.hasOwnProperty(information)
-            ) {
-              return null;
-            }
-
-            return (
-              <SectionRow
-                name={i18n.t(contactInformationFieldNames[information])}
-                value={vendors.currentVendor.contact_information[information]}
-              />
-            );
-          },
-        )}
+        {Object.keys(contactInformationData).map((contact) => {
+          if (!contactInformationData[contact].fieldValue) {
+            return null;
+          }
+          return (
+            <SectionRow
+              name={i18n.t(contactInformationData[contact].fieldName)}
+              value={contactInformationData[contact].fieldValue}
+            />
+          );
+        })}
       </Section>
     );
   }
