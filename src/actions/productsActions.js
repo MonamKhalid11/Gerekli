@@ -26,7 +26,7 @@ import {
 } from '../constants';
 import Api from '../services/api';
 import i18n from '../utils/i18n';
-import { objectFilter } from '../utils/index';
+import { filterObject } from '../utils/index';
 
 export function fetchDiscussion(id, params = { page: 1 }, type = 'P') {
   return (dispatch) => {
@@ -142,7 +142,7 @@ const filterFeaturesAndVariations = (oldProductData) => {
     (featureVariant) => {
       newProductData.variation_features_variants[
         featureVariant
-      ].variants = objectFilter(
+      ].variants = filterObject(
         newProductData.variation_features_variants[featureVariant].variants,
         (variant) => {
           return variant.product_id;
@@ -152,7 +152,7 @@ const filterFeaturesAndVariations = (oldProductData) => {
   );
 
   // Checking if the variation has options. If not, we make it a feature.
-  newProductData.variation_features_variants = objectFilter(
+  newProductData.variation_features_variants = filterObject(
     newProductData.variation_features_variants,
     (featuresVariant) => {
       return Object.keys(featuresVariant.variants).length > 1;
@@ -160,7 +160,7 @@ const filterFeaturesAndVariations = (oldProductData) => {
   );
 
   // We remove features, if they are in variations.
-  newProductData.product_features = objectFilter(
+  newProductData.product_features = filterObject(
     newProductData.product_features,
     (feature) => {
       return !Object.keys(newProductData.variation_features_variants).includes(
