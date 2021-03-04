@@ -290,16 +290,19 @@ export class VendorDetail extends Component {
 
     return (
       <Section title={i18n.t('Shipping address')}>
-        <Text style={styles.address}>
-          {vendors.currentVendor.shipping_address.address},
-        </Text>
-        <Text style={styles.address}>
-          {vendors.currentVendor.shipping_address.state}{' '}
-          {vendors.currentVendor.shipping_address.zipcode},
-        </Text>
-        <Text style={styles.address}>
-          {vendors.currentVendor.shipping_address.country}
-        </Text>
+        {Object.keys(vendors.currentVendor.shipping_address).map(
+          (shippingAddressKey) => {
+            if (!vendors.currentVendor.shipping_address[shippingAddressKey]) {
+              return null;
+            }
+
+            return (
+              <Text style={styles.address}>
+                {vendors.currentVendor.shipping_address[shippingAddressKey]}
+              </Text>
+            );
+          },
+        )}
       </Section>
     );
   }
