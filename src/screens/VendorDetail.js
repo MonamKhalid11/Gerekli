@@ -292,33 +292,6 @@ export class VendorDetail extends Component {
   }
 
   /**
-   * Renders shipping information.
-   *
-   * @return {JSX.Element}
-   */
-  renderShipping() {
-    const { vendors } = this.props;
-
-    return (
-      <Section title={i18n.t('Shipping address')}>
-        {Object.keys(vendors.currentVendor.shipping_address).map(
-          (shippingAddressKey) => {
-            if (!vendors.currentVendor.shipping_address[shippingAddressKey]) {
-              return null;
-            }
-
-            return (
-              <Text style={styles.address}>
-                {vendors.currentVendor.shipping_address[shippingAddressKey]}
-              </Text>
-            );
-          },
-        )}
-      </Section>
-    );
-  }
-
-  /**
    * Renders discussions.
    *
    * @return {JSX.Element}
@@ -376,7 +349,6 @@ export class VendorDetail extends Component {
         {this.renderLogo()}
         {this.renderDesc()}
         {this.renderContacts()}
-        {this.renderShipping()}
         {this.renderDiscussion()}
       </ScrollView>
     );
