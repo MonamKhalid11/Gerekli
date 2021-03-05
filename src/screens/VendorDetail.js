@@ -258,7 +258,10 @@ export class VendorDetail extends Component {
     vendors.currentVendor.contactInformationFields[
       CONTACT_INFORMATION
     ].fields.forEach((field) => {
-      if (field.field_id !== 'company_description') {
+      if (
+        field.field_id !== 'company_description' &&
+        field.field_id !== 'plan_id'
+      ) {
         contactInformationData[field.field_name] = {
           fieldName: field.description,
           fieldValue: vendorContacts[field.field_name],
