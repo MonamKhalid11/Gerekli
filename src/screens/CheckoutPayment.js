@@ -27,7 +27,6 @@ import PaymentEmpty from '../components/PaymentEmpty';
 import PaymentCheckForm from '../components/PaymentCheckForm';
 import PaymentPaypalForm from '../components/PaymentPaypalForm';
 import PaymentYandexKassaForm from '../components/PaymentYandexKassaForm';
-import CouponCodes from '../components/CouponCodes';
 import Spinner from '../components/Spinner';
 import Icon from '../components/Icon';
 import { stripTags, formatPrice } from '../utils';
@@ -359,7 +358,7 @@ export class CheckoutPayment extends Component {
    * @return {JSX.Element}
    */
   renderFooter() {
-    const { cart, shipping_id, cartActions } = this.props;
+    const { cart } = this.props;
     const { selectedItem } = this.state;
     if (!selectedItem) {
       return null;
@@ -443,27 +442,6 @@ export class CheckoutPayment extends Component {
             {stripTags(selectedItem.instructions)}
           </Text>
         </FormBlock>
-        <CouponCodes
-          items={cart.coupons}
-          onAddPress={(value) => {
-            cartActions.addCoupon(value);
-            setTimeout(() => {
-              cartActions.recalculateTotal(
-                shipping_id,
-                this.props.cart.coupons,
-              );
-            }, 400);
-          }}
-          onRemovePress={(value) => {
-            cartActions.removeCoupon(value);
-            setTimeout(() => {
-              cartActions.recalculateTotal(
-                shipping_id,
-                this.props.cart.coupons,
-              );
-            }, 400);
-          }}
-        />
       </View>
     );
   }
@@ -485,6 +463,7 @@ export class CheckoutPayment extends Component {
    */
   render() {
     const { cart } = this.props;
+
     return (
       <SafeAreaView style={styles.container}>
         <KeyboardAwareScrollView>

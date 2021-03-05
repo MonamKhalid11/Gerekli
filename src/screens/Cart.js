@@ -250,6 +250,7 @@ export class Cart extends Component {
    */
   render() {
     const { cart } = this.props;
+
     return (
       <View style={styles.container}>
         {cart.isSeparateCart ? this.renderVendorsList() : this.renderList()}

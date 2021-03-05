@@ -11,6 +11,7 @@ import { Navigation } from 'react-native-navigation';
 import CartProductitem from './CartProductItem';
 import CartFooter from './CartFooter';
 import EmptyCart from './EmptyCart';
+import CouponCodeBlock from './CouponCodeBlock';
 
 // Links
 import i18n from '../utils/i18n';
@@ -180,7 +181,14 @@ export const CartProductList = ({
         onRefresh={handleRefresh}
         refreshing={refreshing}
         ListEmptyComponent={() => <EmptyCart />}
-        ListFooterComponent={() => renderOrderDetail(newProducts, cart)}
+        ListFooterComponent={() => {
+          return (
+            <>
+              <CouponCodeBlock cart={cart} />
+              {renderOrderDetail(newProducts, cart)}
+            </>
+          );
+        }}
       />
       {renderPlaceOrder(cart, newProducts, auth)}
     </View>
