@@ -76,7 +76,7 @@ const styles = EStyleSheet.create({
  * @reactProps {function} onRemovePress - Removes a coupon.
  * @reactProps {string[]} items - Applied coupons.
  */
-class CouponCodes extends Component {
+class CouponCodeInput extends Component {
   /**
    * @ignore
    */
@@ -162,4 +162,4 @@ class CouponCodes extends Component {
   }
 }
 
-export default CouponCodes;
+export default CouponCodeInput;

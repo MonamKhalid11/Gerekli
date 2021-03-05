@@ -1,14 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import CouponCodes from './CouponCodes';
+import CouponCodeInput from './CouponCodeInput';
 import { bindActionCreators } from 'redux';
 import * as cartActions from '../actions/cartActions';
 
 export const CouponCodeBlock = ({ cartActions, cart }) => {
-  const shipping_id = cart.carts.general.chosen_shipping[0];
+  if (!cart) {
+    return null;
+  }
+
+  const shipping_id = cart.chosen_shipping[0];
 
   return (
-    <CouponCodes
+    <CouponCodeInput
       items={cart.coupons}
       onAddPress={(value) => {
         cartActions.addCoupon(value);
@@ -29,7 +33,6 @@ export const CouponCodeBlock = ({ cartActions, cart }) => {
 export default connect(
   (state) => ({
     auth: state.auth,
-    cart: state.cart,
   }),
   (dispatch) => ({
     cartActions: bindActionCreators(cartActions, dispatch),
