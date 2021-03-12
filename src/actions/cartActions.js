@@ -33,15 +33,22 @@ import i18n from '../utils/i18n';
 import Api from '../services/api';
 import { getPaymentId } from '../utils/index';
 
-export function fetch(calculateShipping = 'A') {
+const DEFAULT_CALCULATE_SHIPPING = 'A';
+
+export function fetch(calculateShipping = 'A', coupons) {
+  console.log('coupons: ', coupons);
   return async (dispatch) => {
     try {
       dispatch({
         type: CART_LOADING,
       });
       const res = await Api.get('/sra_cart_content', {
-        params: { calculate_shipping: calculateShipping },
+        params: {
+          calculate_shipping: calculateShipping,
+          coupon_codes: coupons,
+        },
       });
+      console.log('res: ', res);
       const carts = {};
       if (!res.data.amount) {
         dispatch({
@@ -110,6 +117,7 @@ export function recalculateTotal(ids, coupons = [], cartId) {
       },
     })
       .then((response) => {
+        console.log('recalc total: ', response)
         dispatch({
           type: CART_RECALCULATE_SUCCESS,
           payload: { cart: response.data, cartId },
@@ -138,7 +146,7 @@ export function saveUserData(data) {
           type: CART_CONTENT_SAVE_SUCCESS,
           payload: data,
         });
-        fetch()(dispatch);
+        fetch(DEFAULT_CALCULATE_SHIPPING)(dispatch);
       })
       .catch((error) => {
         dispatch({
@@ -187,7 +195,7 @@ export function add(data, notify = true) {
           });
         }
       })
-      .then(() => fetch()(dispatch))
+      .then(() => fetch(DEFAULT_CALCULATE_SHIPPING)(dispatch))
       .catch((error) => {
         // Out of stock error
         if (error.response.data.status === 409) {
@@ -235,7 +243,7 @@ export function clear(cart = '') {
         dispatch({ type: CART_CLEAR_REQUEST });
         const productIds = Object.keys(cart.products);
         await deleteProducts(productIds);
-        await fetch()(dispatch);
+        await fetch(DEFAULT_CALCULATE_SHIPPING)(dispatch);
       } else {
         await dispatch({ type: CART_CLEAR_REQUEST });
         const response = Api.delete('/sra_cart_content/', {});
@@ -259,13 +267,13 @@ export function change(id, data) {
 
     return Api.put(`/sra_cart_content/${id}/`, data)
       .then((response) => {
+        console.log('response: ', response);
         dispatch({
           type: CART_CHANGE_SUCCESS,
           payload: response.data,
         });
-        // Calculate cart
       })
-      .then(() => fetch()(dispatch))
+      .then(() => fetch(DEFAULT_CALCULATE_SHIPPING, data.coupons)(dispatch))
       .catch((error) => {
         dispatch({
           type: CART_CHANGE_FAIL,

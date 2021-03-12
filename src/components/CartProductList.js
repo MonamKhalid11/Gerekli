@@ -95,6 +95,7 @@ export const CartProductList = ({
   }
 
   const shippingId = cart.chosen_shipping[0];
+  const coupons = Object.keys(cart.coupons);
   const newProducts = Object.keys(cart.products).map((key) => {
     const result = { ...cart.products[key] };
     result.cartId = key;
@@ -172,8 +173,6 @@ export const CartProductList = ({
     );
   };
 
-  console.log('cart: ', cart);
-
   return (
     <View style={styles.container}>
       <FlatList
@@ -189,13 +188,13 @@ export const CartProductList = ({
           return (
             <>
               <CouponCodeSection
-                items={cart.coupons}
+                items={coupons}
                 onAddPress={(value) => {
                   cartActions.addCoupon(
                     value,
                     cart.vendor_id,
                     shippingId,
-                    cart.coupons,
+                    coupons,
                   );
                 }}
                 onRemovePress={(value) => {

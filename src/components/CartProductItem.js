@@ -4,6 +4,7 @@ import { View, Text, Image } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swipeout from 'react-native-swipeout';
 import { get } from 'lodash';
+import { connect } from 'react-redux';
 
 // Components
 import { QtyOption } from './QtyOption';
@@ -67,15 +68,23 @@ const styles = EStyleSheet.create({
  *
  * @return {JSX.Element}
  */
-const CartProductItem = ({ cartActions, item }) => {
+const CartProductItem = ({ cartActions, item, cart }) => {
   /**
    * Changes the quantity of product.
    *
    * @param {object} item - Product infromation.
    * @param {number} amount - Amount of product.
    */
-  const handleChangeAmountRequest = (item, amount) => {
-    const newItem = { ...item, amount };
+  const handleChangeAmountRequest = (item, amount, cartId) => {
+    console.log('cartId: ', cartId);
+    let coupons;
+    if (cart.carts.general) {
+      coupons = Object.keys(cart.carts.general.coupons);
+    } else {
+      coupons = Object.keys(cart.carts[cartId].coupons);
+    }
+
+    const newItem = { ...item, amount, coupons };
     cartActions.change(newItem.cartId, newItem);
   };
 
@@ -164,7 +173,7 @@ const CartProductItem = ({ cartActions, item }) => {
                   item.out_of_stock_actions === 'B'
                 ) {
                   cartActions.changeAmount(item.cartId, val, item.company_id);
-                  handleChangeAmountRequest(item, val);
+                  handleChangeAmountRequest(item, val, item.company_id);
                 }
               }}
             />
@@ -180,4 +189,6 @@ CartProductItem.propTypes = {
   item: PropTypes.shape({}),
 };
 
-export default CartProductItem;
+export default connect((state) => ({
+  cart: state.cart,
+}))(CartProductItem);

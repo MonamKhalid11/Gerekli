@@ -35,7 +35,7 @@ const initialState = {
 
 let newProducts = [];
 let newState = {};
-let newCarts = {}
+let newCarts = {};
 
 export default function (state = initialState, action) {
   switch (action.type) {
@@ -134,26 +134,20 @@ export default function (state = initialState, action) {
     case CART_RECALCULATE_SUCCESS:
       newCarts = JSON.parse(JSON.stringify(state.carts));
 
-      console.log('action.payload: ', action.payload)
-
       if (state.carts.general) {
         newCarts.general.products = action.payload.cart.products;
+        newCarts.general.total_formatted = action.payload.cart.total_formatted;
+        newCarts.general.coupons = action.payload.cart.coupons;
       } else {
-        // newProducts = JSON.parse(
-        //   JSON.stringify(state.carts[action.payload.id].products),
-        // );
-        // newProducts[action.payload.cid].amount = action.payload.amount;
-        // newCarts[action.payload.id].products = newProducts;
+        newProducts[action.payload.cid].products = action.payload.cart.products;
+        newCarts[action.payload.id].total_formatted =
+          action.payload.cart.total_formatted;
+        newCarts[action.payload.id].coupons = action.payload.cart.coupons;
       }
 
       return {
         ...state,
         carts: newCarts,
-        // total: action.payload.total,
-        // total_formatted: action.payload.total_formatted,
-        // subtotal: action.payload.total_formatted,
-        // subtotal_formatted: action.payload.subtotal_formatted,
-        // coupons: Object.keys(action.payload.coupons).map((k) => k),
       };
 
     case AUTH_LOGOUT:
@@ -183,11 +177,11 @@ export default function (state = initialState, action) {
     case CART_ADD_COUPON_CODE:
       newCarts = JSON.parse(JSON.stringify(state.carts));
 
-      if (state.carts.general) {
-        newCarts.general.coupons.push(action.payload.coupon);
-      } else {
-        newCarts[action.payload.cartId].coupons.push(action.payload.coupon);
-      }
+      // if (state.carts.general) {
+      //   newCarts.general.coupons.push(action.payload.coupon);
+      // } else {
+      //   newCarts[action.payload.cartId].coupons.push(action.payload.coupon);
+      // }
 
       return {
         ...state,
