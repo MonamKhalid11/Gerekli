@@ -25,6 +25,7 @@ import {
   CART_RECALCULATE_FAIL,
   CART_ADD_COUPON_CODE,
   CART_REMOVE_COUPON_CODE,
+  CART_ADD_COUPON_CODE_FAILED,
 } from '../constants';
 
 // links
@@ -94,7 +95,7 @@ export function fetch(calculateShipping = 'A') {
   };
 }
 
-export function recalculateTotal(ids, coupons = []) {
+export function recalculateTotal(ids, coupons = [], cartId) {
   const shippingIds = Object.values(ids);
 
   return (dispatch) => {
@@ -111,7 +112,7 @@ export function recalculateTotal(ids, coupons = []) {
       .then((response) => {
         dispatch({
           type: CART_RECALCULATE_SUCCESS,
-          payload: response.data,
+          payload: { cart: response.data, cartId },
         });
 
         return response.data;
@@ -309,12 +310,24 @@ export function changeAmount(cid, amount, id = '') {
   };
 }
 
-export function addCoupon(coupon) {
-  return (dispatch) => {
-    dispatch({
-      type: CART_ADD_COUPON_CODE,
-      payload: coupon,
-    });
+export function addCoupon(coupon, cartId = '', shippingId, oldAppliedCoupons) {
+  return async (dispatch) => {
+    const newAppliedCoupons = [...oldAppliedCoupons, coupon];
+    const response = await recalculateTotal(
+      shippingId,
+      newAppliedCoupons,
+    )(dispatch);
+
+    if (Object.keys(response.coupons).includes(coupon.toLowerCase())) {
+      dispatch({
+        type: CART_ADD_COUPON_CODE,
+        payload: { coupon, cartId },
+      });
+    } else {
+      dispatch({
+        type: CART_ADD_COUPON_CODE_FAILED,
+      });
+    }
   };
 }
 

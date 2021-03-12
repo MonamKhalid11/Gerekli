@@ -11,7 +11,7 @@ import { Navigation } from 'react-native-navigation';
 import CartProductitem from './CartProductItem';
 import CartFooter from './CartFooter';
 import EmptyCart from './EmptyCart';
-import CouponCodeBlock from './CouponCodeBlock';
+import CouponCodeSection from './CouponCodeSection';
 
 // Links
 import i18n from '../utils/i18n';
@@ -90,14 +90,16 @@ export const CartProductList = ({
   stepsActions,
   stateSteps,
 }) => {
-  let newProducts = [];
-  if (cart) {
-    newProducts = Object.keys(cart.products).map((key) => {
-      const result = { ...cart.products[key] };
-      result.cartId = key;
-      return result;
-    });
+  if (!cart) {
+    return <EmptyCart />;
   }
+
+  const shippingId = cart.chosen_shipping[0];
+  const newProducts = Object.keys(cart.products).map((key) => {
+    const result = { ...cart.products[key] };
+    result.cartId = key;
+    return result;
+  });
 
   /**
    * Moves to the next page.
@@ -170,6 +172,8 @@ export const CartProductList = ({
     );
   };
 
+  console.log('cart: ', cart);
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -184,7 +188,23 @@ export const CartProductList = ({
         ListFooterComponent={() => {
           return (
             <>
-              <CouponCodeBlock cart={cart} />
+              <CouponCodeSection
+                items={cart.coupons}
+                onAddPress={(value) => {
+                  cartActions.addCoupon(
+                    value,
+                    cart.vendor_id,
+                    shippingId,
+                    cart.coupons,
+                  );
+                }}
+                onRemovePress={(value) => {
+                  cartActions.removeCoupon(value);
+                  setTimeout(() => {
+                    cartActions.recalculateTotal(shippingId, cart.coupons);
+                  }, 400);
+                }}
+              />
               {renderOrderDetail(newProducts, cart)}
             </>
           );
