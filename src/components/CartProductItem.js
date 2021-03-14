@@ -75,16 +75,8 @@ const CartProductItem = ({ cartActions, item, cart }) => {
    * @param {object} item - Product infromation.
    * @param {number} amount - Amount of product.
    */
-  const handleChangeAmountRequest = (item, amount, cartId) => {
-    console.log('cartId: ', cartId);
-    let coupons;
-    if (cart.carts.general) {
-      coupons = Object.keys(cart.carts.general.coupons);
-    } else {
-      coupons = Object.keys(cart.carts[cartId].coupons);
-    }
-
-    const newItem = { ...item, amount, coupons };
+  const handleChangeAmountRequest = (item, amount) => {
+    const newItem = { ...item, amount, coupons: cart.coupons };
     cartActions.change(newItem.cartId, newItem);
   };
 
@@ -173,7 +165,7 @@ const CartProductItem = ({ cartActions, item, cart }) => {
                   item.out_of_stock_actions === 'B'
                 ) {
                   cartActions.changeAmount(item.cartId, val, item.company_id);
-                  handleChangeAmountRequest(item, val, item.company_id);
+                  handleChangeAmountRequest(item, val);
                 }
               }}
             />

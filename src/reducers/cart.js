@@ -27,15 +27,16 @@ const initialState = {
   ids: [],
   fetching: false,
   user_data: {},
-  coupons: [],
   vendorCarts: [],
   isSeparateCart: null,
+  coupons: {},
   carts: {},
 };
 
 let newProducts = [];
 let newState = {};
 let newCarts = {};
+let newCoupons = {};
 
 export default function (state = initialState, action) {
   switch (action.type) {
@@ -76,11 +77,19 @@ export default function (state = initialState, action) {
       };
 
     case CART_SUCCESS:
+      newCoupons = {};
+      console.log('newCoupons before: ', newCoupons);
+      Object.keys(action.payload.carts).forEach((cartId) => {
+        newCoupons[cartId] = action.payload.carts[cartId].coupons;
+      });
+
+      console.log('newCoupons after: ', newCoupons);
+
       return {
         ...state,
         carts: action.payload.carts,
         isSeparateCart: action.payload.isSeparateCart,
-        coupons: [],
+        coupons: newCoupons,
       };
 
     case CART_FAIL:
@@ -134,20 +143,20 @@ export default function (state = initialState, action) {
     case CART_RECALCULATE_SUCCESS:
       newCarts = JSON.parse(JSON.stringify(state.carts));
 
+      newCoupons = state.coupons;
+
       if (state.carts.general) {
-        newCarts.general.products = action.payload.cart.products;
-        newCarts.general.total_formatted = action.payload.cart.total_formatted;
-        newCarts.general.coupons = action.payload.cart.coupons;
+        newCarts.general = action.payload.cart;
+        newCoupons.general = action.payload.cart.coupons;
       } else {
-        newProducts[action.payload.cid].products = action.payload.cart.products;
-        newCarts[action.payload.id].total_formatted =
-          action.payload.cart.total_formatted;
-        newCarts[action.payload.id].coupons = action.payload.cart.coupons;
+        newCoupons[action.payload.cartId] = action.payload.cart.coupons;
+        newCarts[action.payload.cartId] = action.payload.cart;
       }
 
       return {
         ...state,
         carts: newCarts,
+        coupons: newCoupons,
       };
 
     case AUTH_LOGOUT:
@@ -172,20 +181,6 @@ export default function (state = initialState, action) {
         ...state,
         carts: newState,
         fetching: false,
-      };
-
-    case CART_ADD_COUPON_CODE:
-      newCarts = JSON.parse(JSON.stringify(state.carts));
-
-      // if (state.carts.general) {
-      //   newCarts.general.coupons.push(action.payload.coupon);
-      // } else {
-      //   newCarts[action.payload.cartId].coupons.push(action.payload.coupon);
-      // }
-
-      return {
-        ...state,
-        carts: newCarts,
       };
 
     case CART_REMOVE_COUPON_CODE:
