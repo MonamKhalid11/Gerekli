@@ -41,8 +41,25 @@ const DEFAULT_CALCULATE_SHIPPING = 'A';
 //   2: []
 // }
 
+// Gets all applied coupons from all carts.
+const getAllAppliedCoupons = (coupons) => {
+  return Object.keys(coupons).reduce((accumulator, cartId) => {
+    return accumulator.concat(Object.keys(coupons[cartId]));
+  }, []);
+};
+
 export function fetch(calculateShipping = 'A', coupons) {
-  console.log('coupons: ', coupons);
+  let appliedCoupons = [];
+  if (coupons) {
+    const allAppliedCoupons = getAllAppliedCoupons(coupons);
+
+    console.log('allCoupons: ', allAppliedCoupons);
+
+    appliedCoupons = coupons.general
+      ? Object.keys(coupons.general)
+      : allAppliedCoupons;
+  }
+
   return async (dispatch) => {
     try {
       dispatch({
@@ -51,10 +68,11 @@ export function fetch(calculateShipping = 'A', coupons) {
       const res = await Api.get('/sra_cart_content', {
         params: {
           calculate_shipping: calculateShipping,
-          coupon_codes: coupons,
+          coupon_codes: appliedCoupons,
         },
       });
       const carts = {};
+      console.log('res: ', res);
       if (!res.data.amount) {
         dispatch({
           type: CART_CLEAR_SUCCESS,
@@ -70,11 +88,14 @@ export function fetch(calculateShipping = 'A', coupons) {
         dispatch({
           type: CART_LOADING,
         });
-        console.log('res: ', res)
         const result = await Promise.all(
           uniqueVendorIds.map(async (el) => {
+            console.log('Object.keys(coupons[el]): ', Object.keys(coupons[el]));
             const res = await Api.get(`/sra_cart_content/${el}`, {
-              params: { calculate_shipping: calculateShipping },
+              params: {
+                calculate_shipping: calculateShipping,
+                coupon_codes: Object.keys(coupons[el]),
+              },
             });
             return getPaymentId(res);
           }),
@@ -108,14 +129,16 @@ export function fetch(calculateShipping = 'A', coupons) {
   };
 }
 
-export function recalculateTotal(ids, coupons = [], cartId) {
+export function recalculateTotal(ids, coupons = [], cartId = '') {
   const shippingIds = Object.values(ids);
+
+  console.log('recalculateTotal cartId: ', cartId, coupons);
 
   return (dispatch) => {
     dispatch({
       type: CART_RECALCULATE_REQUEST,
     });
-    return Api.get('/sra_cart_content/', {
+    return Api.get(`/sra_cart_content/${cartId}`, {
       params: {
         shipping_ids: shippingIds,
         calculate_shipping: 'E',
@@ -123,7 +146,8 @@ export function recalculateTotal(ids, coupons = [], cartId) {
       },
     })
       .then((response) => {
-        console.log('recalc total: ', response)
+        getPaymentId(response);
+        console.log('recalc total: ', response);
         dispatch({
           type: CART_RECALCULATE_SUCCESS,
           payload: { cart: response.data, cartId },
@@ -182,10 +206,25 @@ export function getUpdatedDetailsForShippingOption(ids) {
       .catch((error) => error);
 }
 
-export function add(data, notify = true) {
+export function add(data, notify = true, coupons) {
+  console.log('add data: ', data, coupons);
+  let appliedCoupons = [];
+  if (coupons) {
+    const allAppliedCoupons = getAllAppliedCoupons(coupons);
+
+    console.log('allCoupons: ', allAppliedCoupons);
+
+    appliedCoupons = coupons.general
+      ? Object.keys(coupons.general)
+      : allAppliedCoupons;
+  }
+
   return (dispatch) => {
     dispatch({ type: ADD_TO_CART_REQUEST });
-    return Api.post('/sra_cart_content/', data)
+    return Api.post('/sra_cart_content/', {
+      ...data,
+      params: { coupon_codes: appliedCoupons },
+    })
       .then(() => {
         dispatch({
           type: ADD_TO_CART_SUCCESS,
@@ -201,7 +240,7 @@ export function add(data, notify = true) {
           });
         }
       })
-      .then(() => fetch(DEFAULT_CALCULATE_SHIPPING)(dispatch))
+      .then(() => fetch(DEFAULT_CALCULATE_SHIPPING, coupons)(dispatch))
       .catch((error) => {
         // Out of stock error
         if (error.response.data.status === 409) {
@@ -325,7 +364,7 @@ export function changeAmount(cid, amount, id = '') {
 }
 
 export function addCoupon(coupon, cartId = '', shippingId, oldAppliedCoupons) {
-  console.log('coupn: ', coupon)
+  console.log('coupn: ', coupon);
   return async (dispatch) => {
     const newAppliedCoupons = [...oldAppliedCoupons, coupon];
     const response = await recalculateTotal(
@@ -334,7 +373,7 @@ export function addCoupon(coupon, cartId = '', shippingId, oldAppliedCoupons) {
       cartId,
     )(dispatch);
 
-    console.log('response: ', response)
+    console.log('response: ', response);
 
     if (Object.keys(response.coupons).includes(coupon.toLowerCase())) {
       dispatch({
@@ -343,6 +382,16 @@ export function addCoupon(coupon, cartId = '', shippingId, oldAppliedCoupons) {
     } else {
       dispatch({
         type: CART_ADD_COUPON_CODE_FAILED,
+      });
+      dispatch({
+        type: NOTIFICATION_SHOW,
+        payload: {
+          type: 'warning',
+          title: i18n.t('Notice'),
+          text: i18n.t(
+            'The entered code cannot be applied, because it does not meet the requirements.',
+          ),
+        },
       });
     }
   };

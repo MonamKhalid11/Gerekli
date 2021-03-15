@@ -108,6 +108,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         carts: {},
+        coupons: {},
         fetching: false,
       };
 

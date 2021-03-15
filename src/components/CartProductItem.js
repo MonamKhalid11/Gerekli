@@ -76,6 +76,7 @@ const CartProductItem = ({ cartActions, item, cart }) => {
    * @param {number} amount - Amount of product.
    */
   const handleChangeAmountRequest = (item, amount) => {
+    console.log('cart.coupons: ', cart.coupons)
     const newItem = { ...item, amount, coupons: cart.coupons };
     cartActions.change(newItem.cartId, newItem);
   };

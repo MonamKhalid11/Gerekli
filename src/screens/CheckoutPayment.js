@@ -145,6 +145,7 @@ export class CheckoutPayment extends Component {
           SUPPORTED_PAYMENT_TPLS.includes(p.template) ||
           SUPPORTED_PAYMENT_SCRIPTS.includes(p.script),
       );
+      console.log('oayments methods: ', items)
     // FIXME: Default selected payment method.
     const selectedItem = items[0];
 
@@ -192,7 +193,7 @@ export class CheckoutPayment extends Component {
 
     const orderInfo = {
       products: {},
-      coupon_codes: cart.coupons,
+      coupon_codes: Object.keys(cart.coupons),
       shipping_id,
       payment_id: this.state.selectedItem.payment_id,
       user_data: cart.user_data,

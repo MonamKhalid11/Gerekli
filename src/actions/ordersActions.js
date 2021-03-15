@@ -12,10 +12,12 @@ import Api from '../services/api';
 import i18n from '../utils/i18n';
 
 export function create(data) {
+  console.log('ordersActions data: ', data)
   return (dispatch) => {
     dispatch({ type: ORDER_CREATE_REQUEST });
     return Api.post('/sra_orders/', data)
       .then((response) => {
+        console.log('ordersActions create: ', response)
         dispatch({
           type: ORDER_CREATE_SUCCESS,
           payload: response.data,
