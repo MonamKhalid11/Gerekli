@@ -76,7 +76,6 @@ const CartProductItem = ({ cartActions, item, cart }) => {
    * @param {number} amount - Amount of product.
    */
   const handleChangeAmountRequest = (item, amount) => {
-    console.log('cart.coupons: ', cart.coupons)
     const newItem = { ...item, amount, coupons: cart.coupons };
     cartActions.change(newItem.cartId, newItem);
   };
@@ -87,7 +86,7 @@ const CartProductItem = ({ cartActions, item, cart }) => {
    * @param {object} product - Product infromation.
    */
   const handleRemoveProduct = (product) => {
-    cartActions.remove(product.cartId);
+    cartActions.remove(product.cartId, cart.coupons);
   };
 
   /**
@@ -155,21 +154,23 @@ const CartProductItem = ({ cartActions, item, cart }) => {
             </Text>
           </View>
           <View style={styles.qtyContainer}>
-            <QtyOption
-              max={max}
-              min={min}
-              initialValue={initialValue}
-              step={step}
-              onChange={(val) => {
-                if (
-                  val <= parseInt(item.in_stock, 10) ||
-                  item.out_of_stock_actions === 'B'
-                ) {
-                  cartActions.changeAmount(item.cartId, val, item.company_id);
-                  handleChangeAmountRequest(item, val);
-                }
-              }}
-            />
+            {!item.exclude_from_calculate && (
+              <QtyOption
+                max={max}
+                min={min}
+                initialValue={initialValue}
+                step={step}
+                onChange={(val) => {
+                  if (
+                    val <= parseInt(item.in_stock, 10) ||
+                    item.out_of_stock_actions === 'B'
+                  ) {
+                    cartActions.changeAmount(item.cartId, val, item.company_id);
+                    handleChangeAmountRequest(item, val);
+                  }
+                }}
+              />
+            )}
           </View>
         </View>
       </Swipeout>

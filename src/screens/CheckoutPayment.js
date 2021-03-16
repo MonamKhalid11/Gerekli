@@ -145,7 +145,6 @@ export class CheckoutPayment extends Component {
           SUPPORTED_PAYMENT_TPLS.includes(p.template) ||
           SUPPORTED_PAYMENT_SCRIPTS.includes(p.script),
       );
-      console.log('oayments methods: ', items)
     // FIXME: Default selected payment method.
     const selectedItem = items[0];
 
@@ -224,9 +223,6 @@ export class CheckoutPayment extends Component {
         cvv2: values.ccv,
       };
     }
-
-    console.log('storeCart: ', storeCart)
-    console.log('cart: ', cart)
 
     ordersActions
       .create(orderInfo)

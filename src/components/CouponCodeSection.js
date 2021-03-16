@@ -141,7 +141,6 @@ class CouponCodeSection extends Component {
     const { items } = this.props;
     const { value } = this.state;
 
-    console.log('CouponCodeSection: ', items)
     return (
       <View style={styles.wrapper}>
         <FormBlock title={i18n.t('Coupon code')}>

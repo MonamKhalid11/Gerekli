@@ -41,12 +41,9 @@ const getAllAppliedCoupons = (coupons) => {
 };
 
 export function fetch(calculateShipping = 'A', coupons) {
-  console.log('fetch coupons: ', coupons)
   let appliedCoupons = [];
   if (coupons) {
     const allAppliedCoupons = getAllAppliedCoupons(coupons);
-
-    console.log('allCoupons: ', allAppliedCoupons);
 
     appliedCoupons = coupons.general
       ? Object.keys(coupons.general)
@@ -65,7 +62,6 @@ export function fetch(calculateShipping = 'A', coupons) {
         },
       });
       const carts = {};
-      console.log('res: ', res);
       if (!res.data.amount) {
         dispatch({
           type: CART_CLEAR_SUCCESS,
@@ -86,7 +82,6 @@ export function fetch(calculateShipping = 'A', coupons) {
             const currentCartCoupons = coupons[el]
               ? Object.keys(coupons[el])
               : [];
-            console.log('currentCartCoupons: ', currentCartCoupons);
 
             const res = await Api.get(`/sra_cart_content/${el}`, {
               params: {
@@ -97,7 +92,6 @@ export function fetch(calculateShipping = 'A', coupons) {
             return getPaymentId(res);
           }),
         );
-        console.log('result promis all: ', result);
         for (let i = 0; i < result.length; i += 1) {
           if (result[i].data.vendor_id) {
             carts[result[i].data.vendor_id] = result[i].data;
@@ -130,7 +124,14 @@ export function fetch(calculateShipping = 'A', coupons) {
 export function recalculateTotal(ids, coupons = [], cartId = '') {
   const shippingIds = Object.values(ids);
 
-  console.log('recalculateTotal cartId: ', cartId, coupons);
+  let appliedCoupons = [];
+  if (coupons) {
+    const allAppliedCoupons = getAllAppliedCoupons(coupons);
+
+    appliedCoupons = coupons.general
+      ? Object.keys(coupons.general)
+      : allAppliedCoupons;
+  }
 
   return (dispatch) => {
     dispatch({
@@ -140,12 +141,11 @@ export function recalculateTotal(ids, coupons = [], cartId = '') {
       params: {
         shipping_ids: shippingIds,
         calculate_shipping: 'E',
-        coupon_codes: coupons,
+        coupon_codes: appliedCoupons,
       },
     })
       .then((response) => {
         getPaymentId(response);
-        console.log('recalc total: ', response);
         dispatch({
           type: CART_RECALCULATE_SUCCESS,
           payload: { cart: response.data, cartId },
@@ -205,12 +205,9 @@ export function getUpdatedDetailsForShippingOption(ids) {
 }
 
 export function add(data, notify = true, coupons) {
-  console.log('add data: ', data, coupons);
   let appliedCoupons = [];
   if (coupons) {
     const allAppliedCoupons = getAllAppliedCoupons(coupons);
-
-    console.log('allCoupons: ', allAppliedCoupons);
 
     appliedCoupons = coupons.general
       ? Object.keys(coupons.general)
@@ -263,7 +260,6 @@ export function add(data, notify = true, coupons) {
 }
 
 async function deleteProduct(resolve, ids, index, appliedCoupons) {
-  console.log('delete Product coupons: ', appliedCoupons, ids)
   const idNumber = Number(ids[index]);
   await Api.delete(`/sra_cart_content/${idNumber}/`, {
     params: { coupon_codes: appliedCoupons },
@@ -283,12 +279,9 @@ async function deleteProducts(ids, appliedCoupons) {
 }
 
 export function clear(cart = '', coupons = []) {
-  console.log('clear coupons: ', coupons)
   let appliedCoupons = [];
   if (coupons) {
     const allAppliedCoupons = getAllAppliedCoupons(coupons);
-
-    console.log('allCoupons: ', allAppliedCoupons);
 
     appliedCoupons = coupons.general
       ? Object.keys(coupons.general)
@@ -298,7 +291,6 @@ export function clear(cart = '', coupons = []) {
   return async (dispatch) => {
     try {
       if (cart.vendor_id) {
-        console.log('im here: ');
         dispatch({ type: CART_CLEAR_REQUEST });
         const productIds = Object.keys(cart.products);
         await deleteProducts(productIds, appliedCoupons);
@@ -328,7 +320,6 @@ export function change(id, data) {
 
     return Api.put(`/sra_cart_content/${id}/`, data)
       .then((response) => {
-        console.log('response: ', response);
         dispatch({
           type: CART_CHANGE_SUCCESS,
           payload: response.data,
@@ -344,17 +335,28 @@ export function change(id, data) {
   };
 }
 
-export function remove(id) {
+export function remove(id, coupons) {
+  let appliedCoupons = [];
+  if (coupons) {
+    const allAppliedCoupons = getAllAppliedCoupons(coupons);
+
+    appliedCoupons = coupons.general
+      ? Object.keys(coupons.general)
+      : allAppliedCoupons;
+  }
+
   return (dispatch) => {
     dispatch({ type: CART_REMOVE_REQUEST });
-    return Api.delete(`/sra_cart_content/${id}/`, {})
+    return Api.delete(`/sra_cart_content/${id}/`, {
+      params: { coupon_codes: appliedCoupons },
+    })
       .then((response) => {
         dispatch({
           type: CART_REMOVE_SUCCESS,
           payload: response.data,
         });
         // Calculate cart
-        setTimeout(() => fetch(false)(dispatch), 50);
+        setTimeout(() => fetch(false, coupons)(dispatch), 50);
       })
       .catch((error) => {
         dispatch({
@@ -380,16 +382,17 @@ export function changeAmount(cid, amount, id = '') {
 }
 
 export function addCoupon(coupon, cartId = '', shippingId, oldAppliedCoupons) {
-  console.log('coupn: ', coupon);
+  if (oldAppliedCoupons.general) {
+    oldAppliedCoupons.general[coupon] = true;
+  } else {
+    oldAppliedCoupons[cartId][coupon] = true;
+  }
   return async (dispatch) => {
-    const newAppliedCoupons = [...oldAppliedCoupons, coupon];
     const response = await recalculateTotal(
       shippingId,
-      newAppliedCoupons,
+      oldAppliedCoupons,
       cartId,
     )(dispatch);
-
-    console.log('response: ', response);
 
     if (Object.keys(response.coupons).includes(coupon.toLowerCase())) {
       dispatch({
@@ -413,11 +416,11 @@ export function addCoupon(coupon, cartId = '', shippingId, oldAppliedCoupons) {
   };
 }
 
-export function removeCoupon(coupon) {
+export function removeCoupon(newCoupons) {
   return (dispatch) => {
     dispatch({
       type: CART_REMOVE_COUPON_CODE,
-      payload: coupon,
+      payload: { newCoupons },
     });
   };
 }

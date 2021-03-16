@@ -126,8 +126,6 @@ export class CheckoutComplete extends Component {
       },
     });
 
-    console.log('orderId: ', orderId)
-
     Api.get(`/sra_orders/${orderId}`)
       .then((response) => {
         const params = {
@@ -138,8 +136,6 @@ export class CheckoutComplete extends Component {
         Api.get('/sra_profile', { params }).then(({ data }) => {
           const { fields } = data;
           delete fields.E;
-
-          console.log('CheckoutComplete response : ', response)
 
           this.setState({
             fetching: false,

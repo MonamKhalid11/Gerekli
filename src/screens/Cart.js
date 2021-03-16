@@ -5,6 +5,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { View, Alert } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { iconsMap } from '../utils/navIcons';
+import i18n from '../utils/i18n';
 
 // Import actions.
 import * as cartActions from '../actions/cartActions';
@@ -13,11 +15,6 @@ import * as cartActions from '../actions/cartActions';
 import Spinner from '../components/Spinner';
 import VendorsCartsList from '../components/VendorsCartsList';
 import CartProductList from '../components/CartProductList';
-
-// theme
-import i18n from '../utils/i18n';
-
-import { iconsMap } from '../utils/navIcons';
 
 // Styles
 const styles = EStyleSheet.create({

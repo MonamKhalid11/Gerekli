@@ -12,7 +12,6 @@ import {
   CART_CLEAR_SUCCESS,
   CART_CLEAR_FAIL,
   CART_RECALCULATE_SUCCESS,
-  CART_ADD_COUPON_CODE,
   CART_REMOVE_COUPON_CODE,
   CHANGE_AMOUNT,
   AUTH_LOGOUT,
@@ -78,12 +77,9 @@ export default function (state = initialState, action) {
 
     case CART_SUCCESS:
       newCoupons = {};
-      console.log('newCoupons before: ', newCoupons);
       Object.keys(action.payload.carts).forEach((cartId) => {
         newCoupons[cartId] = action.payload.carts[cartId].coupons;
       });
-
-      console.log('newCoupons after: ', newCoupons);
 
       return {
         ...state,
@@ -187,7 +183,7 @@ export default function (state = initialState, action) {
     case CART_REMOVE_COUPON_CODE:
       return {
         ...state,
-        coupons: [...state.coupons].filter((item) => item !== action.payload),
+        coupons: { ...action.payload.newCoupons },
       };
 
     default:

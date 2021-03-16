@@ -6,6 +6,7 @@ import { filterObject } from '../utils/index';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Navigation } from 'react-native-navigation';
+import { cloneDeep } from 'lodash';
 
 // Components
 import CartProductitem from './CartProductItem';
@@ -37,6 +38,11 @@ const styles = EStyleSheet.create({
     marginTop: 4,
     color: '#979797',
   },
+  totalDiscountText: {
+    textAlign: 'right',
+    marginTop: 4,
+    color: '$dangerColor',
+  },
 });
 
 /**
@@ -49,11 +55,19 @@ const renderOrderDetail = (products, cart) => {
     return null;
   }
 
+  const discount = !!get(cart, 'subtotal_discount', '');
+  const formattedDiscount = get(cart, 'subtotal_discount_formatted.price', '');
+
   return (
     <View style={styles.totalWrapper}>
       <Text style={styles.totalText}>
         {`${i18n.t('Subtotal')}: ${get(cart, 'subtotal_formatted.price', '')}`}
       </Text>
+      {discount && (
+        <Text style={styles.totalDiscountText}>
+          {`${i18n.t('Order discount')}: -${formattedDiscount}`}
+        </Text>
+      )}
       <Text style={styles.totalText}>
         {`${i18n.t('Shipping')}: ${get(
           cart,
@@ -81,6 +95,7 @@ const renderOrderDetail = (products, cart) => {
  * @return {JSX.Element}
  */
 export const CartProductList = ({
+  storeCart,
   cart,
   auth,
   componentId,
@@ -194,14 +209,33 @@ export const CartProductList = ({
                     value,
                     cart.vendor_id,
                     shippingId,
-                    coupons,
+                    storeCart.coupons,
                   );
                 }}
                 onRemovePress={(value) => {
-                  cartActions.removeCoupon(value);
+                  let newCoupons = {};
+                  if (storeCart.coupons.general) {
+                    const {
+                      [value]: _,
+                      ...filteredCoupons
+                    } = storeCart.coupons.general;
+                    newCoupons.general = cloneDeep(filteredCoupons);
+                  } else {
+                    const {
+                      [value]: _,
+                      ...filteredCoupons
+                    } = storeCart.coupons[cart.vendor_id];
+                    newCoupons[cart.vendor_id] = cloneDeep(filteredCoupons);
+                  }
+
+                  cartActions.removeCoupon(newCoupons);
                   setTimeout(() => {
-                    cartActions.recalculateTotal(shippingId, cart.coupons);
-                  }, 400);
+                    cartActions.recalculateTotal(
+                      shippingId,
+                      newCoupons,
+                      cart.vendor_id,
+                    );
+                  }, 1400);
                 }}
               />
               {renderOrderDetail(newProducts, cart)}
@@ -217,6 +251,7 @@ export const CartProductList = ({
 export default connect(
   (state) => ({
     stateSteps: state.steps,
+    storeCart: state.cart,
   }),
   (dispatch) => ({
     stepsActions: bindActionCreators(stepsActions, dispatch),
