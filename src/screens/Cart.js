@@ -79,7 +79,8 @@ export class Cart extends Component {
    * Gets cart data.
    */
   componentDidMount() {
-    this.props.cartActions.fetch();
+    const { cart } = this.props;
+    this.props.cartActions.fetch(undefined, cart.coupons);
   }
 
   /**

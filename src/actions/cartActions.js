@@ -33,14 +33,6 @@ import i18n from '../utils/i18n';
 import Api from '../services/api';
 import { getPaymentId } from '../utils/index';
 
-const DEFAULT_CALCULATE_SHIPPING = 'A';
-
-// coupons = {
-//   general: [],
-//   1: [],
-//   2: []
-// }
-
 // Gets all applied coupons from all carts.
 const getAllAppliedCoupons = (coupons) => {
   return Object.keys(coupons).reduce((accumulator, cartId) => {
@@ -49,6 +41,7 @@ const getAllAppliedCoupons = (coupons) => {
 };
 
 export function fetch(calculateShipping = 'A', coupons) {
+  console.log('fetch coupons: ', coupons)
   let appliedCoupons = [];
   if (coupons) {
     const allAppliedCoupons = getAllAppliedCoupons(coupons);
@@ -90,16 +83,21 @@ export function fetch(calculateShipping = 'A', coupons) {
         });
         const result = await Promise.all(
           uniqueVendorIds.map(async (el) => {
-            console.log('Object.keys(coupons[el]): ', Object.keys(coupons[el]));
+            const currentCartCoupons = coupons[el]
+              ? Object.keys(coupons[el])
+              : [];
+            console.log('currentCartCoupons: ', currentCartCoupons);
+
             const res = await Api.get(`/sra_cart_content/${el}`, {
               params: {
                 calculate_shipping: calculateShipping,
-                coupon_codes: Object.keys(coupons[el]),
+                coupon_codes: currentCartCoupons,
               },
             });
             return getPaymentId(res);
           }),
         );
+        console.log('result promis all: ', result);
         for (let i = 0; i < result.length; i += 1) {
           if (result[i].data.vendor_id) {
             carts[result[i].data.vendor_id] = result[i].data;
@@ -176,7 +174,7 @@ export function saveUserData(data) {
           type: CART_CONTENT_SAVE_SUCCESS,
           payload: data,
         });
-        fetch(DEFAULT_CALCULATE_SHIPPING)(dispatch);
+        fetch()(dispatch);
       })
       .catch((error) => {
         dispatch({
@@ -240,7 +238,7 @@ export function add(data, notify = true, coupons) {
           });
         }
       })
-      .then(() => fetch(DEFAULT_CALCULATE_SHIPPING, coupons)(dispatch))
+      .then(() => fetch(undefined, coupons)(dispatch))
       .catch((error) => {
         // Out of stock error
         if (error.response.data.status === 409) {
@@ -264,9 +262,12 @@ export function add(data, notify = true, coupons) {
   };
 }
 
-async function deleteProduct(resolve, ids, index) {
+async function deleteProduct(resolve, ids, index, appliedCoupons) {
+  console.log('delete Product coupons: ', appliedCoupons, ids)
   const idNumber = Number(ids[index]);
-  await Api.delete(`/sra_cart_content/${idNumber}/`, {});
+  await Api.delete(`/sra_cart_content/${idNumber}/`, {
+    params: { coupon_codes: appliedCoupons },
+  });
   const newIndex = index + 1;
   if (newIndex === ids.length) {
     resolve();
@@ -275,23 +276,38 @@ async function deleteProduct(resolve, ids, index) {
   }
 }
 
-async function deleteProducts(ids) {
+async function deleteProducts(ids, appliedCoupons) {
   return new Promise((resolve) => {
-    deleteProduct(resolve, ids, 0);
+    deleteProduct(resolve, ids, 0, appliedCoupons);
   });
 }
 
-export function clear(cart = '') {
+export function clear(cart = '', coupons = []) {
+  console.log('clear coupons: ', coupons)
+  let appliedCoupons = [];
+  if (coupons) {
+    const allAppliedCoupons = getAllAppliedCoupons(coupons);
+
+    console.log('allCoupons: ', allAppliedCoupons);
+
+    appliedCoupons = coupons.general
+      ? Object.keys(coupons.general)
+      : allAppliedCoupons;
+  }
+
   return async (dispatch) => {
     try {
       if (cart.vendor_id) {
+        console.log('im here: ');
         dispatch({ type: CART_CLEAR_REQUEST });
         const productIds = Object.keys(cart.products);
-        await deleteProducts(productIds);
-        await fetch(DEFAULT_CALCULATE_SHIPPING)(dispatch);
+        await deleteProducts(productIds, appliedCoupons);
+        await fetch(undefined, coupons)(dispatch);
       } else {
         await dispatch({ type: CART_CLEAR_REQUEST });
-        const response = Api.delete('/sra_cart_content/', {});
+        const response = Api.delete('/sra_cart_content/', {
+          params: { coupon_codes: appliedCoupons },
+        });
         dispatch({
           type: CART_CLEAR_SUCCESS,
           payload: response.data,
@@ -318,7 +334,7 @@ export function change(id, data) {
           payload: response.data,
         });
       })
-      .then(() => fetch(DEFAULT_CALCULATE_SHIPPING, data.coupons)(dispatch))
+      .then(() => fetch(undefined, data.coupons)(dispatch))
       .catch((error) => {
         dispatch({
           type: CART_CHANGE_FAIL,

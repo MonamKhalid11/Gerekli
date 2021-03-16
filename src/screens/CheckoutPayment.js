@@ -175,7 +175,7 @@ export class CheckoutPayment extends Component {
    * Redirects to CheckoutComplete.
    */
   placeOrderAndComplete() {
-    const { cart, ordersActions, cartActions } = this.props;
+    const { cart, ordersActions, cartActions, storeCart } = this.props;
     let { shipping_id } = this.props;
     const values = this.paymentFormRef.getValue();
 
@@ -225,6 +225,9 @@ export class CheckoutPayment extends Component {
       };
     }
 
+    console.log('storeCart: ', storeCart)
+    console.log('cart: ', cart)
+
     ordersActions
       .create(orderInfo)
       .then(({ data }) => {
@@ -234,7 +237,7 @@ export class CheckoutPayment extends Component {
         if (!data) {
           return;
         }
-        cartActions.clear(cart);
+        cartActions.clear(cart, storeCart.coupons);
         nav.pushCheckoutComplete(this.props.componentId, {
           orderId: data.order_id,
         });
@@ -496,6 +499,7 @@ export class CheckoutPayment extends Component {
 export default connect(
   (state) => ({
     auth: state.auth,
+    storeCart: state.cart,
   }),
   (dispatch) => ({
     ordersActions: bindActionCreators(ordersActions, dispatch),

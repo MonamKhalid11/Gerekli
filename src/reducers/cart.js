@@ -149,7 +149,7 @@ export default function (state = initialState, action) {
       if (state.carts.general) {
         newCarts.general = action.payload.cart;
         newCoupons.general = action.payload.cart.coupons;
-      } else {
+      } else if (action.payload.cartId) {
         newCoupons[action.payload.cartId] = action.payload.cart.coupons;
         newCarts[action.payload.cartId] = action.payload.cart;
       }
