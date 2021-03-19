@@ -76,6 +76,7 @@ export default function (state = initialState, action) {
       };
 
     case CART_SUCCESS:
+      console.log('CART_SUCCESS: ', action)
       newCoupons = {};
       Object.keys(action.payload.carts).forEach((cartId) => {
         newCoupons[cartId] = action.payload.carts[cartId].coupons;

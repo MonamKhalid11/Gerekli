@@ -207,7 +207,7 @@ export class CheckoutShipping extends Component {
    * Calculates the cost including delivery.
    */
   handleLoadInitial() {
-    const { cartActions } = this.props;
+    const { cartActions, stateCart } = this.props;
     const { items } = this.state;
     const shippingsIds = {};
     const shippings = [];
@@ -226,11 +226,15 @@ export class CheckoutShipping extends Component {
       }
     });
 
-    cartActions.recalculateTotal(shippingsIds).then((data) => {
-      this.setState({
-        total: data.total_formatted.price,
+    console.log('stateCart.coupons handleLoadInitail: ', stateCart.coupons)
+
+    cartActions
+      .recalculateTotal(shippingsIds, stateCart.coupons)
+      .then((data) => {
+        this.setState({
+          total: data.total_formatted.price,
+        });
       });
-    });
   }
 
   /**
@@ -266,7 +270,7 @@ export class CheckoutShipping extends Component {
    * @param {number} itemIndex - Index of the selected shipping method.
    */
   handleSelect(shipping, shippingIndex, itemIndex) {
-    const { cartActions } = this.props;
+    const { cartActions, stateCart } = this.props;
     if (shipping.isSelected) {
       return;
     }
@@ -281,11 +285,15 @@ export class CheckoutShipping extends Component {
     const selectedIds = {};
     selectedIds[`${itemIndex}`] = `${shipping.shipping_id}`;
 
-    cartActions.recalculateTotal(selectedIds).then((data) => {
-      this.setState({
-        total: data.total_formatted.price,
+    console.log('stateCart.coupons handleSelect: ', stateCart.coupons)
+
+    cartActions
+      .recalculateTotal(selectedIds, stateCart.coupons)
+      .then((data) => {
+        this.setState({
+          total: data.total_formatted.price,
+        });
       });
-    });
 
     this.setState({
       items: newItems,

@@ -164,8 +164,10 @@ export class Cart extends Component {
    * Refresh cart data.
    */
   handleRefresh = () => {
-    const { cartActions } = this.props;
-    this.setState({ refreshing: true }, () => cartActions.fetch());
+    const { cartActions, cart } = this.props;
+    this.setState({ refreshing: true }, () =>
+      cartActions.fetch(undefined, cart.coupons),
+    );
   };
 
   /**

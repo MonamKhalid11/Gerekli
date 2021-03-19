@@ -111,12 +111,18 @@ export class CheckoutProfile extends Component {
       stateSteps,
       stepsActions,
       currentStep,
+      stateCart,
     } = this.props;
 
-    cartActions.saveUserData({
-      ...cart.user_data,
-      ...values,
-    });
+    console.log('checkoutProfile: ', stateCart)
+
+    cartActions.saveUserData(
+      {
+        ...cart.user_data,
+        ...values,
+      },
+      stateCart.coupons,
+    );
 
     // Define next step
     const nextStep =
@@ -188,6 +194,7 @@ export class CheckoutProfile extends Component {
 
 export default connect(
   (state) => ({
+    stateCart: state.cart,
     auth: state.auth,
     stateSteps: state.steps,
     state,

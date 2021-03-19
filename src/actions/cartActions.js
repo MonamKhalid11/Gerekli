@@ -162,19 +162,31 @@ export function recalculateTotal(ids, coupons = [], cartId = '') {
   };
 }
 
-export function saveUserData(data) {
+export function saveUserData(data, coupons) {
+  let appliedCoupons = [];
+  if (coupons) {
+    const allAppliedCoupons = getAllAppliedCoupons(coupons);
+
+    appliedCoupons = coupons.general
+      ? Object.keys(coupons.general)
+      : allAppliedCoupons;
+  }
+
   return (dispatch) => {
     dispatch({
       type: CART_CONTENT_SAVE_REQUEST,
       payload: data,
     });
-    return Api.put('/sra_cart_content/', { user_data: data })
+    return Api.put('/sra_cart_content/', {
+      user_data: data,
+      params: { coupon_codes: appliedCoupons },
+    })
       .then(() => {
         dispatch({
           type: CART_CONTENT_SAVE_SUCCESS,
           payload: data,
         });
-        fetch()(dispatch);
+        fetch(undefined, coupons)(dispatch);
       })
       .catch((error) => {
         dispatch({
