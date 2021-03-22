@@ -16,6 +16,9 @@ import {
 import format from 'date-fns/format';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import ActionSheet from 'react-native-actionsheet';
+
+import { AppEventsLogger } from "react-native-fbsdk";
+
 import get from 'lodash/get';
 import {
   stripTags,
@@ -532,6 +535,14 @@ export class ProductDetail extends Component {
         product_options: productOptions,
       },
     };
+    const params = {
+      'Content ID': product.product_id,
+      'Content Type': productOptions,
+      'Currency': 'TMT',
+      'ValueToSum': amount
+    };
+    console.log("shwoing values here are", params)
+    AppEventsLogger.logEvent("Add to Cart", params)
 
     return cartActions.add({ products }, showNotification);
   };

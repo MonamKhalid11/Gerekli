@@ -164,6 +164,8 @@ export class Login extends Component {
     }
 
     //Testhere
+    values.email = config.demoUsername;
+    values.password = config.demoPassword;
 
     const options = {
       disableOrder: true,

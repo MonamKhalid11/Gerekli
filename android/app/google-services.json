@@ -1,39 +1,36 @@
 {
   "project_info": {
-    "project_number": "988490020687",
-    "firebase_url": "https://project--2420326948483273147.firebaseio.com",
-    "project_id": "project--2420326948483273147",
-    "storage_bucket": "project--2420326948483273147.appspot.com"
+    "project_number": "433268113686",
+    "project_id": "gerekli-f0af3",
+    "storage_bucket": "gerekli-f0af3.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:988490020687:android:76e0e91559c762bd",
+        "mobilesdk_app_id": "1:433268113686:android:981d29348172ac52631037",
         "android_client_info": {
           "package_name": "com.simtech.multivendor.mk"
         }
       },
       "oauth_client": [
         {
-          "client_id": "988490020687-k8nc424d2v1l4poqsh3erihjoqoc3cq0.apps.googleusercontent.com",
+          "client_id": "433268113686-9dt8ohc5apghtkpde8m08snrjtejjrr5.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB6GOxX4iOAeekB1v5pMc3u103q1SpCJB0"
+          "current_key": "AIzaSyCDw_eGh5Ub3r8BpD7-hDGK_xzApJ5eUY0"
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
+          "other_platform_oauth_client": [
+            {
+              "client_id": "433268113686-9dt8ohc5apghtkpde8m08snrjtejjrr5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

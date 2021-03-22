@@ -6,12 +6,20 @@ export default {
   // // SITE URL
   // siteUrl: 'https://mobile.mve.demo.cs-cart.com/',
 
+  // apiKey: '4509z9971T8230Fv32J3H67kKq90918o',
+  // // API URL
+  // // baseUrl: 'https://gerekli.com.tm/api/4.0/',
+  // baseUrl: 'https://gerekli.imdatelektronika.com/index.php/',
+
+  // // SITE URL
+  // siteUrl: 'https://gerekli.imdatelektronika.com',
+
+
   apiKey: 'dc19fc3d517e1c5b232f7f046a8fe914',
   // API URL
   baseUrl: 'https://gerekli.com.tm/api/4.0/',
   // SITE URL
   siteUrl: 'https://gerekli.com.tm/',
-
 
   // SHOP NAME
   shopName: 'Gerekli',
@@ -26,7 +34,7 @@ export default {
   // Demo app features
   demo: false,
   demoUsername: 'ellis.p@aytrade.co.uk',
-  demoPassword: 'Elsowda95!',
+  demoPassword: 'Elsowda!',
 
   // Apple pay payments
   applePay: false,

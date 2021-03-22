@@ -20,6 +20,7 @@ import CategoryBlock from '../components/CategoryBlock';
 import ProductListView from '../components/ProductListView';
 
 import * as nav from '../services/navigation';
+import { AppEventsLogger } from "react-native-fbsdk";
 
 // Styles
 const styles = EStyleSheet.create({
@@ -86,6 +87,7 @@ export class Categories extends Component {
    * Collects the content of the selected category.
    */
   async componentDidMount() {
+    AppEventsLogger.logEvent('Called fetch!')
     const { products, categoryId, layouts } = this.props;
 
     let { category } = this.props;

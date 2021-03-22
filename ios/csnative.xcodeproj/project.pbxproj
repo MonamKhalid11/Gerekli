@@ -17,8 +17,8 @@
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* csnativeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* csnativeTests.m */; };
-		4969BA9C2546FD7B00943E01 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4969BA9B2546FD7B00943E01 /* GoogleService-Info.plist */; };
 		52408F2C25EE635E0094F5F5 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52408F2B25EE635E0094F5F5 /* File.swift */; };
+		52DDF4FC2602824200DC7CFB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 52DDF4FB2602824200DC7CFB /* GoogleService-Info.plist */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		827D921CF5CE4F1D46443122 /* libPods-csnative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73A1716C60B248C8ED635597 /* libPods-csnative.a */; };
 		B51B1EF5F12CA9AA34B0955E /* libPods-csnative-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 81D5974EC2E7E24204368152 /* libPods-csnative-tvOS.a */; };
@@ -57,10 +57,10 @@
 		2D02E4901E0B4A5D006451C7 /* csnative-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "csnative-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3298D1DA6264AC7416EF7155 /* Pods-csnative.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-csnative.debug.xcconfig"; path = "Target Support Files/Pods-csnative/Pods-csnative.debug.xcconfig"; sourceTree = "<group>"; };
 		485D22DB813BF00A19FDED7D /* libPods-csnative-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-csnative-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		4969BA9B2546FD7B00943E01 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "csnative/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		519ED4A8E965865CD3FFEC00 /* libPods-csnative-csnativeTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-csnative-csnativeTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		52408F2A25EE635D0094F5F5 /* csnative-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "csnative-Bridging-Header.h"; sourceTree = "<group>"; };
 		52408F2B25EE635E0094F5F5 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
+		52DDF4FB2602824200DC7CFB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		73A1716C60B248C8ED635597 /* libPods-csnative.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-csnative.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D03C03D2541906200416CF5 /* csnative.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = csnative.entitlements; path = csnative/csnative.entitlements; sourceTree = "<group>"; };
 		7D5DAC9A2893E3A634FCAEE5 /* Pods-csnative-csnativeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-csnative-csnativeTests.release.xcconfig"; path = "Target Support Files/Pods-csnative-csnativeTests/Pods-csnative-csnativeTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -131,9 +131,9 @@
 		13B07FAE1A68108700A75B9A /* csnative */ = {
 			isa = PBXGroup;
 			children = (
-				4969BA9B2546FD7B00943E01 /* GoogleService-Info.plist */,
 				7D03C03D2541906200416CF5 /* csnative.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
+				52DDF4FB2602824200DC7CFB /* GoogleService-Info.plist */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -351,9 +351,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				52DDF4FC2602824200DC7CFB /* GoogleService-Info.plist in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				4969BA9C2546FD7B00943E01 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -754,7 +754,7 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = csnative/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.9;
+				MARKETING_VERSION = 1.10;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -780,7 +780,7 @@
 				DEVELOPMENT_TEAM = 536M2VPXB5;
 				INFOPLIST_FILE = csnative/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.9;
+				MARKETING_VERSION = 1.10;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
