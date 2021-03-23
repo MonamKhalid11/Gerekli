@@ -140,7 +140,7 @@ export default class ProfileForm extends Component {
           defaultValueText: i18n.t('Select date'),
           mode: 'date',
           config: {
-            format: (date) => format(date, 'MM/DD/YYYY'),
+            format: (date) => format(date, 'MM/dd/yyyy'),
           },
         },
       };
