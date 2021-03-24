@@ -114,8 +114,6 @@ export class CheckoutProfile extends Component {
       stateCart,
     } = this.props;
 
-    console.log('checkoutProfile: ', stateCart)
-
     cartActions.saveUserData(
       {
         ...cart.user_data,
