@@ -48,7 +48,7 @@ const styles = EStyleSheet.create({
     paddingBottom: 2,
     paddingLeft: 4,
     paddingRight: 4,
-    borderRadius: 2,
+    borderRadius: '$borderRadius',
   },
   priceWrapper: {
     flex: 1,

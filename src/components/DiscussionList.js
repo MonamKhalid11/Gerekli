@@ -47,6 +47,7 @@ const styles = EStyleSheet.create({
     fontWeight: '800',
     fontSize: '0.9rem',
     textAlign: 'left',
+    color: '$darkColor',
   },
   empty: {
     flex: 1,
