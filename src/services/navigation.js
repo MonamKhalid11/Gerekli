@@ -23,8 +23,6 @@ export function setRoot() {
     },
     bottomTabs: {
       backgroundColor: theme.$bottomTabsBackgroundColor,
-      // drawBehind: true,
-      // translucent: true,
     },
     bottomTab: {
       badgeColor: theme.$bottomTabsPrimaryBadgeColor,
@@ -54,7 +52,6 @@ export function setRoot() {
               options: {
                 bottomTab: {
                   icon: iconsMap.home,
-                  selectedIconColor: 'black',
                   text: i18n.t('Home'),
                 },
               },
@@ -74,7 +71,6 @@ export function setRoot() {
               options: {
                 bottomTab: {
                   icon: iconsMap.search,
-                  selectedIconColor: 'black',
                   text: i18n.t('Search'),
                 },
               },
@@ -94,7 +90,6 @@ export function setRoot() {
               options: {
                 bottomTab: {
                   icon: iconsMap['shopping-cart'],
-                  selectedIconColor: 'black',
                   text: i18n.t('Cart'),
                 },
               },
@@ -114,7 +109,6 @@ export function setRoot() {
               options: {
                 bottomTab: {
                   icon: iconsMap.favorite,
-                  selectedIconColor: 'black',
                   text: i18n.t('Favorite'),
                 },
               },
@@ -134,7 +128,6 @@ export function setRoot() {
               options: {
                 bottomTab: {
                   icon: iconsMap.person,
-                  selectedIconColor: 'black',
                   text: i18n.t('Profile'),
                 },
               },
