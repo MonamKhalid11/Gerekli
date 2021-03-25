@@ -158,7 +158,7 @@ export function createProfile(params, componentId) {
   let data = { ...params };
   Object.keys(data).forEach((key) => {
     if (isDate(data[key])) {
-      data[key] = format(data[key], 'MM/DD/YYYY');
+      data[key] = format(data[key], 'MM/dd/yyyy');
     }
   });
 
