@@ -460,15 +460,11 @@ class SortProducts extends Component {
    * @return {JSX.Element}
    */
   renderPicker = (item) => {
-    const { filter_id, filter, selected_variants } = item;
+    const { filter_id, filter } = item;
     const { openIDs, selectedFilters } = this.state;
     const isOpen = openIDs.some((item) => item === filter_id);
     let variants = [...item.variants];
     const VISIBLE_COUNT = 5;
-
-    if (selected_variants) {
-      variants = [...Object.values(selected_variants), ...variants];
-    }
 
     const totalCount = variants.length;
     const isHiddable = variants.length > VISIBLE_COUNT;
