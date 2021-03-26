@@ -104,7 +104,7 @@ export function updateProfile(id, params, componentId) {
   const data = { ...params };
   Object.keys(data).forEach((key) => {
     if (isDate(data[key])) {
-      data[key] = format(data[key], 'MM/DD/YYYY');
+      data[key] = format(data[key], 'MM/dd/yyyy');
     }
   });
 
