@@ -1,9 +1,25 @@
 import {
   AUTH_LOGIN_REQUEST,
+  AUTH_LOGIN_SUCCESS,
   AUTH_LOGIN_FAIL,
-  AUTH_LOGOUT,
+  AUTH_RESET_STATE,
+  AUTH_REGESTRATION_REQUEST,
   AUTH_REGESTRATION_SUCCESS,
+  AUTH_REGESTRATION_FAIL,
+  NOTIFICATION_SHOW,
+  REGISTER_DEVICE_REQUEST,
   REGISTER_DEVICE_SUCCESS,
+  REGISTER_DEVICE_FAIL,
+  FETCH_PROFILE_FIELDS_REQUEST,
+  FETCH_PROFILE_FIELDS_SUCCESS,
+  FETCH_PROFILE_FIELDS_FAIL,
+  FETCH_PROFILE_REQUEST,
+  FETCH_PROFILE_SUCCESS,
+  FETCH_PROFILE_FAIL,
+  UPDATE_PROFILE_REQUEST,
+  UPDATE_PROFILE_SUCCESS,
+  UPDATE_PROFILE_FAIL,
+  AUTH_LOGOUT,
   RESTORE_STATE,
 } from '../constants';
 
@@ -74,10 +90,97 @@ interface RestoreStateAction {
   payload: RestoreStatePayload;
 }
 
+interface FetchProfileRequestAction {
+  type: typeof FETCH_PROFILE_REQUEST;
+}
+
+interface FetchProfileSuccessAction {
+  type: typeof FETCH_PROFILE_SUCCESS;
+}
+
+interface FetchProfileFailAction {
+  type: typeof FETCH_PROFILE_FAIL;
+}
+
+interface FetchProfileFieldsRequestAction {
+  type: typeof FETCH_PROFILE_FIELDS_REQUEST;
+}
+
+interface FetchProfileFieldsSuccessAction {
+  type: typeof FETCH_PROFILE_FIELDS_SUCCESS;
+}
+
+interface FetchProfileFieldsFailAction {
+  type: typeof FETCH_PROFILE_FIELDS_FAIL;
+}
+
+interface UpdateProfileRequestAction {
+  type: typeof UPDATE_PROFILE_REQUEST;
+}
+
+interface UpdateProfileSuccessAction {
+  type: typeof UPDATE_PROFILE_SUCCESS;
+}
+
+interface NotificationShowPayload {
+  type: string;
+  title: string;
+  text: string;
+}
+
+interface NotificationShowAction {
+  type: typeof NOTIFICATION_SHOW;
+  payload: NotificationShowPayload;
+}
+
+interface UpdateProfileFailAction {
+  type: typeof UPDATE_PROFILE_FAIL;
+}
+
+interface AuthRegistrationRequestAction {
+  type: typeof AUTH_REGESTRATION_REQUEST;
+}
+
+interface AuthRegistrationFailAction {
+  type: typeof AUTH_REGESTRATION_FAIL;
+}
+
+interface RegisterDeviceRequestAction {
+  type: typeof REGISTER_DEVICE_REQUEST;
+}
+
+interface RegisterDeviceFailAction {
+  type: typeof REGISTER_DEVICE_FAIL;
+}
+
+interface AuthLoginSuccessAction {
+  type: typeof AUTH_LOGIN_SUCCESS;
+}
+
+interface AuthResetStateAction {
+  type: typeof AUTH_RESET_STATE;
+}
+
 export type AuthActionTypes =
   | AuthLoginRequestAction
   | AuthLoginFailAction
   | AuthLogoutAction
   | AuthRegistrationSuccessAction
   | RegisterDeviceSuccessAction
-  | RestoreStateAction;
+  | RestoreStateAction
+  | FetchProfileRequestAction
+  | FetchProfileSuccessAction
+  | FetchProfileFailAction
+  | FetchProfileFieldsSuccessAction
+  | FetchProfileFieldsFailAction
+  | FetchProfileFieldsRequestAction
+  | UpdateProfileRequestAction
+  | UpdateProfileSuccessAction
+  | NotificationShowAction
+  | UpdateProfileFailAction
+  | AuthRegistrationRequestAction
+  | AuthRegistrationFailAction
+  | RegisterDeviceRequestAction
+  | RegisterDeviceFailAction
+  | AuthLoginSuccessAction
+  | AuthResetStateAction;
