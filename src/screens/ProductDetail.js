@@ -12,7 +12,6 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
 } from 'react-native';
-import format from 'date-fns/format';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import get from 'lodash/get';
 import {
@@ -20,6 +19,7 @@ import {
   formatPrice,
   getProductImagesPaths,
   isPriceIncludesTax,
+  formatDate,
 } from '../utils';
 import * as nav from '../services/navigation';
 
@@ -836,7 +836,7 @@ export class ProductDetail extends Component {
     let newValue = null;
     switch (feature_type) {
       case FEATURE_TYPE_DATE:
-        newValue = format(value_int * 1000, 'MM/DD/YYYY');
+        newValue = formatDate(value_int * 1000);
         break;
       case FEATURE_TYPE_CHECKBOX:
         newValue = feature.value === 'Y' ? i18n.t('Yes') : i18n.t('No');
