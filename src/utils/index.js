@@ -4,6 +4,7 @@ import get from 'lodash/get';
 import values from 'lodash/values';
 import countries from '../config/countries';
 import i18n from './i18n';
+import { format } from 'date-fns';
 
 // Calculate product image width and items count.
 const WINDOW_WIDTH = Dimensions.get('window').width;
@@ -150,7 +151,7 @@ export function parseQueryString(query) {
     for (; i >= 0; i--) {
       const s = tokens[i].split('=');
       obj[unescape(s[0])] = s.hasOwnProperty(1) ? unescape(s[1]) : null;
-    };
+    }
   }
   return obj;
 }
@@ -240,3 +241,7 @@ export const getPaymentId = (res) => {
 export function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+export const formatDate = (data) => {
+  return format(data, 'MM/dd/yyyy');
+};
