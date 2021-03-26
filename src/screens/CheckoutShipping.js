@@ -411,12 +411,13 @@ export class CheckoutShipping extends Component {
       ? stateCart.carts.general
       : stateCart.carts[cart.vendor_id];
 
-    const discount = !!get(currentCart, 'subtotal_discount', '');
+    const isFormattedDiscount = !!get(currentCart, 'subtotal_discount', '');
     const formattedDiscount = get(
       currentCart,
       'subtotal_discount_formatted.price',
       '',
     );
+    const isIncludingDiscount = !!get(currentCart, 'discount', '');
     const includingDiscount = get(currentCart, 'discount_formatted.price', '');
 
     return (
@@ -428,12 +429,12 @@ export class CheckoutShipping extends Component {
             '',
           )}`}
         </Text>
-        {includingDiscount && (
+        {isIncludingDiscount && (
           <Text style={styles.totalDiscountText}>
             {`${i18n.t('Including discount')}: -${includingDiscount}`}
           </Text>
         )}
-        {discount && (
+        {isFormattedDiscount && (
           <Text style={styles.totalDiscountText}>
             {`${i18n.t('Order discount')}: -${formattedDiscount}`}
           </Text>

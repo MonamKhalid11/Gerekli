@@ -55,8 +55,9 @@ const renderOrderDetail = (products, cart) => {
     return null;
   }
 
-  const discount = !!get(cart, 'subtotal_discount', '');
+  const isFormattedDiscount = !!get(cart, 'subtotal_discount', '');
   const formattedDiscount = get(cart, 'subtotal_discount_formatted.price', '');
+  const isIncludingDiscount = !!get(cart, 'discount', '');
   const includingDiscount = get(cart, 'discount_formatted.price', '');
 
   return (
@@ -64,12 +65,12 @@ const renderOrderDetail = (products, cart) => {
       <Text style={styles.totalText}>
         {`${i18n.t('Subtotal')}: ${get(cart, 'subtotal_formatted.price', '')}`}
       </Text>
-      {includingDiscount && (
+      {isIncludingDiscount && (
         <Text style={styles.totalDiscountText}>
           {`${i18n.t('Including discount')}: -${includingDiscount}`}
         </Text>
       )}
-      {discount && (
+      {isFormattedDiscount && (
         <Text style={styles.totalDiscountText}>
           {`${i18n.t('Order discount')}: -${formattedDiscount}`}
         </Text>
