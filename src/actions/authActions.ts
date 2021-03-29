@@ -6,7 +6,11 @@ import { format, isDate } from 'date-fns';
 import pickBy from 'lodash/pickBy';
 import identity from 'lodash/identity';
 
-import { AuthActionTypes } from '../reducers/authTypes';
+import {
+  AuthActionTypes,
+  DeviceInfoData,
+  CreateProfileParams,
+} from '../reducers/authTypes';
 
 import {
   AUTH_LOGIN_REQUEST,
@@ -157,11 +161,18 @@ export function updateProfile(id, params, componentId) {
   };
 }
 
-export function createProfile(params, componentId) {
-  let data = { ...params };
+export function createProfile(
+  params: CreateProfileParams,
+  componentId: string,
+) {
+
+  let data: CreateProfileParams = { ...params };
   Object.keys(data).forEach((key) => {
-    if (isDate(data[key])) {
-      data[key] = format(data[key], 'MM/DD/YYYY');
+    if (isDate(data[key as keyof CreateProfileParams])) {
+      data[key as keyof CreateProfileParams] = format(
+        data[key as keyof CreateProfileParams],
+        'MM/DD/YYYY',
+      );
     }
   });
 
@@ -209,7 +220,7 @@ export function createProfile(params, componentId) {
   };
 }
 
-export function deviceInfo(data) {
+export function deviceInfo(data: DeviceInfoData) {
   return (dispatch: Dispatch<AuthActionTypes>) => {
     dispatch({ type: REGISTER_DEVICE_REQUEST });
     return Api.post('/sra_notifications', data)

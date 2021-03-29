@@ -161,6 +161,22 @@ interface AuthResetStateAction {
   type: typeof AUTH_RESET_STATE;
 }
 
+export interface DeviceInfoData {
+  device_id: string;
+  locale: string;
+  platform: string;
+  token: string;
+}
+
+export interface CreateProfileParams {
+  email: string;
+  firstname: string;
+  lastname: string;
+  password1: string;
+  password2: string;
+  phone: string;
+}
+
 export type AuthActionTypes =
   | AuthLoginRequestAction
   | AuthLoginFailAction
