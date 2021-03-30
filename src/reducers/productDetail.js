@@ -9,6 +9,8 @@ const productInstance = {
   fetching: true,
   amount: 1,
   options: [],
+  convertedOptions: [],
+  convertedVariants: [],
   price_formatted: {
     price: '',
   },
@@ -42,6 +44,7 @@ export default function (state = initialState, action) {
             selectedAmount: 1,
             discount_prc: 0,
             discount: null,
+            product_features: {},
           },
         },
       };
@@ -53,6 +56,7 @@ export default function (state = initialState, action) {
         byId: {
           ...state.byId,
           [action.payload.pid]: {
+            ...state.byId[action.payload.pid],
             ...action.payload.product,
             options: Object.keys(action.payload.product.product_options).map(
               (k) => action.payload.product.product_options[k],

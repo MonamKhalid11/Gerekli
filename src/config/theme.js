@@ -40,6 +40,7 @@ export default {
 
   // Shades of gray. Used to display dividers and borders.
   $darkColor: '#242424',
+  $mediumGrayColor: '#B8B8B8',
   $grayColor: '#FAFAFA',
 
   // The radius of the rounding of buttons and form elements.
@@ -70,9 +71,6 @@ export default {
   $categoryBlockTextColor: '#000',
   $categoryBorderRadius: 6,
   $categoryEmptyImage: '#989898',
-
-  // The background color of the add to wishlist button.
-  $addToWishListColor: '#989898',
 
   // Rating stars color.
   $ratingStarsColor: '#EAA944',

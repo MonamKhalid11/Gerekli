@@ -2,9 +2,10 @@ import { Platform } from 'react-native';
 import { Dispatch } from 'redux';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Navigation } from 'react-native-navigation';
-import { format, isDate } from 'date-fns';
+import { isDate } from 'date-fns';
 import pickBy from 'lodash/pickBy';
 import identity from 'lodash/identity';
+import { formatDate } from '../utils/index';
 
 import {
   AuthActionTypes,
@@ -111,7 +112,7 @@ export function updateProfile(id, params, componentId) {
   const data = { ...params };
   Object.keys(data).forEach((key) => {
     if (isDate(data[key])) {
-      data[key] = format(data[key], 'MM/DD/YYYY');
+      data[key] = formatDate(data[key]);
     }
   });
 
@@ -165,13 +166,11 @@ export function createProfile(
   params: CreateProfileParams,
   componentId: string,
 ) {
-
   let data: CreateProfileParams = { ...params };
   Object.keys(data).forEach((key) => {
     if (isDate(data[key as keyof CreateProfileParams])) {
-      data[key as keyof CreateProfileParams] = format(
+      data[key as keyof CreateProfileParams] = formatDate(
         data[key as keyof CreateProfileParams],
-        'MM/DD/YYYY',
       );
     }
   });
