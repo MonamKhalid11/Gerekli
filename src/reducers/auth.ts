@@ -6,6 +6,7 @@ import {
   AUTH_REGESTRATION_SUCCESS,
   REGISTER_DEVICE_SUCCESS,
   RESTORE_STATE,
+  AUTH_LOGIN_SUCCESS,
 } from '../constants';
 
 import { AuthState, AuthActionTypes } from './authTypes';
@@ -29,6 +30,17 @@ export default function (state = initialState, action: AuthActionTypes) {
       return {
         ...state,
         fetching: true,
+        error: null,
+        errorStatus: null,
+      };
+
+    case AUTH_LOGIN_SUCCESS:
+      return {
+        ...state,
+        token: action.payload.token,
+        ttl: action.payload.ttl,
+        logged: true,
+        fetching: false,
         error: null,
         errorStatus: null,
       };

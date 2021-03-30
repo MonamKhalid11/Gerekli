@@ -153,8 +153,14 @@ interface RegisterDeviceFailAction {
   type: typeof REGISTER_DEVICE_FAIL;
 }
 
+interface AuthLoginSuccessPayload {
+  token: string;
+  ttl: number;
+}
+
 interface AuthLoginSuccessAction {
   type: typeof AUTH_LOGIN_SUCCESS;
+  payload: AuthLoginSuccessPayload;
 }
 
 interface AuthResetStateAction {

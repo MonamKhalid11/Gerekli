@@ -54,6 +54,7 @@ export function fetchProfile() {
 
   return (dispatch: Dispatch<AuthActionTypes>) => {
     dispatch({ type: FETCH_PROFILE_REQUEST });
+
     return Api.get('/sra_profile', { params })
       .then((response) => {
         dispatch({
@@ -222,6 +223,7 @@ export function createProfile(
 export function deviceInfo(data: DeviceInfoData) {
   return (dispatch: Dispatch<AuthActionTypes>) => {
     dispatch({ type: REGISTER_DEVICE_REQUEST });
+
     return Api.post('/sra_notifications', data)
       .then((response) => {
         dispatch({
@@ -247,6 +249,7 @@ export function login(data) {
 
     return Api.post('/auth_tokens', data)
       .then((response) => {
+
         cartActions.fetch()(dispatch);
         wishListActions.fetch(false)(dispatch);
         dispatch({
@@ -267,6 +270,8 @@ export function login(data) {
       .then(() => fetchProfile()(dispatch))
       .then(() => layoutsActions.fetch()(dispatch))
       .catch((error) => {
+        console.log('error ', error);
+
         dispatch({
           type: AUTH_LOGIN_FAIL,
           payload: error.response.data,
