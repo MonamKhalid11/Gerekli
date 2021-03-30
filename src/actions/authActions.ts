@@ -11,6 +11,8 @@ import {
   AuthActionTypes,
   DeviceInfoData,
   CreateProfileParams,
+  LoginData,
+  UpdateProfileParams,
 } from '../reducers/authTypes';
 
 import {
@@ -109,11 +111,17 @@ export function profileFields(data = {}) {
   };
 }
 
-export function updateProfile(id, params, componentId) {
-  const data = { ...params };
+export function updateProfile(
+  id: number,
+  params: UpdateProfileParams,
+  componentId: string,
+) {
+  const data: UpdateProfileParams = { ...params };
   Object.keys(data).forEach((key) => {
-    if (isDate(data[key])) {
-      data[key] = formatDate(data[key]);
+    if (isDate(data[key as keyof UpdateProfileParams])) {
+      data[key as keyof UpdateProfileParams] = formatDate(
+        data[key as keyof UpdateProfileParams],
+      );
     }
   });
 
@@ -243,13 +251,12 @@ export function deviceInfo(data: DeviceInfoData) {
   };
 }
 
-export function login(data) {
+export function login(data: LoginData) {
   return (dispatch: Dispatch<AuthActionTypes>) => {
     dispatch({ type: AUTH_LOGIN_REQUEST });
 
     return Api.post('/auth_tokens', data)
       .then((response) => {
-
         cartActions.fetch()(dispatch);
         wishListActions.fetch(false)(dispatch);
         dispatch({
@@ -270,8 +277,6 @@ export function login(data) {
       .then(() => fetchProfile()(dispatch))
       .then(() => layoutsActions.fetch()(dispatch))
       .catch((error) => {
-        console.log('error ', error);
-
         dispatch({
           type: AUTH_LOGIN_FAIL,
           payload: error.response.data,

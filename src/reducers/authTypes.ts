@@ -174,8 +174,27 @@ export interface DeviceInfoData {
   token: string;
 }
 
-export interface CreateProfileParams {
+export interface UpdateProfileParams {
   email: string;
+  firstname: string;
+  lastname: string;
+  password1: string;
+  password2: string;
+  phone: string;
+  s_address: string;
+  s_city: string;
+  s_country: string;
+  s_state: string;
+  s_zipcode: string;
+}
+
+export interface LoginData {
+  email: string;
+  password: string;
+}
+
+export interface CreateProfileParams {
+  email: string | undefined;
   firstname: string;
   lastname: string;
   password1: string;
