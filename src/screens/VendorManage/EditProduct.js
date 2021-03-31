@@ -85,7 +85,7 @@ const styles = EStyleSheet.create({
   },
   addImageIcon: {
     fontSize: '3rem',
-    color: '$categoryEmptyImage',
+    color: 'red',
   },
 });
 

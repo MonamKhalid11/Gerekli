@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { get } from 'lodash';
 import {
   View,
   Text,
@@ -94,6 +95,21 @@ const styles = EStyleSheet.create({
   shippingForbiddenText: {
     textAlign: 'center',
     color: theme.$dangerColor,
+  },
+  totalWrapper: {
+    marginTop: 6,
+    marginLeft: 20,
+    marginRight: 20,
+  },
+  totalText: {
+    textAlign: 'right',
+    marginTop: 4,
+    color: '#979797',
+  },
+  totalDiscountText: {
+    textAlign: 'right',
+    marginTop: 4,
+    color: '$dangerColor',
   },
 });
 
@@ -207,7 +223,7 @@ export class CheckoutShipping extends Component {
    * Calculates the cost including delivery.
    */
   handleLoadInitial() {
-    const { cartActions } = this.props;
+    const { cartActions, stateCart, cart } = this.props;
     const { items } = this.state;
     const shippingsIds = {};
     const shippings = [];
@@ -226,11 +242,13 @@ export class CheckoutShipping extends Component {
       }
     });
 
-    cartActions.recalculateTotal(shippingsIds).then((data) => {
-      this.setState({
-        total: data.total_formatted.price,
+    cartActions
+      .recalculateTotal(shippingsIds, stateCart.coupons, cart.vendor_id)
+      .then((data) => {
+        this.setState({
+          total: data.total_formatted.price,
+        });
       });
-    });
   }
 
   /**
@@ -266,7 +284,7 @@ export class CheckoutShipping extends Component {
    * @param {number} itemIndex - Index of the selected shipping method.
    */
   handleSelect(shipping, shippingIndex, itemIndex) {
-    const { cartActions } = this.props;
+    const { cartActions, stateCart, cart } = this.props;
     if (shipping.isSelected) {
       return;
     }
@@ -281,11 +299,13 @@ export class CheckoutShipping extends Component {
     const selectedIds = {};
     selectedIds[`${itemIndex}`] = `${shipping.shipping_id}`;
 
-    cartActions.recalculateTotal(selectedIds).then((data) => {
-      this.setState({
-        total: data.total_formatted.price,
+    cartActions
+      .recalculateTotal(selectedIds, stateCart.coupons, cart.vendor_id)
+      .then((data) => {
+        this.setState({
+          total: data.total_formatted.price,
+        });
       });
-    });
 
     this.setState({
       items: newItems,
@@ -380,6 +400,64 @@ export class CheckoutShipping extends Component {
   };
 
   /**
+   * Renders order detail.
+   *
+   * @return {JSX.Element}
+   */
+  renderOrderDetail = () => {
+    const { cart, stateCart } = this.props;
+
+    const currentCart = stateCart.carts.general
+      ? stateCart.carts.general
+      : stateCart.carts[cart.vendor_id];
+
+    const isFormattedDiscount = !!get(currentCart, 'subtotal_discount', '');
+    const formattedDiscount = get(
+      currentCart,
+      'subtotal_discount_formatted.price',
+      '',
+    );
+    const isIncludingDiscount = !!get(currentCart, 'discount', '');
+    const includingDiscount = get(currentCart, 'discount_formatted.price', '');
+
+    return (
+      <View style={styles.totalWrapper}>
+        <Text style={styles.totalText}>
+          {`${i18n.t('Subtotal')}: ${get(
+            currentCart,
+            'subtotal_formatted.price',
+            '',
+          )}`}
+        </Text>
+        {isIncludingDiscount && (
+          <Text style={styles.totalDiscountText}>
+            {`${i18n.t('Including discount')}: -${includingDiscount}`}
+          </Text>
+        )}
+        {isFormattedDiscount && (
+          <Text style={styles.totalDiscountText}>
+            {`${i18n.t('Order discount')}: -${formattedDiscount}`}
+          </Text>
+        )}
+        <Text style={styles.totalText}>
+          {`${i18n.t('Shipping')}: ${get(
+            currentCart,
+            'shipping_cost_formatted.price',
+            '',
+          )}`}
+        </Text>
+        <Text style={styles.totalText}>
+          {`${i18n.t('Taxes')}: ${get(
+            currentCart,
+            'tax_subtotal_formatted.price',
+            '',
+          )}`}
+        </Text>
+      </View>
+    );
+  };
+
+  /**
    * Renders component
    *
    * @return {JSX.Element}
@@ -408,6 +486,7 @@ export class CheckoutShipping extends Component {
                     )}
               </View>
             ))}
+          {this.renderOrderDetail()}
         </ScrollView>
         <CartFooter
           totalPrice={`${formatPrice(total)}`}

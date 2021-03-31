@@ -518,7 +518,7 @@ export class ProductDetail extends Component {
   handleAddToCart = (showNotification = true, productOffer) => {
     const productOptions = {};
     const { product, selectedOptions, amount } = this.state;
-    const { auth, cartActions } = this.props;
+    const { auth, cartActions, cart } = this.props;
 
     if (!auth.logged) {
       return nav.showLogin();
@@ -542,7 +542,7 @@ export class ProductDetail extends Component {
       },
     };
 
-    return cartActions.add({ products }, showNotification);
+    return cartActions.add({ products }, showNotification, cart.coupons);
   };
 
   /**

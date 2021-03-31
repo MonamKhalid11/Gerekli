@@ -6,11 +6,13 @@ import { filterObject } from '../utils/index';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Navigation } from 'react-native-navigation';
+import { cloneDeep } from 'lodash';
 
 // Components
 import CartProductitem from './CartProductItem';
 import CartFooter from './CartFooter';
 import EmptyCart from './EmptyCart';
+import CouponCodeSection from './CouponCodeSection';
 
 // Links
 import i18n from '../utils/i18n';
@@ -36,6 +38,11 @@ const styles = EStyleSheet.create({
     marginTop: 4,
     color: '#979797',
   },
+  totalDiscountText: {
+    textAlign: 'right',
+    marginTop: 4,
+    color: '$dangerColor',
+  },
 });
 
 /**
@@ -48,11 +55,26 @@ const renderOrderDetail = (products, cart) => {
     return null;
   }
 
+  const isFormattedDiscount = !!get(cart, 'subtotal_discount', '');
+  const formattedDiscount = get(cart, 'subtotal_discount_formatted.price', '');
+  const isIncludingDiscount = !!get(cart, 'discount', '');
+  const includingDiscount = get(cart, 'discount_formatted.price', '');
+
   return (
     <View style={styles.totalWrapper}>
       <Text style={styles.totalText}>
         {`${i18n.t('Subtotal')}: ${get(cart, 'subtotal_formatted.price', '')}`}
       </Text>
+      {isIncludingDiscount && (
+        <Text style={styles.totalDiscountText}>
+          {`${i18n.t('Including discount')}: -${includingDiscount}`}
+        </Text>
+      )}
+      {isFormattedDiscount && (
+        <Text style={styles.totalDiscountText}>
+          {`${i18n.t('Order discount')}: -${formattedDiscount}`}
+        </Text>
+      )}
       <Text style={styles.totalText}>
         {`${i18n.t('Shipping')}: ${get(
           cart,
@@ -80,6 +102,7 @@ const renderOrderDetail = (products, cart) => {
  * @return {JSX.Element}
  */
 export const CartProductList = ({
+  storeCart,
   cart,
   auth,
   componentId,
@@ -89,14 +112,17 @@ export const CartProductList = ({
   stepsActions,
   stateSteps,
 }) => {
-  let newProducts = [];
-  if (cart) {
-    newProducts = Object.keys(cart.products).map((key) => {
-      const result = { ...cart.products[key] };
-      result.cartId = key;
-      return result;
-    });
+  if (!cart) {
+    return <EmptyCart />;
   }
+
+  const shippingId = cart.chosen_shipping[0];
+  const coupons = Object.keys(cart.coupons);
+  const newProducts = Object.keys(cart.products).map((key) => {
+    const result = { ...cart.products[key] };
+    result.cartId = key;
+    return result;
+  });
 
   /**
    * Moves to the next page.
@@ -180,7 +206,49 @@ export const CartProductList = ({
         onRefresh={handleRefresh}
         refreshing={refreshing}
         ListEmptyComponent={() => <EmptyCart />}
-        ListFooterComponent={() => renderOrderDetail(newProducts, cart)}
+        ListFooterComponent={() => {
+          return (
+            <>
+              <CouponCodeSection
+                items={coupons}
+                onAddPress={(value) => {
+                  cartActions.addCoupon(
+                    value,
+                    cart.vendor_id,
+                    shippingId,
+                    storeCart.coupons,
+                  );
+                }}
+                onRemovePress={(value) => {
+                  let newCoupons = {};
+                  if (storeCart.coupons.general) {
+                    const {
+                      [value]: _,
+                      ...filteredCoupons
+                    } = storeCart.coupons.general;
+                    newCoupons.general = cloneDeep(filteredCoupons);
+                  } else {
+                    const {
+                      [value]: _,
+                      ...filteredCoupons
+                    } = storeCart.coupons[cart.vendor_id];
+                    newCoupons[cart.vendor_id] = cloneDeep(filteredCoupons);
+                  }
+
+                  cartActions.removeCoupon(newCoupons);
+                  setTimeout(() => {
+                    cartActions.recalculateTotal(
+                      shippingId,
+                      newCoupons,
+                      cart.vendor_id,
+                    );
+                  }, 1400);
+                }}
+              />
+              {renderOrderDetail(newProducts, cart)}
+            </>
+          );
+        }}
       />
       {renderPlaceOrder(cart, newProducts, auth)}
     </View>
@@ -190,6 +258,7 @@ export const CartProductList = ({
 export default connect(
   (state) => ({
     stateSteps: state.steps,
+    storeCart: state.cart,
   }),
   (dispatch) => ({
     stepsActions: bindActionCreators(stepsActions, dispatch),
