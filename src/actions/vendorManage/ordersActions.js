@@ -9,6 +9,9 @@ import {
   VENDOR_ORDER_UPDATE_STATUS_FAIL,
   VENDOR_ORDER_UPDATE_STATUS_SUCCESS,
   NOTIFICATION_SHOW,
+  FETCH_ORDER_STATUSES_REQUEST,
+  FETCH_ORDER_STATUSES_SUCCESS,
+  FETCH_ORDER_STATUSES_FAIL,
 } from '../../constants';
 import i18n from '../../utils/i18n';
 import * as vendorService from '../../services/vendors';
@@ -91,7 +94,7 @@ export function updateStatus(id, status) {
     });
 
     try {
-      const result = await vendorService.updateStatus(id, status);
+      await vendorService.updateStatus(id, status);
 
       dispatch({
         type: VENDOR_ORDER_UPDATE_STATUS_SUCCESS,
@@ -125,5 +128,26 @@ export function updateStatus(id, status) {
       });
     }
     return true;
+  };
+}
+
+export function getOrderStatuses() {
+  return async (dispatch) => {
+    dispatch({
+      type: FETCH_ORDER_STATUSES_REQUEST,
+    });
+
+    try {
+      const result = await vendorService.getOrderStatuses();
+
+      dispatch({
+        type: FETCH_ORDER_STATUSES_SUCCESS,
+        payload: result.data,
+      });
+    } catch (error) {
+      dispatch({
+        type: FETCH_ORDER_STATUSES_FAIL,
+      });
+    }
   };
 }

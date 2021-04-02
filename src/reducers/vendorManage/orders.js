@@ -1,12 +1,11 @@
 import {
   VENDOR_ORDERS_FAIL,
   VENDOR_ORDERS_SUCCESS,
-
   VENDOR_ORDER_REQUEST,
   VENDOR_ORDER_FAIL,
   VENDOR_ORDER_SUCCESS,
-
   VENDOR_ORDER_UPDATE_STATUS_SUCCESS,
+  FETCH_ORDER_STATUSES_SUCCESS,
 } from '../../constants';
 
 const initialState = {
@@ -16,6 +15,7 @@ const initialState = {
   page: 0,
   loadingCurrent: true,
   current: {},
+  orderStatuses: [],
 };
 
 let items = [];
@@ -36,9 +36,10 @@ export default function (state = initialState, action) {
         loading: false,
         hasMore: action.payload.hasMore,
         page: action.payload.page,
-        items: action.payload.page === 1
-          ? action.payload.items
-          : [...state.items, ...action.payload.items],
+        items:
+          action.payload.page === 1
+            ? action.payload.items
+            : [...state.items, ...action.payload.items],
       };
 
     case VENDOR_ORDER_REQUEST:
@@ -60,11 +61,16 @@ export default function (state = initialState, action) {
         loadingCurrent: false,
       };
 
+    case FETCH_ORDER_STATUSES_SUCCESS:
+      return {
+        ...state,
+        orderStatuses: action.payload.order_statuses,
+      };
+
     case VENDOR_ORDER_UPDATE_STATUS_SUCCESS:
-      items = [
-        ...state.items,
-      ];
-      index = items.findIndex(item => item.order_id === action.payload.id) || 0;
+      items = [...state.items];
+      index =
+        items.findIndex((item) => item.order_id === action.payload.id) || 0;
       items[index].status = action.payload.status;
 
       return {

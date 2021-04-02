@@ -21,7 +21,6 @@ import EmptyList from '../../components/EmptyList';
 import OrderListItem from '../../components/OrderListItem';
 
 import i18n from '../../utils/i18n';
-import { orderStatuses } from '../../utils';
 import * as nav from '../../services/navigation';
 
 const styles = EStyleSheet.create({
@@ -30,10 +29,6 @@ const styles = EStyleSheet.create({
     backgroundColor: '#fff',
   },
 });
-
-const itemsList = [...orderStatuses.map((item) => item.text), i18n.t('Cancel')];
-
-const CANCEL_INDEX = itemsList.length - 1;
 
 /**
  * Renders orders screen.
@@ -89,6 +84,7 @@ export class Orders extends Component {
       orders: { page },
     } = this.props;
     ordersActions.fetch(page);
+    ordersActions.getOrderStatuses();
     Navigation.mergeOptions(this.props.componentId, {
       topBar: {
         title: {
@@ -151,10 +147,13 @@ export class Orders extends Component {
    * @param {number} index - Order index.
    */
   handleChangeStatus = (index) => {
-    const { ordersActions } = this.props;
+    const { ordersActions, orders } = this.props;
 
-    if (orderStatuses[index]) {
-      ordersActions.updateStatus(this.orderID, orderStatuses[index].code);
+    if (orders.orderStatuses[index]) {
+      ordersActions.updateStatus(
+        this.orderID,
+        orders.orderStatuses[index].status,
+      );
     }
   };
 
@@ -200,9 +199,16 @@ export class Orders extends Component {
     const { orders } = this.props;
     const { refreshing } = this.state;
 
-    if (orders.loading) {
+    if (orders.loading || !orders.orderStatuses.length) {
       return <Spinner visible />;
     }
+
+    const orderStatusesList = [
+      ...orders.orderStatuses.map((item) => item.description),
+      i18n.t('Cancel'),
+    ];
+
+    const ORDER_STATUSES_CANCEL_INDEX = orderStatusesList.length - 1;
 
     return (
       <View style={styles.container}>
@@ -219,8 +225,8 @@ export class Orders extends Component {
           ref={(ref) => {
             this.ActionSheet = ref;
           }}
-          options={itemsList}
-          cancelButtonIndex={CANCEL_INDEX}
+          options={orderStatusesList}
+          cancelButtonIndex={ORDER_STATUSES_CANCEL_INDEX}
           onPress={this.handleChangeStatus}
         />
       </View>

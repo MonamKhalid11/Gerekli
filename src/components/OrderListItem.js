@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import PropTypes from 'prop-types';
 
-import { formatPrice, getOrderStatus } from '../utils';
+import { formatPrice } from '../utils';
 
 const styles = EStyleSheet.create({
   orderItem: {
@@ -43,7 +43,7 @@ const styles = EStyleSheet.create({
  */
 const OrderListItem = (props) => {
   const { onPress, item } = props;
-  const status = getOrderStatus(item.status);
+
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.orderItem}>
@@ -54,8 +54,12 @@ const OrderListItem = (props) => {
           <Text style={styles.orderItemEmail}>{item.email}</Text>
         </View>
         <View style={styles.orderItemStatus}>
-          <Text style={[styles.orderItemStatusText, status?.style]}>
-            {status?.text}
+          <Text
+            style={[
+              styles.orderItemStatusText,
+              { color: item.status_data.color },
+            ]}>
+            {item.status_data.description}
           </Text>
           <Text style={styles.orderItemTotal}>
             {item.total_formatted

@@ -360,6 +360,11 @@ export const getCategoriesList = (parent = 0, page = 1) => {
 export const getOrdersList = (page = 1) => {
   const QUERY = `query getOrders($page: Int) {
     orders(page: $page, items_per_page: 100) {
+      status_data {
+        status
+        description
+        color
+      }
       order_id
       status
       timestamp
@@ -405,6 +410,11 @@ export const getOrdersList = (page = 1) => {
 export const getOrder = (id) => {
   const QUERY = `query getOrder($id: Int!){
     order(id: $id) {
+      status_data {
+        status
+        description
+        color
+      }
       order_id
       status
       total
@@ -494,10 +504,29 @@ export const updateStatus = (id, status) => {
       update_order(
         id: $id,
         order: {
+          status_data: {
+            status: $status
+            description: 'Processed'
+            color: '#97cf4d'
+          }
           status: $status
         }
       )
     }
   `;
   return gql(QUERY, { id, status }).then((result) => result.data);
+};
+
+export const getOrderStatuses = () => {
+  const QUERY = `
+    query {
+      order_statuses{
+        status
+        description
+        color
+      }
+    }
+  `;
+
+  return gql(QUERY).then((result) => result.data);
 };
