@@ -6,6 +6,8 @@ import {
   VENDOR_ORDER_SUCCESS,
   VENDOR_ORDER_UPDATE_STATUS_SUCCESS,
   FETCH_ORDER_STATUSES_SUCCESS,
+  VENDOR_ORDERS_LOADING,
+  VENDOR_ORDERS_LOADED,
 } from '../../constants';
 
 const initialState = {
@@ -28,6 +30,18 @@ export default function (state = initialState, action) {
         ...state,
         loading: false,
         ...action.payload,
+      };
+
+    case VENDOR_ORDERS_LOADING:
+      return {
+        ...state,
+        loading: true,
+      };
+
+    case VENDOR_ORDERS_LOADED:
+      return {
+        ...state,
+        loading: false,
       };
 
     case VENDOR_ORDERS_SUCCESS:

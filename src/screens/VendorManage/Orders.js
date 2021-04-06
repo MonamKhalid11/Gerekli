@@ -150,7 +150,7 @@ export class Orders extends Component {
     const { ordersActions, orders } = this.props;
 
     if (orders.orderStatuses[index]) {
-      ordersActions.updateStatus(
+      ordersActions.updateVendorOrderStatus(
         this.orderID,
         orders.orderStatuses[index].status,
       );
@@ -199,7 +199,7 @@ export class Orders extends Component {
     const { orders } = this.props;
     const { refreshing } = this.state;
 
-    if (orders.loading || !orders.orderStatuses.length) {
+    if (orders.loading || !orders.orderStatuses) {
       return <Spinner visible />;
     }
 

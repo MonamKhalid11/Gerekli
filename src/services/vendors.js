@@ -495,28 +495,6 @@ export const getOrder = (id) => {
   return gql(QUERY, { id }).then((result) => result.data);
 };
 
-export const updateStatus = (id, status) => {
-  const QUERY = `
-    mutation updateStatus(
-      $id: Int!,
-      $status: String!,
-    ) {
-      update_order(
-        id: $id,
-        order: {
-          status_data: {
-            status: $status
-            description: 'Processed'
-            color: '#97cf4d'
-          }
-          status: $status
-        }
-      )
-    }
-  `;
-  return gql(QUERY, { id, status }).then((result) => result.data);
-};
-
 export const getOrderStatuses = () => {
   const QUERY = `
     query {
@@ -529,4 +507,21 @@ export const getOrderStatuses = () => {
   `;
 
   return gql(QUERY).then((result) => result.data);
+};
+
+export const updateVendorOrderStatus = (id, status) => {
+  const QUERY = `
+    mutation updateStatus(
+      $id: Int!,
+      $status: String!,
+    ) {
+      update_order(
+        id: $id,
+        order: {
+          status: $status
+        }
+      )
+    }
+  `;
+  return gql(QUERY, { id, status }).then((result) => result.data);
 };

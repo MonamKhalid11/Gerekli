@@ -12,6 +12,8 @@ import {
   FETCH_ORDER_STATUSES_REQUEST,
   FETCH_ORDER_STATUSES_SUCCESS,
   FETCH_ORDER_STATUSES_FAIL,
+  VENDOR_ORDERS_LOADED,
+  VENDOR_ORDERS_LOADING,
 } from '../../constants';
 import i18n from '../../utils/i18n';
 import * as vendorService from '../../services/vendors';
@@ -87,50 +89,6 @@ export function fetchOrder(id) {
   };
 }
 
-export function updateStatus(id, status) {
-  return async (dispatch) => {
-    dispatch({
-      type: VENDOR_ORDER_UPDATE_STATUS_REQUEST,
-    });
-
-    try {
-      await vendorService.updateStatus(id, status);
-
-      dispatch({
-        type: VENDOR_ORDER_UPDATE_STATUS_SUCCESS,
-        payload: {
-          id,
-          status,
-        },
-      });
-
-      dispatch({
-        type: NOTIFICATION_SHOW,
-        payload: {
-          type: 'success',
-          title: i18n.t('Success'),
-          text: i18n.t('Status has been changed.'),
-        },
-      });
-    } catch (error) {
-      dispatch({
-        type: NOTIFICATION_SHOW,
-        payload: {
-          type: 'info',
-          title: i18n.t('Error'),
-          text: i18n.t(error.errors.join('\n')),
-        },
-      });
-
-      dispatch({
-        type: VENDOR_ORDER_UPDATE_STATUS_FAIL,
-        error,
-      });
-    }
-    return true;
-  };
-}
-
 export function getOrderStatuses() {
   return async (dispatch) => {
     dispatch({
@@ -147,6 +105,49 @@ export function getOrderStatuses() {
     } catch (error) {
       dispatch({
         type: FETCH_ORDER_STATUSES_FAIL,
+      });
+    }
+  };
+}
+
+export function updateVendorOrderStatus(id, status) {
+  return async (dispatch) => {
+    dispatch({
+      type: VENDOR_ORDER_UPDATE_STATUS_REQUEST,
+    });
+    dispatch({
+      type: VENDOR_ORDERS_LOADING,
+    });
+
+    try {
+      await vendorService.updateVendorOrderStatus(id, status);
+      await fetch()(dispatch);
+
+      dispatch({
+        type: VENDOR_ORDER_UPDATE_STATUS_SUCCESS,
+      });
+      dispatch({
+        type: NOTIFICATION_SHOW,
+        payload: {
+          type: 'success',
+          title: i18n.t('Success'),
+          text: i18n.t('Status has been changed.'),
+        },
+      });
+      dispatch({
+        type: VENDOR_ORDERS_LOADED,
+      });
+    } catch (error) {
+      dispatch({
+        type: NOTIFICATION_SHOW,
+        payload: {
+          type: 'info',
+          title: i18n.t('Error'),
+          text: i18n.t(error.errors.join('\n')),
+        },
+      });
+      dispatch({
+        type: VENDOR_ORDER_UPDATE_STATUS_FAIL,
       });
     }
   };
