@@ -7,7 +7,7 @@ import { get } from 'lodash';
 import { stripTags } from '../utils';
 
 const styles = EStyleSheet.create({
-  container: {
+  imageWrapper: {
     marginTop: 5,
     marginBottom: 20,
   },
@@ -75,7 +75,9 @@ export default class BannerBlocks extends Component {
     return (
       <TouchableOpacity key={index} onPress={() => onPress(item)}>
         {imageUri ? (
-          <Image source={{ uri: imageUri }} style={styles.img} />
+          <View style={styles.imageWrapper}>
+            <Image source={{ uri: imageUri }} style={styles.img} />
+          </View>
         ) : (
           <View style={styles.textBannerWrapper}>
             <Text style={styles.textBanner}>{stripTags(item.description)}</Text>
@@ -96,11 +98,7 @@ export default class BannerBlocks extends Component {
     return (
       <View style={styles.container}>
         {wrapper !== '' && <Text style={styles.header}>{name}</Text>}
-        <Swiper
-          horizontal
-          height={200}
-          style={styles.container}
-          loadMinimal={6}>
+        <Swiper horizontal height={200} loadMinimal={6}>
           {itemsList}
         </Swiper>
       </View>
