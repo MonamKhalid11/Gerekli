@@ -85,7 +85,7 @@ const styles = EStyleSheet.create({
   },
   addImageIcon: {
     fontSize: '3rem',
-    color: '$categoryEmptyImage',
+    color: 'red',
   },
 });
 
@@ -205,19 +205,25 @@ export class EditProduct extends Component {
    * Returns form options (field names, etc.)
    */
   getFormOptions = () => {
+    const { product } = this.props;
+
+    const isProductOffer = !!product.master_product_id;
+
     return {
       disableOrder: true,
       fields: {
         product: {
           label: i18n.t('Name'),
+          editable: !isProductOffer,
         },
         full_description: {
           label: i18n.t('Full description'),
+          numberOfLines: 4,
+          editable: !isProductOffer,
           i18n: {
             optional: '',
             required: '',
           },
-          numberOfLines: 4,
           multiline: true,
           stylesheet: {
             ...Form.stylesheet,
@@ -321,6 +327,7 @@ export class EditProduct extends Component {
    */
   renderImages = () => {
     const { product, selectedImages } = this.props;
+    const isProductOffer = !!product.master_product_id;
     const images = [];
 
     if (product.main_pair) {
@@ -335,14 +342,16 @@ export class EditProduct extends Component {
 
     return (
       <ScrollView contentContainerStyle={styles.horizontalScroll} horizontal>
-        <View style={styles.imgWrapper}>
-          <TouchableOpacity
-            onPress={() => {
-              nav.showImagePicker({});
-            }}>
-            <Icon name="add" style={styles.addImageIcon} />
-          </TouchableOpacity>
-        </View>
+        {!isProductOffer && (
+          <View style={styles.imgWrapper}>
+            <TouchableOpacity
+              onPress={() => {
+                nav.showImagePicker({});
+              }}>
+              <Icon name="add" style={styles.addImageIcon} />
+            </TouchableOpacity>
+          </View>
+        )}
         {selectedImages.map((image) => (
           <View style={styles.imgWrapper} key={uniqueId('image-')}>
             <TouchableOpacity
@@ -383,13 +392,18 @@ export class EditProduct extends Component {
    *
    * @return {JSX.Element}
    */
-  renderMenuItem = (title, subTitle, fn = () => {}) => (
-    <TouchableOpacity style={styles.menuItem} onPress={fn}>
+  renderMenuItem = (title, subTitle, fn = () => {}, isProductOffer = false) => (
+    <TouchableOpacity
+      style={styles.menuItem}
+      activeOpacity={isProductOffer ? 1 : 0}
+      onPress={isProductOffer ? null : fn}>
       <View style={styles.menuItemText}>
         <Text style={styles.menuItemTitle}>{title}</Text>
         <Text style={styles.menuItemSubTitle}>{subTitle}</Text>
       </View>
-      <Icon name="keyboard-arrow-right" style={styles.btnIcon} />
+      {!isProductOffer && (
+        <Icon name="keyboard-arrow-right" style={styles.btnIcon} />
+      )}
     </TouchableOpacity>
   );
 
@@ -412,6 +426,7 @@ export class EditProduct extends Component {
    */
   render() {
     const { loading, product, productsActions, isUpdating } = this.props;
+    const isProductOffer = !!product.master_product_id;
 
     if (loading) {
       return <Spinner visible />;
@@ -459,6 +474,7 @@ export class EditProduct extends Component {
                     },
                   });
                 },
+                isProductOffer,
               )}
               {this.renderMenuItem(
                 i18n.t('Shipping properties'),

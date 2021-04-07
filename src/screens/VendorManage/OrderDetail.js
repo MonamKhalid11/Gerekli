@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { format } from 'date-fns';
 import { View, Text, ScrollView, Image } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -15,7 +14,7 @@ import FormBlockField from '../../components/FormBlockField';
 import Spinner from '../../components/Spinner';
 
 import i18n from '../../utils/i18n';
-import { formatPrice, getImagePath } from '../../utils';
+import { formatPrice, getImagePath, formatDate } from '../../utils';
 import { Navigation } from 'react-native-navigation';
 
 const styles = EStyleSheet.create({
@@ -279,7 +278,7 @@ export class OrderDetail extends Component {
             {i18n.t('Order')} #{order.order_id}
           </Text>
           <Text style={styles.subHeader}>
-            {i18n.t('Placed on')} {format(date, 'mm/dd/yyyy')}
+            {i18n.t('Placed on')} {formatDate(date)}
           </Text>
 
           <FormBlock>

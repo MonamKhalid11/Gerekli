@@ -243,49 +243,53 @@ export class VendorDetail extends Component {
    */
   renderContacts() {
     const { vendors } = this.props;
+    const CONTACT_INFORMATION = 'C';
+
+    const vendorContacts = vendors.currentVendor.contact_information;
+
+    // Define field names for contact information section.
+    const contactInformationData = {
+      email: {
+        fieldName: 'E-mail',
+        fieldValue: vendorContacts.email,
+      },
+    };
+
+    vendors.currentVendor.contactInformationFields[
+      CONTACT_INFORMATION
+    ].fields.forEach((field) => {
+      if (
+        field.field_id !== 'company_description' &&
+        field.field_id !== 'plan_id'
+      ) {
+        contactInformationData[field.field_name] = {
+          fieldName: field.description,
+          fieldValue: vendorContacts[field.field_name],
+        };
+        if (field.field_id === 'country') {
+          contactInformationData[field.field_name].fieldValue =
+            field.values[vendorContacts.country];
+        }
+        if (field.field_id === 'state') {
+          contactInformationData[field.field_name].fieldValue =
+            field.values[vendorContacts.country][vendorContacts.state];
+        }
+      }
+    });
+
     return (
       <Section title={i18n.t('Contact Information')}>
-        <SectionRow
-          name={i18n.t('E-mail')}
-          value={vendors.currentVendor.contact_information.email}
-        />
-        <SectionRow
-          name={i18n.t('Phone')}
-          value={vendors.currentVendor.contact_information.phone}
-        />
-        <SectionRow
-          name={i18n.t('Fax')}
-          value={vendors.currentVendor.contact_information.fax}
-        />
-        <SectionRow
-          name={i18n.t('Website')}
-          value={vendors.currentVendor.contact_information.url}
-          last
-        />
-      </Section>
-    );
-  }
-
-  /**
-   * Renders shipping information.
-   *
-   * @return {JSX.Element}
-   */
-  renderShipping() {
-    const { vendors } = this.props;
-
-    return (
-      <Section title={i18n.t('Shipping address')}>
-        <Text style={styles.address}>
-          {vendors.currentVendor.shipping_address.address},
-        </Text>
-        <Text style={styles.address}>
-          {vendors.currentVendor.shipping_address.state}{' '}
-          {vendors.currentVendor.shipping_address.zipcode},
-        </Text>
-        <Text style={styles.address}>
-          {vendors.currentVendor.shipping_address.country}
-        </Text>
+        {Object.keys(contactInformationData).map((contact) => {
+          if (!contactInformationData[contact].fieldValue) {
+            return null;
+          }
+          return (
+            <SectionRow
+              name={i18n.t(contactInformationData[contact].fieldName)}
+              value={contactInformationData[contact].fieldValue}
+            />
+          );
+        })}
       </Section>
     );
   }
@@ -348,7 +352,6 @@ export class VendorDetail extends Component {
         {this.renderLogo()}
         {this.renderDesc()}
         {this.renderContacts()}
-        {this.renderShipping()}
         {this.renderDiscussion()}
       </ScrollView>
     );

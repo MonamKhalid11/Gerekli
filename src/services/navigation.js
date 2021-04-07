@@ -23,8 +23,6 @@ export function setRoot() {
     },
     bottomTabs: {
       backgroundColor: theme.$bottomTabsBackgroundColor,
-      // drawBehind: true,
-      // translucent: true,
     },
     bottomTab: {
       badgeColor: theme.$bottomTabsPrimaryBadgeColor,
@@ -54,7 +52,6 @@ export function setRoot() {
               options: {
                 bottomTab: {
                   icon: iconsMap.home,
-                  selectedIconColor: 'black',
                   text: i18n.t('Home'),
                 },
               },
@@ -74,7 +71,6 @@ export function setRoot() {
               options: {
                 bottomTab: {
                   icon: iconsMap.search,
-                  selectedIconColor: 'black',
                   text: i18n.t('Search'),
                 },
               },
@@ -94,7 +90,6 @@ export function setRoot() {
               options: {
                 bottomTab: {
                   icon: iconsMap['shopping-cart'],
-                  selectedIconColor: 'black',
                   text: i18n.t('Cart'),
                 },
               },
@@ -114,7 +109,6 @@ export function setRoot() {
               options: {
                 bottomTab: {
                   icon: iconsMap.favorite,
-                  selectedIconColor: 'black',
                   text: i18n.t('Favorite'),
                 },
               },
@@ -134,7 +128,6 @@ export function setRoot() {
               options: {
                 bottomTab: {
                   icon: iconsMap.person,
-                  selectedIconColor: 'black',
                   text: i18n.t('Profile'),
                 },
               },
@@ -304,13 +297,13 @@ export function showGallery(params = {}) {
   });
 }
 
-export function showCheckoutDelivery(params) {
+export function showCheckoutProfile(params) {
   Navigation.showModal({
     stack: {
       children: [
         {
           component: {
-            name: 'CheckoutDelivery',
+            name: 'CheckoutProfile',
             passProps: params,
           },
         },
@@ -323,24 +316,6 @@ export function pushCheckoutAuth(componentId, params) {
   Navigation.push(componentId, {
     component: {
       name: 'CheckoutAuth',
-      passProps: params,
-    },
-  });
-}
-
-export function pushCheckoutShipping(componentId, params) {
-  Navigation.push(componentId, {
-    component: {
-      name: 'CheckoutShipping',
-      passProps: params,
-    },
-  });
-}
-
-export function pushCheckoutPayment(componentId, params) {
-  Navigation.push(componentId, {
-    component: {
-      name: 'CheckoutPayment',
       passProps: params,
     },
   });
@@ -572,22 +547,6 @@ export function pushVendorManageCategoriesPicker(componentId, params = {}) {
   });
 }
 
-export function pushVendorManageAddProductStep1(componentId, params = {}) {
-  Navigation.push(componentId, {
-    component: {
-      name: 'VendorManageAddProductStep1',
-      passProps: params,
-      options: {
-        topBar: {
-          title: {
-            text: params.title || i18n.t('Select product image'),
-          },
-        },
-      },
-    },
-  });
-}
-
 export function showImagePicker(params = {}) {
   Navigation.showModal({
     stack: {
@@ -606,38 +565,6 @@ export function showImagePicker(params = {}) {
           },
         },
       ],
-    },
-  });
-}
-
-export function pushVendorManageAddProductStep2(componentId, params = {}) {
-  Navigation.push(componentId, {
-    component: {
-      name: 'VendorManageAddProductStep2',
-      passProps: params,
-      options: {
-        topBar: {
-          title: {
-            text: params.title || i18n.t('Enter the name'),
-          },
-        },
-      },
-    },
-  });
-}
-
-export function pushVendorManageAddProductStep3(componentId, params = {}) {
-  Navigation.push(componentId, {
-    component: {
-      name: 'VendorManageAddProductStep3',
-      passProps: params,
-      options: {
-        topBar: {
-          title: {
-            text: params.title || i18n.t('Enter the price'),
-          },
-        },
-      },
     },
   });
 }
