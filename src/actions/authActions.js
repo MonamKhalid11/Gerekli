@@ -29,6 +29,10 @@ import {
   UPDATE_PROFILE_FAIL,
   STORE_KEY,
   AUTH_LOGOUT,
+  RESET_PASSWORD_REQUEST,
+  RESET_PASSWORD_SUCCESS,
+  RESET_PASSWORD_FAILED,
+  LOGIN_WITH_ONE_TIME_PASSWORD_SUCCESS,
 } from '../constants';
 import Api from '../services/api';
 import i18n from '../utils/i18n';
@@ -229,45 +233,48 @@ export function deviceInfo(data) {
   };
 }
 
+const getUserData = async (response, dispatch) => {
+  try {
+    cartActions.fetch()(dispatch);
+    wishListActions.fetch(false)(dispatch);
+    dispatch({
+      type: AUTH_LOGIN_SUCCESS,
+      payload: response.data,
+    });
+    // Delay send refresh token.
+    setTimeout(() => {
+      const { auth } = store.getState();
+      deviceInfo({
+        token: auth.deviceToken,
+        platform: Platform.OS,
+        locale: settings.selectedLanguage.langCode,
+        device_id: auth.uuid,
+      })(dispatch);
+    }, 1000);
+    await fetchProfile()(dispatch);
+    await layoutsActions.fetch()(dispatch);
+  } catch (error) {
+    dispatch({
+      type: AUTH_LOGIN_FAIL,
+      payload: error.response.data,
+    });
+    dispatch({
+      type: NOTIFICATION_SHOW,
+      payload: {
+        type: 'warning',
+        title: i18n.t('Error'),
+        text: i18n.t('Wrong password.'),
+      },
+    });
+  }
+};
+
 export function login(data) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({ type: AUTH_LOGIN_REQUEST });
 
-    return Api.post('/auth_tokens', data)
-      .then((response) => {
-        cartActions.fetch()(dispatch);
-        wishListActions.fetch(false)(dispatch);
-        dispatch({
-          type: AUTH_LOGIN_SUCCESS,
-          payload: response.data,
-        });
-        // Delay send refresh token.
-        setTimeout(() => {
-          const { auth } = store.getState();
-          deviceInfo({
-            token: auth.deviceToken,
-            platform: Platform.OS,
-            locale: settings.selectedLanguage.langCode,
-            device_id: auth.uuid,
-          })(dispatch);
-        }, 1000);
-      })
-      .then(() => fetchProfile()(dispatch))
-      .then(() => layoutsActions.fetch()(dispatch))
-      .catch((error) => {
-        dispatch({
-          type: AUTH_LOGIN_FAIL,
-          payload: error.response.data,
-        });
-        dispatch({
-          type: NOTIFICATION_SHOW,
-          payload: {
-            type: 'warning',
-            title: i18n.t('Error'),
-            text: i18n.t('Wrong password.'),
-          },
-        });
-      });
+    const res = await Api.post('/auth_tokens', data);
+    getUserData(res, dispatch);
   };
 }
 
@@ -283,4 +290,37 @@ export function logout() {
 
 export function resetState() {
   return (dispatch) => dispatch({ type: AUTH_RESET_STATE });
+}
+
+export function resetPassword(data) {
+  return async (dispatch) => {
+    dispatch({
+      type: RESET_PASSWORD_REQUEST,
+    });
+    try {
+      await Api.post('/sra_one_time_passwords', data);
+      dispatch({
+        type: RESET_PASSWORD_SUCCESS,
+      });
+    } catch (error) {
+      dispatch({
+        type: RESET_PASSWORD_FAILED,
+      });
+    }
+  };
+}
+
+export function loginWithOneTimePassword({ email, oneTimePassword }) {
+  return async (dispatch) => {
+    try {
+      const res = await Api.post('/sra_auth_tokens', {
+        email,
+        one_time_password: oneTimePassword,
+      });
+
+      getUserData(res, dispatch);
+    } catch (error) {
+      console.log('loginWithOneTimePassword error: ', error);
+    }
+  };
 }

@@ -229,6 +229,21 @@ export function showRegistration(params) {
   });
 }
 
+export function showPasswordRecovery(params) {
+  Navigation.showModal({
+    stack: {
+      children: [
+        {
+          component: {
+            name: 'PasswordRecovery',
+            passProps: params,
+          },
+        },
+      ],
+    },
+  });
+}
+
 export function pushProductDetail(componentId, params) {
   Navigation.push(componentId, {
     component: {

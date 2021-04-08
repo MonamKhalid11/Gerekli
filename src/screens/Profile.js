@@ -323,6 +323,9 @@ export class ProfileEdit extends Component {
               style={styles.btn}>
               <Text style={styles.btnText}>{i18n.t('Registration')}</Text>
             </TouchableOpacity>
+            <TouchableOpacity onPress={() => nav.showPasswordRecovery()}>
+              <Text>Забыли пароль?</Text>
+            </TouchableOpacity>
           </View>
         ) : (
           this.renderUserInformation(cart)
