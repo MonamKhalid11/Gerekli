@@ -100,6 +100,11 @@ const styles = EStyleSheet.create({
     fontSize: '0.8rem',
     color: '$menuIconsColor',
   },
+  forgotPasswordText: {
+    color: '#0000FF',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
 });
 
 /**
@@ -324,7 +329,9 @@ export class ProfileEdit extends Component {
               <Text style={styles.btnText}>{i18n.t('Registration')}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => nav.showPasswordRecovery()}>
-              <Text>Забыли пароль?</Text>
+              <Text style={styles.forgotPasswordText}>
+                Forgot your password?
+              </Text>
             </TouchableOpacity>
           </View>
         ) : (

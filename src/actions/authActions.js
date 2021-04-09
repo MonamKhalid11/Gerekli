@@ -32,7 +32,6 @@ import {
   RESET_PASSWORD_REQUEST,
   RESET_PASSWORD_SUCCESS,
   RESET_PASSWORD_FAILED,
-  LOGIN_WITH_ONE_TIME_PASSWORD_SUCCESS,
 } from '../constants';
 import Api from '../services/api';
 import i18n from '../utils/i18n';
@@ -302,10 +301,30 @@ export function resetPassword(data) {
       dispatch({
         type: RESET_PASSWORD_SUCCESS,
       });
+      dispatch({
+        type: NOTIFICATION_SHOW,
+        payload: {
+          type: 'success',
+          title: i18n.t('Success'),
+          text: i18n.t(
+            `A confirmation code has been sent to the mail ${data.email}, please enter it to log in.`,
+          ),
+        },
+      });
+      return true;
     } catch (error) {
       dispatch({
         type: RESET_PASSWORD_FAILED,
       });
+      dispatch({
+        type: NOTIFICATION_SHOW,
+        payload: {
+          type: 'warning',
+          title: i18n.t('Error'),
+          text: i18n.t('The entered email was not found.'),
+        },
+      });
+      return false;
     }
   };
 }
@@ -320,7 +339,14 @@ export function loginWithOneTimePassword({ email, oneTimePassword }) {
 
       getUserData(res, dispatch);
     } catch (error) {
-      console.log('loginWithOneTimePassword error: ', error);
+      dispatch({
+        type: NOTIFICATION_SHOW,
+        payload: {
+          type: 'warning',
+          title: i18n.t('Error'),
+          text: i18n.t('Incorrect code.'),
+        },
+      });
     }
   };
 }
