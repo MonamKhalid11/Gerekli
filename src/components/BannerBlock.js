@@ -12,7 +12,7 @@ const styles = EStyleSheet.create({
     marginBottom: 20,
   },
   img: {
-    width: '100%',
+    width: 'auto',
     height: '100%',
     resizeMode: 'contain',
   },
