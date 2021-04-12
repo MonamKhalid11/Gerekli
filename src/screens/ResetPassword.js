@@ -48,7 +48,6 @@ const styles = EStyleSheet.create({
     width: '100%',
   },
   hint: {
-    fontSize: '0,5rem',
     textAlign: 'left',
     marginBottom: 10,
   },
@@ -117,13 +116,14 @@ const ResetPassword = ({ componentId, authActions }) => {
         <>
           {codeDidntCome ? (
             <View style={styles.tryAgainWrapper}>
-              <Text style={styles.hint}>Try again:</Text>
+              <Text style={styles.hint}>{i18n.t('Try again:')}</Text>
             </View>
           ) : (
             <View style={styles.tryAgainWrapper}>
               <Text style={styles.hint}>
-                Enter your e-mail, we will send you a code to log into your
-                account.
+                {i18n.t(
+                  'Enter your e-mail, we will send you a code to log into your account.',
+                )}
               </Text>
             </View>
           )}

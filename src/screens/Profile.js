@@ -330,7 +330,7 @@ export class ProfileEdit extends Component {
             </TouchableOpacity>
             <TouchableOpacity onPress={() => nav.showResetPassword()}>
               <Text style={styles.forgotPasswordText}>
-                Forgot your password?
+                {i18n.t('Forgot your password?')}
               </Text>
             </TouchableOpacity>
           </View>
