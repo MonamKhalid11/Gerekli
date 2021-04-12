@@ -167,7 +167,8 @@ export class Orders extends Component {
     const swipeoutBtns = [
       {
         text: i18n.t('Status'),
-        type: 'delete',
+        type: 'status',
+        backgroundColor: '#ff6002',
         onPress: () => this.showActionSheet(item.order_id),
       },
     ];
