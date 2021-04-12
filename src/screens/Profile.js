@@ -320,7 +320,7 @@ export class ProfileEdit extends Component {
               onPress={() => nav.showLogin()}
               style={{ ...styles.btn, backgroundColor: '#4fbe31' }}>
               <Text style={{ ...styles.btnText, color: '#fff' }}>
-                {i18n.t('Login')}
+                {i18n.t('Sign in')}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -328,7 +328,7 @@ export class ProfileEdit extends Component {
               style={styles.btn}>
               <Text style={styles.btnText}>{i18n.t('Registration')}</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => nav.showPasswordRecovery()}>
+            <TouchableOpacity onPress={() => nav.showResetPassword()}>
               <Text style={styles.forgotPasswordText}>
                 Forgot your password?
               </Text>

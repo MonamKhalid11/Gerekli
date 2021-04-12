@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import { Navigation } from 'react-native-navigation';
 import i18n from '../utils/i18n';
 import { iconsMap } from '../utils/navIcons';
+import * as nav from '../services/navigation';
 
 // Import actions.
 import * as authActions from '../actions/authActions';
@@ -46,19 +47,19 @@ const styles = EStyleSheet.create({
   tryAgainWrapper: {
     width: '100%',
   },
-  tryAgainText: {
-    fontSize: '1rem',
+  hint: {
+    fontSize: '0,5rem',
     textAlign: 'left',
     marginBottom: 10,
   },
 });
 
-const PasswordRecovery = ({ componentId, authActions }) => {
+const ResetPassword = ({ componentId, authActions }) => {
   useEffect(() => {
     Navigation.mergeOptions(componentId, {
       topBar: {
         title: {
-          text: i18n.t('Password recovery'),
+          text: i18n.t('Reset password'),
         },
         rightButtons: [
           {
@@ -84,7 +85,7 @@ const PasswordRecovery = ({ componentId, authActions }) => {
 
   const [email, setEmail] = useState('');
   const [oneTimePassword, setOneTimePassword] = useState('');
-  const [screen, setScreen] = useState('recovery');
+  const [screen, setScreen] = useState('reset');
   const [codeDidntCome, setCodeDidntCome] = useState(false);
 
   const resetPasswordHandler = async () => {
@@ -94,22 +95,36 @@ const PasswordRecovery = ({ componentId, authActions }) => {
     }
   };
 
-  const loginWithOneTimePasswordHandler = () => {
-    authActions.loginWithOneTimePassword({ email, oneTimePassword });
+  const loginWithOneTimePasswordHandler = async () => {
+    const isLogin = await authActions.loginWithOneTimePassword({
+      email,
+      oneTimePassword,
+    });
+
+    if (isLogin) {
+      Navigation.dismissModal(componentId);
+    }
   };
 
   const codeDidntComeHandler = () => {
-    setScreen('recovery');
+    setScreen('reset');
     setCodeDidntCome(true);
   };
 
   return (
     <View style={styles.container}>
-      {screen === 'recovery' ? (
+      {screen === 'reset' ? (
         <>
-          {codeDidntCome && (
+          {codeDidntCome ? (
             <View style={styles.tryAgainWrapper}>
-              <Text style={styles.tryAgainText}>Try again:</Text>
+              <Text style={styles.hint}>Try again:</Text>
+            </View>
+          ) : (
+            <View style={styles.tryAgainWrapper}>
+              <Text style={styles.hint}>
+                Enter your e-mail, we will send you a code to log into your
+                account.
+              </Text>
             </View>
           )}
           <TextInput
@@ -123,7 +138,7 @@ const PasswordRecovery = ({ componentId, authActions }) => {
           <TouchableOpacity
             onPress={resetPasswordHandler}
             style={styles.button}>
-            <Text style={styles.buttonText}>{i18n.t('Recovery')}</Text>
+            <Text style={styles.buttonText}>{i18n.t('Get the code')}</Text>
           </TouchableOpacity>
         </>
       ) : (
@@ -137,7 +152,7 @@ const PasswordRecovery = ({ componentId, authActions }) => {
           <TouchableOpacity
             style={styles.button}
             onPress={loginWithOneTimePasswordHandler}>
-            <Text style={styles.buttonText}>{i18n.t('Login')}</Text>
+            <Text style={styles.buttonText}>{i18n.t('Sign in')}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={codeDidntComeHandler}>
             <Text style={styles.helpText}>
@@ -157,4 +172,4 @@ export default connect(
   (dispatch) => ({
     authActions: bindActionCreators(authActions, dispatch),
   }),
-)(PasswordRecovery);
+)(ResetPassword);

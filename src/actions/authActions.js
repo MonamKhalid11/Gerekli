@@ -307,7 +307,7 @@ export function resetPassword(data) {
           type: 'success',
           title: i18n.t('Success'),
           text: i18n.t(
-            `A confirmation code has been sent to the mail ${data.email}, please enter it to log in.`,
+            `The confirmation code has been sent to the ${data.email}, type it below to log in.`,
           ),
         },
       });
@@ -321,7 +321,9 @@ export function resetPassword(data) {
         payload: {
           type: 'warning',
           title: i18n.t('Error'),
-          text: i18n.t('The entered email was not found.'),
+          text: i18n.t(
+            'The username you have entered does not match any account in our store. Please make sure you have entered the correct username and try again.',
+          ),
         },
       });
       return false;
@@ -338,6 +340,8 @@ export function loginWithOneTimePassword({ email, oneTimePassword }) {
       });
 
       getUserData(res, dispatch);
+
+      return true;
     } catch (error) {
       dispatch({
         type: NOTIFICATION_SHOW,

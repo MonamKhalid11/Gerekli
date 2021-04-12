@@ -19,7 +19,7 @@ import ImagePicker from './screens/ImagePicker';
 import VendorDetail from './screens/VendorDetail';
 import CheckoutAuth from './screens/CheckoutAuth';
 import Registration from './screens/Registration';
-import PasswordRecovery from './screens/PasswordRecovery';
+import ResetPassword from './screens/ResetPassword';
 import ProductDetail from './screens/ProductDetail';
 import Notification from './components/Notification';
 import CheckoutPayment from './screens/CheckoutPayment';
@@ -45,7 +45,7 @@ const screenList = [
   { name: 'Cart', component: Cart },
   { name: 'Login', component: Login },
   { name: 'Registration', component: Registration },
-  { name: 'PasswordRecovery', component: PasswordRecovery },
+  { name: 'ResetPassword', component: ResetPassword },
   { name: 'Search', component: Search },
   { name: 'Vendor', component: Vendor },
   { name: 'Gallery', component: Gallery },
