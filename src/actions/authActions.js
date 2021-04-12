@@ -272,7 +272,7 @@ export function login(data) {
   return async (dispatch) => {
     dispatch({ type: AUTH_LOGIN_REQUEST });
 
-    const res = await Api.post('/auth_tokens', data);
+    const res = await Api.post('/sra_auth_tokens', data);
     getUserData(res, dispatch);
   };
 }
@@ -307,7 +307,8 @@ export function resetPassword(data) {
           type: 'success',
           title: i18n.t('Success'),
           text: i18n.t(
-            `The confirmation code has been sent to the ${data.email}, type it below to log in.`,
+            'The confirmation code has been sent to the {{email}}, type it below to log in.',
+            { email: data.email },
           ),
         },
       });
