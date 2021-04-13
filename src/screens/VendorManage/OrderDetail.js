@@ -14,12 +14,7 @@ import FormBlockField from '../../components/FormBlockField';
 import Spinner from '../../components/Spinner';
 
 import i18n from '../../utils/i18n';
-import {
-  formatPrice,
-  getImagePath,
-  getOrderStatus,
-  formatDate,
-} from '../../utils';
+import { formatPrice, getImagePath, formatDate } from '../../utils';
 import { Navigation } from 'react-native-navigation';
 
 const styles = EStyleSheet.create({
@@ -243,11 +238,12 @@ export class OrderDetail extends Component {
    */
   renderStatus = () => {
     const { order } = this.props;
-    const status = getOrderStatus(order.status);
 
     return (
       <FormBlock style={styles.formBlockWraper}>
-        <View>{this.renderFieldRow(i18n.t('Status'), status?.text)}</View>
+        <View>
+          {this.renderFieldRow(i18n.t('Status'), order.status_data.description)}
+        </View>
       </FormBlock>
     );
   };
