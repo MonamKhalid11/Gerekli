@@ -4,7 +4,7 @@ import { Navigation } from 'react-native-navigation';
 import { isDate } from 'date-fns';
 import pickBy from 'lodash/pickBy';
 import identity from 'lodash/identity';
-import { formatDate } from '../utils/index';
+import { format } from 'date-fns';
 
 import {
   AUTH_LOGIN_REQUEST,
@@ -101,11 +101,11 @@ export function profileFields(data = {}) {
   };
 }
 
-export function updateProfile(id, params, componentId) {
+export function updateProfile(id, params, componentId, dateFormat) {
   const data = { ...params };
   Object.keys(data).forEach((key) => {
     if (isDate(data[key])) {
-      data[key] = formatDate(data[key]);
+      data[key] = format(data[key], dateFormat);
     }
   });
 
@@ -155,11 +155,11 @@ export function updateProfile(id, params, componentId) {
   };
 }
 
-export function createProfile(params, componentId) {
+export function createProfile(params, componentId, dateFormat) {
   let data = { ...params };
   Object.keys(data).forEach((key) => {
     if (isDate(data[key])) {
-      data[key] = formatDate(data[key]);
+      data[key] = format(data[key], dateFormat);
     }
   });
 

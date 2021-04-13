@@ -70,9 +70,14 @@ export class ProfileEdit extends Component {
    */
   handleSave = (values) => {
     const { profile } = this.state;
-    const { authActions, componentId } = this.props;
+    const { authActions, componentId, settings } = this.props;
     if (values) {
-      authActions.updateProfile(profile.user_id, values, componentId);
+      authActions.updateProfile(
+        profile.user_id,
+        values,
+        componentId,
+        settings.dateFormat,
+      );
     }
   };
 
@@ -83,6 +88,7 @@ export class ProfileEdit extends Component {
    */
   render() {
     const { fetching, forms } = this.state;
+    const { settings } = this.props;
 
     if (fetching) {
       return (
@@ -98,6 +104,7 @@ export class ProfileEdit extends Component {
           fields={omit(forms, 'B')}
           isEdit
           onSubmit={(values) => this.handleSave(values)}
+          dateFormat={settings.dateFormat}
         />
       </View>
     );
@@ -107,6 +114,7 @@ export class ProfileEdit extends Component {
 export default connect(
   (state) => ({
     auth: state.auth,
+    settings: state.settings,
   }),
   (dispatch) => ({
     authActions: bindActionCreators(authActions, dispatch),

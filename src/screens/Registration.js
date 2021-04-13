@@ -95,9 +95,9 @@ export class Registration extends Component {
    * @param {object} values - Registration form values.
    */
   handleRegister = async (values) => {
-    const { authActions, componentId } = this.props;
+    const { authActions, componentId, settings } = this.props;
     if (values) {
-      authActions.createProfile(values, componentId);
+      authActions.createProfile(values, componentId, settings.dateFormat);
     }
   };
 
@@ -132,6 +132,7 @@ export class Registration extends Component {
 export default connect(
   (state) => ({
     auth: state.auth,
+    settings: state.settings,
   }),
   (dispatch) => ({
     authActions: bindActionCreators(authActions, dispatch),

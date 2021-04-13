@@ -222,3 +222,5 @@ export const VENDOR_ORDERS_LOADING = 'VENDOR_ORDERS_LOADING';
 
 export const SET_FLOW = 'SET_FLOW';
 export const SET_NEXT_STEP = 'SET_NEXT_STEP';
+
+export const SET_DATE_FORMAT = 'SET_DATE_FORMAT';

@@ -9,6 +9,7 @@ import {
   SET_CURRENCY,
   SET_LANGUAGE,
   LANGUAGE_CURRENCY_FEATURE_FLAG_OFF,
+  SET_DATE_FORMAT,
 } from '../constants';
 import API from '../services/api';
 import store from '../store';
@@ -77,8 +78,13 @@ export async function initApp() {
   try {
     // Gets lists of languages and currencies
     const {
-      data: { currencies, languages },
+      data: { currencies, languages, properties },
     } = await API.get('sra_storefront');
+
+    store.dispatch({
+      type: SET_DATE_FORMAT,
+      payload: properties.settings.appearance.calendar_date_format,
+    });
 
     // Set default currency
     let currentCurrency = get(JSON.parse(persist), 'settings.selectedCurrency');
