@@ -76,15 +76,16 @@ export async function initApp() {
 
   try {
     // Gets lists of languages and currencies
-    const resLanguages = await API.get('/sra_languages');
-    const resCurrencies = await API.get('/sra_currencies');
+    const {
+      data: { currencies, languages },
+    } = await API.get('sra_storefront');
 
     // Set default currency
     let currentCurrency = get(JSON.parse(persist), 'settings.selectedCurrency');
 
     if (!currentCurrency?.currencyCode) {
-      resCurrencies.data.currencies.forEach((el) => {
-        if (el.is_primary) {
+      currencies.forEach((el) => {
+        if (el.is_default) {
           currentCurrency = {
             currencyCode: el.currency_code,
             symbol: el.symbol,
@@ -104,7 +105,7 @@ export async function initApp() {
       // If the device language is among the languages of the store
       // use device language.
       let isDeviceLanguage = false;
-      resLanguages.data.languages.forEach((el) => {
+      languages.forEach((el) => {
         if (el.lang_code === deviceLanguage) {
           isDeviceLanguage = true;
         }
@@ -116,7 +117,7 @@ export async function initApp() {
           name: deviceLanguage,
         };
       } else {
-        resLanguages.data.languages.forEach((el) => {
+        languages.forEach((el) => {
           if (el.is_default) {
             currentLanguage = {
               langCode: el.lang_code,
@@ -135,12 +136,12 @@ export async function initApp() {
     // Set list of languages and currencies to store
     store.dispatch({
       type: GET_CURRENCIES,
-      payload: resCurrencies.data.currencies,
+      payload: currencies,
     });
 
     store.dispatch({
       type: GET_LANGUAGES,
-      payload: resLanguages.data.languages,
+      payload: languages,
     });
   } catch (e) {
     currentLanguage = {
