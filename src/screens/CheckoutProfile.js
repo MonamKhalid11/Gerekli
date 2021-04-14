@@ -153,7 +153,7 @@ export class CheckoutProfile extends Component {
    * @return {JSX.Element}
    */
   render() {
-    const { cart, currentStep } = this.props;
+    const { cart, currentStep, settings } = this.props;
     const { fieldsFetching, fields } = this.state;
 
     if (fieldsFetching) {
@@ -173,6 +173,7 @@ export class CheckoutProfile extends Component {
         </View>
 
         <ProfileForm
+          dateFormat={settings.dateFormat}
           fields={filteredFields}
           cartFooterEnabled
           showTitles
@@ -195,6 +196,7 @@ export default connect(
     stateCart: state.cart,
     auth: state.auth,
     stateSteps: state.steps,
+    settings: state.settings,
     state,
   }),
   (dispatch) => ({

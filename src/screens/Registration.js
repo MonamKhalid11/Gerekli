@@ -96,6 +96,7 @@ export class Registration extends Component {
    */
   handleRegister = async (values) => {
     const { authActions, componentId, settings } = this.props;
+
     if (values) {
       authActions.createProfile(values, componentId, settings.dateFormat);
     }
@@ -108,6 +109,7 @@ export class Registration extends Component {
    */
   render() {
     const { fetching, forms } = this.state;
+    const { settings } = this.props;
 
     if (fetching) {
       return (
@@ -122,6 +124,7 @@ export class Registration extends Component {
         <ProfileForm
           showTitles={true}
           fields={forms}
+          dateFormat={settings.dateFormat}
           onSubmit={(values) => this.handleRegister(values)}
         />
       </SafeAreaView>
