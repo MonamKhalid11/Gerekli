@@ -1,10 +1,6 @@
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Navigation } from 'react-native-navigation';
-import { isDate } from 'date-fns';
-import pickBy from 'lodash/pickBy';
-import identity from 'lodash/identity';
-import { format } from 'date-fns';
 
 import {
   AUTH_LOGIN_REQUEST,
@@ -101,24 +97,7 @@ export function profileFields(data = {}) {
   };
 }
 
-export function updateProfile(id, params, componentId, dateFormat) {
-  const data = { ...params };
-  Object.keys(data).forEach((key) => {
-    if (isDate(data[key])) {
-      data[key] = format(data[key], dateFormat);
-    }
-  });
-
-  data.b_address = data.s_address;
-  data.b_address_2 = data.s_address_2;
-  data.b_city = data.s_city;
-  data.b_country = data.s_country;
-  data.b_firstname = data.s_firstname;
-  data.b_lastname = data.s_lastname;
-  data.b_phone = data.s_phone;
-  data.b_state = data.s_state;
-  data.b_zipcode = data.s_zipcode;
-
+export function updateProfile(id, data, componentId) {
   return (dispatch) => {
     dispatch({ type: UPDATE_PROFILE_REQUEST });
     return Api.put(`/sra_profile/${id}`, data)
@@ -155,17 +134,7 @@ export function updateProfile(id, params, componentId, dateFormat) {
   };
 }
 
-export function createProfile(params, componentId, dateFormat) {
-  let data = { ...params };
-  Object.keys(data).forEach((key) => {
-    if (isDate(data[key])) {
-      data[key] = format(data[key], dateFormat);
-    }
-  });
-
-  // Remove all null and undefined values.
-  data = pickBy(data, identity);
-
+export function createProfile(data, componentId) {
   return (dispatch) => {
     dispatch({ type: AUTH_REGESTRATION_REQUEST });
     return Api.post('/sra_profile', data)
