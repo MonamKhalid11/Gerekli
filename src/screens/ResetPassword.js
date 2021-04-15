@@ -51,6 +51,9 @@ const styles = EStyleSheet.create({
     textAlign: 'left',
     marginBottom: 10,
   },
+  validateWarning: {
+    borderColor: '$dangerColor',
+  },
 });
 
 const ResetPassword = ({ componentId, authActions }) => {
@@ -86,15 +89,28 @@ const ResetPassword = ({ componentId, authActions }) => {
   const [oneTimePassword, setOneTimePassword] = useState('');
   const [screen, setScreen] = useState('reset');
   const [codeDidntCome, setCodeDidntCome] = useState(false);
+  const [isValidate, setIsValidate] = useState(true);
 
   const resetPasswordHandler = async () => {
-    const status = await authActions.resetPassword({ email });
+    const regex = /\S+@\S+\.\S+/i;
+
+    if (!email.match(regex)) {
+      setIsValidate(false);
+      return;
+    }
+
+    const status = await authActions.resetPassword({ email: email.trim() });
     if (status) {
       setScreen('login');
     }
   };
 
   const loginWithOneTimePasswordHandler = async () => {
+    if (!oneTimePassword.length) {
+      setIsValidate(false);
+      return;
+    }
+
     const isLogin = await authActions.loginWithOneTimePassword({
       email,
       oneTimePassword,
@@ -130,9 +146,10 @@ const ResetPassword = ({ componentId, authActions }) => {
           <TextInput
             value={email}
             placeholder={'Email'}
-            style={styles.input}
+            style={[styles.input, !isValidate && styles.validateWarning]}
             onChangeText={(value) => {
               setEmail(value);
+              setIsValidate(true);
             }}
           />
           <TouchableOpacity
@@ -146,8 +163,11 @@ const ResetPassword = ({ componentId, authActions }) => {
           <TextInput
             value={oneTimePassword}
             placeholder={'Code'}
-            style={styles.input}
-            onChangeText={(value) => setOneTimePassword(value)}
+            style={[styles.input, !isValidate && styles.validateWarning]}
+            onChangeText={(value) => {
+              setOneTimePassword(value);
+              setIsValidate(true);
+            }}
           />
           <TouchableOpacity
             style={styles.button}
