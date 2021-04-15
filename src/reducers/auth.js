@@ -21,6 +21,7 @@ const initialState = {
   deviceToken: null,
   profile_id: null,
   user_id: null,
+  resetPasswordStatus: '',
 };
 
 export default function (state = initialState, action) {

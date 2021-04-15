@@ -229,6 +229,30 @@ export function showRegistration(params) {
   });
 }
 
+export function showResetPassword(params) {
+  Navigation.showModal({
+    stack: {
+      children: [
+        {
+          component: {
+            name: 'ResetPassword',
+            passProps: params,
+          },
+        },
+      ],
+    },
+  });
+}
+
+export function popResetPassword(componentId, params) {
+  Navigation.pop(componentId, {
+    component: {
+      name: 'ResetPassword',
+      passProps: params,
+    },
+  });
+}
+
 export function pushProductDetail(componentId, params) {
   Navigation.push(componentId, {
     component: {

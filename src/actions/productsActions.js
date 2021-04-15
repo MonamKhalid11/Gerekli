@@ -291,7 +291,6 @@ export function fetch(pid) {
         return response;
       })
       .catch((error) => {
-        console.log('error: ', error);
         dispatch({
           type: FETCH_ONE_PRODUCT_FAIL,
           payload: {
