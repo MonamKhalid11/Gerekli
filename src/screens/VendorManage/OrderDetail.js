@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { View, Text, ScrollView, Image } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { format } from 'date-fns';
 
 // Import actions.
 import * as ordersActions from '../../actions/vendorManage/ordersActions';
@@ -14,7 +15,7 @@ import FormBlockField from '../../components/FormBlockField';
 import Spinner from '../../components/Spinner';
 
 import i18n from '../../utils/i18n';
-import { formatPrice, getImagePath, formatDate } from '../../utils';
+import { formatPrice, getImagePath } from '../../utils';
 import { Navigation } from 'react-native-navigation';
 
 const styles = EStyleSheet.create({
@@ -254,7 +255,7 @@ export class OrderDetail extends Component {
    * @return {JSX.Element}
    */
   render() {
-    const { order, fetching } = this.props;
+    const { order, fetching, settings } = this.props;
 
     if (fetching) {
       return (
@@ -278,7 +279,7 @@ export class OrderDetail extends Component {
             {i18n.t('Order')} #{order.order_id}
           </Text>
           <Text style={styles.subHeader}>
-            {i18n.t('Placed on')} {formatDate(date)}
+            {i18n.t('Placed on')} {format(date, settings.dateFormat)}
           </Text>
 
           <FormBlock>
@@ -322,6 +323,7 @@ export default connect(
   (state) => ({
     order: state.vendorManageOrders.current,
     fetching: state.vendorManageOrders.loadingCurrent,
+    settings: state.settings,
   }),
   (dispatch) => ({
     ordersActions: bindActionCreators(ordersActions, dispatch),
