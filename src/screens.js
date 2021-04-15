@@ -20,6 +20,7 @@ import VendorDetail from './screens/VendorDetail';
 import CheckoutAuth from './screens/CheckoutAuth';
 import Registration from './screens/Registration';
 import ProductDetail from './screens/ProductDetail';
+import ProductDetailNew from './screens/ProductDetailNew';
 import Notification from './components/Notification';
 import CheckoutPayment from './screens/CheckoutPayment';
 import CheckoutComplete from './screens/CheckoutComplete';
@@ -53,6 +54,7 @@ const screenList = [
   { name: 'VendorDetail', component: VendorDetail },
   { name: 'CheckoutAuth', component: CheckoutAuth },
   { name: 'ProductDetail', component: ProductDetail },
+  { name: 'ProductDetailNew', component: ProductDetailNew },
   { name: 'CheckoutDelivery', component: CheckoutDelivery },
   { name: 'CheckoutShipping', component: CheckoutShipping },
   { name: 'CheckoutPayment', component: CheckoutPayment },

@@ -243,6 +243,20 @@ export function pushProductDetail(componentId, params) {
   });
 }
 
+export function pushProductDetailNew(componentId, params) {
+  Navigation.push(componentId, {
+    component: {
+      name: 'ProductDetailNew',
+      options: {
+        topBar: {
+          backButtonTitle: '',
+        },
+      },
+      passProps: params,
+    },
+  });
+}
+
 export function pushWriteReview(componentId, params) {
   Navigation.push(componentId, {
     component: {
