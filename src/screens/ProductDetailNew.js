@@ -23,21 +23,21 @@ const styles = EStyleSheet.create({
 
 export const ProductDetailNew = ({ pid, productDetail, productsActions }) => {
   useEffect(() => {
+    setCurrentPid(pid);
     async function fetchProduct() {
-      setCurrentPid(pid)
       await productsActions.fetch(pid);
     }
     fetchProduct();
   }, []);
 
   useEffect(() => {
-    if (product) {
-      console.log('product use effect: ', product)
-      const defaultOptions = { ...product.defaultdOptions };
-      const defaultVariants = { ...product.defaultVariants };
+    if (productDetail.byId[currentPid]) {
+      const currentProduct = { ...productDetail.byId[currentPid] };
+      const defaultOptions = { ...currentProduct.defaultdOptions };
+      const defaultVariants = { ...currentProduct.defaultVariants };
 
       if (!Object.keys(defaultOptions).length) {
-        product.convertedOptions.forEach((option) => {
+        currentProduct.convertedOptions.forEach((option) => {
           if (option.option_type === OPTION_TYPE_CHECKBOX) {
             defaultOptions[option.selectDefaultId] = option.selectVariants.find(
               (el) => parseInt(el.position, 10) === 0,
@@ -51,7 +51,7 @@ export const ProductDetailNew = ({ pid, productDetail, productsActions }) => {
       }
 
       if (!Object.keys(defaultVariants).length) {
-        product.convertedVariants.forEach((variant) => {
+        currentProduct.convertedVariants.forEach((variant) => {
           defaultVariants[
             variant.selectDefaultId
           ] = variant.selectVariants.find(
@@ -60,41 +60,25 @@ export const ProductDetailNew = ({ pid, productDetail, productsActions }) => {
         });
       }
 
-      setProduct({ ...product, defaultVariants, defaultOptions });
+      setProduct({ ...currentProduct, defaultVariants, defaultOptions });
     }
-  }, [pid, productDetail, product]);
+  }, [productDetail, product, currentPid]);
 
   const [product, setProduct] = useState('');
-  const [currentPid, setCurrentPid] = useState('')
+  const [currentPid, setCurrentPid] = useState('');
 
   const changeVariationHandler = async (variantId, variantOption) => {
-    // const { selectedVariants } = this.state;
-    const newPid = variantOption.product_id;
+    const selectedVariationPid = variantOption.product_id;
     const newVariant = { ...product.defaultVariants };
     newVariant[variantOption.variant_id] = variantOption;
 
-    if (product.defaultVariants[variantId].product_id === pid) {
+    if (
+      product.defaultVariants[variantId].product_id === selectedVariationPid
+    ) {
       return null;
     }
-
-    setCurrentPid(currentPid)
-
-    const result = await productsActions.fetch(pid);
-    console.log('result: ', result)
-    setProduct(result.data);
-
-    console.log(' changeVariationHandler product: ', product)
-
-    // this.setState(
-    //   {
-    //     currentPid: pid,
-    //     selectedVariants: newVariant,
-    //     selectedOptions: {},
-    //   },
-    //   () => {
-    //     this.productInit(pid);
-    //   },
-    // );
+    setCurrentPid(selectedVariationPid);
+    await productsActions.fetch(selectedVariationPid);
   };
 
   const changeOptionHandler = (optionId, selectedOptionValue) => {
@@ -132,16 +116,6 @@ export const ProductDetailNew = ({ pid, productDetail, productsActions }) => {
       </Section>
     );
   };
-
-  if (
-    product?.pruduct_id !== currentPid &&
-    productDetail.byId[pid] &&
-    !productDetail.byId[pid].fetching
-  ) {
-    setProduct(productDetail.byId[pid]);
-  }
-
-  // console.log('product: ', product.pruduct_id !== );
 
   if (!product) {
     return null;
