@@ -22,50 +22,49 @@ const styles = EStyleSheet.create({
 });
 
 export const ProductDetailNew = ({ pid, productDetail, productsActions }) => {
-  useEffect(() => {
-    setCurrentPid(pid);
-    async function fetchProduct() {
-      await productsActions.fetch(pid);
+  const [product, setProduct] = useState('');
+
+  async function fetchProduct(currentPid) {
+    const result = await productsActions.fetch(currentPid);
+
+    if (!result.data) {
+      return;
     }
-    fetchProduct();
+
+    const currentProduct = { ...result.data };
+    const defaultOptions = { ...currentProduct.defaultdOptions };
+    const defaultVariants = { ...currentProduct.defaultVariants };
+
+    if (!Object.keys(defaultOptions).length) {
+      currentProduct.convertedOptions.forEach((option) => {
+        if (option.option_type === OPTION_TYPE_CHECKBOX) {
+          defaultOptions[option.selectDefaultId] = option.selectVariants.find(
+            (el) => parseInt(el.position, 10) === 0,
+          );
+        } else {
+          defaultOptions[option.selectDefaultId] = option.selectVariants.find(
+            (el) => el.selectId === option.selectDefaultId,
+          );
+        }
+      });
+    }
+
+    if (!Object.keys(defaultVariants).length) {
+      currentProduct.convertedVariants.forEach((variant) => {
+        defaultVariants[variant.selectDefaultId] = variant.selectVariants.find(
+          (el) => el.selectId === variant.selectDefaultId,
+        );
+      });
+    }
+
+    setProduct({ ...currentProduct, defaultVariants, defaultOptions });
+  }
+
+  useEffect(() => {
+    fetchProduct(pid);
   }, []);
 
-  useEffect(() => {
-    if (productDetail.byId[currentPid]) {
-      const currentProduct = { ...productDetail.byId[currentPid] };
-      const defaultOptions = { ...currentProduct.defaultdOptions };
-      const defaultVariants = { ...currentProduct.defaultVariants };
-
-      if (!Object.keys(defaultOptions).length) {
-        currentProduct.convertedOptions.forEach((option) => {
-          if (option.option_type === OPTION_TYPE_CHECKBOX) {
-            defaultOptions[option.selectDefaultId] = option.selectVariants.find(
-              (el) => parseInt(el.position, 10) === 0,
-            );
-          } else {
-            defaultOptions[option.selectDefaultId] = option.selectVariants.find(
-              (el) => el.selectId === option.selectDefaultId,
-            );
-          }
-        });
-      }
-
-      if (!Object.keys(defaultVariants).length) {
-        currentProduct.convertedVariants.forEach((variant) => {
-          defaultVariants[
-            variant.selectDefaultId
-          ] = variant.selectVariants.find(
-            (el) => el.selectId === variant.selectDefaultId,
-          );
-        });
-      }
-
-      setProduct({ ...currentProduct, defaultVariants, defaultOptions });
-    }
-  }, [productDetail, product, currentPid]);
-
-  const [product, setProduct] = useState('');
-  const [currentPid, setCurrentPid] = useState('');
+  console.log('useEffect product: ', product);
 
   const changeVariationHandler = async (variantId, variantOption) => {
     const selectedVariationPid = variantOption.product_id;
@@ -77,8 +76,8 @@ export const ProductDetailNew = ({ pid, productDetail, productsActions }) => {
     ) {
       return null;
     }
-    setCurrentPid(selectedVariationPid);
-    await productsActions.fetch(selectedVariationPid);
+
+    fetchProduct(selectedVariationPid);
   };
 
   const changeOptionHandler = (optionId, selectedOptionValue) => {
