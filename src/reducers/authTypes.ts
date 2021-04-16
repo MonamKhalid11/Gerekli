@@ -24,16 +24,16 @@ import {
 } from '../constants';
 
 export interface AuthState {
-  token: string;
-  ttl: number;
+  token: null | string;
+  ttl: null | number;
   logged: boolean;
-  uuid: string;
+  uuid: null | string;
   fetching: boolean;
-  error: string;
-  errorStatus: number;
-  deviceToken: string;
-  profile_id: string;
-  user_id: number;
+  error: null | string;
+  errorStatus: null | number;
+  deviceToken: null | string;
+  profile_id: null | string;
+  user_id: null | number;
 }
 
 // AUTH_LOGIN_REQUEST

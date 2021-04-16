@@ -12,16 +12,16 @@ import {
 import { AuthState, AuthActionTypes } from './authTypes';
 
 const initialState: AuthState = {
-  token: '',
-  ttl: 0,
+  token: null,
+  ttl: null,
   logged: false,
-  uuid: '',
+  uuid: null,
   fetching: false,
-  error: '',
-  errorStatus: 0,
-  deviceToken: '',
-  profile_id: '',
-  user_id: 0,
+  error: null,
+  errorStatus: null,
+  deviceToken: null,
+  profile_id: null,
+  user_id: null,
 };
 
 export default function (state = initialState, action: AuthActionTypes) {
