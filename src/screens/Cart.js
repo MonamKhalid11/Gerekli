@@ -5,6 +5,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { View, Alert } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { iconsMap } from '../utils/navIcons';
+import i18n from '../utils/i18n';
 
 // Import actions.
 import * as cartActions from '../actions/cartActions';
@@ -13,11 +15,6 @@ import * as cartActions from '../actions/cartActions';
 import Spinner from '../components/Spinner';
 import VendorsCartsList from '../components/VendorsCartsList';
 import CartProductList from '../components/CartProductList';
-
-// theme
-import i18n from '../utils/i18n';
-
-import { iconsMap } from '../utils/navIcons';
 
 // Styles
 const styles = EStyleSheet.create({
@@ -79,7 +76,8 @@ export class Cart extends Component {
    * Gets cart data.
    */
   componentDidMount() {
-    this.props.cartActions.fetch();
+    const { cart } = this.props;
+    this.props.cartActions.fetch(undefined, cart.coupons);
   }
 
   /**
@@ -166,8 +164,10 @@ export class Cart extends Component {
    * Refresh cart data.
    */
   handleRefresh = () => {
-    const { cartActions } = this.props;
-    this.setState({ refreshing: true }, () => cartActions.fetch());
+    const { cartActions, cart } = this.props;
+    this.setState({ refreshing: true }, () =>
+      cartActions.fetch(undefined, cart.coupons),
+    );
   };
 
   /**
@@ -250,6 +250,7 @@ export class Cart extends Component {
    */
   render() {
     const { cart } = this.props;
+
     return (
       <View style={styles.container}>
         {cart.isSeparateCart ? this.renderVendorsList() : this.renderList()}

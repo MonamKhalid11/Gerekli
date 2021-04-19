@@ -76,7 +76,7 @@ const styles = EStyleSheet.create({
  * @reactProps {function} onRemovePress - Removes a coupon.
  * @reactProps {string[]} items - Applied coupons.
  */
-class CouponCodes extends Component {
+class CouponCodeSection extends Component {
   /**
    * @ignore
    */
@@ -140,6 +140,7 @@ class CouponCodes extends Component {
   render() {
     const { items } = this.props;
     const { value } = this.state;
+
     return (
       <View style={styles.wrapper}>
         <FormBlock title={i18n.t('Coupon code')}>
@@ -162,4 +163,4 @@ class CouponCodes extends Component {
   }
 }
 
-export default CouponCodes;
+export default CouponCodeSection;

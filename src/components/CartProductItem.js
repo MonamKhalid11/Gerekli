@@ -4,6 +4,7 @@ import { View, Text, Image } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swipeout from 'react-native-swipeout';
 import { get } from 'lodash';
+import { connect } from 'react-redux';
 
 // Components
 import { QtyOption } from './QtyOption';
@@ -67,7 +68,7 @@ const styles = EStyleSheet.create({
  *
  * @return {JSX.Element}
  */
-const CartProductItem = ({ cartActions, item }) => {
+const CartProductItem = ({ cartActions, item, cart }) => {
   /**
    * Changes the quantity of product.
    *
@@ -75,7 +76,7 @@ const CartProductItem = ({ cartActions, item }) => {
    * @param {number} amount - Amount of product.
    */
   const handleChangeAmountRequest = (item, amount) => {
-    const newItem = { ...item, amount };
+    const newItem = { ...item, amount, coupons: cart.coupons };
     cartActions.change(newItem.cartId, newItem);
   };
 
@@ -85,7 +86,7 @@ const CartProductItem = ({ cartActions, item }) => {
    * @param {object} product - Product infromation.
    */
   const handleRemoveProduct = (product) => {
-    cartActions.remove(product.cartId);
+    cartActions.remove(product.cartId, cart.coupons);
   };
 
   /**
@@ -122,7 +123,8 @@ const CartProductItem = ({ cartActions, item }) => {
    * Calculates price of product including taxes.
    */
   const productTaxedPrice = get(item, 'display_price_formatted.price', '');
-  const productPrice = productTaxedPrice || get(item, 'price_formatted.price', '');
+  const productPrice =
+    productTaxedPrice || get(item, 'price_formatted.price', '');
   const showTaxedPrice = isPriceIncludesTax(item);
 
   /**
@@ -152,18 +154,23 @@ const CartProductItem = ({ cartActions, item }) => {
             </Text>
           </View>
           <View style={styles.qtyContainer}>
-            <QtyOption
-              max={max}
-              min={min}
-              initialValue={initialValue}
-              step={step}
-              onChange={(val) => {
-                if (val <= parseInt(item.in_stock, 10) || item.out_of_stock_actions === 'B') {
-                  cartActions.changeAmount(item.cartId, val, item.company_id);
-                  handleChangeAmountRequest(item, val);
-                }
-              }}
-            />
+            {!item.exclude_from_calculate && (
+              <QtyOption
+                max={max}
+                min={min}
+                initialValue={initialValue}
+                step={step}
+                onChange={(val) => {
+                  if (
+                    val <= parseInt(item.in_stock, 10) ||
+                    item.out_of_stock_actions === 'B'
+                  ) {
+                    cartActions.changeAmount(item.cartId, val, item.company_id);
+                    handleChangeAmountRequest(item, val);
+                  }
+                }}
+              />
+            )}
           </View>
         </View>
       </Swipeout>
@@ -176,4 +183,6 @@ CartProductItem.propTypes = {
   item: PropTypes.shape({}),
 };
 
-export default CartProductItem;
+export default connect((state) => ({
+  cart: state.cart,
+}))(CartProductItem);

@@ -19,12 +19,13 @@ import ImagePicker from './screens/ImagePicker';
 import VendorDetail from './screens/VendorDetail';
 import CheckoutAuth from './screens/CheckoutAuth';
 import Registration from './screens/Registration';
+import ResetPassword from './screens/ResetPassword';
 import ProductDetail from './screens/ProductDetail';
 import Notification from './components/Notification';
 import CheckoutPayment from './screens/CheckoutPayment';
 import CheckoutComplete from './screens/CheckoutComplete';
 import CheckoutShipping from './screens/CheckoutShipping';
-import CheckoutDelivery from './screens/CheckoutDelivery';
+import CheckoutProfile from './screens/CheckoutProfile';
 import SettlementsCompleteWebView from './screens/SettlementsCompleteWebView';
 import VendorManageOrders from './screens/VendorManage/Orders';
 import VendorManageProducts from './screens/VendorManage/Products';
@@ -44,6 +45,7 @@ const screenList = [
   { name: 'Cart', component: Cart },
   { name: 'Login', component: Login },
   { name: 'Registration', component: Registration },
+  { name: 'ResetPassword', component: ResetPassword },
   { name: 'Search', component: Search },
   { name: 'Vendor', component: Vendor },
   { name: 'Gallery', component: Gallery },
@@ -53,7 +55,7 @@ const screenList = [
   { name: 'VendorDetail', component: VendorDetail },
   { name: 'CheckoutAuth', component: CheckoutAuth },
   { name: 'ProductDetail', component: ProductDetail },
-  { name: 'CheckoutDelivery', component: CheckoutDelivery },
+  { name: 'CheckoutProfile', component: CheckoutProfile },
   { name: 'CheckoutShipping', component: CheckoutShipping },
   { name: 'CheckoutPayment', component: CheckoutPayment },
   { name: 'WriteReview', component: WriteReview },

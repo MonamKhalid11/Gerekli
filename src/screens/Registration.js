@@ -4,6 +4,10 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { View, SafeAreaView } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { format } from 'date-fns';
+import identity from 'lodash/identity';
+import pickBy from 'lodash/pickBy';
+import { isDate } from 'date-fns';
 
 // Import actions.
 import * as authActions from '../actions/authActions';
@@ -95,9 +99,20 @@ export class Registration extends Component {
    * @param {object} values - Registration form values.
    */
   handleRegister = async (values) => {
-    const { authActions, componentId } = this.props;
+    const { authActions, componentId, settings } = this.props;
+
     if (values) {
-      authActions.createProfile(values, componentId);
+      let data = { ...values };
+      Object.keys(data).forEach((key) => {
+        if (isDate(data[key])) {
+          data[key] = format(data[key], settings.dateFormat);
+        }
+      });
+
+      // Remove all null and undefined values.
+      data = pickBy(data, identity);
+
+      authActions.createProfile(data, componentId);
     }
   };
 
@@ -108,6 +123,7 @@ export class Registration extends Component {
    */
   render() {
     const { fetching, forms } = this.state;
+    const { settings } = this.props;
 
     if (fetching) {
       return (
@@ -122,6 +138,7 @@ export class Registration extends Component {
         <ProfileForm
           showTitles={true}
           fields={forms}
+          dateFormat={settings.dateFormat}
           onSubmit={(values) => this.handleRegister(values)}
         />
       </SafeAreaView>
@@ -132,6 +149,7 @@ export class Registration extends Component {
 export default connect(
   (state) => ({
     auth: state.auth,
+    settings: state.settings,
   }),
   (dispatch) => ({
     authActions: bindActionCreators(authActions, dispatch),
