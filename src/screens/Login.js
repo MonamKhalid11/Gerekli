@@ -64,7 +64,7 @@ export class Login extends Component {
     }),
     auth: PropTypes.shape({
       logged: PropTypes.bool,
-      error: PropTypes.shape({}),
+      error: PropTypes.string,
       fetching: PropTypes.bool,
     }),
   };

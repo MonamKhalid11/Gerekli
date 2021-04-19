@@ -1,6 +1,15 @@
 import { Platform } from 'react-native';
+import { Dispatch } from 'redux';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Navigation } from 'react-native-navigation';
+
+import {
+  AuthActionTypes,
+  DeviceInfoData,
+  CreateProfileParams,
+  LoginData,
+  UpdateProfileParams,
+} from '../reducers/authTypes';
 
 import {
   AUTH_LOGIN_REQUEST,
@@ -44,8 +53,9 @@ export function fetchProfile() {
     langCode: settings.selectedLanguage.langCode,
   };
 
-  return (dispatch) => {
+  return (dispatch: Dispatch<AuthActionTypes>) => {
     dispatch({ type: FETCH_PROFILE_REQUEST });
+
     return Api.get('/sra_profile', { params })
       .then((response) => {
         dispatch({
@@ -78,7 +88,7 @@ export function profileFields(data = {}) {
     method = '/sra_profile_fields'; // at Registration.js app has not access to /sra_profile
   }
 
-  return (dispatch) => {
+  return (dispatch: Dispatch<AuthActionTypes>) => {
     dispatch({ type: FETCH_PROFILE_FIELDS_REQUEST });
     return Api.get(method, { params })
       .then((response) => {
@@ -101,7 +111,7 @@ export function profileFields(data = {}) {
 }
 
 export function updateProfile(id, data, componentId) {
-  return (dispatch) => {
+  return (dispatch: Dispatch<AuthActionTypes>) => {
     dispatch({ type: UPDATE_PROFILE_REQUEST });
     return Api.put(`/sra_profile/${id}`, data)
       .then(() => {
@@ -138,7 +148,7 @@ export function updateProfile(id, data, componentId) {
 }
 
 export function createProfile(data, componentId) {
-  return (dispatch) => {
+  return (dispatch: Dispatch<AuthActionTypes>) => {
     dispatch({ type: AUTH_REGESTRATION_REQUEST });
     return Api.post('/sra_profile', data)
       .then((response) => {
@@ -179,9 +189,10 @@ export function createProfile(data, componentId) {
   };
 }
 
-export function deviceInfo(data) {
-  return (dispatch) => {
+export function deviceInfo(data: DeviceInfoData) {
+  return (dispatch: Dispatch<AuthActionTypes>) => {
     dispatch({ type: REGISTER_DEVICE_REQUEST });
+
     return Api.post('/sra_notifications', data)
       .then((response) => {
         dispatch({
@@ -247,7 +258,7 @@ export function login(data) {
 }
 
 export function logout() {
-  return (dispatch) => {
+  return (dispatch: Dispatch<AuthActionTypes>) => {
     dispatch({
       type: AUTH_LOGOUT,
     });
@@ -257,7 +268,8 @@ export function logout() {
 }
 
 export function resetState() {
-  return (dispatch) => dispatch({ type: AUTH_RESET_STATE });
+  return (dispatch: Dispatch<AuthActionTypes>) =>
+    dispatch({ type: AUTH_RESET_STATE });
 }
 
 export function resetPassword(data) {
