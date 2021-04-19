@@ -315,7 +315,7 @@ export class ProfileEdit extends Component {
               onPress={() => nav.showLogin()}
               style={{ ...styles.btn, backgroundColor: '#4fbe31' }}>
               <Text style={{ ...styles.btnText, color: '#fff' }}>
-                {i18n.t('Login')}
+                {i18n.t('Sign in')}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity

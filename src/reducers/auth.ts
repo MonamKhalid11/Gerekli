@@ -1,16 +1,17 @@
 import { get } from 'lodash';
 import {
   AUTH_LOGIN_REQUEST,
-  AUTH_LOGIN_SUCCESS,
   AUTH_LOGIN_FAIL,
-  AUTH_RESET_STATE,
   AUTH_LOGOUT,
   AUTH_REGESTRATION_SUCCESS,
   REGISTER_DEVICE_SUCCESS,
   RESTORE_STATE,
+  AUTH_LOGIN_SUCCESS,
 } from '../constants';
 
-const initialState = {
+import { AuthState, AuthActionTypes } from './authTypes';
+
+const initialState: AuthState = {
   token: null,
   ttl: null,
   logged: false,
@@ -21,9 +22,10 @@ const initialState = {
   deviceToken: null,
   profile_id: null,
   user_id: null,
+  resetPasswordStatus: '',
 };
 
-export default function (state = initialState, action) {
+export default function (state = initialState, action: AuthActionTypes) {
   switch (action.type) {
     case AUTH_LOGIN_REQUEST:
       return {
@@ -34,6 +36,16 @@ export default function (state = initialState, action) {
       };
 
     case AUTH_LOGIN_SUCCESS:
+      return {
+        ...state,
+        token: action.payload.token,
+        ttl: action.payload.ttl,
+        logged: true,
+        fetching: false,
+        error: null,
+        errorStatus: null,
+      };
+
     case AUTH_REGESTRATION_SUCCESS:
       return {
         ...state,
@@ -59,7 +71,6 @@ export default function (state = initialState, action) {
         deviceToken: action.payload.token,
       };
 
-    case AUTH_RESET_STATE:
     case AUTH_LOGOUT:
       return initialState;
 

@@ -7,18 +7,18 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { Navigation } from 'react-native-navigation';
 
 // Import components
-import CheckoutSteps from '../components/CheckoutSteps';
+import StepByStepSwitcher from '../components/StepByStepSwitcher';
 import Spinner from '../components/Spinner';
 
 // Import actions.
 import * as authActions from '../actions/authActions';
 import * as cartActions from '../actions/cartActions';
+import * as stepsActions from '../actions/stepsActions';
 
 import i18n from '../utils/i18n';
 import { formatPrice } from '../utils';
 import ProfileForm from '../components/ProfileForm';
 import { iconsMap } from '../utils/navIcons';
-import * as nav from '../services/navigation';
 
 const styles = EStyleSheet.create({
   container: {
@@ -39,7 +39,7 @@ const styles = EStyleSheet.create({
  * @reactProps {object} cart - Cart information.
  * @reactProps {object} authActions - Auth actions.
  */
-export class Checkout extends Component {
+export class CheckoutProfile extends Component {
   /**
    * @ignore
    */
@@ -105,18 +105,47 @@ export class Checkout extends Component {
    * @param {object} values - Form data.
    */
   handleNextPress(values) {
-    const { cart, cartActions } = this.props;
-
-    cartActions.saveUserData({
-      ...cart.user_data,
-      ...values,
-    });
-
-    nav.pushCheckoutShipping(this.props.componentId, {
+    const {
       cart,
-      total: cart.subtotal,
+      cartActions,
+      stateSteps,
+      stepsActions,
+      currentStep,
+      stateCart,
+    } = this.props;
+
+    cartActions.saveUserData(
+      {
+        ...cart.user_data,
+        ...values,
+      },
+      stateCart.coupons,
+    );
+
+    // Define next step
+    const nextStep =
+      stateSteps.flowSteps[
+        Object.keys(stateSteps.flowSteps)[currentStep.stepNumber + 1]
+      ];
+    stepsActions.setNextStep(nextStep);
+
+    Navigation.push(this.props.componentId, {
+      component: {
+        name: nextStep.screenName,
+        passProps: { cart, total: cart.subtotal, currentStep: nextStep },
+      },
     });
   }
+
+  filterProfileFormFields = (cart, fields) => {
+    let filteredFields = { ...fields };
+
+    if (!cart.isShippingRequired) {
+      delete filteredFields.S;
+    }
+
+    return filteredFields;
+  };
 
   /**
    * Renders component
@@ -124,7 +153,7 @@ export class Checkout extends Component {
    * @return {JSX.Element}
    */
   render() {
-    const { cart } = this.props;
+    const { cart, currentStep, settings } = this.props;
     const { fieldsFetching, fields } = this.state;
 
     if (fieldsFetching) {
@@ -135,14 +164,17 @@ export class Checkout extends Component {
       );
     }
 
+    const filteredFields = this.filterProfileFormFields(cart, fields);
+
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.contentContainer}>
-          <CheckoutSteps step={1} />
+          <StepByStepSwitcher currentStep={currentStep} />
         </View>
 
         <ProfileForm
-          fields={fields}
+          dateFormat={settings.dateFormat}
+          fields={filteredFields}
           cartFooterEnabled
           showTitles
           totalPrice={formatPrice(cart.total_formatted.price)}
@@ -161,11 +193,15 @@ export class Checkout extends Component {
 
 export default connect(
   (state) => ({
+    stateCart: state.cart,
     auth: state.auth,
+    stateSteps: state.steps,
+    settings: state.settings,
     state,
   }),
   (dispatch) => ({
     authActions: bindActionCreators(authActions, dispatch),
     cartActions: bindActionCreators(cartActions, dispatch),
+    stepsActions: bindActionCreators(stepsActions, dispatch),
   }),
-)(Checkout);
+)(CheckoutProfile);

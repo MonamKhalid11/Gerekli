@@ -184,53 +184,6 @@ export function getProductStatus(status) {
   }
 }
 
-export const orderStatuses = [
-  {
-    code: 'P',
-    text: i18n.t('Processed'),
-    style: { color: '#97cf4d' },
-  },
-  {
-    code: 'C',
-    text: i18n.t('Complete'),
-    style: { color: '#97cf4d' },
-  },
-  {
-    code: 'O',
-    text: i18n.t('Open'),
-    style: { color: '#ff9522' },
-  },
-  {
-    code: 'F',
-    text: i18n.t('Failed'),
-    style: { color: '#ff5215' },
-  },
-  {
-    code: 'D',
-    text: i18n.t('Declined'),
-    style: { color: '#ff5215' },
-  },
-  {
-    code: 'B',
-    text: i18n.t('Backordered'),
-    style: { color: '#28abf6' },
-  },
-  {
-    code: 'I',
-    text: i18n.t('Canceled'),
-    style: { color: '#c2c2c2' },
-  },
-  {
-    code: 'Y',
-    text: i18n.t('Awaiting call'),
-    style: { color: '#b63a21' },
-  },
-];
-
-export function getOrderStatus(status) {
-  return orderStatuses.find((item) => item.code === status);
-}
-
 export const getPaymentId = (res) => {
   Object.keys(res.data.payments).forEach((key) => {
     res.data.payments[key].payment_id = key;
@@ -241,7 +194,3 @@ export const getPaymentId = (res) => {
 export function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
-
-export const formatDate = (data) => {
-  return format(data, 'MM/dd/yyyy');
-};

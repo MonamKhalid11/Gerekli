@@ -23,6 +23,14 @@ const styles = EStyleSheet.create({
     paddingRight: 22,
     borderRadius: 4,
   },
+  disabledPrimary: {
+    backgroundColor: '#d4d4d4',
+    paddingTop: 8,
+    paddingBottom: 8,
+    paddingLeft: 22,
+    paddingRight: 22,
+    borderRadius: 4,
+  },
   primaryText: {
     textAlign: 'center',
     color: '$primaryColorText',
@@ -159,6 +167,12 @@ export default class extends PureComponent {
             paddingRight: clear ? 28 : 12,
           },
           btnText: styles.roundText,
+        };
+
+      case 'disabledPrimary':
+        return {
+          btn: styles.disabledPrimary,
+          btnText: styles.primaryText,
         };
 
       case 'primary':

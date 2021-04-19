@@ -9,6 +9,11 @@ import {
   VENDOR_ORDER_UPDATE_STATUS_FAIL,
   VENDOR_ORDER_UPDATE_STATUS_SUCCESS,
   NOTIFICATION_SHOW,
+  FETCH_ORDER_STATUSES_REQUEST,
+  FETCH_ORDER_STATUSES_SUCCESS,
+  FETCH_ORDER_STATUSES_FAIL,
+  VENDOR_ORDERS_LOADED,
+  VENDOR_ORDERS_LOADING,
 } from '../../constants';
 import i18n from '../../utils/i18n';
 import * as vendorService from '../../services/vendors';
@@ -84,23 +89,43 @@ export function fetchOrder(id) {
   };
 }
 
-export function updateStatus(id, status) {
+export function getOrderStatuses() {
+  return async (dispatch) => {
+    dispatch({
+      type: FETCH_ORDER_STATUSES_REQUEST,
+    });
+
+    try {
+      const result = await vendorService.getOrderStatuses();
+
+      dispatch({
+        type: FETCH_ORDER_STATUSES_SUCCESS,
+        payload: result.data,
+      });
+    } catch (error) {
+      dispatch({
+        type: FETCH_ORDER_STATUSES_FAIL,
+      });
+    }
+  };
+}
+
+export function updateVendorOrderStatus(id, status) {
   return async (dispatch) => {
     dispatch({
       type: VENDOR_ORDER_UPDATE_STATUS_REQUEST,
     });
+    dispatch({
+      type: VENDOR_ORDERS_LOADING,
+    });
 
     try {
-      const result = await vendorService.updateStatus(id, status);
+      await vendorService.updateVendorOrderStatus(id, status);
+      await fetch()(dispatch);
 
       dispatch({
         type: VENDOR_ORDER_UPDATE_STATUS_SUCCESS,
-        payload: {
-          id,
-          status,
-        },
       });
-
       dispatch({
         type: NOTIFICATION_SHOW,
         payload: {
@@ -108,6 +133,9 @@ export function updateStatus(id, status) {
           title: i18n.t('Success'),
           text: i18n.t('Status has been changed.'),
         },
+      });
+      dispatch({
+        type: VENDOR_ORDERS_LOADED,
       });
     } catch (error) {
       dispatch({
@@ -118,12 +146,9 @@ export function updateStatus(id, status) {
           text: i18n.t(error.errors.join('\n')),
         },
       });
-
       dispatch({
         type: VENDOR_ORDER_UPDATE_STATUS_FAIL,
-        error,
       });
     }
-    return true;
   };
 }
