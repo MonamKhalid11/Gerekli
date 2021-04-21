@@ -21,7 +21,7 @@ const styles = EStyleSheet.create({
   },
 });
 
-export const ProductDetailNew = ({ pid, productDetail, productsActions }) => {
+export const ProductDetailNew = ({ pid, productsActions }) => {
   const [product, setProduct] = useState('');
 
   async function fetchProduct(currentPid) {
@@ -32,48 +32,43 @@ export const ProductDetailNew = ({ pid, productDetail, productsActions }) => {
     }
 
     const currentProduct = { ...result.data };
-    const defaultOptions = { ...currentProduct.defaultdOptions };
-    const defaultVariants = { ...currentProduct.defaultVariants };
+    const selectedOptions = { ...currentProduct.selectedOptions };
+    const selectedVariants = { ...currentProduct.selectedVariants };
 
-    if (!Object.keys(defaultOptions).length) {
+    if (!Object.keys(selectedOptions).length) {
       currentProduct.convertedOptions.forEach((option) => {
         if (option.option_type === OPTION_TYPE_CHECKBOX) {
-          defaultOptions[option.selectDefaultId] = option.selectVariants.find(
+          selectedOptions[option.selectDefaultId] = option.selectVariants.find(
             (el) => parseInt(el.position, 10) === 0,
           );
         } else {
-          defaultOptions[option.selectDefaultId] = option.selectVariants.find(
+          selectedOptions[option.selectDefaultId] = option.selectVariants.find(
             (el) => el.selectId === option.selectDefaultId,
           );
         }
       });
     }
 
-    if (!Object.keys(defaultVariants).length) {
+    if (!Object.keys(selectedVariants).length) {
       currentProduct.convertedVariants.forEach((variant) => {
-        defaultVariants[variant.selectDefaultId] = variant.selectVariants.find(
+        selectedVariants[variant.selectDefaultId] = variant.selectVariants.find(
           (el) => el.selectId === variant.selectDefaultId,
         );
       });
     }
 
-    setProduct({ ...currentProduct, defaultVariants, defaultOptions });
+    setProduct({ ...currentProduct, selectedVariants, selectedOptions });
   }
 
   useEffect(() => {
     fetchProduct(pid);
   }, []);
 
-  console.log('useEffect product: ', product);
-
   const changeVariationHandler = async (variantId, variantOption) => {
     const selectedVariationPid = variantOption.product_id;
-    const newVariant = { ...product.defaultVariants };
-    newVariant[variantOption.variant_id] = variantOption;
+    const currnetVariationPid = product.selectedVariants[variantId].product_id;
 
-    if (
-      product.defaultVariants[variantId].product_id === selectedVariationPid
-    ) {
+    if (currnetVariationPid === selectedVariationPid) {
       return null;
     }
 
@@ -81,35 +76,22 @@ export const ProductDetailNew = ({ pid, productDetail, productsActions }) => {
   };
 
   const changeOptionHandler = (optionId, selectedOptionValue) => {
-    const { selectedOptions } = this.state;
-    const newOptions = { ...selectedOptions };
+    const newOptions = { ...product.selectedOptions };
     newOptions[optionId] = selectedOptionValue;
-
-    this.setState(
-      {
-        selectedOptions: newOptions,
-      },
-      () => {
-        this.calculatePrice();
-      },
-    );
+    setProduct({ ...product, selectedOptions: newOptions });
   };
 
   const renderVariationsAndOptions = () => {
-    if (!product.defaultOptions && !product.defaultVariants) {
-      return null;
-    }
-
     return (
       <Section title={i18n.t('Select')}>
         <ProductDetailOptions
           options={product.convertedVariants}
-          selectedOptions={product.defaultVariants}
+          selectedOptions={product.selectedVariants}
           changeOptionHandler={changeVariationHandler}
         />
         <ProductDetailOptions
           options={product.convertedOptions}
-          selectedOptions={product.defaultOptions}
+          selectedOptions={product.selectedOptions}
           changeOptionHandler={changeOptionHandler}
         />
       </Section>
