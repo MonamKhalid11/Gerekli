@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, ScrollView, Text } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import i18n from '../utils/i18n';
+import EStyleSheet from 'react-native-extended-stylesheet';
+import {
+  stripTags,
+  formatPrice,
+  isPriceIncludesTax,
+  formatDate,
+} from '../utils';
 
 // Import actions.
 import * as productsActions from '../actions/productsActions';
 
 // Components
 import { ProductDetailOptions } from '../components/ProductDetailOptions';
+import ProductImageSwiper from '../components/ProductImageSwiper';
 import Section from '../components/Section';
-import EStyleSheet from 'react-native-extended-stylesheet';
-
-const OPTION_TYPE_CHECKBOX = 'C';
 
 const styles = EStyleSheet.create({
   container: {
@@ -25,39 +30,8 @@ export const ProductDetailNew = ({ pid, productsActions }) => {
   const [product, setProduct] = useState('');
 
   async function fetchProduct(currentPid) {
-    const result = await productsActions.fetch(currentPid);
-
-    if (!result.data) {
-      return;
-    }
-
-    const currentProduct = { ...result.data };
-    const selectedOptions = { ...currentProduct.selectedOptions };
-    const selectedVariants = { ...currentProduct.selectedVariants };
-
-    if (!Object.keys(selectedOptions).length) {
-      currentProduct.convertedOptions.forEach((option) => {
-        if (option.option_type === OPTION_TYPE_CHECKBOX) {
-          selectedOptions[option.selectDefaultId] = option.selectVariants.find(
-            (el) => parseInt(el.position, 10) === 0,
-          );
-        } else {
-          selectedOptions[option.selectDefaultId] = option.selectVariants.find(
-            (el) => el.selectId === option.selectDefaultId,
-          );
-        }
-      });
-    }
-
-    if (!Object.keys(selectedVariants).length) {
-      currentProduct.convertedVariants.forEach((variant) => {
-        selectedVariants[variant.selectDefaultId] = variant.selectVariants.find(
-          (el) => el.selectId === variant.selectDefaultId,
-        );
-      });
-    }
-
-    setProduct({ ...currentProduct, selectedVariants, selectedOptions });
+    const currentProduct = await productsActions.fetch(currentPid);
+    setProduct(currentProduct);
   }
 
   useEffect(() => {
@@ -98,14 +72,35 @@ export const ProductDetailNew = ({ pid, productsActions }) => {
     );
   };
 
+  const renderDiscountLabel = () => {
+    return (
+      <View style={styles.listDiscountWrapper}>
+        <Text style={styles.listDiscountText}>
+          {`${i18n.t('Discount')} ${product.discount}%`}
+        </Text>
+      </View>
+    );
+  };
+
+  const renderImage = () => {
+    return (
+      <View>
+        <ProductImageSwiper>{product.images}</ProductImageSwiper>
+        {product.discount && renderDiscountLabel()}
+      </View>
+    );
+  };
+
   if (!product) {
     return null;
   }
 
   return (
     <View style={styles.container}>
-      <Text>PD</Text>
-      {renderVariationsAndOptions()}
+      <ScrollView>
+        {renderImage()}
+        {renderVariationsAndOptions()}
+      </ScrollView>
     </View>
   );
 };

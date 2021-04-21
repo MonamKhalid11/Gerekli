@@ -1,27 +1,7 @@
 import {
-  FETCH_ONE_PRODUCT_REQUEST,
   FETCH_ONE_PRODUCT_FAIL,
-  FETCH_ONE_PRODUCT_SUCCESS,
   RECALCULATE_PRODUCT_PRICE_SUCCESS,
 } from '../constants';
-
-const productInstance = {
-  fetching: true,
-  amount: 1,
-  options: [],
-  convertedOptions: [],
-  convertedVariants: [],
-  price_formatted: {
-    price: '',
-  },
-  list_price_formatted: {
-    price: '',
-  },
-  taxed_price_formatted: {
-    price: '',
-  },
-  master_product_offers_count: 0,
-};
 
 const initialState = {
   byId: {},
@@ -29,27 +9,6 @@ const initialState = {
 
 export default function (state = initialState, action) {
   switch (action.type) {
-    case FETCH_ONE_PRODUCT_REQUEST:
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.pid]: {
-            ...productInstance,
-            fetching: true,
-            options: [],
-            list_discount_prc: 0,
-            amount: 1,
-            qty_step: 1,
-            selectedAmount: 1,
-            discount_prc: 0,
-            discount: null,
-            product_features: {},
-          },
-        },
-      };
-
-    case FETCH_ONE_PRODUCT_SUCCESS:
     case RECALCULATE_PRODUCT_PRICE_SUCCESS:
       return {
         ...state,

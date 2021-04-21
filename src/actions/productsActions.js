@@ -26,7 +26,7 @@ import {
 } from '../constants';
 import Api from '../services/api';
 import i18n from '../utils/i18n';
-import { filterObject } from '../utils/index';
+import { convertProduct } from '../services/productDetail';
 
 export function fetchDiscussion(id, params = { page: 1 }, type = 'P') {
   return (dispatch) => {
@@ -129,166 +129,25 @@ export function recalculatePrice(pid, options) {
   };
 }
 
-const filterFeaturesAndVariations = (oldProductData) => {
-  const newProductData = { ...oldProductData };
-
-  if (!newProductData.variation_features_variants) {
-    return oldProductData;
-  }
-
-  // Filters variants field of variation_features_variants elements.
-  // If the variant doesn`t have product_id, we just delete this variant from the list.
-  Object.keys(newProductData.variation_features_variants).forEach(
-    (featureVariant) => {
-      newProductData.variation_features_variants[
-        featureVariant
-      ].variants = filterObject(
-        newProductData.variation_features_variants[featureVariant].variants,
-        (variant) => {
-          return variant.product_id;
-        },
-      );
-    },
-  );
-
-  // Checking if the variation has options. If not, we make it a feature.
-  newProductData.variation_features_variants = filterObject(
-    newProductData.variation_features_variants,
-    (featuresVariant) => {
-      return Object.keys(featuresVariant.variants).length > 1;
-    },
-  );
-
-  // We remove features, if they are in variations.
-  newProductData.product_features = filterObject(
-    newProductData.product_features,
-    (feature) => {
-      return !Object.keys(newProductData.variation_features_variants).includes(
-        feature.feature_id,
-      );
-    },
-  );
-
-  return newProductData;
-};
-
-const convertProductOptions = (oldProductOptions) => {
-  const newProductOptions = Object.keys(oldProductOptions).map((option) => {
-    const newProductOption = { ...oldProductOptions[option] };
-    const OPTION_TYPE_IMAGES = 'I';
-
-    // If option has images, we change option type to 'I'
-    if (
-      Object.keys(
-        newProductOption?.variants[Object.keys(newProductOption.variants)[0]]
-          .image_pair,
-      ).length
-    ) {
-      newProductOption.option_type = OPTION_TYPE_IMAGES;
-    }
-
-    newProductOption.selectTitle = oldProductOptions[option].option_name;
-    newProductOption.selectDefaultId = oldProductOptions[option].option_id;
-
-    newProductOption.selectVariants = Object.keys(
-      oldProductOptions[option].variants,
-    ).map((variantId) => {
-      const selectVariant = {
-        ...oldProductOptions[option].variants[variantId],
-      };
-      selectVariant.selectVariantName = selectVariant.variant_name;
-      if (Object.keys(selectVariant.image_pair).length) {
-        selectVariant.selectImgPath = selectVariant.image_pair.icon.image_path;
-      }
-      selectVariant.selectValue = selectVariant.variant_name;
-      selectVariant.selectId = selectVariant.option_id;
-
-      return selectVariant;
-    });
-
-    return newProductOption;
-  });
-
-  return newProductOptions;
-};
-
-const convertProductVariants = (oldProductVariants) => {
-  const featureStyleValues = {
-    dropdown_images: 'I',
-    dropdown_labels: 'S',
-    dropdown: 'S',
-  };
-
-  if (oldProductVariants) {
-    const newProductVariants = Object.keys(oldProductVariants).map(
-      (variant) => {
-        const newProductVariant = { ...oldProductVariants[variant] };
-        newProductVariant.selectTitle =
-          oldProductVariants[variant].internal_name;
-        newProductVariant.selectDefaultId =
-          oldProductVariants[variant].variant_id;
-        newProductVariant.option_type =
-          featureStyleValues[oldProductVariants[variant].feature_style];
-
-        newProductVariant.selectVariants = Object.keys(
-          oldProductVariants[variant].variants,
-        ).map((variantId) => {
-          const selectVariant = {
-            ...oldProductVariants[variant].variants[variantId],
-          };
-          selectVariant.selectVariantName = selectVariant.variant;
-          if (selectVariant.product?.main_pair?.detailed?.image_path) {
-            selectVariant.selectImgPath =
-              selectVariant.product.main_pair.detailed.image_path;
-          }
-          selectVariant.selectValue = selectVariant.variant;
-          selectVariant.selectId = selectVariant.variant_id;
-          return selectVariant;
-        });
-
-        return newProductVariant;
-      },
-    );
-
-    return newProductVariants;
-  }
-
-  return [];
-};
-
 export function fetch(pid) {
   return (dispatch) => {
     dispatch({
       type: FETCH_ONE_PRODUCT_REQUEST,
-      payload: {
-        pid,
-      },
     });
 
     return Api.get(`/sra_products/${pid}`)
       .then((response) => {
-        response.data = filterFeaturesAndVariations(response.data);
-
-        response.data.convertedOptions = convertProductOptions(
-          response.data.product_options,
-        );
-
-        response.data.convertedVariants = convertProductVariants(
-          response.data.variation_features_variants,
-        );
+        const product = convertProduct(response.data);
 
         dispatch({
           type: FETCH_ONE_PRODUCT_SUCCESS,
-          payload: {
-            product: response.data,
-            pid,
-          },
         });
+
         // Load discussion if it is not disabled.
-        if (response.data.discussion_type !== DISCUSSION_DISABLED) {
+        if (product.discussion_type !== DISCUSSION_DISABLED) {
           setTimeout(() => fetchDiscussion(pid)(dispatch), 100);
         }
-        return response;
+        return product;
       })
       .catch((error) => {
         console.log('error: ', error);
