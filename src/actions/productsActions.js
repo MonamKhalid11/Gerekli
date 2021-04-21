@@ -130,35 +130,34 @@ export function recalculatePrice(pid, options) {
 }
 
 export function fetch(pid) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({
       type: FETCH_ONE_PRODUCT_REQUEST,
     });
 
-    return Api.get(`/sra_products/${pid}`)
-      .then((response) => {
-        const product = convertProduct(response.data);
+    try {
+      const response = await Api.get(`/sra_products/${pid}`);
+      const product = convertProduct(response.data);
 
-        dispatch({
-          type: FETCH_ONE_PRODUCT_SUCCESS,
-        });
+      if (product.rating) {
+        await fetchDiscussion(pid)(dispatch);
+      }
 
-        // Load discussion if it is not disabled.
-        if (product.discussion_type !== DISCUSSION_DISABLED) {
-          setTimeout(() => fetchDiscussion(pid)(dispatch), 100);
-        }
-        return product;
-      })
-      .catch((error) => {
-        console.log('error: ', error);
-        dispatch({
-          type: FETCH_ONE_PRODUCT_FAIL,
-          payload: {
-            pid,
-          },
-          error,
-        });
+      if (product.isProductOffer) {
+        product.productOffers = await fetchProductOffers(pid)(dispatch);
+      }
+
+      dispatch({
+        type: FETCH_ONE_PRODUCT_SUCCESS,
       });
+
+      return product;
+    } catch (error) {
+      console.log('error: ', error);
+      dispatch({
+        type: FETCH_ONE_PRODUCT_FAIL,
+      });
+    }
   };
 }
 

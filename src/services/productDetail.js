@@ -1,5 +1,9 @@
 import { has, get, values } from 'lodash';
 import { filterObject } from '../utils/index';
+import {
+  DISCUSSION_COMMUNICATION_AND_RATING,
+  DISCUSSION_RATING,
+} from '../constants';
 
 const OPTION_TYPE_CHECKBOX = 'C';
 
@@ -193,6 +197,25 @@ const setDiscount = (product) => {
   return product.list_discount_prc || product.discount_prc;
 };
 
+const setRating = (product) => {
+  if (
+    product.discussion_type !== DISCUSSION_RATING &&
+    product.discussion_type !== DISCUSSION_COMMUNICATION_AND_RATING
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
+const isProductOffer = (product) => {
+  if (parseInt(product.master_product_offers_count, 10)) {
+    return true;
+  }
+
+  return false;
+};
+
 export const convertProduct = (data) => {
   let convertedProduct = { ...data };
 
@@ -207,6 +230,8 @@ export const convertProduct = (data) => {
   convertedProduct.selectedOptions = setSelectedOptions(convertedProduct);
   convertedProduct.selectedVariants = setSelectedVariants(convertedProduct);
   convertedProduct.discount = setDiscount(convertedProduct);
+  convertedProduct.rating = setRating(convertedProduct);
+  convertedProduct.isProductOffer = isProductOffer(convertedProduct);
 
   return convertedProduct;
 };
