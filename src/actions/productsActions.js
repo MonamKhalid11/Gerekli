@@ -26,7 +26,7 @@ import {
 } from '../constants';
 import Api from '../services/api';
 import i18n from '../utils/i18n';
-import { convertProduct } from '../services/productDetail';
+import { convertProduct, formatOptionsToUrl } from '../services/productDetail';
 import * as vendorActions from './vendorActions';
 
 export function fetchDiscussion(id, params = { page: 1 }, type = 'P') {
@@ -95,38 +95,22 @@ export function postDiscussion(data) {
 }
 
 export function recalculatePrice(pid, options) {
-  function formatOptionsToUrl(selectedOptions) {
-    const options = [];
-    Object.keys(selectedOptions).forEach((optionId) => {
-      options.push(
-        `${encodeURIComponent(`selected_options[${optionId}]`)}=${
-          selectedOptions[optionId].variant_id
-        }`,
-      );
-    });
-    return options.join('&');
-  }
-
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({ type: RECALCULATE_PRODUCT_PRICE_REQUEST });
 
-    return Api.get(`sra_products/${pid}/?${formatOptionsToUrl(options)}`)
-      .then((response) => {
-        response.data = filterFeaturesAndVariations(response.data);
-        dispatch({
-          type: RECALCULATE_PRODUCT_PRICE_SUCCESS,
-          payload: {
-            product: response.data,
-            pid,
-          },
-        });
-      })
-      .catch((error) => {
-        dispatch({
-          type: RECALCULATE_PRODUCT_PRICE_FAIL,
-          error,
-        });
+    const optionsUrl = formatOptionsToUrl(options);
+
+    try {
+      const response = await Api.get(`sra_products/${pid}/?${optionsUrl}`);
+      const product = convertProduct(response.data);
+      dispatch({ type: RECALCULATE_PRODUCT_PRICE_SUCCESS });
+      return product;
+    } catch (error) {
+      dispatch({
+        type: RECALCULATE_PRODUCT_PRICE_FAIL,
+        error,
       });
+    }
   };
 }
 

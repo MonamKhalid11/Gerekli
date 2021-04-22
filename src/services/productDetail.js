@@ -7,6 +7,19 @@ import {
 
 const OPTION_TYPE_CHECKBOX = 'C';
 
+export const formatOptionsToUrl = (selectedOptions) => {
+  const options = [];
+  Object.keys(selectedOptions).forEach((optionId) => {
+    options.push(
+      `${encodeURIComponent(`selected_options[${optionId}]`)}=${
+        selectedOptions[optionId].variant_id
+      }`,
+    );
+  });
+
+  return options.join('&');
+};
+
 const getProductImagesPaths = (data = {}, size = '1000x1000') => {
   const images = [];
   if (has(data, `main_pair.icons.${size}.image_path`)) {
@@ -28,7 +41,7 @@ const getProductImagesPaths = (data = {}, size = '1000x1000') => {
   return images;
 };
 
-const filterFeaturesAndVariations = (oldProductData) => {
+export const filterFeaturesAndVariations = (oldProductData) => {
   const newProductData = { ...oldProductData };
 
   if (!newProductData.variation_features_variants) {
@@ -166,7 +179,7 @@ const setSelectedOptions = (product) => {
         );
       } else {
         selectedOptions[option.selectDefaultId] = option.selectVariants.find(
-          (el) => el.selectId === option.selectDefaultId,
+          (el) => parseInt(el.variant_id, 10) === parseInt(option.value, 10),
         );
       }
     });

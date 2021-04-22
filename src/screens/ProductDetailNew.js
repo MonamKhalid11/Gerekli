@@ -7,6 +7,7 @@ import * as nav from '../services/navigation';
 import { toInteger, get } from 'lodash';
 import { formatPrice, isPriceIncludesTax, stripTags } from '../utils';
 import config from '../config';
+import { isEmpty } from 'lodash';
 import {
   View,
   ScrollView,
@@ -84,6 +85,8 @@ export const ProductDetailNew = ({
 
   async function fetchProduct(currentPid) {
     const currentProduct = await productsActions.fetch(currentPid);
+    const step = parseInt(currentProduct.qty_step, 10) || 1;
+    setAmount(step);
     setProduct(currentProduct);
   }
 
@@ -102,13 +105,21 @@ export const ProductDetailNew = ({
     fetchProduct(selectedVariationPid);
   };
 
-  const changeOptionHandler = (optionId, selectedOptionValue) => {
+  const changeOptionHandler = async (optionId, selectedOptionValue) => {
     const newOptions = { ...product.selectedOptions };
     newOptions[optionId] = selectedOptionValue;
-    setProduct({ ...product, selectedOptions: newOptions });
+    const recalculatedProduct = await productsActions.recalculatePrice(
+      product.product_id,
+      newOptions,
+    );
+    setProduct({ ...recalculatedProduct });
   };
 
   const renderVariationsAndOptions = () => {
+    if (isEmpty(product.selectedOptions) && isEmpty(product.selectedVariants)) {
+      return null;
+    }
+
     return (
       <Section title={i18n.t('Select')}>
         <ProductDetailOptions
@@ -228,32 +239,26 @@ export const ProductDetailNew = ({
     );
   };
 
-  const calculatePrice = () => {
-    productsActions.recalculatePrice(
-      product.product_id,
-      product.selectedOptions,
-    );
-  };
-
   const renderQuantitySwitcher = () => {
     const step = parseInt(product.qty_step, 10) || 1;
     const max = parseInt(product.max_qty, 10) || parseInt(product.amount, 10);
     const min = parseInt(product.min_qty, 10) || step;
 
+    if (product.isProductOffer) {
+      return null;
+    }
+
     return (
       <Section>
-        {!product.isProductOffer && (
-          <QtyOption
-            max={max}
-            min={min}
-            initialValue={amount || min}
-            step={step}
-            onChange={(val) => {
-              setAmount(val);
-              calculatePrice();
-            }}
-          />
-        )}
+        <QtyOption
+          max={max}
+          min={min}
+          initialValue={amount || min}
+          step={step}
+          onChange={(val) => {
+            setAmount(val);
+          }}
+        />
       </Section>
     );
   };
