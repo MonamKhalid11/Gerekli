@@ -175,7 +175,7 @@ const setSelectedOptions = (product) => {
     product.convertedOptions.forEach((option) => {
       if (option.option_type === OPTION_TYPE_CHECKBOX) {
         selectedOptions[option.selectDefaultId] = option.selectVariants.find(
-          (el) => parseInt(el.position, 10) === 0,
+          (el) => parseInt(el.variant_id, 10) === parseInt(option.value, 10),
         );
       } else {
         selectedOptions[option.selectDefaultId] = option.selectVariants.find(

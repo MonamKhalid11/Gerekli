@@ -83,12 +83,12 @@ export const ProductDetailNew = ({
   const [product, setProduct] = useState('');
   const [amount, setAmount] = useState(1);
 
-  async function fetchProduct(currentPid) {
+  const fetchProduct = async (currentPid) => {
     const currentProduct = await productsActions.fetch(currentPid);
     const step = parseInt(currentProduct.qty_step, 10) || 1;
     setAmount(step);
     setProduct(currentProduct);
-  }
+  };
 
   useEffect(() => {
     fetchProduct(pid);
