@@ -27,7 +27,6 @@ import {
 import Api from '../services/api';
 import i18n from '../utils/i18n';
 import { convertProduct, formatOptionsToUrl } from '../services/productDetail';
-import * as vendorActions from './vendorActions';
 
 export function fetchDiscussion(id, params = { page: 1 }, type = 'P') {
   return (dispatch) => {
@@ -123,7 +122,6 @@ export function fetch(pid) {
     try {
       const response = await Api.get(`/sra_products/${pid}`);
       const product = convertProduct(response.data);
-      product.vendor = await vendorActions.fetch(product.company_id)(dispatch);
 
       if (product.rating) {
         await fetchDiscussion(pid)(dispatch);

@@ -1,13 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import i18n from '../utils/i18n';
+import { connect } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import * as nav from '../services/navigation';
 import { toInteger, get } from 'lodash';
-import { formatPrice, isPriceIncludesTax, stripTags } from '../utils';
-import config from '../config';
+import i18n from '../utils/i18n';
 import { isEmpty } from 'lodash';
+import config from '../config';
+import {
+  formatPrice,
+  isPriceIncludesTax,
+  stripTags,
+  formatDate,
+} from '../utils';
+import {
+  VERSION_MVE,
+  FEATURE_TYPE_DATE,
+  FEATURE_TYPE_CHECKBOX,
+} from '../constants';
 import {
   View,
   ScrollView,
@@ -20,20 +30,20 @@ import {
 import * as productsActions from '../actions/productsActions';
 import * as wishListActions from '../actions/wishListActions';
 import * as cartActions from '../actions/cartActions';
+import * as vendorActions from '../actions/vendorActions';
 
 // Components
-import { ProductDetailVendorInfo } from '../components/ProductDetailVendorInfo';
-import { ProductDetailFeatures } from '../components/ProductDetailFeatures';
 import { ProductDetailOptions } from '../components/ProductDetailOptions';
 import ProductImageSwiper from '../components/ProductImageSwiper';
 import { AddToCartButton } from '../components/AddToCartButton';
 import DiscussionList from '../components/DiscussionList';
 import InAppPayment from '../components/InAppPayment';
 import { QtyOption } from '../components/QtyOption';
+import SectionRow from '../components/SectionRow';
 import { Seller } from '../components/Seller';
 import Section from '../components/Section';
-import Rating from '../components/Rating';
 import Spinner from '../components/Spinner';
+import Rating from '../components/Rating';
 
 const styles = EStyleSheet.create({
   container: {
@@ -75,23 +85,27 @@ export const ProductDetailNew = ({
   pid,
   productsActions,
   wishListActions,
+  vendorActions,
+  cartActions,
   discussion,
   componentId,
   auth,
-  cartActions,
 }) => {
   const [product, setProduct] = useState('');
   const [amount, setAmount] = useState(1);
+  const [vendor, setVendor] = useState(null);
 
-  const fetchProduct = async (currentPid) => {
+  const fetchData = async (currentPid) => {
     const currentProduct = await productsActions.fetch(currentPid);
+    const currentVendor = await vendorActions.fetch(currentProduct.company_id);
     const step = parseInt(currentProduct.qty_step, 10) || 1;
     setAmount(step);
+    setVendor(currentVendor);
     setProduct(currentProduct);
   };
 
   useEffect(() => {
-    fetchProduct(pid);
+    fetchData(pid);
   }, []);
 
   const changeVariationHandler = async (variantId, variantOption) => {
@@ -102,7 +116,7 @@ export const ProductDetailNew = ({
       return null;
     }
 
-    fetchProduct(selectedVariationPid);
+    fetchData(selectedVariationPid);
   };
 
   const changeOptionHandler = async (optionId, selectedOptionValue) => {
@@ -337,6 +351,94 @@ export const ProductDetailNew = ({
     return wishListActions.add({ products }, componentId);
   };
 
+  const renderFeatures = () => {
+    const renderFeatureItem = (feature, index, last) => {
+      const { description, feature_type, value_int, value, variant } = feature;
+
+      let newValue = null;
+      switch (feature_type) {
+        case FEATURE_TYPE_DATE:
+          newValue = formatDate(value_int * 1000);
+          break;
+        case FEATURE_TYPE_CHECKBOX:
+          newValue = feature.value === 'Y' ? i18n.t('Yes') : i18n.t('No');
+          break;
+        default:
+          newValue = value || variant;
+      }
+
+      return (
+        <SectionRow
+          name={description}
+          value={newValue}
+          last={last}
+          key={index}
+        />
+      );
+    };
+
+    const features = Object.keys(product.product_features).map(
+      (k) => product.product_features[k],
+    );
+
+    if (!features.length) {
+      return null;
+    }
+
+    const lastElement = features.length - 1;
+
+    return (
+      <Section title={i18n.t('Features')}>
+        {features.map((item, index) =>
+          renderFeatureItem(item, index, index === lastElement),
+        )}
+      </Section>
+    );
+  };
+
+  const renderVendorInfo = () => {
+    if (config.version !== VERSION_MVE || !vendor) {
+      return null;
+    }
+
+    return (
+      <Section title={i18n.t('Vendor')} wrapperStyle={styles.noPadding}>
+        <View style={styles.vendorWrapper}>
+          <Text style={styles.vendorName}>{vendor.company}</Text>
+          <Text style={styles.vendorProductCount}>
+            {i18n.t('{{count}} item(s)', { count: vendor.products_count })}
+          </Text>
+          <Text style={styles.vendorDescription}>
+            {stripTags(vendor.description)}
+          </Text>
+          <TouchableOpacity
+            style={styles.vendorInfoBtn}
+            onPress={() => {
+              nav.showModalVendorDetail({
+                vendorId: vendor.company_id,
+              });
+            }}>
+            <Text
+              style={styles.sectionBtnText}
+              numberOfLines={1}
+              ellipsizeMode="tail">
+              {i18n.t('Details')}
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity
+          style={styles.sectionBtn}
+          onPress={() => {
+            nav.showModalVendor({
+              companyId: vendor.company_id,
+            });
+          }}>
+          <Text style={styles.sectionBtnText}>{i18n.t('Go To Store')}</Text>
+        </TouchableOpacity>
+      </Section>
+    );
+  };
+
   const renderSellers = () => {
     if (!product.isProductOffer) {
       return null;
@@ -425,8 +527,8 @@ export const ProductDetailNew = ({
         {renderQuantitySwitcher()}
         {renderVariationsAndOptions()}
         {renderDiscussion()}
-        <ProductDetailFeatures product={product} />
-        <ProductDetailVendorInfo vendor={product.vendor} />
+        {renderFeatures()}
+        {renderVendorInfo()}
         {renderSellers()}
       </ScrollView>
       {renderAddToCart()}
@@ -445,5 +547,6 @@ export default connect(
     cartActions: bindActionCreators(cartActions, dispatch),
     productsActions: bindActionCreators(productsActions, dispatch),
     wishListActions: bindActionCreators(wishListActions, dispatch),
+    vendorActions: bindActionCreators(vendorActions, dispatch),
   }),
 )(ProductDetailNew);

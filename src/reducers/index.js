@@ -11,7 +11,6 @@ import wishList from './wishList';
 import products from './products';
 import discussion from './discussion';
 import notifications from './notifications';
-import productDetail from './productDetail';
 import vendorCategories from './vendorCategories';
 import profile from './profile';
 import imagePicker from './imagePicker';
@@ -34,7 +33,6 @@ export default combineReducers({
   products,
   discussion,
   notifications,
-  productDetail,
   vendorCategories,
   imagePicker,
   settings,
