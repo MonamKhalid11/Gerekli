@@ -505,7 +505,7 @@ export class ProductDetail extends Component {
         setTimeout(() => next(), 400);
       }
     } catch (error) {
-      console.log('error', error);
+      console.log('error: ', error);
     }
   };
 

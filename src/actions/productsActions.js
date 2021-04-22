@@ -27,6 +27,7 @@ import {
 import Api from '../services/api';
 import i18n from '../utils/i18n';
 import { convertProduct } from '../services/productDetail';
+import * as vendorActions from './vendorActions';
 
 export function fetchDiscussion(id, params = { page: 1 }, type = 'P') {
   return (dispatch) => {
@@ -138,6 +139,7 @@ export function fetch(pid) {
     try {
       const response = await Api.get(`/sra_products/${pid}`);
       const product = convertProduct(response.data);
+      product.vendor = await vendorActions.fetch(product.company_id)(dispatch);
 
       if (product.rating) {
         await fetchDiscussion(pid)(dispatch);
@@ -153,9 +155,9 @@ export function fetch(pid) {
 
       return product;
     } catch (error) {
-      console.log('error: ', error);
       dispatch({
         type: FETCH_ONE_PRODUCT_FAIL,
+        error,
       });
     }
   };
@@ -172,7 +174,7 @@ export function fetchProductOffers(pid) {
         dispatch({
           type: FETCH_COMMON_PRODUCTS_SUCCESS,
         });
-        return response;
+        return response.data;
       })
       .catch((error) => {
         dispatch({

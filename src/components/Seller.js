@@ -53,7 +53,7 @@ const styles = (isStock, lastBlock, lastVendor, wishListActive) =>
 
 export const Seller = ({
   productOffer,
-  lastVendor,
+  isLastVendor,
   onPress,
   handleAddToWishList,
 }) => {
@@ -65,7 +65,7 @@ export const Seller = ({
   );
 
   return (
-    <View style={styles(null, null, lastVendor).container}>
+    <View style={styles(null, null, isLastVendor).container}>
       <View style={{ ...styles().containerBlock }}>
         <View>
           <Text style={styles().title}>{productOffer.company_name}</Text>

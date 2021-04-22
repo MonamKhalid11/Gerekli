@@ -28,6 +28,7 @@ export function fetch(id, type = 'M', params) {
       if (result.data.discussion_type !== DISCUSSION_DISABLED) {
         productsActions.fetchDiscussion(id, params, type)(dispatch);
       }
+      return result.data;
     } catch (error) {
       dispatch({
         type: FETCH_VENDOR_FAIL,
