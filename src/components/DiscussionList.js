@@ -13,24 +13,19 @@ import i18n from '../utils/i18n';
 
 const styles = EStyleSheet.create({
   container: {
-    marginTop: 5,
-    marginBottom: 0,
     flex: 1,
   },
   rating: {
-    marginTop: -2,
     marginBottom: 10,
   },
   msg: {
     color: '$discussionMessageColor',
     marginTop: 0,
     paddingBottom: 10,
-    textAlign: 'left',
+    textAlign: 'justify',
   },
   itemContainer: {
     marginBottom: 10,
-    borderBottomWidth: 1,
-    borderColor: '#F0F0F0',
     paddingLeft: 14,
     paddingRight: 14,
   },
@@ -44,7 +39,6 @@ const styles = EStyleSheet.create({
     flexDirection: 'row',
   },
   name: {
-    fontWeight: '800',
     fontSize: '0.9rem',
     textAlign: 'left',
     color: '$darkColor',

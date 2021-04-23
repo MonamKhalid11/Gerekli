@@ -10,6 +10,8 @@ const styles = EStyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingLeft: 14,
+    paddingRight: 14,
     marginVertical: 10,
   },
   title: {

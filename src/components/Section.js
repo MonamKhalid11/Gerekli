@@ -5,15 +5,11 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 const styles = EStyleSheet.create({
   container: {
-    backgroundColor: '$grayColor',
     paddingTop: 20,
   },
   wrapper: {
     backgroundColor: '#fff',
     padding: 14,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: '#F0F0F0',
   },
   title: {
     fontSize: '1rem',

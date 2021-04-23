@@ -48,27 +48,63 @@ import Rating from '../components/Rating';
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '$screenBackgroundColor',
   },
   descriptionBlock: {
     paddingTop: 10,
     paddingBottom: 10,
-    marginTop: 10,
     paddingLeft: 14,
     paddingRight: 14,
-    borderTopWidth: 1,
-    borderTopColor: '#F1F1F1',
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F1F1',
+  },
+  nameText: {
+    fontSize: '1.1rem',
+    color: '$darkColor',
+    marginBottom: 5,
+    textAlign: 'left',
+  },
+  priceText: {
+    fontSize: '1rem',
+    fontWeight: 'bold',
+    color: '$darkColor',
+    textAlign: 'left',
+  },
+  smallText: {
+    fontSize: '0.8rem',
+    fontWeight: 'normal',
+    color: '$darkColor',
+  },
+  outOfStockText: {
+    color: '$dangerColor',
+    marginTop: 10,
+    fontSize: '0.8rem',
+    fontWeight: 'bold',
+  },
+  listPriceText: {
+    textDecorationLine: 'line-through',
+    color: '$darkColor',
+    textAlign: 'left',
+  },
+  listPriceWrapperText: {
+    textAlign: 'left',
+  },
+  promoText: {
+    marginBottom: 10,
+  },
+  qtyOptionWrapper: {
+    marginHorizontal: 15,
+  },
+  descText: {
+    color: '$discussionMessageColor',
+    textAlign: 'justify',
+    paddingHorizontal: 14,
   },
   addToCartContainerWrapper: {
-    shadowColor: '#000',
+    shadowColor: '#45403a',
     shadowOffset: {
       width: 0,
-      height: 5,
+      height: 0,
     },
-    shadowOpacity: 0.28,
-    shadowRadius: 16,
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
     elevation: 24,
   },
   addToCartContainer: {
@@ -78,6 +114,90 @@ const styles = EStyleSheet.create({
     paddingTop: 8,
     backgroundColor: '#fff',
     flexDirection: 'row',
+  },
+  wrapperStyle: {
+    padding: 0,
+    paddingTop: 10,
+    paddingBottom: 10,
+    marginHorizontal: 10,
+    borderRadius: 10,
+    shadowColor: '#45403a',
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 7,
+    elevation: 24,
+    marginBottom: 20,
+  },
+  sectionBtn: {
+    paddingLeft: 14,
+    paddingRight: 14,
+    paddingTop: 12,
+    paddingBottom: 6,
+  },
+  sectionBtnText: {
+    color: '$primaryColor',
+    fontSize: '0.9rem',
+    textAlign: 'left',
+    maxWidth: 100,
+  },
+  vendorWrapper: {
+    paddingLeft: 14,
+    paddingRight: 14,
+    paddingTop: 8,
+    paddingBottom: 8,
+    marginBottom: 10,
+  },
+  vendorName: {
+    fontSize: '0.9rem',
+    textAlign: 'left',
+    marginRight: 100,
+  },
+  vendorProductCount: {
+    fontSize: '0.7rem',
+    color: 'gray',
+    marginBottom: 13,
+    textAlign: 'left',
+  },
+  vendorDescription: {
+    color: 'gray',
+    textAlign: 'left',
+  },
+  vendorInfoBtn: {
+    position: 'absolute',
+    top: 10,
+    right: '1rem',
+  },
+  rating: {
+    marginLeft: -10,
+    marginRight: -10,
+    marginBottom: 5,
+  },
+  keyboardAvoidingContainer: {
+    marginBottom: Platform.OS === 'ios' ? 122 : 132,
+  },
+  listDiscountWrapper: {
+    backgroundColor: '$productDiscountColor',
+    position: 'absolute',
+    top: 4,
+    right: 4,
+    paddingTop: 2,
+    paddingBottom: 2,
+    paddingLeft: 4,
+    paddingRight: 4,
+    borderRadius: 2,
+  },
+  listDiscountText: {
+    color: '#fff',
+  },
+  inAppPaymentWrapper: {
+    flex: 2,
+    marginRight: 10,
+  },
+  zeroPrice: {
+    paddingTop: 10,
   },
 });
 
@@ -135,7 +255,7 @@ export const ProductDetailNew = ({
     }
 
     return (
-      <Section title={i18n.t('Select')}>
+      <Section title={i18n.t('Select')} wrapperStyle={styles.wrapperStyle}>
         <ProductDetailOptions
           options={product.convertedVariants}
           selectedOptions={product.selectedVariants}
@@ -249,7 +369,11 @@ export const ProductDetailNew = ({
     }
 
     return (
-      <Text style={styles.descText}>{stripTags(product.full_description)}</Text>
+      <Section title={i18n.t('Description')} wrapperStyle={styles.wrapperStyle}>
+        <Text style={styles.descText}>
+          {stripTags(product.full_description)}
+        </Text>
+      </Section>
     );
   };
 
@@ -263,7 +387,7 @@ export const ProductDetailNew = ({
     }
 
     return (
-      <Section>
+      <View style={styles.qtyOptionWrapper}>
         <QtyOption
           max={max}
           min={min}
@@ -273,7 +397,7 @@ export const ProductDetailNew = ({
             setAmount(val);
           }}
         />
-      </Section>
+      </View>
     );
   };
 
@@ -296,7 +420,7 @@ export const ProductDetailNew = ({
     return (
       <Section
         title={title}
-        wrapperStyle={styles.noPadding}
+        wrapperStyle={styles.wrapperStyle}
         showRightButton={true}
         rightButtonText={i18n.t('Write a Review')}
         onRightButtonPress={() => {
@@ -402,7 +526,7 @@ export const ProductDetailNew = ({
     }
 
     return (
-      <Section title={i18n.t('Vendor')} wrapperStyle={styles.noPadding}>
+      <Section title={i18n.t('Vendor')} wrapperStyle={styles.wrapperStyle}>
         <View style={styles.vendorWrapper}>
           <Text style={styles.vendorName}>{vendor.company}</Text>
           <Text style={styles.vendorProductCount}>
@@ -445,7 +569,7 @@ export const ProductDetailNew = ({
     }
 
     return (
-      <Section title={i18n.t('Sellers')} wrapperStyle={styles.noPadding}>
+      <Section title={i18n.t('Sellers')} wrapperStyle={styles.wrapperStyle}>
         {product.productOffers.products.map((el, index) => {
           return (
             <Seller
@@ -522,14 +646,14 @@ export const ProductDetailNew = ({
           {renderName()}
           {renderRating()}
           {renderPrice()}
-          {renderDesc()}
         </View>
         {renderQuantitySwitcher()}
         {renderVariationsAndOptions()}
-        {renderDiscussion()}
-        {renderFeatures()}
-        {renderVendorInfo()}
         {renderSellers()}
+        {renderDesc()}
+        {renderFeatures()}
+        {renderDiscussion()}
+        {renderVendorInfo()}
       </ScrollView>
       {renderAddToCart()}
     </View>

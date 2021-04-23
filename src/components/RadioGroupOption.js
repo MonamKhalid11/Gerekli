@@ -7,6 +7,8 @@ import theme from '../config/theme';
 const styles = EStyleSheet.create({
   container: {
     width: '100%',
+    paddingLeft: 14,
+    paddingRight: 14,
     marginVertical: 10,
   },
   titleAndTitleSubWrapper: {
