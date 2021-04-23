@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { Navigation } from 'react-native-navigation';
 import * as nav from '../services/navigation';
+import { iconsMap } from '../utils/navIcons';
 import { toInteger, get } from 'lodash';
 import i18n from '../utils/i18n';
 import { isEmpty } from 'lodash';
 import config from '../config';
+import theme from '../config/theme';
 import {
   formatPrice,
   isPriceIncludesTax,
@@ -24,6 +27,7 @@ import {
   Text,
   TouchableOpacity,
   Platform,
+  Share,
 } from 'react-native';
 
 // Import actions.
@@ -210,10 +214,24 @@ export const ProductDetailNew = ({
   discussion,
   componentId,
   auth,
+  hideWishList,
+  wishList,
 }) => {
   const [product, setProduct] = useState('');
   const [amount, setAmount] = useState(1);
   const [vendor, setVendor] = useState(null);
+
+  const listener = {
+    navigationButtonPressed: ({ buttonId }) => {
+      if (buttonId === 'wishlist') {
+        handleAddToWishList();
+      }
+
+      if (buttonId === 'share') {
+        handleShare();
+      }
+    },
+  };
 
   const fetchData = async (currentPid) => {
     const currentProduct = await productsActions.fetch(currentPid);
@@ -227,6 +245,53 @@ export const ProductDetailNew = ({
   useEffect(() => {
     fetchData(pid);
   }, []);
+
+  useEffect(() => {
+    if (product) {
+      const setTopBarOptions = (product) => {
+        const topBar = {
+          title: {
+            text: product.product,
+          },
+        };
+
+        topBar.rightButtons = [
+          {
+            id: 'share',
+            icon: iconsMap.share,
+          },
+        ];
+
+        if (!hideWishList && !product.isProductOffer) {
+          const wishListActive = wishList.items.some(
+            (item) => parseInt(item.product_id, 10) === product.product_id,
+          );
+          topBar.rightButtons.push({
+            id: 'wishlist',
+            icon: iconsMap.favorite,
+            color: wishListActive
+              ? theme.$primaryColor
+              : theme.$navBarButtonColor,
+          });
+        }
+
+        Navigation.mergeOptions(componentId, {
+          topBar,
+        });
+      };
+
+      setTopBarOptions(product);
+    }
+
+    const listeners = Navigation.events().registerComponentListener(
+      listener,
+      componentId,
+    );
+
+    return () => {
+      listeners.remove();
+    };
+  }, [componentId, listener, product, hideWishList, wishList]);
 
   const changeVariationHandler = async (variantId, variantOption) => {
     const selectedVariationPid = variantOption.product_id;
@@ -371,7 +436,7 @@ export const ProductDetailNew = ({
     return (
       <Section title={i18n.t('Description')} wrapperStyle={styles.wrapperStyle}>
         <Text style={styles.descText}>
-          {stripTags(product.full_description)}
+          {stripTags(product.full_description).trim()}
         </Text>
       </Section>
     );
@@ -447,6 +512,21 @@ export const ProductDetailNew = ({
     );
   };
 
+  const handleShare = () => {
+    const url = `${config.siteUrl}index.php?dispatch=products.view&product_id=${product.product_id}`;
+    Share.share(
+      {
+        message: url,
+        title: product.product,
+        url,
+      },
+      {
+        dialogTitle: product.product,
+        tintColor: 'black',
+      },
+    );
+  };
+
   const handleAddToWishList = (productOffer) => {
     const productOptions = {};
 
@@ -457,10 +537,10 @@ export const ProductDetailNew = ({
     }
 
     // Convert product options to the option_id: variant_id array.
-    Object.keys(product.selectedOptions).forEach((k) => {
-      productOptions[k] = product.selectedOptions[k];
-      if (product.selectedOptions[k].variant_id) {
-        productOptions[k] = product.selectedOptions[k].variant_id;
+    Object.keys(currentProduct.selectedOptions).forEach((k) => {
+      productOptions[k] = currentProduct.selectedOptions[k];
+      if (currentProduct.selectedOptions[k].variant_id) {
+        productOptions[k] = currentProduct.selectedOptions[k].variant_id;
       }
     });
 
@@ -512,7 +592,7 @@ export const ProductDetailNew = ({
     const lastElement = features.length - 1;
 
     return (
-      <Section title={i18n.t('Features')}>
+      <Section title={i18n.t('Features')} wrapperStyle={styles.wrapperStyle}>
         {features.map((item, index) =>
           renderFeatureItem(item, index, index === lastElement),
         )}
@@ -666,6 +746,7 @@ export default connect(
     productDetail: state.productDetail,
     discussion: state.discussion,
     auth: state.auth,
+    wishList: state.wishList,
   }),
   (dispatch) => ({
     cartActions: bindActionCreators(cartActions, dispatch),
