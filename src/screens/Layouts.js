@@ -193,13 +193,8 @@ export class Layouts extends Component {
             name={block.name}
             wrapper={block.wrapper}
             items={items}
-            // onPress={(product) => {
-            //   nav.pushProductDetail(this.props.componentId, {
-            //     pid: product.product_id,
-            //   });
-            // }}
             onPress={(product) => {
-              nav.pushProductDetailNew(this.props.componentId, {
+              nav.pushProductDetail(this.props.componentId, {
                 pid: product.product_id,
               });
             }}

@@ -21,7 +21,6 @@ import CheckoutAuth from './screens/CheckoutAuth';
 import Registration from './screens/Registration';
 import ResetPassword from './screens/ResetPassword';
 import ProductDetail from './screens/ProductDetail';
-import ProductDetailNew from './screens/ProductDetailNew';
 import Notification from './components/Notification';
 import CheckoutPayment from './screens/CheckoutPayment';
 import CheckoutComplete from './screens/CheckoutComplete';
@@ -56,7 +55,6 @@ const screenList = [
   { name: 'VendorDetail', component: VendorDetail },
   { name: 'CheckoutAuth', component: CheckoutAuth },
   { name: 'ProductDetail', component: ProductDetail },
-  { name: 'ProductDetailNew', component: ProductDetailNew },
   { name: 'CheckoutProfile', component: CheckoutProfile },
   { name: 'CheckoutShipping', component: CheckoutShipping },
   { name: 'CheckoutPayment', component: CheckoutPayment },

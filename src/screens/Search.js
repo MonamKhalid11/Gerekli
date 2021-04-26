@@ -222,16 +222,11 @@ export class Search extends Component {
             renderItem={(item) => (
               <ProductListView
                 product={item}
-                // onPress={(product) =>
-                //   nav.pushProductDetail(this.props.componentId, {
-                //     pid: product.product_id,
-                //   })
-                // }
-                onPress={(product) => {
-                  nav.pushProductDetailNew(this.props.componentId, {
+                onPress={(product) =>
+                  nav.pushProductDetail(this.props.componentId, {
                     pid: product.product_id,
-                  });
-                }}
+                  })
+                }
               />
             )}
           />
