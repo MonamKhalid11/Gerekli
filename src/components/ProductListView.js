@@ -12,7 +12,7 @@ const styles = EStyleSheet.create({
   container: {
     borderWidth: 1,
     borderColor: '$productBorderColor',
-    borderRadius: 10,
+    borderRadius: '$borderRadius',
     backgroundColor: '#fff',
     margin: 5,
     padding: 15,
