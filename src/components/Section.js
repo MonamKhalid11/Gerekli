@@ -7,16 +7,20 @@ const styles = EStyleSheet.create({
   container: {
     paddingTop: 20,
   },
+  topDivider: {
+    borderTopWidth: 1,
+    borderColor: '#d9d9d9',
+    width: '100%',
+  },
   wrapper: {
     backgroundColor: '#fff',
     padding: 14,
   },
   title: {
     fontSize: '1rem',
-    paddingLeft: 14,
-    paddingRight: 14,
     paddingBottom: 10,
     textAlign: 'left',
+    fontWeight: '500',
   },
   rightButton: {
     position: 'absolute',
@@ -49,18 +53,22 @@ const Section = ({
   showRightButton,
   rightButtonText,
   onRightButtonPress,
+  topDivider = false,
 }) => (
-  <View style={[styles.container, containerStyle]}>
-    {title ? <Text style={styles.title}>{title}</Text> : null}
-    {showRightButton && (
-      <TouchableOpacity
-        onPress={() => onRightButtonPress()}
-        style={styles.rightButton}>
-        <Text style={styles.rightButtonText}>{rightButtonText}</Text>
-      </TouchableOpacity>
-    )}
-    <View style={[styles.wrapper, wrapperStyle]}>{children}</View>
-  </View>
+  <>
+    {topDivider && <View style={styles.topDivider} />}
+    <View style={[styles.container, containerStyle]}>
+      {title ? <Text style={styles.title}>{title}</Text> : null}
+      {showRightButton && (
+        <TouchableOpacity
+          onPress={() => onRightButtonPress()}
+          style={styles.rightButton}>
+          <Text style={styles.rightButtonText}>{rightButtonText}</Text>
+        </TouchableOpacity>
+      )}
+      <View style={[styles.wrapper, wrapperStyle]}>{children}</View>
+    </View>
+  </>
 );
 
 /**

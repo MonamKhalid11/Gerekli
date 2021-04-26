@@ -52,12 +52,11 @@ import Rating from '../components/Rating';
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 14,
   },
   descriptionBlock: {
     paddingTop: 10,
     paddingBottom: 10,
-    paddingLeft: 14,
-    paddingRight: 14,
   },
   nameText: {
     fontSize: '1.1rem',
@@ -93,13 +92,9 @@ const styles = EStyleSheet.create({
   promoText: {
     marginBottom: 10,
   },
-  qtyOptionWrapper: {
-    marginHorizontal: 15,
-  },
   descText: {
     color: '$discussionMessageColor',
     textAlign: 'justify',
-    paddingHorizontal: 14,
   },
   addToCartContainerWrapper: {
     shadowColor: '#45403a',
@@ -123,21 +118,9 @@ const styles = EStyleSheet.create({
     padding: 0,
     paddingTop: 10,
     paddingBottom: 10,
-    marginHorizontal: 10,
-    borderRadius: 10,
-    shadowColor: '#45403a',
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 7,
-    elevation: 24,
     marginBottom: 20,
   },
   sectionBtn: {
-    paddingLeft: 14,
-    paddingRight: 14,
     paddingTop: 12,
     paddingBottom: 6,
   },
@@ -148,8 +131,6 @@ const styles = EStyleSheet.create({
     maxWidth: 100,
   },
   vendorWrapper: {
-    paddingLeft: 14,
-    paddingRight: 14,
     paddingTop: 8,
     paddingBottom: 8,
     marginBottom: 10,
@@ -205,6 +186,22 @@ const styles = EStyleSheet.create({
   },
 });
 
+/**
+ * Renders product detail screen.
+ *
+ * @param {number} pid - Product id.
+ * @param {object} productsActions - Products actions.
+ * @param {object} wishListActions - Wishlist actions.
+ * @param {object} vendorActions - Vendor actions.
+ * @param {object} cartActions - Cart actions.
+ * @param {object} discussion - Discussion store data.
+ * @param {string} componentId - Component id.
+ * @param {object} auth - Auth store data.
+ * @param {boolean} hideWishList - Hide wishlist or not flag.
+ * @param {object} wishList - Wishlist store data.
+ *
+ * @return {JSX.Element}
+ */
 export const ProductDetailNew = ({
   pid,
   productsActions,
@@ -293,6 +290,12 @@ export const ProductDetailNew = ({
     };
   }, [componentId, listener, product, hideWishList, wishList]);
 
+  /**
+   * Changes variations.
+   *
+   * @param {string} variantId - Variation id.
+   * @param {string} variantOption - Selected variatoin data.
+   */
   const changeVariationHandler = async (variantId, variantOption) => {
     const selectedVariationPid = variantOption.product_id;
     const currnetVariationPid = product.selectedVariants[variantId].product_id;
@@ -304,6 +307,12 @@ export const ProductDetailNew = ({
     fetchData(selectedVariationPid);
   };
 
+  /**
+   * Changes options.
+   *
+   * @param {string} optionId - Option id.
+   * @param {string} selectedOptionValue - Selected option data.
+   */
   const changeOptionHandler = async (optionId, selectedOptionValue) => {
     const newOptions = { ...product.selectedOptions };
     newOptions[optionId] = selectedOptionValue;
@@ -314,13 +323,21 @@ export const ProductDetailNew = ({
     setProduct({ ...recalculatedProduct });
   };
 
+  /**
+   * Renders variations and options block.
+   *
+   * @return {JSX.Element}
+   */
   const renderVariationsAndOptions = () => {
     if (isEmpty(product.selectedOptions) && isEmpty(product.selectedVariants)) {
       return null;
     }
 
     return (
-      <Section title={i18n.t('Select')} wrapperStyle={styles.wrapperStyle}>
+      <Section
+        title={i18n.t('Select')}
+        wrapperStyle={styles.wrapperStyle}
+        topDivider>
         <ProductDetailOptions
           options={product.convertedVariants}
           selectedOptions={product.selectedVariants}
@@ -335,6 +352,11 @@ export const ProductDetailNew = ({
     );
   };
 
+  /**
+   * Renders discount label.
+   *
+   * @return {JSX.Element}
+   */
   const renderDiscountLabel = () => {
     return (
       <View style={styles.listDiscountWrapper}>
@@ -345,6 +367,11 @@ export const ProductDetailNew = ({
     );
   };
 
+  /**
+   * Renders main images of the product.
+   *
+   * @return {JSX.Element}
+   */
   const renderImage = () => {
     return (
       <View>
@@ -354,10 +381,20 @@ export const ProductDetailNew = ({
     );
   };
 
+  /**
+   * Renders a name of the product.
+   *
+   * @return {JSX.Element}
+   */
   const renderName = () => {
     return <Text style={styles.nameText}>{product.product}</Text>;
   };
 
+  /**
+   * Renders rating.
+   *
+   * @return {JSX.Element}
+   */
   const renderRating = () => {
     if (!product.rating) {
       return null;
@@ -373,6 +410,11 @@ export const ProductDetailNew = ({
     );
   };
 
+  /**
+   * Renders price.
+   *
+   * @return {JSX.Element}
+   */
   const renderPrice = () => {
     let discountPrice = null;
     let discountTitle = null;
@@ -428,13 +470,21 @@ export const ProductDetailNew = ({
     );
   };
 
+  /**
+   * Renders description block.
+   *
+   * @return {JSX.Element}
+   */
   const renderDesc = () => {
     if (!product.full_description) {
       return null;
     }
 
     return (
-      <Section title={i18n.t('Description')} wrapperStyle={styles.wrapperStyle}>
+      <Section
+        title={i18n.t('Description')}
+        wrapperStyle={styles.wrapperStyle}
+        topDivider>
         <Text style={styles.descText}>
           {stripTags(product.full_description).trim()}
         </Text>
@@ -442,6 +492,11 @@ export const ProductDetailNew = ({
     );
   };
 
+  /**
+   * Renders quantity switcher.
+   *
+   * @return {JSX.Element}
+   */
   const renderQuantitySwitcher = () => {
     const step = parseInt(product.qty_step, 10) || 1;
     const max = parseInt(product.max_qty, 10) || parseInt(product.amount, 10);
@@ -452,20 +507,23 @@ export const ProductDetailNew = ({
     }
 
     return (
-      <View style={styles.qtyOptionWrapper}>
-        <QtyOption
-          max={max}
-          min={min}
-          initialValue={amount || min}
-          step={step}
-          onChange={(val) => {
-            setAmount(val);
-          }}
-        />
-      </View>
+      <QtyOption
+        max={max}
+        min={min}
+        initialValue={amount || min}
+        step={step}
+        onChange={(val) => {
+          setAmount(val);
+        }}
+      />
     );
   };
 
+  /**
+   * Renders descussion block.
+   *
+   * @return {JSX.Element}
+   */
   const renderDiscussion = () => {
     if (!product.rating) {
       return null;
@@ -485,6 +543,7 @@ export const ProductDetailNew = ({
     return (
       <Section
         title={title}
+        topDivider
         wrapperStyle={styles.wrapperStyle}
         showRightButton={true}
         rightButtonText={i18n.t('Write a Review')}
@@ -512,6 +571,9 @@ export const ProductDetailNew = ({
     );
   };
 
+  /**
+   * Share function.
+   */
   const handleShare = () => {
     const url = `${config.siteUrl}index.php?dispatch=products.view&product_id=${product.product_id}`;
     Share.share(
@@ -527,6 +589,9 @@ export const ProductDetailNew = ({
     );
   };
 
+  /**
+   * Add to whishlist function.
+   */
   const handleAddToWishList = (productOffer) => {
     const productOptions = {};
 
@@ -555,6 +620,11 @@ export const ProductDetailNew = ({
     return wishListActions.add({ products }, componentId);
   };
 
+  /**
+   * Renders features block.
+   *
+   * @return {JSX.Element}
+   */
   const renderFeatures = () => {
     const renderFeatureItem = (feature, index, last) => {
       const { description, feature_type, value_int, value, variant } = feature;
@@ -592,7 +662,10 @@ export const ProductDetailNew = ({
     const lastElement = features.length - 1;
 
     return (
-      <Section title={i18n.t('Features')} wrapperStyle={styles.wrapperStyle}>
+      <Section
+        title={i18n.t('Features')}
+        wrapperStyle={styles.wrapperStyle}
+        topDivider>
         {features.map((item, index) =>
           renderFeatureItem(item, index, index === lastElement),
         )}
@@ -600,13 +673,21 @@ export const ProductDetailNew = ({
     );
   };
 
+  /**
+   * Renders vendor information.
+   *
+   * @return {JSX.Element}
+   */
   const renderVendorInfo = () => {
     if (config.version !== VERSION_MVE || !vendor) {
       return null;
     }
 
     return (
-      <Section title={i18n.t('Vendor')} wrapperStyle={styles.wrapperStyle}>
+      <Section
+        title={i18n.t('Vendor')}
+        wrapperStyle={styles.wrapperStyle}
+        topDivider>
         <View style={styles.vendorWrapper}>
           <Text style={styles.vendorName}>{vendor.company}</Text>
           <Text style={styles.vendorProductCount}>
@@ -643,13 +724,21 @@ export const ProductDetailNew = ({
     );
   };
 
+  /**
+   * Renders sellers if common products for vendor is turn on.
+   *
+   * @return {JSX.Element}
+   */
   const renderSellers = () => {
     if (!product.isProductOffer) {
       return null;
     }
 
     return (
-      <Section title={i18n.t('Sellers')} wrapperStyle={styles.wrapperStyle}>
+      <Section
+        title={i18n.t('Sellers')}
+        wrapperStyle={styles.wrapperStyle}
+        topDivider>
         {product.productOffers.products.map((el, index) => {
           return (
             <Seller
@@ -665,6 +754,12 @@ export const ProductDetailNew = ({
     );
   };
 
+  /**
+   * Add to cart function.
+   *
+   * @param {boolean} showNotification - Show notification or not.
+   * @param {object} productOffer - Selected product offer data.
+   */
   const handleAddToCart = (showNotification = true, productOffer) => {
     const productOptions = {};
 
@@ -693,6 +788,11 @@ export const ProductDetailNew = ({
     return cartActions.add({ products }, showNotification);
   };
 
+  /**
+   * Renders add to cart block.
+   *
+   * @return {JSX.Element}
+   */
   const renderAddToCart = () => {
     const canPayWithApplePay = Platform.OS === 'ios' && config.applePay;
 
@@ -719,24 +819,26 @@ export const ProductDetailNew = ({
   }
 
   return (
-    <View style={styles.container}>
-      <ScrollView>
-        {renderImage()}
-        <View style={styles.descriptionBlock}>
-          {renderName()}
-          {renderRating()}
-          {renderPrice()}
-        </View>
-        {renderQuantitySwitcher()}
-        {renderVariationsAndOptions()}
-        {renderSellers()}
-        {renderDesc()}
-        {renderFeatures()}
-        {renderDiscussion()}
-        {renderVendorInfo()}
-      </ScrollView>
+    <>
+      <View style={styles.container}>
+        <ScrollView>
+          {renderImage()}
+          <View style={styles.descriptionBlock}>
+            {renderName()}
+            {renderRating()}
+            {renderPrice()}
+          </View>
+          {renderQuantitySwitcher()}
+          {renderVariationsAndOptions()}
+          {renderSellers()}
+          {renderDesc()}
+          {renderFeatures()}
+          {renderDiscussion()}
+          {renderVendorInfo()}
+        </ScrollView>
+      </View>
       {renderAddToCart()}
-    </View>
+    </>
   );
 };
 

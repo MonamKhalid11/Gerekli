@@ -26,8 +26,6 @@ const styles = EStyleSheet.create({
   },
   itemContainer: {
     marginBottom: 10,
-    paddingLeft: 14,
-    paddingRight: 14,
   },
   itemContainerNoBorder: {
     borderBottomWidth: 0,

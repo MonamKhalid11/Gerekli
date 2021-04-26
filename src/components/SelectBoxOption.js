@@ -11,8 +11,6 @@ const styles = EStyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'stretch',
-    paddingLeft: 14,
-    paddingRight: 14,
     marginVertical: 10,
   },
   selectWrapper: {
