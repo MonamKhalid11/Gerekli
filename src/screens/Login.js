@@ -41,6 +41,11 @@ const styles = EStyleSheet.create({
     fontSize: '1rem',
     textAlign: 'center',
   },
+  forgotPasswordText: {
+    color: '#0000FF',
+    textAlign: 'center',
+    marginTop: 18,
+  },
 });
 
 /**
@@ -59,7 +64,7 @@ export class Login extends Component {
     }),
     auth: PropTypes.shape({
       logged: PropTypes.bool,
-      error: PropTypes.shape({}),
+      error: PropTypes.string,
       fetching: PropTypes.bool,
     }),
   };
@@ -175,6 +180,11 @@ export class Login extends Component {
           onPress={() => nav.pushRegistration(this.props.componentId)}>
           <Text style={styles.btnRegistrationText}>
             {i18n.t('Registration')}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => nav.showResetPassword()}>
+          <Text style={styles.forgotPasswordText}>
+            {i18n.t('Forgot your password?')}
           </Text>
         </TouchableOpacity>
         <Spinner visible={auth.fetching} mode="modal" />

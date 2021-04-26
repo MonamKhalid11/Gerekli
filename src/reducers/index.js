@@ -15,6 +15,7 @@ import vendorCategories from './vendorCategories';
 import profile from './profile';
 import imagePicker from './imagePicker';
 import settings from './settings';
+import steps from './steps';
 
 import vendorManageProducts from './vendorManage/products';
 import vendorManageCategories from './vendorManage/categories';
@@ -36,6 +37,7 @@ export default combineReducers({
   vendorCategories,
   imagePicker,
   settings,
+  steps,
 
   vendorManageProducts,
   vendorManageCategories,

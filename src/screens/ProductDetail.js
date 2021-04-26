@@ -19,8 +19,8 @@ import {
   formatPrice,
   getProductImagesPaths,
   isPriceIncludesTax,
-  formatDate,
 } from '../utils';
+import { format } from 'date-fns';
 import * as nav from '../services/navigation';
 
 // Import actions.
@@ -518,7 +518,7 @@ export class ProductDetail extends Component {
   handleAddToCart = (showNotification = true, productOffer) => {
     const productOptions = {};
     const { product, selectedOptions, amount } = this.state;
-    const { auth, cartActions } = this.props;
+    const { auth, cartActions, cart } = this.props;
 
     if (!auth.logged) {
       return nav.showLogin();
@@ -542,7 +542,7 @@ export class ProductDetail extends Component {
       },
     };
 
-    return cartActions.add({ products }, showNotification);
+    return cartActions.add({ products }, showNotification, cart.coupons);
   };
 
   /**
@@ -832,11 +832,12 @@ export class ProductDetail extends Component {
    */
   renderFeatureItem = (feature, index, last) => {
     const { description, feature_type, value_int, value, variant } = feature;
+    const { settings } = this.props;
 
     let newValue = null;
     switch (feature_type) {
       case FEATURE_TYPE_DATE:
-        newValue = formatDate(value_int * 1000);
+        newValue = format(value_int * 1000, settings.dateFormat);
         break;
       case FEATURE_TYPE_CHECKBOX:
         newValue = feature.value === 'Y' ? i18n.t('Yes') : i18n.t('No');
@@ -1092,6 +1093,7 @@ export default connect(
     wishList: state.wishList,
     discussion: state.discussion,
     productDetail: state.productDetail,
+    settings: state.settings,
   }),
   (dispatch) => ({
     cartActions: bindActionCreators(cartActions, dispatch),

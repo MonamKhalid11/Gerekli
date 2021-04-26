@@ -8,7 +8,7 @@ import * as authActions from '../actions/authActions';
 import Spinner from '../components/Spinner';
 import FormBlock from '../components/FormBlock';
 import Button from '../components/Button';
-import CheckoutSteps from '../components/CheckoutSteps';
+import StepByStepSwitcher from '../components/StepByStepSwitcher';
 import i18n from '../utils/i18n';
 import * as nav from '../services/navigation';
 
@@ -68,7 +68,7 @@ export class CheckoutAuth extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.auth.logged && !nextProps.auth.fetching) {
       setTimeout(() => {
-        nav.showCheckoutDelivery({});
+        nav.showCheckoutProfile({});
       }, 1000);
     } else if (nextProps.auth.error && !nextProps.auth.fetching) {
       this.props.navigator.showInAppNotification({
@@ -118,7 +118,7 @@ export class CheckoutAuth extends Component {
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.contentContainer}>
-          <CheckoutSteps step={0} />
+          <StepByStepSwitcher />
           {auth.logged ? this.renderReLogin() : this.renderLoginForm()}
         </ScrollView>
         <Spinner visible={auth.fetching} mode="modal" />

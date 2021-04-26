@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { View, Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { formatDate } from '../utils/index';
+import { format } from 'date-fns';
 
 // Components
 import i18n from '../utils/i18n';
@@ -120,6 +120,7 @@ export default class ProfileForm extends Component {
    * @return {object}
    */
   getFieldType = (field, allFields) => {
+    const { dateFormat } = this.props;
     const label = field.description || '';
     const help = !field.required ? `${i18n.t('(Optional)')}` : '';
     const optionI18n = {
@@ -140,7 +141,7 @@ export default class ProfileForm extends Component {
           defaultValueText: i18n.t('Select date'),
           mode: 'date',
           config: {
-            format: (date) => formatDate(date),
+            format: (date) => format(date, dateFormat),
           },
         },
       };

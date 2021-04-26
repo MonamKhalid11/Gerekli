@@ -13,6 +13,8 @@ import {
 import Api from '../services/api';
 import * as productsActions from './productsActions';
 
+const PROFILE_TYPE_SELLER = 'S';
+
 export function fetch(id, type = 'M', params) {
   return async (dispatch) => {
     dispatch({
@@ -20,12 +22,17 @@ export function fetch(id, type = 'M', params) {
     });
 
     try {
-      const result = await Api.get(`/sra_vendors/${id}/`);
+      const sraVendorsResult = await Api.get(`/sra_vendors/${id}/`);
+      const sraProfileFieldsResult = await Api.get(
+        `/sra_profile_fields/?profile_type=${PROFILE_TYPE_SELLER}`,
+      );
+      sraVendorsResult.data.contactInformationFields =
+        sraProfileFieldsResult.data;
       dispatch({
         type: FETCH_VENDOR_SUCCESS,
-        payload: result.data,
+        payload: sraVendorsResult.data,
       });
-      if (result.data.discussion_type !== DISCUSSION_DISABLED) {
+      if (sraVendorsResult.data.discussion_type !== DISCUSSION_DISABLED) {
         productsActions.fetchDiscussion(id, params, type)(dispatch);
       }
       return result.data;

@@ -1,19 +1,26 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View, Text, FlatList } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { get } from 'lodash';
 import { filterObject } from '../utils/index';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { Navigation } from 'react-native-navigation';
+import { cloneDeep } from 'lodash';
 
 // Components
 import CartProductitem from './CartProductItem';
 import CartFooter from './CartFooter';
 import EmptyCart from './EmptyCart';
+import CouponCodeSection from './CouponCodeSection';
 
 // Links
 import i18n from '../utils/i18n';
 import { formatPrice } from '../utils';
 import * as nav from '../services/navigation';
+
+// Import actions
+import * as stepsActions from '../actions/stepsActions';
 
 // Styles
 const styles = EStyleSheet.create({
@@ -31,6 +38,11 @@ const styles = EStyleSheet.create({
     marginTop: 4,
     color: '#979797',
   },
+  totalDiscountText: {
+    textAlign: 'right',
+    marginTop: 4,
+    color: '$dangerColor',
+  },
 });
 
 /**
@@ -43,11 +55,26 @@ const renderOrderDetail = (products, cart) => {
     return null;
   }
 
+  const isFormattedDiscount = !!get(cart, 'subtotal_discount', '');
+  const formattedDiscount = get(cart, 'subtotal_discount_formatted.price', '');
+  const isIncludingDiscount = !!get(cart, 'discount', '');
+  const includingDiscount = get(cart, 'discount_formatted.price', '');
+
   return (
     <View style={styles.totalWrapper}>
       <Text style={styles.totalText}>
         {`${i18n.t('Subtotal')}: ${get(cart, 'subtotal_formatted.price', '')}`}
       </Text>
+      {isIncludingDiscount && (
+        <Text style={styles.totalDiscountText}>
+          {`${i18n.t('Including discount')}: -${includingDiscount}`}
+        </Text>
+      )}
+      {isFormattedDiscount && (
+        <Text style={styles.totalDiscountText}>
+          {`${i18n.t('Order discount')}: -${formattedDiscount}`}
+        </Text>
+      )}
       <Text style={styles.totalText}>
         {`${i18n.t('Shipping')}: ${get(
           cart,
@@ -74,38 +101,78 @@ const renderOrderDetail = (products, cart) => {
  *
  * @return {JSX.Element}
  */
-const CartProductList = ({
+export const CartProductList = ({
+  storeCart,
   cart,
   auth,
   componentId,
   handleRefresh,
   refreshing,
   cartActions,
+  stepsActions,
+  stateSteps,
 }) => {
-  let newProducts = [];
-  if (cart) {
-    newProducts = Object.keys(cart.products).map((key) => {
-      const result = { ...cart.products[key] };
-      result.cartId = key;
-      return result;
-    });
+  if (!cart) {
+    return <EmptyCart />;
   }
+
+  const shippingId = cart.chosen_shipping[0];
+  const coupons = Object.keys(cart.coupons);
+  const newProducts = Object.keys(cart.products).map((key) => {
+    const result = { ...cart.products[key] };
+    result.cartId = key;
+    return result;
+  });
 
   /**
    * Moves to the next page.
    */
-  const handlePlaceOrder = (auth, cart) => {
+  const handlePlaceOrder = async (auth, cart) => {
     const newCartProducts = filterObject(
       cart.products,
       (p) => !p.extra.exclude_from_calculate,
     );
     cart.products = { ...newCartProducts };
+
+    const checkoutFlow = stateSteps.flows.checkoutFlow;
+
+    cart.isShippingRequired = false;
+
+    cart.product_groups.forEach((productGroup) => {
+      if (
+        !productGroup.all_edp_free_shipping &&
+        !productGroup.shipping_no_required &&
+        Object.keys(productGroup.shippings).length
+      ) {
+        productGroup.isShippingRequired = true;
+        cart.isShippingRequired = true;
+      } else {
+        productGroup.isShippingRequired = false;
+      }
+      if (
+        !productGroup.shipping_no_required &&
+        !Object.keys(productGroup.shippings).length
+      ) {
+        productGroup.isShippingForbidden = true;
+        productGroup.isShippingRequired = true;
+        cart.isShippingRequired = true;
+      }
+    });
+
+    // Set the flow, filter steps and define the first step.
+    const startStep = await stepsActions.setFlow('checkoutFlow', checkoutFlow, {
+      newProducts,
+      cart,
+    });
+
     if (!auth.logged) {
       nav.pushCheckoutAuth(componentId, { newProducts });
     } else {
-      nav.showCheckoutDelivery({
-        newProducts,
-        cart,
+      Navigation.push(componentId, {
+        component: {
+          name: startStep.screenName,
+          passProps: { newProducts, cart, currentStep: startStep },
+        },
       });
     }
   };
@@ -139,21 +206,61 @@ const CartProductList = ({
         onRefresh={handleRefresh}
         refreshing={refreshing}
         ListEmptyComponent={() => <EmptyCart />}
-        ListFooterComponent={() => renderOrderDetail(newProducts, cart)}
+        ListFooterComponent={() => {
+          return (
+            <>
+              <CouponCodeSection
+                items={coupons}
+                onAddPress={(value) => {
+                  cartActions.addCoupon(
+                    value,
+                    cart.vendor_id,
+                    shippingId,
+                    storeCart.coupons,
+                  );
+                }}
+                onRemovePress={(value) => {
+                  let newCoupons = {};
+                  if (storeCart.coupons.general) {
+                    const {
+                      [value]: _,
+                      ...filteredCoupons
+                    } = storeCart.coupons.general;
+                    newCoupons.general = cloneDeep(filteredCoupons);
+                  } else {
+                    const {
+                      [value]: _,
+                      ...filteredCoupons
+                    } = storeCart.coupons[cart.vendor_id];
+                    newCoupons[cart.vendor_id] = cloneDeep(filteredCoupons);
+                  }
+
+                  cartActions.removeCoupon(newCoupons);
+                  setTimeout(() => {
+                    cartActions.recalculateTotal(
+                      shippingId,
+                      newCoupons,
+                      cart.vendor_id,
+                    );
+                  }, 1400);
+                }}
+              />
+              {renderOrderDetail(newProducts, cart)}
+            </>
+          );
+        }}
       />
       {renderPlaceOrder(cart, newProducts, auth)}
     </View>
   );
 };
 
-CartProductList.propTypes = {
-  cart: PropTypes.shape({}),
-  auth: PropTypes.shape({
-    token: PropTypes.string,
+export default connect(
+  (state) => ({
+    stateSteps: state.steps,
+    storeCart: state.cart,
   }),
-  refreshing: PropTypes.bool,
-  handleRefresh: PropTypes.func,
-  cartActions: PropTypes.shape({}),
-};
-
-export default CartProductList;
+  (dispatch) => ({
+    stepsActions: bindActionCreators(stepsActions, dispatch),
+  }),
+)(CartProductList);

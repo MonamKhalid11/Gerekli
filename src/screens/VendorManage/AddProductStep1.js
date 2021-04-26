@@ -3,6 +3,10 @@ import PropTypes from 'prop-types';
 import { uniqueId } from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Navigation } from 'react-native-navigation';
+import EStyleSheet from 'react-native-extended-stylesheet';
+import * as nav from '../../services/navigation';
+import i18n from '../../utils/i18n';
 import {
   View,
   Text,
@@ -11,14 +15,15 @@ import {
   FlatList,
   Dimensions,
 } from 'react-native';
-import EStyleSheet from 'react-native-extended-stylesheet';
-import CheckoutSteps from '../../components/CheckoutSteps';
-import Section from '../../components/Section';
+
+// Import components
 import BottomActions from '../../components/BottomActions';
+import StepByStepSwitcher from '../../components/StepByStepSwitcher';
+import Section from '../../components/Section';
+
+// Import actions
 import * as imagePickerActions from '../../actions/imagePickerActions';
-import * as nav from '../../services/navigation';
-import i18n from '../../utils/i18n';
-import { Navigation } from 'react-native-navigation';
+import * as stepsActions from '../../actions/stepsActions';
 
 const styles = EStyleSheet.create({
   container: {
@@ -70,22 +75,24 @@ export class AddProductStep1 extends Component {
    * Moves to the next screen.
    */
   handleGoNext = () => {
-    const { images, category_ids } = this.props;
-    nav.pushVendorManageAddProductStep2(this.props.componentId, {
-      stepsData: {
-        images,
-        category_ids,
-        steps: this.getSteps(),
+    const { images, category_ids, stateSteps, currentStep } = this.props;
+
+    // Define next step
+    const nextStep =
+      stateSteps.flowSteps[
+        Object.keys(stateSteps.flowSteps)[currentStep.stepNumber + 1]
+      ];
+    stepsActions.setNextStep(nextStep);
+
+    Navigation.push(this.props.componentId, {
+      component: {
+        name: nextStep.screenName,
+        passProps: {
+          stepsData: { images, category_ids },
+          currentStep: nextStep,
+        },
       },
     });
-  };
-
-  getSteps = () => {
-    return [
-      i18n.t('Image'),
-      i18n.t('Enter the name'),
-      i18n.t('Enter the price'),
-    ];
   };
 
   /**
@@ -106,10 +113,12 @@ export class AddProductStep1 extends Component {
    * @return {JSX.Element}
    */
   renderHeader = () => {
+    const { currentStep } = this.props;
+
     return (
       <View>
         <View style={styles.header}>
-          <CheckoutSteps step={0} steps={this.getSteps()} />
+          <StepByStepSwitcher currentStep={currentStep} />
         </View>
         <Section containerStyle={styles.containerStyle}>
           <TouchableOpacity
@@ -192,8 +201,10 @@ export class AddProductStep1 extends Component {
 export default connect(
   (state) => ({
     images: state.imagePicker.selected,
+    stateSteps: state.steps,
   }),
   (dispatch) => ({
     imagePickerActions: bindActionCreators(imagePickerActions, dispatch),
+    stepsActions: bindActionCreators(stepsActions, dispatch),
   }),
 )(AddProductStep1);

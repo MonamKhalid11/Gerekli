@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { View, Text, ScrollView, Image } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { Navigation } from 'react-native-navigation';
+import { format } from 'date-fns';
 
 // Import actions.
 import * as notificationsActions from '../actions/notificationsActions';
@@ -16,7 +17,7 @@ import FormBlockField from '../components/FormBlockField';
 import Spinner from '../components/Spinner';
 
 import i18n from '../utils/i18n';
-import { formatPrice, getImagePath, formatDate } from '../utils';
+import { formatPrice, getImagePath } from '../utils';
 import Api from '../services/api';
 import * as nav from '../services/navigation';
 
@@ -279,6 +280,7 @@ export class OrderDetail extends Component {
    */
   render() {
     const { orderDetail, fetching } = this.state;
+    const { settings } = this.props;
     if (fetching) {
       return (
         <View style={styles.container}>
@@ -306,7 +308,7 @@ export class OrderDetail extends Component {
             {i18n.t('Order')} #{orderDetail.order_id}
           </Text>
           <Text style={styles.subHeader}>
-            {i18n.t('Placed on')} {formatDate(date)}
+            {i18n.t('Placed on')} {format(date, settings.dateFormat)}
           </Text>
 
           <FormBlock>
@@ -347,6 +349,7 @@ export class OrderDetail extends Component {
 export default connect(
   (state) => ({
     auth: state.auth,
+    settings: state.settings,
   }),
   (dispatch) => ({
     notificationsActions: bindActionCreators(notificationsActions, dispatch),
