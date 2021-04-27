@@ -110,7 +110,11 @@ export function profileFields(data = {}) {
   };
 }
 
-export function updateProfile(id, data, componentId) {
+export function updateProfile(
+  id: string,
+  data: UpdateProfileParams,
+  componentId: string,
+) {
   return (dispatch: Dispatch<AuthActionTypes>) => {
     dispatch({ type: UPDATE_PROFILE_REQUEST });
     return Api.put(`/sra_profile/${id}`, data)
@@ -147,7 +151,7 @@ export function updateProfile(id, data, componentId) {
   };
 }
 
-export function createProfile(data, componentId) {
+export function createProfile(data: CreateProfileParams, componentId: string) {
   return (dispatch: Dispatch<AuthActionTypes>) => {
     dispatch({ type: AUTH_REGESTRATION_REQUEST });
     return Api.post('/sra_profile', data)
@@ -248,12 +252,26 @@ const getUserData = async (response, dispatch) => {
   }
 };
 
-export function login(data) {
-  return async (dispatch) => {
+export function login(data: LoginData) {
+  return async (dispatch: Dispatch<AuthActionTypes>) => {
     dispatch({ type: AUTH_LOGIN_REQUEST });
-
-    const res = await Api.post('/sra_auth_tokens', data);
-    getUserData(res, dispatch);
+    try {
+      const res = await Api.post('/sra_auth_tokens', data);
+      getUserData(res, dispatch);
+    } catch (error) {
+      dispatch({
+        type: AUTH_LOGIN_FAIL,
+        payload: error.response.data,
+      });
+      dispatch({
+        type: NOTIFICATION_SHOW,
+        payload: {
+          type: 'warning',
+          title: i18n.t('Error'),
+          text: i18n.t('Wrong password.'),
+        },
+      });
+    }
   };
 }
 
@@ -314,7 +332,7 @@ export function resetPassword(data) {
 }
 
 export function loginWithOneTimePassword({ email, oneTimePassword }) {
-  return async (dispatch) => {
+  return async (dispatch: Dispatch<AuthActionTypes>) => {
     try {
       const res = await Api.post('/sra_auth_tokens', {
         email,
