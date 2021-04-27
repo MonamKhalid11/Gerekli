@@ -71,7 +71,7 @@ const CategoryListView = ({ category, onPress }) => {
           <Image source={{ uri: imageUri }} style={styles.categoryImage} />
         ) : null}
         <View style={styles.categoryTitleWrapper}>
-          <Text numberOfLines={2} style={styles.categoryTitle}>
+          <Text numberOfLines={3} style={styles.categoryTitle}>
             {category.category}
           </Text>
         </View>
