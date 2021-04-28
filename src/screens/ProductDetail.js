@@ -78,13 +78,20 @@ const styles = EStyleSheet.create({
   outOfStockText: {
     color: '$dangerColor',
     marginTop: 10,
-    fontSize: '0.8rem',
-    fontWeight: 'bold',
+    fontSize: '1rem',
+    fontWeight: '500',
+  },
+  priceWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   listPriceText: {
     textDecorationLine: 'line-through',
+    textDecorationColor: 'red',
     color: '$darkColor',
     textAlign: 'left',
+    marginLeft: 10,
   },
   listPriceWrapperText: {
     textAlign: 'left',
@@ -113,6 +120,7 @@ const styles = EStyleSheet.create({
     paddingTop: 8,
     backgroundColor: '#fff',
     flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   wrapperStyle: {
     padding: 0,
@@ -417,16 +425,13 @@ export const ProductDetail = ({
    */
   const renderPrice = () => {
     let discountPrice = null;
-    let discountTitle = null;
     let showDiscount = false;
 
     if (toInteger(product.discount)) {
       discountPrice = product.base_price_formatted.price;
-      discountTitle = `${i18n.t('Old price')}: `;
       showDiscount = true;
     } else if (toInteger(product.list_price)) {
       discountPrice = product.list_price_formatted.price;
-      discountTitle = `${i18n.t('List price')}: `;
       showDiscount = true;
     }
 
@@ -437,16 +442,14 @@ export const ProductDetail = ({
       productTaxedPrice || get(product, 'price_formatted.price', '');
     const showTaxedPrice = isPriceIncludesTax(product);
 
+    if (inStock) {
+      return (
+        <Text style={styles.outOfStockText}>{i18n.t('Out of stock')}</Text>
+      );
+    }
+
     return (
-      <View>
-        {showDiscount && isProductPriceZero && (
-          <Text style={styles.listPriceWrapperText}>
-            {discountTitle}
-            <Text style={styles.listPriceText}>
-              {formatPrice(discountPrice)}
-            </Text>
-          </Text>
-        )}
+      <View style={styles.priceWrapper}>
         {isProductPriceZero ? (
           <>
             <Text style={styles.priceText}>
@@ -463,8 +466,8 @@ export const ProductDetail = ({
             {i18n.t('Contact us for a price')}
           </Text>
         )}
-        {inStock && (
-          <Text style={styles.outOfStockText}>{i18n.t('Out of stock')}</Text>
+        {showDiscount && isProductPriceZero && (
+          <Text style={styles.listPriceText}>{formatPrice(discountPrice)}</Text>
         )}
       </View>
     );
@@ -808,6 +811,7 @@ export const ProductDetail = ({
               <InAppPayment onPress={this.handleApplePay} />
             </View>
           )}
+          {renderPrice()}
           <AddToCartButton onPress={() => handleAddToCart()} />
         </View>
       </View>
@@ -826,7 +830,7 @@ export const ProductDetail = ({
           <View style={styles.descriptionBlock}>
             {renderName()}
             {renderRating()}
-            {renderPrice()}
+            {/* {renderPrice()} */}
           </View>
           {renderQuantitySwitcher()}
           {renderVariationsAndOptions()}
