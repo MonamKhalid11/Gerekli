@@ -202,14 +202,6 @@ const setSelectedVariants = (product) => {
   return selectedVariants;
 };
 
-const setDiscount = (product) => {
-  if (!product.list_discount_prc && !product.discount_prc) {
-    return null;
-  }
-
-  return product.list_discount_prc || product.discount_prc;
-};
-
 const setRating = (product) => {
   if (
     product.discussion_type !== DISCUSSION_RATING &&
@@ -242,7 +234,6 @@ export const convertProduct = (data) => {
   convertedProduct.images = getProductImagesPaths(convertedProduct);
   convertedProduct.selectedOptions = setSelectedOptions(convertedProduct);
   convertedProduct.selectedVariants = setSelectedVariants(convertedProduct);
-  convertedProduct.discount = setDiscount(convertedProduct);
   convertedProduct.rating = setRating(convertedProduct);
   convertedProduct.isProductOffer = isProductOffer(convertedProduct);
 

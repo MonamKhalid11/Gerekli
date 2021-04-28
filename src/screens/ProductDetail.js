@@ -427,10 +427,13 @@ export const ProductDetail = ({
     let discountPrice = null;
     let showDiscount = false;
 
-    if (toInteger(product.discount)) {
+    if (product.list_discount_prc && product.discount_prc) {
       discountPrice = product.base_price_formatted.price;
       showDiscount = true;
-    } else if (toInteger(product.list_price)) {
+    } else if (
+      toInteger(product.list_price) &&
+      toInteger(product.list_price) !== toInteger(product.base_price)
+    ) {
       discountPrice = product.list_price_formatted.price;
       showDiscount = true;
     }
