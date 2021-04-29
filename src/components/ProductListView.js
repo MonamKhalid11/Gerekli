@@ -19,7 +19,7 @@ const styles = EStyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    height: 240,
+    height: 200,
     flex: 2,
     maxWidth: '50%',
   },
