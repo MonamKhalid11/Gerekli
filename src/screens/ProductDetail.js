@@ -833,7 +833,6 @@ export const ProductDetail = ({
           <View style={styles.descriptionBlock}>
             {renderName()}
             {renderRating()}
-            {/* {renderPrice()} */}
           </View>
           {renderQuantitySwitcher()}
           {renderVariationsAndOptions()}
