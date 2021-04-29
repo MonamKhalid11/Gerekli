@@ -4,7 +4,7 @@ import { filterObject } from '../utils';
 const filterFlowSteps = (flowSteps, payload) => {
   let filteredFlowSteps = { ...flowSteps };
   // Filter steps if the order doesn't need delivery
-  if (!payload.cart.isShippingRequired) {
+  if (!payload.cart?.isShippingRequired) {
     filteredFlowSteps = filterObject(
       flowSteps,
       (step) => step.title !== 'Shipping',
