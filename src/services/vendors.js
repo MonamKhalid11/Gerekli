@@ -328,6 +328,9 @@ export const getProductsList = (page = 1) => {
     products(page: $page, items_per_page: 100) {
       product
       price
+      price_formatted {
+        price
+      }
       status
       amount
       product_code
@@ -365,6 +368,9 @@ export const getOrdersList = (page = 1) => {
         status
         description
         color
+      }
+      total_formatted {
+        price
       }
       order_id
       status
@@ -416,13 +422,22 @@ export const getOrder = (id) => {
         description
         color
       }
+      total_formatted {
+        price
+      }
       order_id
       status
       total
       timestamp
       subtotal
+      subtotal_formatted {
+        price
+      }
       subtotal_discount
       shipping_cost
+      shipping_cost_formatted {
+        price
+      }
       notes
       details
       products {
@@ -434,6 +449,9 @@ export const getOrder = (id) => {
         product_type
         status
         list_price
+        price_formatted {
+          price
+        }
         main_pair {
           icon {
             image_path

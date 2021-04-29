@@ -162,7 +162,7 @@ export class OrderDetail extends Component {
             {item.product}
           </Text>
           <Text style={styles.productItemPrice}>
-            {`${item.amount} x ${formatPrice(item.price)}`}
+            {`${item.amount} x ${formatPrice(item.price_formatted.price)}`}
           </Text>
         </View>
       </View>
@@ -301,13 +301,13 @@ export class OrderDetail extends Component {
                 {shippingMethodsList}
               </FormBlockField>
               <FormBlockField title={`${i18n.t('Subtotal')}:`}>
-                {formatPrice(order.subtotal)}
+                {formatPrice(order.subtotal_formatted.price)}
               </FormBlockField>
               <FormBlockField title={`${i18n.t('Shipping cost')}:`}>
-                {formatPrice(order.shipping_cost)}
+                {formatPrice(order.shipping_cost_formatted.price)}
               </FormBlockField>
               <FormBlockField title={`${i18n.t('Total')}:`}>
-                {formatPrice(order.total)}
+                {formatPrice(order.total_formatted.price)}
               </FormBlockField>
             </View>
           </FormBlock>
