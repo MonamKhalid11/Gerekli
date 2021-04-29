@@ -18,10 +18,10 @@ const styles = EStyleSheet.create({
     padding: 15,
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     height: 200,
     flex: 2,
-    maxWidth: '50%',
+    maxWidth: '31%',
   },
   productImage: {
     width: PRODUCT_IMAGE_WIDTH,
