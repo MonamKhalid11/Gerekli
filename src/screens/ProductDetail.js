@@ -114,10 +114,7 @@ const styles = EStyleSheet.create({
     elevation: 24,
   },
   addToCartContainer: {
-    paddingLeft: 14,
-    paddingRight: 14,
-    paddingBottom: 16,
-    paddingTop: 8,
+    padding: 14,
     backgroundColor: '#fff',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -157,11 +154,6 @@ const styles = EStyleSheet.create({
   vendorDescription: {
     color: 'gray',
     textAlign: 'left',
-  },
-  vendorInfoBtn: {
-    position: 'absolute',
-    top: 10,
-    right: '1rem',
   },
   rating: {
     marginLeft: -10,
@@ -366,10 +358,16 @@ export const ProductDetail = ({
    * @return {JSX.Element}
    */
   const renderDiscountLabel = () => {
+    if (!product.list_discount_prc && !product.discount_prc) {
+      return null;
+    }
+
+    const discount = product.list_discount_prc || product.discount_prc;
+
     return (
       <View style={styles.listDiscountWrapper}>
         <Text style={styles.listDiscountText}>
-          {`${i18n.t('Discount')} ${product.discount}%`}
+          {`${i18n.t('Discount')} ${discount}%`}
         </Text>
       </View>
     );
@@ -384,7 +382,7 @@ export const ProductDetail = ({
     return (
       <View>
         <ProductImageSwiper>{product.images}</ProductImageSwiper>
-        {product.discount && renderDiscountLabel()}
+        {renderDiscountLabel()}
       </View>
     );
   };
@@ -693,7 +691,14 @@ export const ProductDetail = ({
       <Section
         title={i18n.t('Vendor')}
         wrapperStyle={styles.wrapperStyle}
-        topDivider>
+        topDivider
+        showRightButton={true}
+        rightButtonText={i18n.t('Details')}
+        onRightButtonPress={() => {
+          nav.showModalVendorDetail({
+            vendorId: vendor.company_id,
+          });
+        }}>
         <View style={styles.vendorWrapper}>
           <Text style={styles.vendorName}>{vendor.company}</Text>
           <Text style={styles.vendorProductCount}>
@@ -702,20 +707,6 @@ export const ProductDetail = ({
           <Text style={styles.vendorDescription}>
             {stripTags(vendor.description)}
           </Text>
-          <TouchableOpacity
-            style={styles.vendorInfoBtn}
-            onPress={() => {
-              nav.showModalVendorDetail({
-                vendorId: vendor.company_id,
-              });
-            }}>
-            <Text
-              style={styles.sectionBtnText}
-              numberOfLines={1}
-              ellipsizeMode="tail">
-              {i18n.t('Details')}
-            </Text>
-          </TouchableOpacity>
         </View>
         <TouchableOpacity
           style={styles.sectionBtn}
