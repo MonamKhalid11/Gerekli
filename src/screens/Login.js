@@ -132,7 +132,16 @@ export class Login extends Component {
     }
   }
 
+  //get analytics 
+
+  getAnalytics = async () => {
+    await firebase.analytics().setAnalyticsCollectionEnabled(true);
+
+  }
+
   async componentDidMount() {
+    this.getAnalytics()
+
 
     await appStorage.getFromStorage(SAVE_LOGGED_IN_DATA, (credentials) => {
       if (credentials) {

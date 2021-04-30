@@ -6,6 +6,7 @@ import { ScrollView, View } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import get from 'lodash/get';
+import { firebase } from '@react-native-firebase/analytics';
 
 // Constants
 import {
@@ -82,6 +83,8 @@ export class Layouts extends Component {
    * 2. Listens to click on notification.
    */
   componentDidMount() {
+    this.getAnalytics()
+
     const { layoutsActions, componentId } = this.props;
     // Listener for bottom tabs.
     // Removes last screen from navigation stack
@@ -109,7 +112,10 @@ export class Layouts extends Component {
       );
     }
   }
+  getAnalytics = async () => {
+    await firebase.analytics().setAnalyticsCollectionEnabled(true);
 
+  }
   /**
    * Shows and hides notifications.
    */
