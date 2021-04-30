@@ -609,7 +609,6 @@ export const ProductDetail = ({
       typeof currentProduct.selectedOptions === 'object' &&
       currentProduct.selectedOptions !== null
     ) {
-      console.log('im here: ')
       // Convert product options to the option_id: variant_id array.
       Object.keys(currentProduct.selectedOptions).forEach((k) => {
         productOptions[k] = currentProduct.selectedOptions[k];
