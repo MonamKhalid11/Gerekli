@@ -14,7 +14,6 @@ const styles = EStyleSheet.create({
   },
   wrapper: {
     backgroundColor: '#fff',
-    padding: 14,
   },
   title: {
     fontSize: '1rem',
