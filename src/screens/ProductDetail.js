@@ -605,13 +605,19 @@ export const ProductDetail = ({
       return nav.showLogin();
     }
 
-    // Convert product options to the option_id: variant_id array.
-    Object.keys(currentProduct.selectedOptions).forEach((k) => {
-      productOptions[k] = currentProduct.selectedOptions[k];
-      if (currentProduct.selectedOptions[k].variant_id) {
-        productOptions[k] = currentProduct.selectedOptions[k].variant_id;
-      }
-    });
+    if (
+      typeof currentProduct.selectedOptions === 'object' &&
+      currentProduct.selectedOptions !== null
+    ) {
+      console.log('im here: ')
+      // Convert product options to the option_id: variant_id array.
+      Object.keys(currentProduct.selectedOptions).forEach((k) => {
+        productOptions[k] = currentProduct.selectedOptions[k];
+        if (currentProduct.selectedOptions[k].variant_id) {
+          productOptions[k] = currentProduct.selectedOptions[k].variant_id;
+        }
+      });
+    }
 
     const products = {
       [currentProduct.product_id]: {
@@ -683,7 +689,7 @@ export const ProductDetail = ({
    * @return {JSX.Element}
    */
   const renderVendorInfo = () => {
-    if (config.version !== VERSION_MVE || !vendor) {
+    if (config.version !== VERSION_MVE || !vendor || product.isProductOffer) {
       return null;
     }
 

@@ -11,7 +11,6 @@ const styles = (isStock, lastBlock, lastVendor, wishListActive) =>
   EStyleSheet.create({
     container: {
       paddingVertical: '1rem',
-      paddingHorizontal: '1rem',
       borderBottomWidth: lastVendor ? 0 : 1,
       borderColor: '$menuItemsBorderColor',
     },

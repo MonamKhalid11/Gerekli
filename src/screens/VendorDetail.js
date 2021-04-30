@@ -354,7 +354,7 @@ export class VendorDetail extends Component {
   render() {
     const { vendors } = this.props;
 
-    if (!vendors.currentVendor && vendors.fetching) {
+    if (!vendors.currentVendor || vendors.fetching) {
       return <Spinner visible />;
     }
 
