@@ -214,6 +214,7 @@ export const ProductDetail = ({
   auth,
   hideWishList,
   wishList,
+  cart,
 }) => {
   const [product, setProduct] = useState('');
   const [amount, setAmount] = useState(1);
@@ -788,7 +789,7 @@ export const ProductDetail = ({
       },
     };
 
-    return cartActions.add({ products }, showNotification);
+    return cartActions.add({ products }, showNotification, cart.coupons);
   };
 
   /**
@@ -851,6 +852,7 @@ export default connect(
     productDetail: state.productDetail,
     discussion: state.discussion,
     auth: state.auth,
+    cart: state.cart,
     wishList: state.wishList,
   }),
   (dispatch) => ({
