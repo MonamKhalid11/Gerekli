@@ -111,7 +111,8 @@ const styles = EStyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 5,
-    elevation: 24,
+    borderTopWidth: Platform.OS === 'android' ? 1 : null,
+    borderColor: '#d9d9d9',
   },
   addToCartContainer: {
     padding: 14,
