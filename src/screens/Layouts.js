@@ -261,7 +261,7 @@ export class Layouts extends Component {
     this.setState({ refreshing: true });
     setTimeout(() => {
       this.setState({ refreshing: false });
-      layoutsActions.fetch();
+      layoutsActions.fetch(undefined, true);
     }, 1000);
   }
 
