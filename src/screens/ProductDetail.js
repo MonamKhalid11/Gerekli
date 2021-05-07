@@ -1,82 +1,65 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
 import { bindActionCreators } from 'redux';
-import toInteger from 'lodash/toInteger';
 import { connect } from 'react-redux';
+import EStyleSheet from 'react-native-extended-stylesheet';
+import { Navigation } from 'react-native-navigation';
+import * as nav from '../services/navigation';
+import { iconsMap } from '../utils/navIcons';
+import { toInteger, get } from 'lodash';
+import i18n from '../utils/i18n';
+import { isEmpty } from 'lodash';
+import config from '../config';
+import theme from '../config/theme';
+import {
+  formatPrice,
+  isPriceIncludesTax,
+  stripTags,
+  formatDate,
+} from '../utils';
+import {
+  VERSION_MVE,
+  FEATURE_TYPE_DATE,
+  FEATURE_TYPE_CHECKBOX,
+} from '../constants';
 import {
   View,
-  Text,
-  Share,
-  Platform,
   ScrollView,
+  Text,
   TouchableOpacity,
-  KeyboardAvoidingView,
+  Platform,
+  Share,
 } from 'react-native';
-import EStyleSheet from 'react-native-extended-stylesheet';
-import get from 'lodash/get';
-import {
-  stripTags,
-  formatPrice,
-  getProductImagesPaths,
-  isPriceIncludesTax,
-} from '../utils';
-import { format } from 'date-fns';
-import * as nav from '../services/navigation';
 
 // Import actions.
-import * as cartActions from '../actions/cartActions';
 import * as productsActions from '../actions/productsActions';
 import * as wishListActions from '../actions/wishListActions';
+import * as cartActions from '../actions/cartActions';
 import * as vendorActions from '../actions/vendorActions';
 
 // Components
 import { ProductDetailOptions } from '../components/ProductDetailOptions';
 import ProductImageSwiper from '../components/ProductImageSwiper';
+import { AddToCartButton } from '../components/AddToCartButton';
 import DiscussionList from '../components/DiscussionList';
 import InAppPayment from '../components/InAppPayment';
 import { QtyOption } from '../components/QtyOption';
 import SectionRow from '../components/SectionRow';
 import { Seller } from '../components/Seller';
-import Spinner from '../components/Spinner';
 import Section from '../components/Section';
+import Spinner from '../components/Spinner';
 import Rating from '../components/Rating';
-import { AddToCartButton } from '../components/AddToCartButton';
-
-import i18n from '../utils/i18n';
-import config from '../config';
-import { iconsMap } from '../utils/navIcons';
-
-import {
-  DISCUSSION_COMMUNICATION_AND_RATING,
-  DISCUSSION_RATING,
-  DISCUSSION_DISABLED,
-  VERSION_MVE,
-  FEATURE_TYPE_DATE,
-  FEATURE_TYPE_CHECKBOX,
-} from '../constants';
-import { Navigation } from 'react-native-navigation';
-import theme from '../config/theme';
-
-const OPTION_TYPE_CHECKBOX = 'C';
 
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '$screenBackgroundColor',
+    paddingHorizontal: 14,
   },
   descriptionBlock: {
     paddingTop: 10,
     paddingBottom: 10,
-    marginTop: 10,
-    paddingLeft: 14,
-    paddingRight: 14,
-    borderTopWidth: 1,
-    borderTopColor: '#F1F1F1',
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F1F1',
   },
   nameText: {
-    fontSize: '1.2rem',
+    fontSize: '1.1rem',
     color: '$darkColor',
     marginBottom: 5,
     textAlign: 'left',
@@ -95,13 +78,20 @@ const styles = EStyleSheet.create({
   outOfStockText: {
     color: '$dangerColor',
     marginTop: 10,
-    fontSize: '0.8rem',
-    fontWeight: 'bold',
+    fontSize: '1rem',
+    fontWeight: '500',
+  },
+  priceWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   listPriceText: {
     textDecorationLine: 'line-through',
+    textDecorationColor: 'red',
     color: '$darkColor',
     textAlign: 'left',
+    marginLeft: 10,
   },
   listPriceWrapperText: {
     textAlign: 'left',
@@ -110,40 +100,35 @@ const styles = EStyleSheet.create({
     marginBottom: 10,
   },
   descText: {
-    marginTop: 10,
-    color: 'gray',
-    textAlign: 'left',
+    color: '$discussionMessageColor',
+    textAlign: 'justify',
   },
   addToCartContainerWrapper: {
-    shadowColor: '#000',
+    shadowColor: '#45403a',
     shadowOffset: {
       width: 0,
-      height: 5,
+      height: 0,
     },
-    shadowOpacity: 0.28,
-    shadowRadius: 16,
-    elevation: 24,
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    borderTopWidth: Platform.OS === 'android' ? 1 : null,
+    borderColor: '#d9d9d9',
   },
   addToCartContainer: {
-    paddingLeft: 14,
-    paddingRight: 14,
-    paddingBottom: 16,
-    paddingTop: 8,
+    padding: 14,
     backgroundColor: '#fff',
     flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-  noPadding: {
+  wrapperStyle: {
     padding: 0,
-    paddingTop: 6,
-    paddingBottom: 6,
+    paddingTop: 10,
+    paddingBottom: 10,
+    marginBottom: 20,
   },
   sectionBtn: {
-    paddingLeft: 14,
-    paddingRight: 14,
     paddingTop: 12,
     paddingBottom: 6,
-    borderTopWidth: 1,
-    borderTopColor: '#F0F0F0',
   },
   sectionBtnText: {
     color: '$primaryColor',
@@ -152,15 +137,12 @@ const styles = EStyleSheet.create({
     maxWidth: 100,
   },
   vendorWrapper: {
-    paddingLeft: 14,
-    paddingRight: 14,
     paddingTop: 8,
     paddingBottom: 8,
     marginBottom: 10,
   },
   vendorName: {
-    fontSize: '1rem',
-    fontWeight: 'bold',
+    fontSize: '0.9rem',
     textAlign: 'left',
     marginRight: 100,
   },
@@ -172,18 +154,12 @@ const styles = EStyleSheet.create({
   },
   vendorDescription: {
     color: 'gray',
-    fontSize: '0.9rem',
     textAlign: 'left',
-  },
-  vendorInfoBtn: {
-    position: 'absolute',
-    top: 10,
-    right: '1rem',
   },
   rating: {
     marginLeft: -10,
     marginRight: -10,
-    marginTop: -4,
+    marginBottom: 5,
   },
   keyboardAvoidingContainer: {
     marginBottom: Platform.OS === 'ios' ? 122 : 132,
@@ -214,378 +190,176 @@ const styles = EStyleSheet.create({
 /**
  * Renders product detail screen.
  *
- * @reactProps {object} wishListActions - Wishlist actions.
- * @reactProps {string or number} pid - Product id.
- * @reactProps {boolean} hideSearch - Showing search or not.
- * @reactProps {boolean} hideWishList - Showing wishlist or not.
- * @reactProps {object} discussion - Comments about the product.
- * @reactProps {object} productDetail - Product information.
- * @reactProps {object} productsActions - Products actions.
- * @reactProps {object} cartActions - Cart actions.
- * @reactProps {object} auth - Auth setup.
- * @reactProps {object} cart - Cart information.
- * @reactProps {object} vendorActions - Vendor actions.
- * @reactProps {object} vendors - Information about vendors who has this product.
+ * @param {number} pid - Product id.
+ * @param {object} productsActions - Products actions.
+ * @param {object} wishListActions - Wishlist actions.
+ * @param {object} vendorActions - Vendor actions.
+ * @param {object} cartActions - Cart actions.
+ * @param {object} discussion - Discussion store data.
+ * @param {string} componentId - Component id.
+ * @param {object} auth - Auth store data.
+ * @param {boolean} hideWishList - Hide wishlist or not flag.
+ * @param {object} wishList - Wishlist store data.
+ *
+ * @return {JSX.Element}
  */
-export class ProductDetail extends Component {
-  /**
-   * @ignore
-   */
-  static propTypes = {
-    wishListActions: PropTypes.shape({
-      add: PropTypes.func,
-    }),
-    pid: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    hideSearch: PropTypes.bool,
-    hideWishList: PropTypes.bool,
-    discussion: PropTypes.shape({
-      posts: PropTypes.arrayOf(PropTypes.shape({})),
-    }),
-    productDetail: PropTypes.shape({}),
-    productsActions: PropTypes.shape({
-      recalculatePrice: PropTypes.func,
-    }),
-    cartActions: PropTypes.shape({
-      add: PropTypes.func,
-    }),
-    auth: PropTypes.shape({
-      token: PropTypes.string,
-      logged: PropTypes.bool,
-    }),
-    cart: PropTypes.shape({
-      fetching: PropTypes.bool,
-    }),
-    vendorActions: PropTypes.shape({
-      fetch: PropTypes.func,
-    }),
-    vendors: PropTypes.shape({}),
+export const ProductDetail = ({
+  pid,
+  productsActions,
+  wishListActions,
+  vendorActions,
+  cartActions,
+  discussion,
+  componentId,
+  auth,
+  hideWishList,
+  wishList,
+  cart,
+}) => {
+  const [product, setProduct] = useState('');
+  const [amount, setAmount] = useState(1);
+  const [vendor, setVendor] = useState(null);
+
+  const listener = {
+    navigationButtonPressed: ({ buttonId }) => {
+      if (buttonId === 'wishlist') {
+        handleAddToWishList();
+      }
+
+      if (buttonId === 'share') {
+        handleShare();
+      }
+    },
   };
 
-  /**
-   * @ignore
-   */
-  constructor(props) {
-    super(props);
+  const fetchData = async (currentPid) => {
+    const currentProduct = await productsActions.fetch(currentPid);
+    const currentVendor = await vendorActions.fetch(currentProduct.company_id);
+    const step = parseInt(currentProduct.qty_step, 10) || 1;
+    setAmount(step);
+    setVendor(currentVendor);
+    setProduct(currentProduct);
+  };
 
-    this.isVendorFetchRequestSent = false;
+  useEffect(() => {
+    fetchData(pid);
+  }, []);
 
-    this.state = {
-      images: [],
-      product: {},
-      currentFeatureVariants: {},
-      discussion: {},
-      vendor: null,
-      fetching: true,
-      selectedOptions: {},
-      selectedVariants: {},
-      canWriteComments: false,
-      amount: 0,
-      currentPid: false,
-      showSwiper: true,
-      productOffers: null,
-    };
+  useEffect(() => {
+    if (product) {
+      const setTopBarOptions = (product) => {
+        const topBar = {
+          title: {
+            text: product.product,
+          },
+        };
 
-    Navigation.events().bindComponent(this);
-  }
+        topBar.rightButtons = [
+          {
+            id: 'share',
+            icon: iconsMap.share,
+          },
+        ];
 
-  /**
-   *  Gets product information and sets to store.
-   */
-  componentDidMount() {
-    this.productInit();
-  }
-
-  /**
-   * Updates all data in the state when new props are received.
-   */
-  componentWillReceiveProps(nextProps) {
-    const {
-      productDetail,
-      wishList,
-      vendors,
-      discussion,
-      auth,
-      vendorActions,
-      hideWishList,
-      pid,
-    } = nextProps;
-
-    const { currentPid } = this.state;
-    const product = productDetail.byId[currentPid || pid];
-
-    if (!product) {
-      return;
-    }
-
-    const isProductOffer = !!parseInt(product.master_product_offers_count, 10);
-
-    // If we haven't images put main image.
-    const images = getProductImagesPaths(product);
-
-    // Fixme
-    if (
-      config.version === VERSION_MVE &&
-      !vendors.items[product.company_id] &&
-      !vendors.fetching &&
-      product.company_id &&
-      !this.isVendorFetchRequestSent
-    ) {
-      this.isVendorFetchRequestSent = true;
-      vendorActions.fetch(product.company_id);
-    }
-
-    const defaultOptions = { ...this.state.selectedOptions };
-    const defaultVariants = { ...this.state.selectedVariants };
-    if (!Object.keys(defaultOptions).length) {
-      product.convertedOptions.forEach((option) => {
-        if (option.option_type === OPTION_TYPE_CHECKBOX) {
-          defaultOptions[option.selectDefaultId] = option.selectVariants.find(
-            (el) => parseInt(el.position, 10) === 0,
+        if (!hideWishList && !product.isProductOffer) {
+          const wishListActive = wishList.items.some(
+            (item) => parseInt(item.product_id, 10) === product.product_id,
           );
-        } else {
-          defaultOptions[option.selectDefaultId] = option.selectVariants.find(
-            (el) => el.selectId === option.selectDefaultId,
-          );
+          topBar.rightButtons.push({
+            id: 'wishlist',
+            icon: iconsMap.favorite,
+            color: wishListActive
+              ? theme.$primaryColor
+              : theme.$navBarButtonColor,
+          });
         }
-      });
-    }
 
-    if (!Object.keys(defaultVariants).length) {
-      product.convertedVariants.forEach((variant) => {
-        defaultVariants[variant.selectDefaultId] = variant.selectVariants.find(
-          (el) => el.selectId === variant.selectDefaultId,
-        );
-      });
-    }
-
-    // Get active discussion.
-    let activeDiscussion = discussion.items[`p_${product.product_id}`];
-    if (!activeDiscussion) {
-      activeDiscussion = {
-        average_rating: 0,
-        disable_adding: true,
-        posts: [],
-        search: {
-          page: 1,
-          total_items: 0,
-        },
-      };
-    }
-
-    this.setState({
-      images,
-      product,
-      discussion: activeDiscussion,
-      selectedOptions: defaultOptions,
-      selectedVariants: defaultVariants,
-      vendor: vendors.items[product.company_id] || null,
-      canWriteComments:
-        !activeDiscussion.disable_adding &&
-        product.discussion_type !== DISCUSSION_DISABLED &&
-        auth.logged,
-    });
-
-    const topBar = {
-      title: {
-        text: product.product,
-      },
-    };
-
-    if (!product.fetching) {
-      topBar.rightButtons = [
-        {
-          id: 'share',
-          icon: iconsMap.share,
-        },
-      ];
-      if (!hideWishList && !isProductOffer) {
-        const wishListActive = wishList.items.some(
-          (item) => parseInt(item.product_id, 10) === product.product_id,
-        );
-        topBar.rightButtons.push({
-          id: 'wishlist',
-          icon: iconsMap.favorite,
-          color: wishListActive
-            ? theme.$primaryColor
-            : theme.$navBarButtonColor,
+        Navigation.mergeOptions(componentId, {
+          topBar,
         });
-      }
+      };
+
+      setTopBarOptions(product);
     }
 
-    Navigation.mergeOptions(this.props.componentId, {
-      topBar,
-    });
-  }
-
-  async productInit(productId = false) {
-    const { productsActions, pid } = this.props;
-
-    const product = await productsActions.fetch(productId || pid);
-
-    if (parseInt(product.data.master_product_offers_count, 10)) {
-      const productOffers = await productsActions.fetchProductOffers(
-        productId || pid,
-      );
-
-      this.setState({ productOffers: productOffers.data });
-    }
-
-    const minQty = parseInt(get(product.data, 'min_qty', 0), 10);
-    this.setState(
-      {
-        currentPid: productId || false,
-        amount: minQty || 1,
-        fetching: minQty !== 0,
-        showSwiper: false,
-      },
-      () => {
-        if (minQty !== 0) {
-          this.calculatePrice();
-        }
-      },
+    const listeners = Navigation.events().registerComponentListener(
+      listener,
+      componentId,
     );
-    this.setState({ showSwiper: true });
-  }
+
+    return () => {
+      listeners.remove();
+    };
+  }, [componentId, listener, product, hideWishList, wishList]);
 
   /**
-   * Listens buttons events.
-   */
-  navigationButtonPressed({ buttonId }) {
-    if (buttonId === 'wishlist') {
-      this.handleAddToWishList();
-    }
-
-    if (buttonId === 'share') {
-      this.handleShare();
-    }
-  }
-
-  /**
-   * Recalculates the price of an item.
-   * Takes into account the quantity and other options.
-   */
-  calculatePrice = () => {
-    const { productsActions } = this.props;
-    const { product, selectedOptions } = this.state;
-    productsActions
-      .recalculatePrice(product.product_id, selectedOptions)
-      .then(() => this.setState({ fetching: false }));
-  };
-
-  /**
-   * Share event.
-   */
-  handleShare = () => {
-    const { product } = this.state;
-    const url = `${config.siteUrl}index.php?dispatch=products.view&product_id=${product.product_id}`;
-    Share.share(
-      {
-        message: url,
-        title: product.product,
-        url,
-      },
-      {
-        dialogTitle: product.product,
-        tintColor: 'black',
-      },
-    );
-  };
-
-  /**
-   * Pay with apple pay.
-   */
-  handleApplePay = async (next) => {
-    const { cartActions } = this.props;
-
-    try {
-      await cartActions.clear();
-      const cartData = await this.handleAddToCart(false);
-
-      if (!cartData.data.message) {
-        setTimeout(() => next(), 400);
-      }
-    } catch (error) {
-      console.log('error', error);
-    }
-  };
-
-  /**
-   * Adds the product to cart.
+   * Changes variations.
    *
-   * @param {boolean} showNotification - Showing notifications or not.
-   * @param {object} productOffer - Product offer of the selected seller.
+   * @param {string} variantId - Variation id.
+   * @param {string} variantOption - Selected variatoin data.
    */
-  handleAddToCart = (showNotification = true, productOffer) => {
-    const productOptions = {};
-    const { product, selectedOptions, amount } = this.state;
-    const { auth, cartActions, cart } = this.props;
+  const changeVariationHandler = async (variantId, variantOption) => {
+    const selectedVariationPid = variantOption.product_id;
+    const currnetVariationPid = product.selectedVariants[variantId].product_id;
 
-    if (!auth.logged) {
-      return nav.showLogin();
+    if (currnetVariationPid === selectedVariationPid) {
+      return null;
     }
 
-    const currentProduct = productOffer || product;
-
-    // Convert product options to the option_id: variant_id array.
-    Object.keys(selectedOptions).forEach((k) => {
-      productOptions[k] = selectedOptions[k];
-      if (selectedOptions[k].variant_id) {
-        productOptions[k] = selectedOptions[k].variant_id;
-      }
-    });
-
-    const products = {
-      [currentProduct.product_id]: {
-        product_id: currentProduct.product_id,
-        amount,
-        product_options: productOptions,
-      },
-    };
-
-    return cartActions.add({ products }, showNotification, cart.coupons);
+    fetchData(selectedVariationPid);
   };
 
   /**
-   * Adds the product to wishlist.
+   * Changes options.
+   *
+   * @param {string} optionId - Option id.
+   * @param {string} selectedOptionValue - Selected option data.
    */
-  handleAddToWishList(productOffer) {
-    const productOptions = {};
-    const { product, selectedOptions } = this.state;
-    const { auth, wishListActions, componentId } = this.props;
-
-    const currentProduct = productOffer || product;
-
-    if (!auth.logged) {
-      return nav.showLogin();
-    }
-
-    // Convert product options to the option_id: variant_id array.
-    Object.keys(selectedOptions).forEach((k) => {
-      productOptions[k] = selectedOptions[k];
-      if (selectedOptions[k].variant_id) {
-        productOptions[k] = selectedOptions[k].variant_id;
-      }
-    });
-
-    const products = {
-      [currentProduct.product_id]: {
-        product_id: currentProduct.product_id,
-        amount: currentProduct.selectedAmount || 1,
-        product_options: productOptions,
-      },
-    };
-
-    return wishListActions.add({ products }, componentId);
-  }
+  const changeOptionHandler = async (optionId, selectedOptionValue) => {
+    const newOptions = { ...product.selectedOptions };
+    newOptions[optionId] = selectedOptionValue;
+    const recalculatedProduct = await productsActions.recalculatePrice(
+      product.product_id,
+      newOptions,
+    );
+    setProduct({ ...recalculatedProduct });
+  };
 
   /**
-   * Renders label with discount information.
+   * Renders variations and options block.
    *
    * @return {JSX.Element}
    */
-  renderDiscountLabel() {
-    const { product } = this.state;
+  const renderVariationsAndOptions = () => {
+    if (isEmpty(product.selectedOptions) && isEmpty(product.selectedVariants)) {
+      return null;
+    }
 
+    return (
+      <Section
+        title={i18n.t('Select')}
+        wrapperStyle={styles.wrapperStyle}
+        topDivider>
+        <ProductDetailOptions
+          options={product.convertedVariants}
+          selectedOptions={product.selectedVariants}
+          changeOptionHandler={changeVariationHandler}
+        />
+        <ProductDetailOptions
+          options={product.convertedOptions}
+          selectedOptions={product.selectedOptions}
+          changeOptionHandler={changeOptionHandler}
+        />
+      </Section>
+    );
+  };
+
+  /**
+   * Renders discount label.
+   *
+   * @return {JSX.Element}
+   */
+  const renderDiscountLabel = () => {
     if (!product.list_discount_prc && !product.discount_prc) {
       return null;
     }
@@ -599,100 +373,68 @@ export class ProductDetail extends Component {
         </Text>
       </View>
     );
-  }
+  };
 
   /**
-   * Renders swiper with product images.
+   * Renders main images of the product.
    *
    * @return {JSX.Element}
    */
-  renderImage() {
-    const { images, showSwiper } = this.state;
-
-    if (!showSwiper) {
-      return <View />;
-    }
-
+  const renderImage = () => {
     return (
       <View>
-        <ProductImageSwiper>{images}</ProductImageSwiper>
-        {this.renderDiscountLabel()}
+        <ProductImageSwiper>{product.images}</ProductImageSwiper>
+        {renderDiscountLabel()}
       </View>
     );
-  }
+  };
 
   /**
-   * Renders product name.
+   * Renders a name of the product.
    *
    * @return {JSX.Element}
    */
-  renderName() {
-    const { product } = this.state;
-    if (!product.product) {
-      return null;
-    }
+  const renderName = () => {
     return <Text style={styles.nameText}>{product.product}</Text>;
-  }
+  };
 
   /**
-   * Renders product rating.
+   * Renders rating.
    *
    * @return {JSX.Element}
    */
-  renderRating() {
-    const { discussion } = this.state;
-
-    if (
-      discussion.type !== DISCUSSION_RATING &&
-      discussion.type !== DISCUSSION_COMMUNICATION_AND_RATING
-    ) {
+  const renderRating = () => {
+    if (!product.rating) {
       return null;
     }
 
+    let activeDiscussion = discussion.items[`p_${product.product_id}`];
     return (
       <Rating
         containerStyle={styles.rating}
-        value={discussion.average_rating}
-        count={discussion.search.total_items}
+        value={activeDiscussion.average_rating}
+        count={activeDiscussion.search.total_items}
       />
     );
-  }
+  };
 
   /**
-   * Renders product description.
+   * Renders price.
    *
    * @return {JSX.Element}
    */
-  renderDesc() {
-    const { product } = this.state;
-    if (product.full_description) {
-      return (
-        <Text style={styles.descText}>
-          {stripTags(product.full_description)}
-        </Text>
-      );
-    }
-    return null;
-  }
-
-  /**
-   * Renders product price or a message about the price.
-   *
-   * @return {JSX.Element}
-   */
-  renderPrice() {
-    const { product } = this.state;
+  const renderPrice = () => {
     let discountPrice = null;
-    let discountTitle = null;
     let showDiscount = false;
 
-    if (toInteger(product.discount)) {
+    if (product.list_discount_prc && product.discount_prc) {
       discountPrice = product.base_price_formatted.price;
-      discountTitle = `${i18n.t('Old price')}: `;
       showDiscount = true;
-    } else if (toInteger(product.list_price)) {
+    } else if (
+      toInteger(product.list_price) &&
+      toInteger(product.list_price) !== toInteger(product.base_price)
+    ) {
       discountPrice = product.list_price_formatted.price;
-      discountTitle = `${i18n.t('List price')}: `;
       showDiscount = true;
     }
 
@@ -703,16 +445,14 @@ export class ProductDetail extends Component {
       productTaxedPrice || get(product, 'price_formatted.price', '');
     const showTaxedPrice = isPriceIncludesTax(product);
 
+    if (inStock) {
+      return (
+        <Text style={styles.outOfStockText}>{i18n.t('Out of stock')}</Text>
+      );
+    }
+
     return (
-      <View>
-        {showDiscount && isProductPriceZero && (
-          <Text style={styles.listPriceWrapperText}>
-            {discountTitle}
-            <Text style={styles.listPriceText}>
-              {formatPrice(discountPrice)}
-            </Text>
-          </Text>
-        )}
+      <View style={styles.priceWrapper}>
         {isProductPriceZero ? (
           <>
             <Text style={styles.priceText}>
@@ -729,168 +469,243 @@ export class ProductDetail extends Component {
             {i18n.t('Contact us for a price')}
           </Text>
         )}
-        {inStock && (
-          <Text style={styles.outOfStockText}>{i18n.t('Out of stock')}</Text>
+        {showDiscount && isProductPriceZero && (
+          <Text style={styles.listPriceText}>{formatPrice(discountPrice)}</Text>
         )}
       </View>
     );
-  }
+  };
 
   /**
-   * Renders product comments.
+   * Renders description block.
    *
    * @return {JSX.Element}
    */
-  renderDiscussion() {
-    const { productDetail, pid } = this.props;
-    const { discussion, canWriteComments } = this.state;
-
-    if (
-      discussion.average_rating === '' ||
-      discussion.type === DISCUSSION_DISABLED ||
-      productDetail.byId[pid].discussion_type === DISCUSSION_DISABLED ||
-      !productDetail.byId[pid].discussion_type
-    ) {
+  const renderDesc = () => {
+    if (!product.full_description) {
       return null;
     }
 
-    const masMore = discussion.search.total_items > 10;
+    return (
+      <Section
+        title={i18n.t('Description')}
+        wrapperStyle={styles.wrapperStyle}
+        topDivider>
+        <Text style={styles.descText}>
+          {stripTags(product.full_description).trim()}
+        </Text>
+      </Section>
+    );
+  };
+
+  /**
+   * Renders quantity switcher.
+   *
+   * @return {JSX.Element}
+   */
+  const renderQuantitySwitcher = () => {
+    const step = parseInt(product.qty_step, 10) || 1;
+    const max = parseInt(product.max_qty, 10) || parseInt(product.amount, 10);
+    const min = parseInt(product.min_qty, 10) || step;
+
+    if (product.isProductOffer) {
+      return null;
+    }
+
+    return (
+      <QtyOption
+        max={max}
+        min={min}
+        initialValue={amount || min}
+        step={step}
+        onChange={(val) => {
+          setAmount(val);
+        }}
+      />
+    );
+  };
+
+  /**
+   * Renders descussion block.
+   *
+   * @return {JSX.Element}
+   */
+  const renderDiscussion = () => {
+    if (!product.rating) {
+      return null;
+    }
+
+    let activeDiscussion = discussion.items[`p_${product.product_id}`];
+
+    const masMore = activeDiscussion.search.total_items > 10;
     let title = i18n.t('Reviews');
     // eslint-disable-next-line eqeqeq
-    if (discussion.search.total_items != 0) {
+    if (activeDiscussion.search.total_items != 0) {
       title = i18n.t('Reviews ({{count}})', {
-        count: discussion.search.total_items,
+        count: activeDiscussion.search.total_items,
       });
     }
+
     return (
       <Section
         title={title}
-        wrapperStyle={styles.noPadding}
-        showRightButton={canWriteComments}
+        topDivider
+        wrapperStyle={styles.wrapperStyle}
+        showRightButton={true}
         rightButtonText={i18n.t('Write a Review')}
         onRightButtonPress={() => {
-          nav.pushWriteReview(this.props.componentId, {
-            activeDiscussion: discussion,
+          nav.pushWriteReview(componentId, {
+            activeDiscussion,
             discussionType: 'P',
-            discussionId: productDetail.byId[pid].product_id,
+            discussionId: product.product_id,
           });
         }}>
         <DiscussionList
-          items={discussion.posts.slice(0, 4)}
-          type={discussion.type}
+          items={activeDiscussion.posts.slice(0, 4)}
+          type={activeDiscussion.type}
         />
         {masMore && (
           <TouchableOpacity
             style={styles.sectionBtn}
             onPress={() => {
-              nav.showDiscussion(this.props.componentId);
+              nav.showDiscussion(componentId);
             }}>
             <Text style={styles.sectionBtnText}>{i18n.t('View All')}</Text>
           </TouchableOpacity>
         )}
       </Section>
     );
-  }
+  };
 
   /**
-   * Renders options list.
-   *
-   * @return {JSX.Element}
+   * Share function.
    */
-  renderQuantitySwitcher() {
-    const { product, productOffers } = this.state;
-
-    const step = parseInt(product.qty_step, 10) || 1;
-    const max = parseInt(product.max_qty, 10) || parseInt(product.amount, 10);
-    const min = parseInt(product.min_qty, 10) || step;
-
-    return (
-      <Section>
-        {!productOffers && (
-          <QtyOption
-            max={max}
-            min={min}
-            initialValue={this.state.amount || min}
-            step={step}
-            onChange={(val) => {
-              this.setState({ amount: val }, this.calculatePrice);
-            }}
-          />
-        )}
-      </Section>
-    );
-  }
-
-  /**
-   * Renders product feature.
-   * "Brand" for example.
-   *
-   * @param {object} feature - Feature information.
-   * @param {number} index - Feature index.
-   *
-   * @return {JSX.Element}
-   */
-  renderFeatureItem = (feature, index, last) => {
-    const { description, feature_type, value_int, value, variant } = feature;
-    const { settings } = this.props;
-
-    let newValue = null;
-    switch (feature_type) {
-      case FEATURE_TYPE_DATE:
-        newValue = format(value_int * 1000, settings.dateFormat);
-        break;
-      case FEATURE_TYPE_CHECKBOX:
-        newValue = feature.value === 'Y' ? i18n.t('Yes') : i18n.t('No');
-        break;
-      default:
-        newValue = value || variant;
-    }
-
-    return (
-      <SectionRow name={description} value={newValue} last={last} key={index} />
+  const handleShare = () => {
+    const url = `${config.siteUrl}index.php?dispatch=products.view&product_id=${product.product_id}`;
+    Share.share(
+      {
+        message: url,
+        title: product.product,
+        url,
+      },
+      {
+        dialogTitle: product.product,
+        tintColor: 'black',
+      },
     );
   };
 
   /**
-   * Renders feature list.
+   * Add to whishlist function.
+   */
+  const handleAddToWishList = (productOffer) => {
+    const productOptions = {};
+
+    const currentProduct = productOffer || product;
+
+    if (!auth.logged) {
+      return nav.showLogin();
+    }
+
+    if (
+      typeof currentProduct.selectedOptions === 'object' &&
+      currentProduct.selectedOptions !== null
+    ) {
+      // Convert product options to the option_id: variant_id array.
+      Object.keys(currentProduct.selectedOptions).forEach((k) => {
+        productOptions[k] = currentProduct.selectedOptions[k];
+        if (currentProduct.selectedOptions[k].variant_id) {
+          productOptions[k] = currentProduct.selectedOptions[k].variant_id;
+        }
+      });
+    }
+
+    const products = {
+      [currentProduct.product_id]: {
+        product_id: currentProduct.product_id,
+        amount: currentProduct.selectedAmount || 1,
+        product_options: productOptions,
+      },
+    };
+
+    return wishListActions.add({ products }, componentId);
+  };
+
+  /**
+   * Renders features block.
    *
    * @return {JSX.Element}
    */
-  renderFeatures() {
-    const { product } = this.state;
+  const renderFeatures = () => {
+    const renderFeatureItem = (feature, index, last) => {
+      const { description, feature_type, value_int, value, variant } = feature;
+
+      let newValue = null;
+      switch (feature_type) {
+        case FEATURE_TYPE_DATE:
+          newValue = formatDate(value_int * 1000);
+          break;
+        case FEATURE_TYPE_CHECKBOX:
+          newValue = feature.value === 'Y' ? i18n.t('Yes') : i18n.t('No');
+          break;
+        default:
+          newValue = value || variant;
+      }
+
+      return (
+        <SectionRow
+          name={description}
+          value={newValue}
+          last={last}
+          key={index}
+        />
+      );
+    };
+
     const features = Object.keys(product.product_features).map(
       (k) => product.product_features[k],
     );
-
-    const lastElement = features.length - 1;
 
     if (!features.length) {
       return null;
     }
 
+    const lastElement = features.length - 1;
+
     return (
-      <Section title={i18n.t('Features')}>
+      <Section
+        title={i18n.t('Features')}
+        wrapperStyle={styles.wrapperStyle}
+        topDivider>
         {features.map((item, index) =>
-          this.renderFeatureItem(item, index, index === lastElement),
+          renderFeatureItem(item, index, index === lastElement),
         )}
       </Section>
     );
-  }
+  };
 
   /**
-   * Renders vendor information
+   * Renders vendor information.
    *
    * @return {JSX.Element}
    */
-  renderVendorInfo() {
-    const { vendor } = this.state;
-
-    if (config.version !== VERSION_MVE || !vendor) {
+  const renderVendorInfo = () => {
+    if (config.version !== VERSION_MVE || !vendor || product.isProductOffer) {
       return null;
     }
 
     return (
-      <Section title={i18n.t('Vendor')} wrapperStyle={styles.noPadding}>
+      <Section
+        title={i18n.t('Vendor')}
+        wrapperStyle={styles.wrapperStyle}
+        topDivider
+        showRightButton={true}
+        rightButtonText={i18n.t('Details')}
+        onRightButtonPress={() => {
+          nav.showModalVendorDetail({
+            vendorId: vendor.company_id,
+          });
+        }}>
         <View style={styles.vendorWrapper}>
           <Text style={styles.vendorName}>{vendor.company}</Text>
           <Text style={styles.vendorProductCount}>
@@ -899,20 +714,6 @@ export class ProductDetail extends Component {
           <Text style={styles.vendorDescription}>
             {stripTags(vendor.description)}
           </Text>
-          <TouchableOpacity
-            style={styles.vendorInfoBtn}
-            onPress={() => {
-              nav.showModalVendorDetail({
-                vendorId: vendor.company_id,
-              });
-            }}>
-            <Text
-              style={styles.sectionBtnText}
-              numberOfLines={1}
-              ellipsizeMode="tail">
-              {i18n.t('Details')}
-            </Text>
-          </TouchableOpacity>
         </View>
         <TouchableOpacity
           style={styles.sectionBtn}
@@ -925,180 +726,139 @@ export class ProductDetail extends Component {
         </TouchableOpacity>
       </Section>
     );
-  }
+  };
 
   /**
-   * Renders an add to cart button.
+   * Renders sellers if common products for vendor is turn on.
    *
    * @return {JSX.Element}
    */
-  renderAddToCart() {
-    const canPayWithApplePay = Platform.OS === 'ios' && config.applePay;
-
-    return (
-      <View style={styles.addToCartContainer}>
-        {canPayWithApplePay && (
-          <View style={styles.inAppPaymentWrapper}>
-            <InAppPayment onPress={this.handleApplePay} />
-          </View>
-        )}
-        <AddToCartButton onPress={() => this.handleAddToCart()} />
-      </View>
-    );
-  }
-
-  changeVariationHandler(variantId, variantOption) {
-    const { selectedVariants } = this.state;
-    const pid = variantOption.product_id;
-    const newVariant = { ...selectedVariants };
-    newVariant[variantOption.variant_id] = variantOption;
-
-    if (selectedVariants[variantId].product_id === pid) {
-      return null;
-    }
-
-    this.setState(
-      {
-        currentPid: pid,
-        selectedVariants: newVariant,
-        selectedOptions: {},
-      },
-      () => {
-        this.productInit(pid);
-      },
-    );
-  }
-
-  /**
-   * Adds the selected option.
-   *
-   * @param {string} name - Option name.
-   * @param {string} val - Option value.
-   */
-  changeOptionHandler(optionId, selectedOptionValue) {
-    const { selectedOptions } = this.state;
-    const newOptions = { ...selectedOptions };
-    newOptions[optionId] = selectedOptionValue;
-
-    this.setState(
-      {
-        selectedOptions: newOptions,
-      },
-      () => {
-        this.calculatePrice();
-      },
-    );
-  }
-
-  renderVariationsAndOptions() {
-    const { product, selectedOptions, selectedVariants } = this.state;
-
-    if (
-      !Object.keys(selectedOptions).length &&
-      !Object.keys(selectedVariants).length
-    ) {
+  const renderSellers = () => {
+    if (!product.isProductOffer) {
       return null;
     }
 
     return (
-      <Section title={i18n.t('Select')}>
-        <ProductDetailOptions
-          options={product.convertedVariants}
-          selectedOptions={selectedVariants}
-          changeOptionHandler={this.changeVariationHandler.bind(this)}
-        />
-        <ProductDetailOptions
-          options={product.convertedOptions}
-          selectedOptions={selectedOptions}
-          changeOptionHandler={this.changeOptionHandler.bind(this)}
-        />
+      <Section
+        title={i18n.t('Sellers')}
+        wrapperStyle={styles.wrapperStyle}
+        topDivider>
+        {product.productOffers.products.map((el, index) => {
+          return (
+            <Seller
+              productOffer={el}
+              handleAddToWishList={() => handleAddToWishList(el)}
+              isLastVendor={product.productOffers.products.length - 1 === index}
+              key={index}
+              onPress={() => handleAddToCart(true, el)}
+            />
+          );
+        })}
       </Section>
     );
-  }
-
-  renderSellers() {
-    const { productOffers } = this.state;
-
-    if (productOffers) {
-      return (
-        <Section title={i18n.t('Sellers')} wrapperStyle={styles.noPadding}>
-          {productOffers.products.map((el, index) => {
-            return (
-              <Seller
-                productOffer={el}
-                handleAddToWishList={() => this.handleAddToWishList(el)}
-                lastVendor={productOffers.products.length - 1 === index}
-                key={index}
-                onPress={() => this.handleAddToCart(true, el)}
-              />
-            );
-          })}
-        </Section>
-      );
-    } else {
-      return null;
-    }
-  }
+  };
 
   /**
-   * Renders component
+   * Add to cart function.
+   *
+   * @param {boolean} showNotification - Show notification or not.
+   * @param {object} productOffer - Selected product offer data.
+   */
+  const handleAddToCart = (showNotification = true, productOffer) => {
+    const productOptions = {};
+
+    if (!auth.logged) {
+      return nav.showLogin();
+    }
+
+    const currentProduct = productOffer || product;
+
+    // Convert product options to the option_id: variant_id array.
+    Object.keys(product.selectedOptions).forEach((k) => {
+      productOptions[k] = product.selectedOptions[k];
+      if (product.selectedOptions[k].variant_id) {
+        productOptions[k] = product.selectedOptions[k].variant_id;
+      }
+    });
+
+    const products = {
+      [currentProduct.product_id]: {
+        product_id: currentProduct.product_id,
+        amount,
+        product_options: productOptions,
+      },
+    };
+
+    return cartActions.add({ products }, showNotification, cart.coupons);
+  };
+
+  /**
+   * Renders add to cart block.
    *
    * @return {JSX.Element}
    */
-  render() {
-    const { fetching, productOffers } = this.state;
+  const renderAddToCart = () => {
+    const canPayWithApplePay = Platform.OS === 'ios' && config.applePay;
 
-    if (fetching) {
-      return <Spinner visible />;
+    if (product.isProductOffer) {
+      return null;
     }
 
     return (
-      <View style={styles.container}>
-        <KeyboardAvoidingView
-          contentContainerStyle={
-            !productOffers && styles.keyboardAvoidingContainer
-          }
-          behavior="position">
-          <ScrollView>
-            {this.renderImage()}
-            <View style={styles.descriptionBlock}>
-              {this.renderName()}
-              {this.renderRating()}
-              {this.renderPrice()}
-              {this.renderDesc()}
-            </View>
-            {this.renderQuantitySwitcher()}
-            {this.renderVariationsAndOptions()}
-            {this.renderSellers()}
-            {this.renderDiscussion()}
-            {this.renderFeatures()}
-            {this.renderVendorInfo()}
-          </ScrollView>
-          {!productOffers && (
-            <View style={styles.addToCartContainerWrapper}>
-              {this.renderAddToCart()}
+      <View style={styles.addToCartContainerWrapper}>
+        <View style={styles.addToCartContainer}>
+          {canPayWithApplePay && (
+            <View style={styles.inAppPaymentWrapper}>
+              <InAppPayment onPress={this.handleApplePay} />
             </View>
           )}
-        </KeyboardAvoidingView>
+          {renderPrice()}
+          <AddToCartButton onPress={() => handleAddToCart()} />
+        </View>
       </View>
     );
+  };
+
+  if (!product) {
+    return <Spinner visible={true} />;
   }
-}
+
+  return (
+    <>
+      <View style={styles.container}>
+        <ScrollView>
+          {renderImage()}
+          <View style={styles.descriptionBlock}>
+            {renderName()}
+            {renderRating()}
+          </View>
+          {renderQuantitySwitcher()}
+          {renderVariationsAndOptions()}
+          {renderSellers()}
+          {renderDesc()}
+          {renderFeatures()}
+          {renderDiscussion()}
+          {renderVendorInfo()}
+        </ScrollView>
+      </View>
+      {renderAddToCart()}
+    </>
+  );
+};
 
 export default connect(
   (state) => ({
-    cart: state.cart,
-    auth: state.auth,
-    vendors: state.vendors,
-    wishList: state.wishList,
-    discussion: state.discussion,
-    productDetail: state.productDetail,
     settings: state.settings,
+    productDetail: state.productDetail,
+    discussion: state.discussion,
+    auth: state.auth,
+    cart: state.cart,
+    wishList: state.wishList,
   }),
   (dispatch) => ({
     cartActions: bindActionCreators(cartActions, dispatch),
-    vendorActions: bindActionCreators(vendorActions, dispatch),
     productsActions: bindActionCreators(productsActions, dispatch),
     wishListActions: bindActionCreators(wishListActions, dispatch),
+    vendorActions: bindActionCreators(vendorActions, dispatch),
   }),
 )(ProductDetail);
