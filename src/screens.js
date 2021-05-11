@@ -14,6 +14,7 @@ import WishList from './screens/WishList';
 import Discussion from './screens/Discussion';
 import Categories from './screens/Categories';
 import WriteReview from './screens/WriteReview';
+import WriteReviewNew from './screens/WriteReviewNew';
 import OrderDetail from './screens/OrderDetail';
 import ImagePicker from './screens/ImagePicker';
 import VendorDetail from './screens/VendorDetail';
@@ -59,6 +60,7 @@ const screenList = [
   { name: 'CheckoutShipping', component: CheckoutShipping },
   { name: 'CheckoutPayment', component: CheckoutPayment },
   { name: 'WriteReview', component: WriteReview },
+  { name: 'WriteReviewNew', component: WriteReviewNew },
   { name: 'CheckoutComplete', component: CheckoutComplete },
   { name: 'Notification', component: Notification },
   { name: 'Discussion', component: Discussion },

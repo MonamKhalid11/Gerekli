@@ -554,7 +554,7 @@ export const ProductDetail = ({
         showRightButton={true}
         rightButtonText={i18n.t('Write a Review')}
         onRightButtonPress={() => {
-          nav.pushWriteReview(componentId, {
+          nav.showModalWriteReviewNew({
             activeDiscussion,
             discussionType: 'P',
             discussionId: product.product_id,

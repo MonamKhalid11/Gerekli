@@ -281,6 +281,21 @@ export function pushWriteReview(componentId, params) {
   });
 }
 
+export function showModalWriteReviewNew(params) {
+  Navigation.showModal({
+    stack: {
+      children: [
+        {
+          component: {
+            name: 'WriteReviewNew',
+            passProps: params,
+          },
+        },
+      ],
+    },
+  });
+}
+
 export function showPage(componentId, params) {
   Navigation.showModal({
     stack: {

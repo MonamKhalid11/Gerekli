@@ -230,6 +230,7 @@ export class WriteReview extends Component {
         });
         break;
     }
+
     const options = {
       disableOrder: true,
       fields: {
