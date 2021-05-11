@@ -307,7 +307,7 @@ export function fetchProductOffers(pid) {
     dispatch({ type: FETCH_COMMON_PRODUCTS_REQUEST });
 
     return Api.get(
-      `/sra_products/?vendor_products_by_product_id=${pid}&sort_by=price`,
+      `/sra_products/?vendor_products_by_product_id=${pid}&sort_by=price&include_child_variations=1&group_child_variations=1&is_vendor_products_list=1`,
     )
       .then((response) => {
         dispatch({
