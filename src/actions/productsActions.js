@@ -17,6 +17,9 @@ import {
   POST_DISCUSSION_REQUEST,
   POST_DISCUSSION_SUCCESS,
   POST_DISCUSSION_FAIL,
+  POST_SEND_REVIEW_REQUEST,
+  POST_SEND_REVIEW_SUCCESS,
+  POST_SEND_REVIEW_FAIL,
   NOTIFICATION_SHOW,
   CHANGE_PRODUCTS_SORT,
   FETCH_COMMON_PRODUCTS_REQUEST,
@@ -89,6 +92,34 @@ export function postDiscussion(data) {
           error,
         });
       });
+  };
+}
+
+export function sendReview(data) {
+  return async (dispatch) => {
+    dispatch({
+      type: POST_SEND_REVIEW_REQUEST,
+    });
+
+    try {
+      await Api.post('/sra_product_reviews', data);
+      dispatch({
+        type: POST_SEND_REVIEW_SUCCESS,
+      });
+      dispatch({
+        type: NOTIFICATION_SHOW,
+        payload: {
+          type: 'success',
+          title: i18n.t('Thank you for your post.'),
+          text: i18n.t('Your post will be checked before it gets published.'),
+        },
+      });
+    } catch (error) {
+      dispatch({
+        type: POST_SEND_REVIEW_FAIL,
+        error,
+      });
+    }
   };
 }
 

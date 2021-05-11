@@ -557,7 +557,7 @@ export const ProductDetail = ({
           nav.showModalWriteReviewNew({
             activeDiscussion,
             discussionType: 'P',
-            discussionId: product.product_id,
+            productId: product.product_id,
           });
         }}>
         <DiscussionList
