@@ -25,17 +25,27 @@ import * as nav from '../services/navigation';
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    paddingHorizontal: 14,
+  },
+  logoWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
   },
   logo: {
     height: 60,
     width: 100,
     resizeMode: 'contain',
   },
+  descriptionWrapper: {
+    marginBottom: 20,
+  },
   vendorName: {
+    paddingBottom: 10,
     fontSize: '1rem',
-    fontWeight: 'bold',
     textAlign: 'left',
+    fontWeight: '500',
   },
   vendorDescription: {
     color: 'gray',
@@ -43,15 +53,13 @@ const styles = EStyleSheet.create({
     marginTop: 10,
     textAlign: 'left',
   },
+  contactsWrapper: {
+    marginBottom: 20,
+  },
   address: {
     color: 'gray',
     fontSize: '0.9rem',
     textAlign: 'left',
-  },
-  logoWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   noPadding: {
     padding: 0,
@@ -221,8 +229,8 @@ export class VendorDetail extends Component {
     const { discussion } = this.state;
     const { vendors } = this.props;
     return (
-      <Section>
-        <View style={styles.vendorWrapper}>
+      <Section topDivider>
+        <View style={styles.descriptionWrapper}>
           <Text style={styles.vendorName}>{vendors.currentVendor.company}</Text>
           <Rating
             value={discussion.average_rating}
@@ -278,18 +286,20 @@ export class VendorDetail extends Component {
     });
 
     return (
-      <Section title={i18n.t('Contact Information')}>
-        {Object.keys(contactInformationData).map((contact) => {
-          if (!contactInformationData[contact].fieldValue) {
-            return null;
-          }
-          return (
-            <SectionRow
-              name={i18n.t(contactInformationData[contact].fieldName)}
-              value={contactInformationData[contact].fieldValue}
-            />
-          );
-        })}
+      <Section topDivider title={i18n.t('Contact Information')}>
+        <View style={styles.contactsWrapper}>
+          {Object.keys(contactInformationData).map((contact) => {
+            if (!contactInformationData[contact].fieldValue) {
+              return null;
+            }
+            return (
+              <SectionRow
+                name={i18n.t(contactInformationData[contact].fieldName)}
+                value={contactInformationData[contact].fieldValue}
+              />
+            );
+          })}
+        </View>
       </Section>
     );
   }
@@ -313,6 +323,7 @@ export class VendorDetail extends Component {
 
     return (
       <Section
+        topDivider
         title={title}
         wrapperStyle={styles.noPadding}
         showRightButton={!discussion.disable_adding && auth.logged}
@@ -343,7 +354,7 @@ export class VendorDetail extends Component {
   render() {
     const { vendors } = this.props;
 
-    if (!vendors.currentVendor && vendors.fetching) {
+    if (!vendors.currentVendor || vendors.fetching) {
       return <Spinner visible />;
     }
 

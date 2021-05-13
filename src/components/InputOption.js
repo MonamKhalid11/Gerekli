@@ -6,7 +6,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 const styles = EStyleSheet.create({
   container: {
     width: '100%',
-    marginBottom: 14,
+    marginVertical: 10,
   },
   title: {
     fontSize: '0.9rem',
