@@ -41,6 +41,7 @@ import { ProductDetailOptions } from '../components/ProductDetailOptions';
 import ProductImageSwiper from '../components/ProductImageSwiper';
 import { AddToCartButton } from '../components/AddToCartButton';
 import DiscussionList from '../components/DiscussionList';
+import ReviewList from '../components/ReviewList';
 import InAppPayment from '../components/InAppPayment';
 import { QtyOption } from '../components/QtyOption';
 import SectionRow from '../components/SectionRow';
@@ -560,10 +561,20 @@ export const ProductDetail = ({
             productId: product.product_id,
           });
         }}>
-        <DiscussionList
-          items={activeDiscussion.posts.slice(0, 4)}
-          type={activeDiscussion.type}
-        />
+        {true ? (
+          <ReviewList
+            items={activeDiscussion.posts.slice(0, 4)}
+            type={activeDiscussion.type}
+            productReviews={product.product_reviews}
+            productReviewsCount={product.product_reviews_count}
+            productReviewsRatingStats={product.product_reviews_rating_stats}
+          />
+        ) : (
+          <DiscussionList
+            items={activeDiscussion.posts.slice(0, 4)}
+            type={activeDiscussion.type}
+          />
+        )}
         {masMore && (
           <TouchableOpacity
             style={styles.sectionBtn}
