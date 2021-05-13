@@ -6,9 +6,12 @@ import {
 import config from '../config';
 import Api from '../services/api';
 
-export function fetch(location = 'index.index') {
+export function fetch(location = 'index.index', turnOffLoader) {
   return (dispatch) => {
-    dispatch({ type: FETCH_LAYOUTS_BLOCKS_REQUEST });
+    dispatch({
+      type: FETCH_LAYOUTS_BLOCKS_REQUEST,
+      payload: { turnOffLoader },
+    });
     return Api.get(
       `/sra_bm_layouts/${config.layoutId}/sra_bm_locations/${location}/sra_bm_blocks`,
     )

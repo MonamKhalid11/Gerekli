@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, RefreshControl } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import get from 'lodash/get';
@@ -74,6 +74,10 @@ export class Layouts extends Component {
     this.pushNotificationListener = null;
     this.pushNotificationOpenListener = null;
     this.backToHomeScreenHandler = null;
+
+    this.state = {
+      refreshing: false,
+    };
   }
 
   /**
@@ -252,6 +256,15 @@ export class Layouts extends Component {
     }
   };
 
+  onRefresh() {
+    const { layoutsActions } = this.props;
+    this.setState({ refreshing: true });
+    setTimeout(() => {
+      this.setState({ refreshing: false });
+      layoutsActions.fetch(undefined, true);
+    }, 1000);
+  }
+
   /**
    * Renders component
    *
@@ -268,11 +281,16 @@ export class Layouts extends Component {
     }
 
     return (
-      <View style={styles.container}>
-        <ScrollView contentContainerStyle={styles.contentContainer}>
-          {blocksList}
-        </ScrollView>
-      </View>
+      <ScrollView
+        style={styles.container}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={() => this.onRefresh()}
+          />
+        }>
+        {blocksList}
+      </ScrollView>
     );
   }
 }
