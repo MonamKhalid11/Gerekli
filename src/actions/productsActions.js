@@ -101,6 +101,11 @@ export function recalculatePrice(pid, options) {
     try {
       const response = await Api.get(`sra_products/${pid}/?${optionsUrl}`);
       const product = convertProduct(response.data);
+
+      if (product.isProductOffer) {
+        product.productOffers = await fetchProductOffers(pid)(dispatch);
+      }
+
       dispatch({ type: RECALCULATE_PRODUCT_PRICE_SUCCESS });
       return product;
     } catch (error) {
