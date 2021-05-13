@@ -14,9 +14,10 @@ let newState = null;
 export default function (state = initialState, action) {
   switch (action.type) {
     case FETCH_LAYOUTS_BLOCKS_REQUEST:
+      const fetching = action.payload.turnOffLoader ? false : true;
       return {
         ...state,
-        fetching: true,
+        fetching,
       };
 
     case FETCH_LAYOUTS_BLOCKS_SUCCESS:
