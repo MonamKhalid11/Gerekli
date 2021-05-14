@@ -161,6 +161,8 @@ export function fetch(pid) {
         product.productOffers = await fetchProductOffers(pid)(dispatch);
       }
 
+      console.log('product: ', product)
+
       dispatch({
         type: FETCH_ONE_PRODUCT_SUCCESS,
       });

@@ -568,6 +568,8 @@ export const ProductDetail = ({
             productReviews={product.product_reviews}
             productReviewsCount={product.product_reviews_count}
             productReviewsRatingStats={product.product_reviews_rating_stats}
+            averageRating={product.average_rating}
+            reviewCount={product.product_reviews_count}
           />
         ) : (
           <DiscussionList
