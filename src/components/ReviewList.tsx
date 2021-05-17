@@ -53,6 +53,27 @@ const styles = (
       marginLeft: 10,
       fontSize: 16,
     },
+    reviewContainer: {
+      marginTop: 20,
+    },
+    reviewHeaderWrapper: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    reviewHeaderNameAndDateWrapper: {},
+    reviewHeaderName: {
+      fontWeight: '500',
+    },
+    reviewHeaderDate: {
+      color: 'gray',
+    },
+    reviewHeaderCountry: {
+      color: 'gray',
+    },
+    reviewCommentsWrapper: {
+      marginTop: 10,
+    },
+    reviewLikesWrapper: {},
   });
 
 interface ProductReviewsRatingStats {
@@ -83,8 +104,6 @@ export const ReviewList: React.FC<ReviewListProps> = ({
   averageRating,
   reviewCount,
 }) => {
-  console.log(productReviews);
-
   const renderStars = () => {
     return (
       <View style={styles(null, null).starsContainer}>
@@ -140,10 +159,52 @@ export const ReviewList: React.FC<ReviewListProps> = ({
     });
   };
 
+  const renderReview = (review) => {
+    return (
+      <View style={styles(null, null).reviewContainer}>
+        <View style={styles(null, null).reviewHeaderWrapper}>
+          <View style={styles(null, null).reviewHeaderNameAndDateWrapper}>
+            <Text style={styles(null, null).reviewHeaderName}>John Const</Text>
+            <Text style={styles(null, null).reviewHeaderCountry}>
+              {review.country || 'None'}
+            </Text>
+          </View>
+          <Text style={styles(null, null).reviewHeaderDate}>
+            {review.product_review_timestamp}
+          </Text>
+        </View>
+        <View style={styles(null, null).reviewCommentsWrapper}>
+          {Object.keys(review.message).map((el) => {
+            return (
+              <View>
+                <Text>{el}</Text>
+                <Text>{review.message[el]}</Text>
+              </View>
+            );
+          })}
+        </View>
+        <View style={styles(null, null).reviewLikesWrapper}>
+          <Text>Like/Dislike</Text>
+        </View>
+      </View>
+    );
+  };
+
+  const renderReviewList = () => {
+    if (!productReviews) {
+      return null;
+    }
+
+    return Object.keys(productReviews).map((review) => {
+      return renderReview(productReviews[review]);
+    });
+  };
+
   return (
     <View>
       {renderStars()}
       {renderRatingBarList()}
+      {renderReviewList()}
     </View>
   );
 };
