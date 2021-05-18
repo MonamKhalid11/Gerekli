@@ -96,14 +96,17 @@ export function recalculatePrice(pid, options) {
   return async (dispatch) => {
     dispatch({ type: RECALCULATE_PRODUCT_PRICE_REQUEST });
 
-    const optionsUrl = formatOptionsToUrl(options);
+    const optionsUrl = formatOptionsToUrl('selected_options', options);
 
     try {
       const response = await Api.get(`sra_products/${pid}/?${optionsUrl}`);
       const product = convertProduct(response.data);
 
       if (product.isProductOffer) {
-        product.productOffers = await fetchProductOffers(pid)(dispatch);
+        product.productOffers = await fetchProductOffers(
+          pid,
+          product,
+        )(dispatch);
       }
 
       dispatch({ type: RECALCULATE_PRODUCT_PRICE_SUCCESS });
@@ -132,7 +135,10 @@ export function fetch(pid) {
       }
 
       if (product.isProductOffer) {
-        product.productOffers = await fetchProductOffers(pid)(dispatch);
+        product.productOffers = await fetchProductOffers(
+          pid,
+          product,
+        )(dispatch);
       }
 
       dispatch({
@@ -149,12 +155,17 @@ export function fetch(pid) {
   };
 }
 
-export function fetchProductOffers(pid) {
+export function fetchProductOffers(pid, product) {
   return (dispatch) => {
     dispatch({ type: FETCH_COMMON_PRODUCTS_REQUEST });
 
+    const optionsUrl = formatOptionsToUrl(
+      'master_product_data[product_options]',
+      product.selectedOptions,
+    );
+
     return Api.get(
-      `/sra_products/?vendor_products_by_product_id=${pid}&sort_by=price&include_child_variations=1&group_child_variations=1&is_vendor_products_list=1`,
+      `/sra_products/?vendor_products_by_product_id=${pid}&sort_by=price&include_child_variations=1&group_child_variations=1&is_vendor_products_list=1&${optionsUrl}`,
     )
       .then((response) => {
         dispatch({

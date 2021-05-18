@@ -7,11 +7,11 @@ import {
 
 const OPTION_TYPE_CHECKBOX = 'C';
 
-export const formatOptionsToUrl = (selectedOptions) => {
+export const formatOptionsToUrl = (parameterName, selectedOptions) => {
   const options = [];
   Object.keys(selectedOptions).forEach((optionId) => {
     options.push(
-      `${encodeURIComponent(`selected_options[${optionId}]`)}=${
+      `${encodeURIComponent(`${parameterName}[${optionId}]`)}=${
         selectedOptions[optionId].variant_id
       }`,
     );
