@@ -216,6 +216,7 @@ export const ProductDetail = ({
   hideWishList,
   wishList,
   cart,
+  settings,
 }) => {
   const [product, setProduct] = useState('');
   const [amount, setAmount] = useState(1);
@@ -561,7 +562,7 @@ export const ProductDetail = ({
             productId: product.product_id,
           });
         }}>
-        {true ? (
+        {settings.productReviewsAddonIsEnabled ? (
           <ReviewList
             items={activeDiscussion.posts.slice(0, 4)}
             type={activeDiscussion.type}

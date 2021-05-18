@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { AirbnbRating } from 'react-native-ratings';
+import { format } from 'date-fns';
+import { capitalizeFirstLetter } from '../utils/index';
 
 const styles = (
   filledRatingPercentage: number | null,
@@ -36,6 +38,7 @@ const styles = (
       height: 22,
     },
     ratingNumberText: {
+      width: 55,
       marginRight: 10,
       fontSize: 16,
     },
@@ -56,24 +59,34 @@ const styles = (
     reviewContainer: {
       marginTop: 20,
     },
-    reviewHeaderWrapper: {
+    reviewNameStarsDateWrapper: {
       flexDirection: 'row',
       justifyContent: 'space-between',
     },
-    reviewHeaderNameAndDateWrapper: {},
-    reviewHeaderName: {
+    reviewNameStarsWrapper: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    reviewName: {
       fontWeight: '500',
+      marginRight: 5,
     },
-    reviewHeaderDate: {
-      color: 'gray',
+    reviewDate: {
+      color: '#8F8F8F',
     },
-    reviewHeaderCountry: {
-      color: 'gray',
+    reviewCountry: {
+      color: '#8F8F8F',
     },
     reviewCommentsWrapper: {
       marginTop: 10,
     },
+    reviewCommentWrapper: {
+      marginBottom: 10,
+    },
     reviewLikesWrapper: {},
+    noReviewText: {
+      color: '#8F8F8F',
+    },
   });
 
 interface ProductReviewsRatingStats {
@@ -160,24 +173,34 @@ export const ReviewList: React.FC<ReviewListProps> = ({
   };
 
   const renderReview = (review) => {
+    const reviewDate = format(
+      new Date(review.product_review_timestamp * 1000),
+      'dd.MM.yyyy',
+    );
+
     return (
       <View style={styles(null, null).reviewContainer}>
-        <View style={styles(null, null).reviewHeaderWrapper}>
-          <View style={styles(null, null).reviewHeaderNameAndDateWrapper}>
-            <Text style={styles(null, null).reviewHeaderName}>John Const</Text>
-            <Text style={styles(null, null).reviewHeaderCountry}>
-              {review.country || 'None'}
-            </Text>
+        <View style={styles(null, null).reviewNameStarsDateWrapper}>
+          <View style={styles(null, null).reviewNameStarsWrapper}>
+            <Text style={styles(null, null).reviewName}>John Const</Text>
+            <AirbnbRating
+              count={5}
+              defaultRating={Number(review.rating_value)}
+              size={14}
+              showRating={false}
+              isDisabled
+            />
           </View>
-          <Text style={styles(null, null).reviewHeaderDate}>
-            {review.product_review_timestamp}
-          </Text>
+          <Text style={styles(null, null).reviewDate}>{reviewDate}</Text>
         </View>
+        <Text style={styles(null, null).reviewCountry}>
+          {review.country || 'USA'}
+        </Text>
         <View style={styles(null, null).reviewCommentsWrapper}>
           {Object.keys(review.message).map((el) => {
             return (
-              <View>
-                <Text>{el}</Text>
+              <View style={styles(null, null).reviewCommentWrapper}>
+                <Text>{capitalizeFirstLetter(el)}</Text>
                 <Text>{review.message[el]}</Text>
               </View>
             );
@@ -200,12 +223,26 @@ export const ReviewList: React.FC<ReviewListProps> = ({
     });
   };
 
+  const renderNoReview = () => {
+    return (
+      <View>
+        <Text style={styles(null, null).noReviewText}>
+          У этого товара пока нет отызвов.
+        </Text>
+      </View>
+    );
+  };
+
+  if (!reviewCount) {
+    return renderNoReview();
+  }
+
   return (
-    <View>
+    <>
       {renderStars()}
       {renderRatingBarList()}
       {renderReviewList()}
-    </View>
+    </>
   );
 };
 

@@ -10,6 +10,7 @@ import {
   SET_LANGUAGE,
   LANGUAGE_CURRENCY_FEATURE_FLAG_OFF,
   SET_DATE_FORMAT,
+  SET_ADDONS_SETTINGS,
 } from '../constants';
 import API from '../services/api';
 import store from '../store';
@@ -81,9 +82,19 @@ export async function initApp() {
       data: { currencies, languages, properties },
     } = await API.get('sra_storefront');
 
+    const productReviewAddonIsEnabled = get(
+      properties,
+      'addons.product_reviews.is_enabled',
+    );
+
     store.dispatch({
       type: SET_DATE_FORMAT,
       payload: properties.settings.appearance.calendar_date_format,
+    });
+
+    store.dispatch({
+      type: SET_ADDONS_SETTINGS,
+      payload: productReviewAddonIsEnabled,
     });
 
     // Set default currency

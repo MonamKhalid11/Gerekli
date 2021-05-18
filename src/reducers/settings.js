@@ -1,3 +1,4 @@
+import { get } from 'lodash';
 import {
   SET_CURRENCY,
   SET_LANGUAGE,
@@ -6,6 +7,7 @@ import {
   RESTORE_STATE,
   LANGUAGE_CURRENCY_FEATURE_FLAG_OFF,
   SET_DATE_FORMAT,
+  SET_ADDONS_SETTINGS,
 } from '../constants';
 
 const initialState = {
@@ -17,6 +19,7 @@ const initialState = {
     langCode: '',
     name: '',
   },
+  productReviewsAddonIsEnabled: false,
   dateFormat: '',
   languageCurrencyFeatureFlag: true,
   languages: null,
@@ -73,6 +76,12 @@ export default function (state = initialState, action) {
       return {
         ...state,
         languageCurrencyFeatureFlag: false,
+      };
+
+    case SET_ADDONS_SETTINGS:
+      return {
+        ...state,
+        productReviewsAddonIsEnabled: action.payload,
       };
 
     case RESTORE_STATE:
