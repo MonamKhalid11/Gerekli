@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { AirbnbRating } from 'react-native-ratings';
 import { format } from 'date-fns';
 import { capitalizeFirstLetter } from '../utils/index';
+import StarsRating from './StarsRating';
 
 const styles = (
   filledRatingPercentage: number | null,
@@ -120,13 +120,11 @@ export const ReviewList: React.FC<ReviewListProps> = ({
   const renderStars = () => {
     return (
       <View style={styles(null, null).starsContainer}>
-        <AirbnbRating
-          count={5}
-          defaultRating={Number(averageRating)}
-          size={25}
-          showRating={false}
+        <StarsRating
+          size={30}
+          value={Math.floor(Number(averageRating))}
           isDisabled
-          starContainerStyle={styles(null, null).airbnbRatingStyles}
+          count={5}
         />
         <Text style={styles(null, null).averageRatingText}>
           {Number(averageRating).toFixed(1)}
@@ -183,13 +181,13 @@ export const ReviewList: React.FC<ReviewListProps> = ({
         <View style={styles(null, null).reviewNameStarsDateWrapper}>
           <View style={styles(null, null).reviewNameStarsWrapper}>
             <Text style={styles(null, null).reviewName}>John Const</Text>
-            <AirbnbRating
+            {/* <AirbnbRating
               count={5}
               defaultRating={Number(review.rating_value)}
               size={14}
               showRating={false}
               isDisabled
-            />
+            /> */}
           </View>
           <Text style={styles(null, null).reviewDate}>{reviewDate}</Text>
         </View>
