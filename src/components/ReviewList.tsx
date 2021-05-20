@@ -16,7 +16,7 @@ const styles = (
       alignItems: 'flex-end',
       marginBottom: 20,
     },
-    airbnbRatingStyles: {
+    starsRatingContainerStyle: {
       marginRight: 10,
     },
     averageRatingText: {
@@ -57,7 +57,7 @@ const styles = (
       fontSize: 16,
     },
     reviewContainer: {
-      marginTop: 20,
+      marginTop: 40,
     },
     reviewNameStarsDateWrapper: {
       flexDirection: 'row',
@@ -77,11 +77,14 @@ const styles = (
     reviewCountry: {
       color: '#8F8F8F',
     },
-    reviewCommentsWrapper: {
-      marginTop: 10,
-    },
-    reviewCommentWrapper: {
+    reviewCommentTitle: {
+      fontSize: 14,
+      fontWeight: '500',
       marginBottom: 10,
+    },
+    reviewCommentText: {
+      fontSize: 14,
+      marginBottom: 20,
     },
     reviewLikesWrapper: {},
     noReviewText: {
@@ -98,10 +101,26 @@ interface ProductReviewsRatingStats {
   };
 }
 
+interface Review {
+  user_data: {
+    name: string;
+  };
+  product_review_timestamp: number;
+  rating_value: string;
+  country: string;
+  message: {
+    [key: string]: string;
+  };
+}
+
+interface ProductReviews {
+  [key: string]: Review;
+}
+
 interface ReviewListProps {
   items: string;
   type: number;
-  productReviews: object;
+  productReviews: ProductReviews;
   productReviewsCount: number;
   productReviewsRatingStats: ProductReviewsRatingStats;
   averageRating: string;
@@ -121,10 +140,11 @@ export const ReviewList: React.FC<ReviewListProps> = ({
     return (
       <View style={styles(null, null).starsContainer}>
         <StarsRating
-          size={30}
+          size={25}
           value={Math.floor(Number(averageRating))}
           isDisabled
           count={5}
+          containerStyle={styles(null, null).starsRatingContainerStyle}
         />
         <Text style={styles(null, null).averageRatingText}>
           {Number(averageRating).toFixed(1)}
@@ -136,9 +156,13 @@ export const ReviewList: React.FC<ReviewListProps> = ({
     );
   };
 
-  const renderRatingBar = (percentage: number, ratingNumber: string) => {
+  const renderRatingBar = (
+    percentage: number,
+    ratingNumber: string,
+    index: number,
+  ) => {
     return (
-      <View style={styles(null, null).ratingBarContainer}>
+      <View style={styles(null, null).ratingBarContainer} key={index}>
         <Text style={styles(null, null).ratingNumberText}>
           {ratingNumber} stars
         </Text>
@@ -162,48 +186,50 @@ export const ReviewList: React.FC<ReviewListProps> = ({
       productReviewsRatingStats.ratings,
     );
 
-    return ratingStatsNumbers.map((ratingNumber: string) => {
+    return ratingStatsNumbers.map((ratingNumber, index) => {
       return renderRatingBar(
         productReviewsRatingStats.ratings[Number(ratingNumber)].percentage,
         ratingNumber,
+        index,
       );
     });
   };
 
-  const renderReview = (review) => {
+  const renderReview = (review: Review, index: number) => {
     const reviewDate = format(
       new Date(review.product_review_timestamp * 1000),
       'dd.MM.yyyy',
     );
 
     return (
-      <View style={styles(null, null).reviewContainer}>
+      <View style={styles(null, null).reviewContainer} key={index}>
         <View style={styles(null, null).reviewNameStarsDateWrapper}>
           <View style={styles(null, null).reviewNameStarsWrapper}>
-            <Text style={styles(null, null).reviewName}>John Const</Text>
-            {/* <AirbnbRating
+            <Text style={styles(null, null).reviewName}>
+              {review.user_data?.name || 'Stranger'}
+            </Text>
+            <StarsRating
               count={5}
-              defaultRating={Number(review.rating_value)}
               size={14}
-              showRating={false}
               isDisabled
-            /> */}
+              value={Number(review.rating_value)}
+            />
           </View>
           <Text style={styles(null, null).reviewDate}>{reviewDate}</Text>
         </View>
-        <Text style={styles(null, null).reviewCountry}>
-          {review.country || 'USA'}
-        </Text>
-        <View style={styles(null, null).reviewCommentsWrapper}>
-          {Object.keys(review.message).map((el) => {
-            return (
-              <View style={styles(null, null).reviewCommentWrapper}>
-                <Text>{capitalizeFirstLetter(el)}</Text>
-                <Text>{review.message[el]}</Text>
-              </View>
-            );
-          })}
-        </View>
+        <Text style={styles(null, null).reviewCountry}>{review.country}</Text>
+        {Object.keys(review.message).map((el: string, index: number) => {
+          return (
+            <View key={index}>
+              <Text style={styles(null, null).reviewCommentTitle}>
+                {capitalizeFirstLetter(el)}
+              </Text>
+              <Text style={styles(null, null).reviewCommentText}>
+                {review.message[el]}
+              </Text>
+            </View>
+          );
+        })}
         <View style={styles(null, null).reviewLikesWrapper}>
           <Text>Like/Dislike</Text>
         </View>
@@ -216,8 +242,8 @@ export const ReviewList: React.FC<ReviewListProps> = ({
       return null;
     }
 
-    return Object.keys(productReviews).map((review) => {
-      return renderReview(productReviews[review]);
+    return Object.keys(productReviews).map((review: string, index) => {
+      return renderReview(productReviews[review], index);
     });
   };
 

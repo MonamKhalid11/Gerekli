@@ -41,6 +41,7 @@ import { ProductDetailOptions } from '../components/ProductDetailOptions';
 import ProductImageSwiper from '../components/ProductImageSwiper';
 import { AddToCartButton } from '../components/AddToCartButton';
 import DiscussionList from '../components/DiscussionList';
+import StarsRating from '../components/StarsRating';
 import ReviewList from '../components/ReviewList';
 import InAppPayment from '../components/InAppPayment';
 import { QtyOption } from '../components/QtyOption';
@@ -410,12 +411,21 @@ export const ProductDetail = ({
       return null;
     }
 
-    let activeDiscussion = discussion.items[`p_${product.product_id}`];
+    let ratingValue;
+
+    if (settings.productReviewsAddonIsEnabled) {
+      ratingValue = product.average_rating;
+    } else {
+      const activeDiscussion = discussion.items[`p_${product.product_id}`];
+      ratingValue = activeDiscussion.average_rating;
+    }
+
     return (
-      <Rating
-        containerStyle={styles.rating}
-        value={activeDiscussion.average_rating}
-        count={activeDiscussion.search.total_items}
+      <StarsRating
+        size={25}
+        value={Math.floor(Number(ratingValue))}
+        isDisabled
+        count={5}
       />
     );
   };

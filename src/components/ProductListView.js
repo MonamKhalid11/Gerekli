@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import toInteger from 'lodash/toInteger';
@@ -7,6 +8,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import Rating from './Rating';
 import { PRODUCT_IMAGE_WIDTH, formatPrice, getImagePath } from '../utils';
 import i18n from '../utils/i18n';
+import StarsRating from '../components/StarsRating';
 
 const styles = EStyleSheet.create({
   container: {
@@ -163,9 +165,20 @@ class ProductListView extends PureComponent {
   renderRating = () => {
     const {
       product: { item },
+      settings,
     } = this.props;
+
+    let ratingValue;
+
+    if (settings.productReviewsAddonIsEnabled) {
+      console.log('settings: ', settings);
+    } else {
+      ratingValue = item.average_rating;
+    }
+
     return (
-      <Rating containerStyle={styles.rating} value={item.average_rating} />
+      // <Rating containerStyle={styles.rating} value={item.average_rating} />
+      <StarsRating value={item.average_rating} count={5} size={14} isDisabled />
     );
   };
 
@@ -204,4 +217,6 @@ class ProductListView extends PureComponent {
   }
 }
 
-export default ProductListView;
+export default connect((state) => ({
+  settings: state.settings,
+}))(ProductListView);

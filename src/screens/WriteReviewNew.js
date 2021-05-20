@@ -11,8 +11,8 @@ import {
 import { Navigation } from 'react-native-navigation';
 import i18n from '../utils/i18n';
 import { iconsMap } from '../utils/navIcons';
-import { AirbnbRating } from 'react-native-ratings';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import StarsRating from '../components/StarsRating';
 
 // Import actions.
 import * as productsActions from '../actions/productsActions';
@@ -26,6 +26,7 @@ const styles = EStyleSheet.create({
   },
   ratingWrapper: {
     width: '100%',
+    flexDirection: 'row',
     alignItems: 'flex-start',
   },
   ratingAndCommentWrapper: {
@@ -109,15 +110,14 @@ export const WriteReviewNew = ({ componentId, productId, productsActions }) => {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.ratingAndCommentWrapper}>
-        <View style={styles.ratingWrapper}>
-          <AirbnbRating
-            count={5}
-            defaultRating={rating}
-            size={25}
-            showRating={false}
-            onFinishRating={(value) => setRating(value)}
-          />
-        </View>
+        <StarsRating
+          size={25}
+          value={rating}
+          isDisabled={false}
+          count={5}
+          onFinishRating={(value) => setRating(value)}
+          containerStyle={styles.ratingWrapper}
+        />
 
         <TextInput
           numberOfLines={3}

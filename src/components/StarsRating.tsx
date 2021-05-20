@@ -6,13 +6,14 @@ const styles = (iconSize: number | null) =>
   EStyleSheet.create({
     container: {
       flexDirection: 'row',
-      marginRight: 10,
     },
     iconWrapper: {
-      padding: 3,
+      paddingTop: 3,
+      paddingRight: 3,
+      paddingBottom: 3,
     },
     icon: {
-      color: '#FFC107',
+      tintColor: '#FFC107',
       width: iconSize,
       height: iconSize,
     },
@@ -23,6 +24,8 @@ interface StarsRatingProps {
   value: number;
   isDisabled: boolean;
   count: number;
+  onFinishRating?: Function;
+  containerStyle?: object;
 }
 
 export const StarsRating: React.FC<StarsRatingProps> = ({
@@ -30,6 +33,8 @@ export const StarsRating: React.FC<StarsRatingProps> = ({
   value,
   isDisabled,
   count,
+  onFinishRating,
+  containerStyle,
 }) => {
   const [stars, setStars] = useState([{ isActive: true }]);
 
@@ -41,8 +46,11 @@ export const StarsRating: React.FC<StarsRatingProps> = ({
         newValue.push(starObject);
       }
       setStars(newValue);
+      if (onFinishRating) {
+        return onFinishRating(index);
+      }
     },
-    [count],
+    [count, onFinishRating],
   );
 
   useEffect(() => {
@@ -65,7 +73,7 @@ export const StarsRating: React.FC<StarsRatingProps> = ({
     );
   };
   return (
-    <View style={styles(null).container}>
+    <View style={{ ...styles(null).container, ...containerStyle }}>
       {stars.map((star, index) => {
         return renderStar(star, index + 1);
       })}
