@@ -165,19 +165,9 @@ class ProductListView extends PureComponent {
   renderRating = () => {
     const {
       product: { item },
-      settings,
     } = this.props;
 
-    let ratingValue;
-
-    if (settings.productReviewsAddonIsEnabled) {
-      console.log('settings: ', settings);
-    } else {
-      ratingValue = item.average_rating;
-    }
-
     return (
-      // <Rating containerStyle={styles.rating} value={item.average_rating} />
       <StarsRating value={item.average_rating} count={5} size={14} isDisabled />
     );
   };

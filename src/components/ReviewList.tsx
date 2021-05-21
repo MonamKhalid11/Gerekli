@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { format } from 'date-fns';
 import { capitalizeFirstLetter } from '../utils/index';
@@ -87,6 +87,12 @@ const styles = (
       marginBottom: 20,
     },
     reviewLikesWrapper: {},
+    showAllReviewsButton: {
+      marginTop: 10,
+    },
+    showAllReviewsText: {
+      color: '#0000FF',
+    },
     noReviewText: {
       color: '#8F8F8F',
     },
@@ -141,7 +147,7 @@ export const ReviewList: React.FC<ReviewListProps> = ({
       <View style={styles(null, null).starsContainer}>
         <StarsRating
           size={25}
-          value={Math.floor(Number(averageRating))}
+          value={Number(averageRating)}
           isDisabled
           count={5}
           containerStyle={styles(null, null).starsRatingContainerStyle}
@@ -242,9 +248,24 @@ export const ReviewList: React.FC<ReviewListProps> = ({
       return null;
     }
 
-    return Object.keys(productReviews).map((review: string, index) => {
-      return renderReview(productReviews[review], index);
-    });
+    let firstReviews = Object.keys(productReviews);
+
+    if (firstReviews.length > 2) {
+      firstReviews = firstReviews.slice(0, 2);
+    }
+
+    return (
+      <>
+        {firstReviews.map((review: string, index) => {
+          return renderReview(productReviews[review], index);
+        })}
+        <TouchableOpacity style={styles(null, null).showAllReviewsButton}>
+          <Text style={styles(null, null).showAllReviewsText}>
+            Show all reviews
+          </Text>
+        </TouchableOpacity>
+      </>
+    );
   };
 
   const renderNoReview = () => {

@@ -66,6 +66,14 @@ const styles = EStyleSheet.create({
     marginBottom: 5,
     textAlign: 'left',
   },
+  starsRatingWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  ratingCountText: {
+    color: '#8F8F8F',
+    marginLeft: 10,
+  },
   priceText: {
     fontSize: '1rem',
     fontWeight: 'bold',
@@ -412,21 +420,27 @@ export const ProductDetail = ({
     }
 
     let ratingValue;
+    let reviewCount;
 
     if (settings.productReviewsAddonIsEnabled) {
       ratingValue = product.average_rating;
+      reviewCount = product.product_reviews_count;
     } else {
       const activeDiscussion = discussion.items[`p_${product.product_id}`];
       ratingValue = activeDiscussion.average_rating;
+      reviewCount = activeDiscussion.posts.length;
     }
 
     return (
-      <StarsRating
-        size={25}
-        value={Math.floor(Number(ratingValue))}
-        isDisabled
-        count={5}
-      />
+      <View style={styles.starsRatingWrapper}>
+        <StarsRating
+          size={14}
+          value={Math.floor(Number(ratingValue))}
+          isDisabled
+          count={5}
+        />
+        <Text style={styles.ratingCountText}>{reviewCount} reviews</Text>
+      </View>
     );
   };
 
@@ -551,12 +565,6 @@ export const ProductDetail = ({
 
     const masMore = activeDiscussion.search.total_items > 10;
     let title = i18n.t('Reviews');
-    // eslint-disable-next-line eqeqeq
-    if (activeDiscussion.search.total_items != 0) {
-      title = i18n.t('Reviews ({{count}})', {
-        count: activeDiscussion.search.total_items,
-      });
-    }
 
     return (
       <Section

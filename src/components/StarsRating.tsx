@@ -54,7 +54,7 @@ export const StarsRating: React.FC<StarsRatingProps> = ({
   );
 
   useEffect(() => {
-    ratingHandler(value);
+    ratingHandler(Math.floor(value));
   }, [ratingHandler, value]);
 
   const renderStar = (star: { isActive: boolean }, index: number) => {
