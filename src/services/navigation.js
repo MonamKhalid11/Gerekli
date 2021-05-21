@@ -296,6 +296,21 @@ export function showModalWriteReviewNew(params) {
   });
 }
 
+export function showModalAllProductReviews(params) {
+  Navigation.showModal({
+    stack: {
+      children: [
+        {
+          component: {
+            name: 'AllProductReviews',
+            passProps: params,
+          },
+        },
+      ],
+    },
+  });
+}
+
 export function showPage(componentId, params) {
   Navigation.showModal({
     stack: {

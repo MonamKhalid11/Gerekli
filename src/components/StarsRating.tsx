@@ -8,9 +8,8 @@ const styles = (iconSize: number | null) =>
       flexDirection: 'row',
     },
     iconWrapper: {
-      paddingTop: 3,
-      paddingRight: 3,
-      paddingBottom: 3,
+      paddingVertical: 3,
+      marginRight: 5,
     },
     icon: {
       tintColor: '#FFC107',

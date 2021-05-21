@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { format } from 'date-fns';
-import { capitalizeFirstLetter } from '../utils/index';
 import StarsRating from './StarsRating';
+import * as nav from '../services/navigation';
+import ProductReview from './ProductReview';
 
 const styles = (
   filledRatingPercentage: number | null,
@@ -56,37 +56,6 @@ const styles = (
       marginLeft: 10,
       fontSize: 16,
     },
-    reviewContainer: {
-      marginTop: 40,
-    },
-    reviewNameStarsDateWrapper: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-    },
-    reviewNameStarsWrapper: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    reviewName: {
-      fontWeight: '500',
-      marginRight: 5,
-    },
-    reviewDate: {
-      color: '#8F8F8F',
-    },
-    reviewCountry: {
-      color: '#8F8F8F',
-    },
-    reviewCommentTitle: {
-      fontSize: 14,
-      fontWeight: '500',
-      marginBottom: 10,
-    },
-    reviewCommentText: {
-      fontSize: 14,
-      marginBottom: 20,
-    },
-    reviewLikesWrapper: {},
     showAllReviewsButton: {
       marginTop: 10,
     },
@@ -201,48 +170,6 @@ export const ReviewList: React.FC<ReviewListProps> = ({
     });
   };
 
-  const renderReview = (review: Review, index: number) => {
-    const reviewDate = format(
-      new Date(review.product_review_timestamp * 1000),
-      'dd.MM.yyyy',
-    );
-
-    return (
-      <View style={styles(null, null).reviewContainer} key={index}>
-        <View style={styles(null, null).reviewNameStarsDateWrapper}>
-          <View style={styles(null, null).reviewNameStarsWrapper}>
-            <Text style={styles(null, null).reviewName}>
-              {review.user_data?.name || 'Stranger'}
-            </Text>
-            <StarsRating
-              count={5}
-              size={14}
-              isDisabled
-              value={Number(review.rating_value)}
-            />
-          </View>
-          <Text style={styles(null, null).reviewDate}>{reviewDate}</Text>
-        </View>
-        <Text style={styles(null, null).reviewCountry}>{review.country}</Text>
-        {Object.keys(review.message).map((el: string, index: number) => {
-          return (
-            <View key={index}>
-              <Text style={styles(null, null).reviewCommentTitle}>
-                {capitalizeFirstLetter(el)}
-              </Text>
-              <Text style={styles(null, null).reviewCommentText}>
-                {review.message[el]}
-              </Text>
-            </View>
-          );
-        })}
-        <View style={styles(null, null).reviewLikesWrapper}>
-          <Text>Like/Dislike</Text>
-        </View>
-      </View>
-    );
-  };
-
   const renderReviewList = () => {
     if (!productReviews) {
       return null;
@@ -257,9 +184,11 @@ export const ReviewList: React.FC<ReviewListProps> = ({
     return (
       <>
         {firstReviews.map((review: string, index) => {
-          return renderReview(productReviews[review], index);
+          return <ProductReview review={productReviews[review]} key={index} />;
         })}
-        <TouchableOpacity style={styles(null, null).showAllReviewsButton}>
+        <TouchableOpacity
+          style={styles(null, null).showAllReviewsButton}
+          onPress={() => nav.showModalAllProductReviews({ productReviews })}>
           <Text style={styles(null, null).showAllReviewsText}>
             Show all reviews
           </Text>
