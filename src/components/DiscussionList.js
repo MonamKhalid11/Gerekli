@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Text, View, FlatList, ActivityIndicator } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import Rating from './Rating';
+import StarsRating from './StarsRating';
 
 import {
   DISCUSSION_COMMUNICATION,
@@ -14,9 +14,6 @@ import i18n from '../utils/i18n';
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
-  },
-  rating: {
-    marginBottom: 10,
   },
   msg: {
     color: '$discussionMessageColor',
@@ -35,6 +32,7 @@ const styles = EStyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     flexDirection: 'row',
+    marginBottom: 10,
   },
   name: {
     fontSize: '0.9rem',
@@ -112,7 +110,12 @@ export default class DiscussionList extends Component {
         <View style={styles.itemWrapper}>
           <Text style={styles.name}>{item.name}</Text>
           {showRating && (
-            <Rating value={item.rating_value} containerStyle={styles.rating} />
+            <StarsRating
+              value={item.rating_value}
+              size={14}
+              isDisabled
+              count={5}
+            />
           )}
         </View>
         {showMessage && <Text style={styles.msg}>{item.message}</Text>}

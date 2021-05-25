@@ -49,7 +49,6 @@ import SectionRow from '../components/SectionRow';
 import { Seller } from '../components/Seller';
 import Section from '../components/Section';
 import Spinner from '../components/Spinner';
-import Rating from '../components/Rating';
 
 const styles = EStyleSheet.create({
   container: {
