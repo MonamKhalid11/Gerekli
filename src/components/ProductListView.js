@@ -5,7 +5,6 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import toInteger from 'lodash/toInteger';
 import get from 'lodash/get';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import Rating from './Rating';
 import { PRODUCT_IMAGE_WIDTH, formatPrice, getImagePath } from '../utils';
 import i18n from '../utils/i18n';
 import StarsRating from '../components/StarsRating';

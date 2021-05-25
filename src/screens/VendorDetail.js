@@ -11,7 +11,7 @@ import * as productsActions from '../actions/productsActions';
 
 // Components
 import Spinner from '../components/Spinner';
-import Rating from '../components/Rating';
+import StarsRating from '../components/StarsRating';
 import Section from '../components/Section';
 import SectionRow from '../components/SectionRow';
 import DiscussionList from '../components/DiscussionList';
@@ -232,9 +232,11 @@ export class VendorDetail extends Component {
       <Section topDivider>
         <View style={styles.descriptionWrapper}>
           <Text style={styles.vendorName}>{vendors.currentVendor.company}</Text>
-          <Rating
+          <StarsRating
             value={discussion.average_rating}
-            count={discussion.search.total_items}
+            count={5}
+            isDisabled
+            size={14}
           />
           <Text style={styles.vendorDescription}>
             {stripTags(vendors.currentVendor.description)}
