@@ -128,6 +128,10 @@ export const ProductReview: React.FC<ProductReviewsProps> = ({
       </View>
       <Text style={styles.reviewCountry}>{review.country}</Text>
       {Object.keys(review.message).map((el: string, index: number) => {
+        if (!review.message[el]) {
+          return null;
+        }
+
         return (
           <View key={index}>
             <Text style={styles.reviewCommentTitle}>
