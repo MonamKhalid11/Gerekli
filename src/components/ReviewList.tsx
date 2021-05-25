@@ -1,8 +1,11 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import StarsRating from './StarsRating';
 import * as nav from '../services/navigation';
+import i18n from '../utils/i18n';
+
+// Components
+import StarsRating from './StarsRating';
 import ProductReview from './ProductReview';
 
 const styles = (
@@ -60,7 +63,8 @@ const styles = (
       marginTop: 10,
     },
     showAllReviewsText: {
-      color: '#0000FF',
+      color: '$primaryColor',
+      fontSize: 14,
     },
     noReviewText: {
       color: '#8F8F8F',
@@ -190,7 +194,7 @@ export const ReviewList: React.FC<ReviewListProps> = ({
           style={styles(null, null).showAllReviewsButton}
           onPress={() => nav.showModalAllProductReviews({ productReviews })}>
           <Text style={styles(null, null).showAllReviewsText}>
-            Show all reviews
+            {i18n.t('View All')}
           </Text>
         </TouchableOpacity>
       </>

@@ -141,8 +141,8 @@ const styles = EStyleSheet.create({
   },
   sectionBtnText: {
     color: '$primaryColor',
-    fontSize: '0.9rem',
     textAlign: 'left',
+    fontSize: 14,
     maxWidth: 100,
   },
   vendorWrapper: {
@@ -602,7 +602,7 @@ export const ProductDetail = ({
             type={activeDiscussion.type}
           />
         )}
-        {masMore && (
+        {masMore && !settings.productReviewsAddonIsEnabled && (
           <TouchableOpacity
             style={styles.sectionBtn}
             onPress={() => {

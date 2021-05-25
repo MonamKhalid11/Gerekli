@@ -35,6 +35,7 @@ const styles = EStyleSheet.create({
   reviewCommentText: {
     fontSize: 14,
     marginBottom: 20,
+    color: '#8F8F8F',
   },
   reviewLikesWrapper: {},
 });
