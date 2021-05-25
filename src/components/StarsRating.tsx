@@ -71,6 +71,11 @@ export const StarsRating: React.FC<StarsRatingProps> = ({
       </TouchableOpacity>
     );
   };
+
+  if (!value) {
+    return null;
+  }
+
   return (
     <View style={{ ...styles(null).container, ...containerStyle }}>
       {stars.map((star, index) => {

@@ -562,7 +562,7 @@ export const ProductDetail = ({
 
     let activeDiscussion = discussion.items[`p_${product.product_id}`];
 
-    const masMore = activeDiscussion.search.total_items > 10;
+    const masMore = activeDiscussion.search.total_items > 2;
     let title = i18n.t('Reviews');
 
     return (
@@ -574,7 +574,6 @@ export const ProductDetail = ({
         rightButtonText={i18n.t('Write a Review')}
         onRightButtonPress={() => {
           nav.showModalWriteReviewNew({
-            activeDiscussion,
             discussionType: 'P',
             productId: product.product_id,
           });
@@ -591,7 +590,7 @@ export const ProductDetail = ({
           />
         ) : (
           <DiscussionList
-            items={activeDiscussion.posts.slice(0, 4)}
+            items={activeDiscussion.posts.slice(0, 2)}
             type={activeDiscussion.type}
           />
         )}
@@ -599,7 +598,10 @@ export const ProductDetail = ({
           <TouchableOpacity
             style={styles.sectionBtn}
             onPress={() => {
-              nav.showDiscussion(componentId);
+              nav.showDiscussion({
+                componentId,
+                productId: product.product_id,
+              });
             }}>
             <Text style={styles.sectionBtnText}>{i18n.t('View All')}</Text>
           </TouchableOpacity>

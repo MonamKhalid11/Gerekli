@@ -59,7 +59,7 @@ const styles = EStyleSheet.create({
 });
 
 export const WriteReviewNew = ({ componentId, productId, productsActions }) => {
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState(5);
   const [comment, setComment] = useState({
     advantages: '',
     disadvantages: '',

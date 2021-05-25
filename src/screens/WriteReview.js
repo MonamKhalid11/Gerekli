@@ -6,18 +6,17 @@ import { connect } from 'react-redux';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import cloneDeep from 'lodash/cloneDeep';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import theme from '../config/theme';
+import i18n from '../utils/i18n';
+import { DISCUSSION_COMMUNICATION, DISCUSSION_RATING } from '../constants';
 
 // Import actions.
 import * as productsActions from '../actions/productsActions';
 
+// Components
 import Button from '../components/Button';
 import Spinner from '../components/Spinner';
 import Icon from '../components/Icon';
-
-import theme from '../config/theme';
-import i18n from '../utils/i18n';
-
-import { DISCUSSION_COMMUNICATION, DISCUSSION_RATING } from '../constants';
 
 const styles = EStyleSheet.create({
   container: {
