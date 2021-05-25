@@ -890,7 +890,6 @@ export const ProductDetail = ({
 export default connect(
   (state) => ({
     settings: state.settings,
-    productDetail: state.productDetail,
     discussion: state.discussion,
     auth: state.auth,
     cart: state.cart,

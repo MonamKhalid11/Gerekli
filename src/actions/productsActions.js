@@ -25,6 +25,9 @@ import {
   FETCH_COMMON_PRODUCTS_REQUEST,
   FETCH_COMMON_PRODUCTS_FAIL,
   FETCH_COMMON_PRODUCTS_SUCCESS,
+  LIKE_DISLIKE_REVIEW_REQUEST,
+  LIKE_DISLIKE_REVIEW_SUCCESS,
+  LIKE_DISLIKE_REVIEW_FAIL,
 } from '../constants';
 import Api from '../services/api';
 import i18n from '../utils/i18n';
@@ -92,6 +95,25 @@ export function postDiscussion(data) {
           error,
         });
       });
+  };
+}
+
+export function likeDislikeReview(data) {
+  return async (dispatch) => {
+    dispatch({
+      type: LIKE_DISLIKE_REVIEW_REQUEST,
+    });
+    try {
+      await Api.put('sra_product_reviews_votes', data);
+      dispatch({
+        type: LIKE_DISLIKE_REVIEW_SUCCESS,
+      });
+    } catch (error) {
+      dispatch({
+        type: LIKE_DISLIKE_REVIEW_FAIL,
+        error,
+      });
+    }
   };
 }
 

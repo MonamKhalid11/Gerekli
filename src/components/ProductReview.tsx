@@ -1,9 +1,17 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import { format } from 'date-fns';
 import { capitalizeFirstLetter } from '../utils/index';
+
+// Import actions.
+import * as productsActions from '../actions/productsActions';
+
+// Components
 import StarsRating from './StarsRating';
+import Icon from './Icon';
 
 const styles = EStyleSheet.create({
   reviewContainer: {
@@ -37,7 +45,32 @@ const styles = EStyleSheet.create({
     marginBottom: 20,
     color: '#8F8F8F',
   },
-  reviewLikesWrapper: {},
+  reviewLikesWrapper: {
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+    justifyContent: 'space-between',
+    marginLeft: 'auto',
+    marginRight: 5,
+  },
+  voteUpWrapper: {
+    flexDirection: 'row',
+    fontSize: 14,
+    alignItems: 'center',
+    marginRight: 20,
+  },
+  voteDownWrapper: {
+    flexDirection: 'row',
+    fontSize: 14,
+    alignItems: 'center',
+  },
+  likeDislikeIcons: {
+    fontSize: 25,
+    color: '#d4d4d4',
+    marginRight: 5,
+  },
+  votesCountText: {
+    color: '#8F8F8F',
+  },
 });
 
 interface Review {
@@ -50,17 +83,32 @@ interface Review {
   message: {
     [key: string]: string;
   };
+  helpfulness: {
+    vote_up: number;
+    vote_down: number;
+  };
+  product_review_id: number;
 }
 
 interface ProductReviewsProps {
   review: Review;
 }
 
-export const ProductReview: React.FC<ProductReviewsProps> = ({ review }) => {
+export const ProductReview: React.FC<ProductReviewsProps> = ({
+  review,
+  productsActions,
+}) => {
   const reviewDate = format(
     new Date(review.product_review_timestamp * 1000),
     'dd.MM.yyyy',
   );
+
+  const likeDislikeHandler = (value: string, productReviewId: number) => {
+    productsActions.likeDislikeReview({
+      action: value,
+      product_review_id: productReviewId,
+    });
+  };
 
   return (
     <View style={styles.reviewContainer}>
@@ -90,10 +138,25 @@ export const ProductReview: React.FC<ProductReviewsProps> = ({ review }) => {
         );
       })}
       <View style={styles.reviewLikesWrapper}>
-        <Text>Like/Dislike</Text>
+        <TouchableOpacity
+          style={styles.voteUpWrapper}
+          onPress={() => likeDislikeHandler('up', review.product_review_id)}>
+          <Icon name={'thumb-up'} style={styles.likeDislikeIcons} />
+          <Text style={styles.votesCountText}>
+            {review.helpfulness.vote_up}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.voteDownWrapper}>
+          <Icon name={'thumb-down'} style={styles.likeDislikeIcons} />
+          <Text style={styles.votesCountText}>
+            {review.helpfulness.vote_down}
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-export default ProductReview;
+export default connect(null, (dispatch) => ({
+  productsActions: bindActionCreators(productsActions, dispatch),
+}))(ProductReview);
