@@ -573,10 +573,18 @@ export const ProductDetail = ({
         showRightButton={true}
         rightButtonText={i18n.t('Write a Review')}
         onRightButtonPress={() => {
-          nav.showModalWriteReviewNew({
-            discussionType: 'P',
-            productId: product.product_id,
-          });
+          if (settings.productReviewsAddonIsEnabled) {
+            nav.showModalWriteReviewNew({
+              discussionType: 'P',
+              productId: product.product_id,
+            });
+          } else {
+            nav.pushWriteReview(componentId, {
+              activeDiscussion,
+              discussionType: 'P',
+              discussionId: product.product_id,
+            });
+          }
         }}>
         {settings.productReviewsAddonIsEnabled ? (
           <ReviewList
