@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Navigation } from 'react-native-navigation';
+import i18n from '../utils/i18n';
+import { iconsMap } from '../utils/navIcons';
+import EStyleSheet from 'react-native-extended-stylesheet';
+import theme from '../config/theme';
 import {
   View,
   TextInput,
@@ -8,10 +13,8 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import { Navigation } from 'react-native-navigation';
-import i18n from '../utils/i18n';
-import { iconsMap } from '../utils/navIcons';
-import EStyleSheet from 'react-native-extended-stylesheet';
+
+// Components
 import StarsRating from '../components/StarsRating';
 
 // Import actions.
@@ -40,6 +43,9 @@ const styles = EStyleSheet.create({
     marginTop: 35,
     paddingBottom: 5,
   },
+  requiredInputDangerColor: {
+    borderColor: '$dangerColor',
+  },
   sendReviewWrapper: {
     width: '100%',
     borderWidth: 1,
@@ -59,12 +65,13 @@ const styles = EStyleSheet.create({
 });
 
 export const WriteReviewNew = ({ componentId, productId, productsActions }) => {
-  const [rating, setRating] = useState(5);
+  const [rating, setRating] = useState(0);
   const [comment, setComment] = useState({
     advantages: '',
     disadvantages: '',
     comment: '',
   });
+  const [requredFiledsNotice, setRequredFiledsNotice] = useState(false);
 
   const listener = {
     navigationButtonPressed: ({ buttonId }) => {
@@ -99,12 +106,18 @@ export const WriteReviewNew = ({ componentId, productId, productsActions }) => {
     };
   });
 
-  const handleSendReview = () => {
-    productsActions.sendReview({
+  const handleSendReview = async () => {
+    const result = await productsActions.sendReview({
       product_id: productId.toString(),
       rating_value: rating,
       ...comment,
     });
+
+    if (!result) {
+      setRequredFiledsNotice(true);
+    } else {
+      Navigation.dismissModal(componentId);
+    }
   };
 
   return (
@@ -117,6 +130,7 @@ export const WriteReviewNew = ({ componentId, productId, productsActions }) => {
           count={5}
           onFinishRating={(value) => setRating(value)}
           containerStyle={styles.ratingWrapper}
+          isEmpty={true}
         />
 
         <TextInput
@@ -142,21 +156,28 @@ export const WriteReviewNew = ({ componentId, productId, productsActions }) => {
         <TextInput
           numberOfLines={3}
           multiline
-          style={styles.input}
+          style={{
+            ...styles.input,
+            ...(requredFiledsNotice && styles.requiredInputDangerColor),
+          }}
           value={comment.input}
           placeholder={'Comments*'}
+          placeholderTextColor={requredFiledsNotice ? theme.$dangerColor : null}
           onChangeText={(value) => {
+            setRequredFiledsNotice(false);
             setComment({ ...comment, comment: value });
           }}
         />
       </ScrollView>
-      <TouchableOpacity
-        style={styles.sendButton}
-        onPress={() => handleSendReview()}>
-        <Text style={styles.sendButtonText}>
-          {i18n.t('send').toUpperCase()}
-        </Text>
-      </TouchableOpacity>
+      {!!rating && (
+        <TouchableOpacity
+          style={styles.sendButton}
+          onPress={() => handleSendReview()}>
+          <Text style={styles.sendButtonText}>
+            {i18n.t('send').toUpperCase()}
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

@@ -25,6 +25,7 @@ interface StarsRatingProps {
   count: number;
   onFinishRating?: Function;
   containerStyle?: object;
+  isEmpty?: boolean;
 }
 
 export const StarsRating: React.FC<StarsRatingProps> = ({
@@ -34,6 +35,7 @@ export const StarsRating: React.FC<StarsRatingProps> = ({
   count,
   onFinishRating,
   containerStyle,
+  isEmpty,
 }) => {
   const [stars, setStars] = useState([{ isActive: true }]);
 
@@ -72,7 +74,7 @@ export const StarsRating: React.FC<StarsRatingProps> = ({
     );
   };
 
-  if (!value) {
+  if (!value && !isEmpty) {
     return null;
   }
 

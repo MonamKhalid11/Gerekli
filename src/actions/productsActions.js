@@ -97,10 +97,22 @@ export function postDiscussion(data) {
 
 export function sendReview(data) {
   return async (dispatch) => {
+    if (!data.rating_value || !data.comment.length) {
+      dispatch({
+        type: NOTIFICATION_SHOW,
+        payload: {
+          type: 'error',
+          title: i18n.t('Error'),
+          text: i18n.t('Please fill in the required fields*.'),
+        },
+      });
+
+      return false;
+    }
+
     dispatch({
       type: POST_SEND_REVIEW_REQUEST,
     });
-
     try {
       await Api.post('/sra_product_reviews', data);
       dispatch({
@@ -114,7 +126,17 @@ export function sendReview(data) {
           text: i18n.t('Your post will be checked before it gets published.'),
         },
       });
+
+      return true;
     } catch (error) {
+      dispatch({
+        type: NOTIFICATION_SHOW,
+        payload: {
+          type: 'error',
+          title: i18n.t('Error'),
+          text: i18n.t('Something went wrong. Try again later.'),
+        },
+      });
       dispatch({
         type: POST_SEND_REVIEW_FAIL,
         error,
