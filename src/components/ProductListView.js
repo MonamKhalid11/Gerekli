@@ -22,7 +22,7 @@ const styles = EStyleSheet.create({
     alignItems: 'center',
     height: 200,
     flex: 2,
-    maxWidth: PRODUCT_NUM_COLUMNS === 2 ? '47%' : '31%',
+    maxWidth: `${Math.floor(94 / PRODUCT_NUM_COLUMNS)}%`,
   },
   productImage: {
     width: PRODUCT_IMAGE_WIDTH,
