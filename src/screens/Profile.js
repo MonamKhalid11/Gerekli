@@ -5,16 +5,18 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-
-import * as authActions from '../actions/authActions';
 import i18n from '../utils/i18n';
 import theme from '../config/theme';
 import config from '../config';
 import * as nav from '../services/navigation';
 import { registerDrawerDeepLinks } from '../utils/deepLinks';
-import * as pagesActions from '../actions/pagesActions';
 import Icon from '../components/Icon';
 import { USER_TYPE_VENDOR } from '../constants/index';
+
+// Actions
+import * as pagesActions from '../actions/pagesActions';
+import * as authActions from '../actions/authActions';
+import * as settingsActions from '../actions/settingsActions';
 
 const styles = EStyleSheet.create({
   container: {
@@ -121,8 +123,15 @@ export class ProfileEdit extends Component {
    * Gets data for Pages block.
    */
   componentDidMount() {
-    const { pagesActions } = this.props;
+    const { pagesActions, settingsActions, settings } = this.props;
     pagesActions.fetch(config.layoutId);
+    if (!settings.languageCurrencyFeatureFlag) {
+      console.log('im here: ');
+      settingsActions.setStartSettings(
+        settings.selectedLanguage,
+        settings.selectedCurrency,
+      );
+    }
     Navigation.mergeOptions(this.props.componentId, {
       topBar: {
         title: {
@@ -415,5 +424,6 @@ export default connect(
   (dispatch) => ({
     authActions: bindActionCreators(authActions, dispatch),
     pagesActions: bindActionCreators(pagesActions, dispatch),
+    settingsActions: bindActionCreators(settingsActions, dispatch),
   }),
 )(ProfileEdit);
