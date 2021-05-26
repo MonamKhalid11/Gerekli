@@ -104,7 +104,7 @@ export function likeDislikeReview(data) {
       type: LIKE_DISLIKE_REVIEW_REQUEST,
     });
     try {
-      await Api.put('sra_product_reviews_votes', data);
+      await Api.post('/sra_product_reviews_votes', data);
       dispatch({
         type: LIKE_DISLIKE_REVIEW_SUCCESS,
       });
