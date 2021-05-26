@@ -73,10 +73,12 @@ export async function setStartSettings(currentLanguage, currentCurrency) {
       data: { currencies, languages, properties },
     } = await API.get('sra_storefront');
 
-    store.dispatch({
-      type: SET_DATE_FORMAT,
-      payload: properties.settings.appearance.calendar_date_format,
-    });
+    if (properties.length) {
+      store.dispatch({
+        type: SET_DATE_FORMAT,
+        payload: properties.settings.appearance.calendar_date_format,
+      });
+    }
 
     if (!currentCurrency?.currencyCode) {
       currencies.forEach((el) => {
