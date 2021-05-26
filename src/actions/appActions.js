@@ -57,15 +57,8 @@ const getLocalTranslations = (langCode) => {
   return translation;
 };
 
-export async function initApp() {
-  const persist = await AsyncStorage.getItem(STORE_KEY);
-  if (persist) {
-    store.dispatch({
-      type: RESTORE_STATE,
-      payload: JSON.parse(persist),
-    });
-  }
-
+// Gets languages, currencies and date format settings and sets them to the store.
+export async function setStartSettings(currentLanguage, currentCurrency) {
   const platformLanguage =
     Platform.OS === 'ios'
       ? NativeModules.SettingsManager.settings.AppleLocale ||
@@ -73,7 +66,6 @@ export async function initApp() {
       : NativeModules.I18nManager.localeIdentifier;
 
   const deviceLanguage = platformLanguage.split('_')[0];
-  let currentLanguage;
 
   try {
     // Gets lists of languages and currencies
@@ -85,9 +77,6 @@ export async function initApp() {
       type: SET_DATE_FORMAT,
       payload: properties.settings.appearance.calendar_date_format,
     });
-
-    // Set default currency
-    let currentCurrency = get(JSON.parse(persist), 'settings.selectedCurrency');
 
     if (!currentCurrency?.currencyCode) {
       currencies.forEach((el) => {
@@ -103,9 +92,6 @@ export async function initApp() {
         payload: currentCurrency,
       });
     }
-
-    // Set default language
-    currentLanguage = get(JSON.parse(persist), 'settings.selectedLanguage');
 
     if (!currentLanguage?.langCode) {
       // If the device language is among the languages of the store
@@ -149,6 +135,8 @@ export async function initApp() {
       type: GET_LANGUAGES,
       payload: languages,
     });
+
+    return currentLanguage;
   } catch (e) {
     currentLanguage = {
       langCode: deviceLanguage,
@@ -163,6 +151,20 @@ export async function initApp() {
     });
     console.log('Error loading languages and currencies', e);
   }
+}
+
+export async function initApp() {
+  const persist = await AsyncStorage.getItem(STORE_KEY);
+  if (persist) {
+    store.dispatch({
+      type: RESTORE_STATE,
+      payload: JSON.parse(persist),
+    });
+  }
+
+  const savedLanguage = get(JSON.parse(persist), 'settings.selectedLanguage');
+  const savedCurrency = get(JSON.parse(persist), 'settings.selectedCurrency');
+  const currentLanguage = await setStartSettings(savedLanguage, savedCurrency);
 
   I18nManager.allowRTL(true);
   I18nManager.forceRTL(['ar', 'he', 'fa'].includes(currentLanguage.langCode));

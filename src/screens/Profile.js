@@ -17,6 +17,7 @@ import { USER_TYPE_VENDOR } from '../constants/index';
 import * as pagesActions from '../actions/pagesActions';
 import * as authActions from '../actions/authActions';
 import * as settingsActions from '../actions/settingsActions';
+import setStartSettings from '../actions/appActions';
 
 const styles = EStyleSheet.create({
   container: {
@@ -123,14 +124,10 @@ export class ProfileEdit extends Component {
    * Gets data for Pages block.
    */
   componentDidMount() {
-    const { pagesActions, settingsActions, settings } = this.props;
+    const { pagesActions, settings } = this.props;
     pagesActions.fetch(config.layoutId);
     if (!settings.languageCurrencyFeatureFlag) {
-      console.log('im here: ');
-      settingsActions.setStartSettings(
-        settings.selectedLanguage,
-        settings.selectedCurrency,
-      );
+      setStartSettings(settings.selectedLanguage, settings.selectedCurrency);
     }
     Navigation.mergeOptions(this.props.componentId, {
       topBar: {
