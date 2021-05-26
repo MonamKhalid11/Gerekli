@@ -7,6 +7,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import Rating from './Rating';
 import { PRODUCT_IMAGE_WIDTH, formatPrice, getImagePath } from '../utils';
 import i18n from '../utils/i18n';
+import { PRODUCT_NUM_COLUMNS } from '../utils';
 
 const styles = EStyleSheet.create({
   container: {
@@ -21,7 +22,7 @@ const styles = EStyleSheet.create({
     alignItems: 'center',
     height: 200,
     flex: 2,
-    maxWidth: '31%',
+    maxWidth: PRODUCT_NUM_COLUMNS === 2 ? '47%' : '31%',
   },
   productImage: {
     width: PRODUCT_IMAGE_WIDTH,
