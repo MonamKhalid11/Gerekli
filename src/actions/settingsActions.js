@@ -1,7 +1,7 @@
-import { SET_LANGUAGE, SET_CURRENCY } from '../constants';
 import { Navigation } from 'react-native-navigation';
 import * as appActions from './appActions';
 import * as nav from '../services/navigation';
+import { SET_LANGUAGE, SET_CURRENCY } from '../constants';
 
 export const setLanguage = (language) => {
   return async (dispatch) => {
