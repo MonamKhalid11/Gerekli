@@ -414,10 +414,6 @@ export const ProductDetail = ({
    * @return {JSX.Element}
    */
   const renderRating = () => {
-    if (!product.rating) {
-      return null;
-    }
-
     let ratingValue;
     let reviewCount;
 
@@ -428,6 +424,10 @@ export const ProductDetail = ({
       const activeDiscussion = discussion.items[`p_${product.product_id}`];
       ratingValue = activeDiscussion.average_rating;
       reviewCount = activeDiscussion.posts.length;
+    }
+
+    if (!ratingValue) {
+      return null;
     }
 
     return (
@@ -561,9 +561,8 @@ export const ProductDetail = ({
     }
 
     let activeDiscussion = discussion.items[`p_${product.product_id}`];
-
     const masMore = activeDiscussion.search.total_items > 2;
-    let title = i18n.t('Reviews');
+    const title = i18n.t('Reviews');
 
     return (
       <Section
@@ -588,13 +587,8 @@ export const ProductDetail = ({
         }}>
         {settings.productReviewsAddonIsEnabled ? (
           <ReviewList
-            items={activeDiscussion.posts.slice(0, 4)}
-            type={activeDiscussion.type}
-            productReviews={product.product_reviews}
-            productReviewsCount={product.product_reviews_count}
-            productReviewsRatingStats={product.product_reviews_rating_stats}
-            averageRating={product.average_rating}
-            reviewCount={product.product_reviews_count}
+            componentId={componentId}
+            productId={product.product_id}
           />
         ) : (
           <DiscussionList

@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Store } from 'redux';
+import { connect } from 'react-redux';
 import { View, Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import * as nav from '../services/navigation';
@@ -90,6 +92,11 @@ interface Review {
   message: {
     [key: string]: string;
   };
+  helpfulness: {
+    vote_up: number;
+    vote_down: number;
+  };
+  product_review_id: number;
 }
 
 interface ProductReviews {
@@ -97,39 +104,44 @@ interface ProductReviews {
 }
 
 interface ReviewListProps {
-  items: string;
-  type: number;
-  productReviews: ProductReviews;
-  productReviewsCount: number;
-  productReviewsRatingStats: ProductReviewsRatingStats;
-  averageRating: string;
-  reviewCount: string;
+  // productReviews: {
+  //   reviews: ProductReviews;
+  //   count: number;
+  //   ratingStats: ProductReviewsRatingStats;
+  //   averageRating: string;
+  // };
+  productReviews: Store;
+  componentId: string;
+  productId: number;
 }
 
 export const ReviewList: React.FC<ReviewListProps> = ({
-  items,
-  type,
   productReviews,
-  productReviewsCount,
-  productReviewsRatingStats,
-  averageRating,
-  reviewCount,
+  componentId,
+  productId,
 }) => {
+  const [currentProductReviews, setCurrentProductReviews] = useState<Review>({});
+
+  useEffect(() => {
+    setCurrentProductReviews(productReviews[productId]);
+  }, [productReviews, productId]);
+
   const renderStars = () => {
     return (
       <View style={styles(null, null).starsContainer}>
         <StarsRating
           size={25}
-          value={Number(averageRating)}
+          value={Number(currentProductReviews.averageRating)}
           isDisabled
           count={5}
           containerStyle={styles(null, null).starsRatingContainerStyle}
         />
         <Text style={styles(null, null).averageRatingText}>
-          {Number(averageRating).toFixed(1)}
+          {Number(currentProductReviews.averageRating).toFixed(1)}
         </Text>
         <Text style={styles(null, null).reviewCountText}>
-          {reviewCount ? reviewCount : 0} reviews
+          {currentProductReviews.count ? currentProductReviews.count : 0}{' '}
+          reviews
         </Text>
       </View>
     );
@@ -157,17 +169,18 @@ export const ReviewList: React.FC<ReviewListProps> = ({
   };
 
   const renderRatingBarList = () => {
-    if (!productReviewsRatingStats) {
+    if (!currentProductReviews.ratingStats) {
       return null;
     }
 
     const ratingStatsNumbers: string[] = Object.keys(
-      productReviewsRatingStats.ratings,
+      currentProductReviews.ratingStats.ratings,
     );
 
     return ratingStatsNumbers.map((ratingNumber, index) => {
       return renderRatingBar(
-        productReviewsRatingStats.ratings[Number(ratingNumber)].percentage,
+        currentProductReviews.ratingStats.ratings[Number(ratingNumber)]
+          .percentage,
         ratingNumber,
         index,
       );
@@ -175,11 +188,11 @@ export const ReviewList: React.FC<ReviewListProps> = ({
   };
 
   const renderReviewList = () => {
-    if (!productReviews) {
+    if (!currentProductReviews.reviews) {
       return null;
     }
 
-    let firstReviews = Object.keys(productReviews);
+    let firstReviews = Object.keys(currentProductReviews.reviews);
 
     if (firstReviews.length > 2) {
       firstReviews = firstReviews.slice(0, 2);
@@ -188,11 +201,21 @@ export const ReviewList: React.FC<ReviewListProps> = ({
     return (
       <>
         {firstReviews.map((review: string, index) => {
-          return <ProductReview review={productReviews[review]} key={index} />;
+          return (
+            <ProductReview
+              review={currentProductReviews.reviews[review]}
+              productId={productId}
+              key={index}
+            />
+          );
         })}
         <TouchableOpacity
           style={styles(null, null).showAllReviewsButton}
-          onPress={() => nav.showModalAllProductReviews({ productReviews })}>
+          onPress={() =>
+            nav.pushAllProductReviews(componentId, {
+              productId,
+            })
+          }>
           <Text style={styles(null, null).showAllReviewsText}>
             {i18n.t('View All')}
           </Text>
@@ -211,7 +234,7 @@ export const ReviewList: React.FC<ReviewListProps> = ({
     );
   };
 
-  if (!reviewCount) {
+  if (!currentProductReviews.count) {
     return renderNoReview();
   }
 
@@ -224,4 +247,6 @@ export const ReviewList: React.FC<ReviewListProps> = ({
   );
 };
 
-export default ReviewList;
+export default connect((state) => ({
+  productReviews: state.productReviews,
+}))(ReviewList);

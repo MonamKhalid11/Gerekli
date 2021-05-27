@@ -1,8 +1,8 @@
 import React from 'react';
+import { bindActionCreators, Action } from 'redux';
+import { connect } from 'react-redux';
 import { View, Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 import { format } from 'date-fns';
 import { capitalizeFirstLetter } from '../utils/index';
 
@@ -26,7 +26,7 @@ const styles = EStyleSheet.create({
     alignItems: 'center',
   },
   reviewName: {
-    fontWeight: '500',
+    fontSize: '0.9rem',
     marginRight: 5,
   },
   reviewDate: {
@@ -36,8 +36,7 @@ const styles = EStyleSheet.create({
     color: '#8F8F8F',
   },
   reviewCommentTitle: {
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: '0.9rem',
     marginBottom: 10,
   },
   reviewCommentText: {
@@ -92,10 +91,12 @@ interface Review {
 
 interface ProductReviewsProps {
   review: Review;
+  productId: number;
 }
 
 export const ProductReview: React.FC<ProductReviewsProps> = ({
   review,
+  productId,
   productsActions,
 }) => {
   const reviewDate = format(
@@ -103,10 +104,11 @@ export const ProductReview: React.FC<ProductReviewsProps> = ({
     'dd.MM.yyyy',
   );
 
-  const likeDislikeHandler = (value: string, productReviewId: number) => {
-    productsActions.likeDislikeReview({
+  const likeDislikeHandler = async (value: string, productReviewId: number) => {
+    await productsActions.likeDislikeReview({
       action: value,
       product_review_id: productReviewId,
+      productId: productId,
     });
   };
 
@@ -150,7 +152,9 @@ export const ProductReview: React.FC<ProductReviewsProps> = ({
             {review.helpfulness.vote_up}
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.voteDownWrapper}>
+        <TouchableOpacity
+          style={styles.voteDownWrapper}
+          onPress={() => likeDislikeHandler('down', review.product_review_id)}>
           <Icon name={'thumb-down'} style={styles.likeDislikeIcons} />
           <Text style={styles.votesCountText}>
             {review.helpfulness.vote_down}

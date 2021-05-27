@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { ScrollView } from 'react-native';
-import { Navigation } from 'react-native-navigation';
-import i18n from '../utils/i18n';
-import { iconsMap } from '../utils/navIcons';
+import { bindActionCreators, Store } from 'redux';
+import { connect } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import ProductReview from '../components/ProductReview';
+
+// Import actions.
+import * as productsActions from '../actions/productsActions';
 
 const styles = EStyleSheet.create({
   container: {
@@ -22,6 +24,11 @@ interface Review {
   message: {
     [key: string]: string;
   };
+  helpfulness: {
+    vote_up: number;
+    vote_down: number;
+  };
+  product_review_id: number;
 }
 
 interface ProductReviews {
@@ -29,54 +36,34 @@ interface ProductReviews {
 }
 
 interface AllProductReviewsProps {
-  productReviews: ProductReviews;
-  componentId: string;
+  productId: string;
+  productReviews: Store;
 }
 
 export const AllProductReviews: React.FC<AllProductReviewsProps> = ({
+  productId,
   productReviews,
-  componentId,
 }) => {
-  const listener = {
-    navigationButtonPressed: ({ buttonId }) => {
-      if (buttonId === 'close') {
-        Navigation.dismissModal(componentId);
-      }
-    },
-  };
-
-  useEffect(() => {
-    Navigation.mergeOptions(componentId, {
-      topBar: {
-        title: {
-          text: i18n.t('All reviews').toUpperCase(),
-        },
-        rightButtons: [
-          {
-            id: 'close',
-            icon: iconsMap.close,
-          },
-        ],
-      },
-    });
-
-    const listeners = Navigation.events().registerComponentListener(
-      listener,
-      componentId,
-    );
-
-    return () => {
-      listeners.remove();
-    };
-  });
-
+  const currentProductReviews = productReviews[productId];
   return (
     <ScrollView style={styles.container}>
-      {Object.keys(productReviews).map((reviewNumber) => {
-        return <ProductReview review={productReviews[reviewNumber]} />;
+      {Object.keys(currentProductReviews.reviews).map((reviewNumber) => {
+        return (
+          <ProductReview
+            review={currentProductReviews.reviews[reviewNumber]}
+            productId={productId}
+          />
+        );
       })}
     </ScrollView>
   );
 };
 
-export default AllProductReviews;
+export default connect(
+  (state) => ({
+    productReviews: state.productReviews,
+  }),
+  (dispatch) => ({
+    productsActions: bindActionCreators(productsActions, dispatch),
+  }),
+)(AllProductReviews);

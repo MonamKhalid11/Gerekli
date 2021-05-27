@@ -28,6 +28,7 @@ import {
   LIKE_DISLIKE_REVIEW_REQUEST,
   LIKE_DISLIKE_REVIEW_SUCCESS,
   LIKE_DISLIKE_REVIEW_FAIL,
+  SET_PRODUCT_REVIEWS,
 } from '../constants';
 import Api from '../services/api';
 import i18n from '../utils/i18n';
@@ -104,9 +105,17 @@ export function likeDislikeReview(data) {
       type: LIKE_DISLIKE_REVIEW_REQUEST,
     });
     try {
-      await Api.post('/sra_product_reviews_votes', data);
+      const result = await Api.post('/sra_product_reviews_votes', {
+        action: data.action,
+        product_review_id: data.product_review_id,
+      });
       dispatch({
         type: LIKE_DISLIKE_REVIEW_SUCCESS,
+        payload: {
+          productId: data.productId,
+          reviewAction: data.action,
+          productReviewId: data.product_review_id,
+        },
       });
     } catch (error) {
       dispatch({
@@ -207,6 +216,11 @@ export function fetch(pid) {
 
       dispatch({
         type: FETCH_ONE_PRODUCT_SUCCESS,
+      });
+
+      dispatch({
+        type: SET_PRODUCT_REVIEWS,
+        payload: product,
       });
 
       return product;
