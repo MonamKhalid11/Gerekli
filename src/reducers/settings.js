@@ -96,7 +96,7 @@ export default function (state = initialState, action) {
         action.payload === 'day_first' ? 'dd/MM/yyyy' : 'MM/dd/yyyy';
       return {
         ...state,
-        dateFormat,
+        dateFormat: dateFormat,
       };
 
     default:

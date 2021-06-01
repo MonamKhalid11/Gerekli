@@ -99,13 +99,26 @@ export function postDiscussion(data) {
   };
 }
 
+export function sendErrorNotification(title, message) {
+  return async (dispatch) => {
+    dispatch({
+      type: NOTIFICATION_SHOW,
+      payload: {
+        type: 'error',
+        title: title,
+        text: message,
+      },
+    });
+  };
+}
+
 export function likeDislikeReview(data) {
   return async (dispatch) => {
     dispatch({
       type: LIKE_DISLIKE_REVIEW_REQUEST,
     });
     try {
-      const result = await Api.post('/sra_product_reviews_votes', {
+      await Api.post('/sra_product_reviews_votes', {
         action: data.action,
         product_review_id: data.product_review_id,
       });
@@ -128,19 +141,6 @@ export function likeDislikeReview(data) {
 
 export function sendReview(data) {
   return async (dispatch) => {
-    if (!data.rating_value || !data.comment.length) {
-      dispatch({
-        type: NOTIFICATION_SHOW,
-        payload: {
-          type: 'error',
-          title: i18n.t('Error'),
-          text: i18n.t('Please fill in the required fields*.'),
-        },
-      });
-
-      return false;
-    }
-
     dispatch({
       type: POST_SEND_REVIEW_REQUEST,
     });
@@ -157,15 +157,13 @@ export function sendReview(data) {
           text: i18n.t('Your post will be checked before it gets published.'),
         },
       });
-
-      return true;
     } catch (error) {
       dispatch({
         type: NOTIFICATION_SHOW,
         payload: {
           type: 'error',
           title: i18n.t('Error'),
-          text: i18n.t('Something went wrong. Try again later.'),
+          text: i18n.t('Something went wrong. Please try again later.'),
         },
       });
       dispatch({

@@ -15,6 +15,8 @@ import uniqueId from 'lodash/uniqueId';
 // Components
 import StarsRating from './StarsRating';
 
+const RATING_STAR_SIZE = 14;
+
 const styles = EStyleSheet.create({
   container: {
     marginTop: 5,
@@ -93,9 +95,8 @@ export default class VendorBlock extends Component {
         <Image source={{ uri: imageUri }} style={styles.img} />
         <StarsRating
           value={item.average_rating}
-          size={14}
-          isDisabled
-          count={5}
+          size={RATING_STAR_SIZE}
+          ratingSelectionDisabled
         />
       </TouchableOpacity>
     );

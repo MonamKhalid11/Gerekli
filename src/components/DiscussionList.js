@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import { Text, View, FlatList, ActivityIndicator } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import StarsRating from './StarsRating';
-
 import {
   DISCUSSION_COMMUNICATION,
   DISCUSSION_COMMUNICATION_AND_RATING,
   DISCUSSION_RATING,
 } from '../constants';
 import i18n from '../utils/i18n';
+
+const RATING_STAR_SIZE = 14;
 
 const styles = EStyleSheet.create({
   container: {
@@ -112,9 +113,8 @@ export default class DiscussionList extends Component {
           {showRating && (
             <StarsRating
               value={item.rating_value}
-              size={14}
-              isDisabled
-              count={5}
+              size={RATING_STAR_SIZE}
+              ratingSelectionDisabled
             />
           )}
         </View>

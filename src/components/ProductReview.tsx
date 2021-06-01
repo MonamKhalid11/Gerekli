@@ -1,6 +1,6 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import { connect, RootStateOrAny } from 'react-redux';
 import { View, Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { format } from 'date-fns';
@@ -13,6 +13,8 @@ import * as productsActions from '../actions/productsActions';
 import StarsRating from './StarsRating';
 import Icon from './Icon';
 import i18n from '../utils/i18n';
+
+const RATING_STAR_SIZE = 14;
 
 const styles = EStyleSheet.create({
   reviewContainer: {
@@ -96,16 +98,20 @@ interface ProductReviewsProps {
   productsActions: {
     [key: string]: Function;
   };
+  settings: {
+    dateFormat: string;
+  };
 }
 
 export const ProductReview: React.FC<ProductReviewsProps> = ({
   review,
   productId,
   productsActions,
+  settings,
 }) => {
   const reviewDate = format(
     new Date(review.product_review_timestamp * 1000),
-    'dd.MM.yyyy',
+    settings.dateFormat || 'MM/dd/yyyy',
   );
 
   const likeDislikeHandler = async (value: string, productReviewId: number) => {
@@ -121,12 +127,11 @@ export const ProductReview: React.FC<ProductReviewsProps> = ({
       <View style={styles.reviewNameStarsDateWrapper}>
         <View style={styles.reviewNameStarsWrapper}>
           <Text style={styles.reviewName}>
-            {review.user_data?.name || i18n.t('Stranger')}
+            {review.user_data?.name || i18n.t('Anonymous')}
           </Text>
           <StarsRating
-            count={5}
-            size={14}
-            isDisabled
+            size={RATING_STAR_SIZE}
+            ratingSelectionDisabled
             value={Number(review.rating_value)}
           />
         </View>
@@ -173,6 +178,11 @@ export const ProductReview: React.FC<ProductReviewsProps> = ({
   );
 };
 
-export default connect(null, (dispatch) => ({
-  productsActions: bindActionCreators(productsActions, dispatch),
-}))(ProductReview);
+export default connect(
+  (state: RootStateOrAny) => ({
+    settings: state.settings,
+  }),
+  (dispatch) => ({
+    productsActions: bindActionCreators(productsActions, dispatch),
+  }),
+)(ProductReview);

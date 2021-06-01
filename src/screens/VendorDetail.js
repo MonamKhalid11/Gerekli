@@ -21,6 +21,8 @@ import { iconsMap } from '../utils/navIcons';
 import { Navigation } from 'react-native-navigation';
 import * as nav from '../services/navigation';
 
+const RATING_STAR_SIZE = 14;
+
 // Styles
 const styles = EStyleSheet.create({
   container: {
@@ -234,9 +236,8 @@ export class VendorDetail extends Component {
           <Text style={styles.vendorName}>{vendors.currentVendor.company}</Text>
           <StarsRating
             value={discussion.average_rating}
-            count={5}
-            isDisabled
-            size={14}
+            ratingSelectionDisabled
+            size={RATING_STAR_SIZE}
           />
           <Text style={styles.vendorDescription}>
             {stripTags(vendors.currentVendor.description)}

@@ -50,6 +50,8 @@ import { Seller } from '../components/Seller';
 import Section from '../components/Section';
 import Spinner from '../components/Spinner';
 
+const RATING_STAR_SIZE = 14;
+
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
@@ -433,10 +435,9 @@ export const ProductDetail = ({
     return (
       <View style={styles.starsRatingWrapper}>
         <StarsRating
-          size={14}
+          size={RATING_STAR_SIZE}
           value={Math.floor(Number(ratingValue))}
-          isDisabled
-          count={5}
+          ratingSelectionDisabled
         />
         <Text style={styles.ratingCountText}>
           {reviewCount} {i18n.t('reviews')}

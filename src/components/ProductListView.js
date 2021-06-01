@@ -10,6 +10,8 @@ import i18n from '../utils/i18n';
 import StarsRating from '../components/StarsRating';
 import { PRODUCT_NUM_COLUMNS } from '../utils';
 
+const RATING_STAR_SIZE = 14;
+
 const styles = EStyleSheet.create({
   container: {
     borderWidth: 1,
@@ -168,7 +170,11 @@ class ProductListView extends PureComponent {
     } = this.props;
 
     return (
-      <StarsRating value={item.average_rating} count={5} size={14} isDisabled />
+      <StarsRating
+        value={item.average_rating}
+        size={RATING_STAR_SIZE}
+        ratingSelectionDisabled
+      />
     );
   };
 

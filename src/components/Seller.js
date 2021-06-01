@@ -9,6 +9,8 @@ import Icon from './Icon';
 import StarsRating from './StarsRating';
 import { AddToCartButton } from './AddToCartButton';
 
+const RATING_STAR_SIZE = 14;
+
 const styles = (isStock, lastBlock, lastVendor, wishListActive) =>
   EStyleSheet.create({
     container: {
@@ -80,9 +82,8 @@ export const Seller = ({
           {productOffer.company?.average_rating && (
             <StarsRating
               value={productOffer.company.average_rating}
-              count={5}
-              isDisabled
-              size={14}
+              ratingSelectionDisabled
+              size={RATING_STAR_SIZE}
             />
           )}
           <Text style={styles(isStock).stock}>

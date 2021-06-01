@@ -20,6 +20,8 @@ import StarsRating from '../components/StarsRating';
 // Import actions.
 import * as productsActions from '../actions/productsActions';
 
+const RATIN_STAR_SIZE = 25;
+
 const styles = EStyleSheet.create({
   container: {
     height: '100%',
@@ -107,27 +109,30 @@ export const WriteReviewNew = ({ componentId, productId, productsActions }) => {
   });
 
   const handleSendReview = async () => {
-    const result = await productsActions.sendReview({
+    if (!comment.comment.length) {
+      setRequredFiledsNotice(true);
+      productsActions.sendErrorNotification(
+        i18n.t('Error'),
+        i18n.t('Please fill in the required fields*.'),
+      );
+      return;
+    }
+
+    await productsActions.sendReview({
       product_id: productId.toString(),
       rating_value: rating,
       ...comment,
     });
-
-    if (!result) {
-      setRequredFiledsNotice(true);
-    } else {
-      Navigation.dismissModal(componentId);
-    }
+    Navigation.dismissModal(componentId);
   };
 
   return (
     <View style={styles.container}>
       <ScrollView style={styles.ratingAndCommentWrapper}>
         <StarsRating
-          size={25}
+          size={RATIN_STAR_SIZE}
           value={rating}
-          isDisabled={false}
-          count={5}
+          ratingSelectionDisabled={false}
           onFinishRating={(value) => setRating(value)}
           containerStyle={styles.ratingWrapper}
           isEmpty={true}
