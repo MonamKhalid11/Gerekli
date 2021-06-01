@@ -138,7 +138,7 @@ export const WriteReviewNew = ({ componentId, productId, productsActions }) => {
           multiline
           style={styles.input}
           value={comment.advantages}
-          placeholder={'Advantages'}
+          placeholder={i18n.t('Advantages')}
           onChangeText={(value) => {
             setComment({ ...comment, advantages: value });
           }}
@@ -148,7 +148,7 @@ export const WriteReviewNew = ({ componentId, productId, productsActions }) => {
           multiline
           style={styles.input}
           value={comment.input}
-          placeholder={'Disadvantages'}
+          placeholder={i18n.t('Disadvantages')}
           onChangeText={(value) => {
             setComment({ ...comment, disadvantages: value });
           }}
@@ -161,7 +161,7 @@ export const WriteReviewNew = ({ componentId, productId, productsActions }) => {
             ...(requredFiledsNotice && styles.requiredInputDangerColor),
           }}
           value={comment.input}
-          placeholder={'Comments*'}
+          placeholder={`${i18n.t('Comment')}*`}
           placeholderTextColor={requredFiledsNotice ? theme.$dangerColor : null}
           onChangeText={(value) => {
             setRequredFiledsNotice(false);

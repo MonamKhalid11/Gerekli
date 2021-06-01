@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Store } from 'redux';
-import { connect } from 'react-redux';
+import { connect, RootStateOrAny } from 'react-redux';
 import { View, Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import * as nav from '../services/navigation';
@@ -43,9 +42,9 @@ const styles = (
       height: 22,
     },
     ratingNumberText: {
-      width: 55,
       marginRight: 10,
       fontSize: 16,
+      width: 15,
     },
     filedPartRatingBar: {
       backgroundColor: '#FFC107',
@@ -99,28 +98,38 @@ interface Review {
   product_review_id: number;
 }
 
-interface ProductReviews {
-  [key: string]: Review;
+interface ProductReview {
+  reviews: {
+    [key: number]: Review;
+  };
+  count: number;
+  ratingStats: ProductReviewsRatingStats;
+  averageRating: string;
 }
 
-interface ReviewListProps {
-  // productReviews: {
-  //   reviews: ProductReviews;
-  //   count: number;
-  //   ratingStats: ProductReviewsRatingStats;
-  //   averageRating: string;
-  // };
-  productReviews: Store;
+interface ProductReviews {
+  [key: number]: ProductReview;
+}
+
+interface ReviewsBlockProps {
+  productReviews: ProductReviews;
   componentId: string;
   productId: number;
 }
 
-export const ReviewList: React.FC<ReviewListProps> = ({
+export const ReviewsBlock: React.FC<ReviewsBlockProps> = ({
   productReviews,
   componentId,
   productId,
 }) => {
-  const [currentProductReviews, setCurrentProductReviews] = useState<Review>({});
+  const [currentProductReviews, setCurrentProductReviews] = useState<
+    ProductReview
+  >({
+    reviews: {},
+    count: 0,
+    ratingStats: { ratings: {} },
+    averageRating: '0',
+  });
 
   useEffect(() => {
     setCurrentProductReviews(productReviews[productId]);
@@ -154,9 +163,7 @@ export const ReviewList: React.FC<ReviewListProps> = ({
   ) => {
     return (
       <View style={styles(null, null).ratingBarContainer} key={index}>
-        <Text style={styles(null, null).ratingNumberText}>
-          {ratingNumber} stars
-        </Text>
+        <Text style={styles(null, null).ratingNumberText}>{ratingNumber}</Text>
         <View style={styles(null, null).ratingBarWrapper}>
           <View style={styles(percentage, null).filedPartRatingBar} />
           <View style={styles(null, 100 - percentage).unfiledPartRatingBar} />
@@ -203,7 +210,7 @@ export const ReviewList: React.FC<ReviewListProps> = ({
         {firstReviews.map((review: string, index) => {
           return (
             <ProductReview
-              review={currentProductReviews.reviews[review]}
+              review={currentProductReviews.reviews[parseInt(review, 10)]}
               productId={productId}
               key={index}
             />
@@ -228,7 +235,7 @@ export const ReviewList: React.FC<ReviewListProps> = ({
     return (
       <View>
         <Text style={styles(null, null).noReviewText}>
-          У этого товара пока нет отызвов.
+          {i18n.t('This product has not been reviewed yet.')}
         </Text>
       </View>
     );
@@ -247,6 +254,6 @@ export const ReviewList: React.FC<ReviewListProps> = ({
   );
 };
 
-export default connect((state) => ({
+export default connect((state: RootStateOrAny) => ({
   productReviews: state.productReviews,
-}))(ReviewList);
+}))(ReviewsBlock);

@@ -42,7 +42,7 @@ import ProductImageSwiper from '../components/ProductImageSwiper';
 import { AddToCartButton } from '../components/AddToCartButton';
 import DiscussionList from '../components/DiscussionList';
 import StarsRating from '../components/StarsRating';
-import ReviewList from '../components/ReviewList';
+import ReviewsBlock from '../components/ReviewsBlock';
 import InAppPayment from '../components/InAppPayment';
 import { QtyOption } from '../components/QtyOption';
 import SectionRow from '../components/SectionRow';
@@ -438,7 +438,9 @@ export const ProductDetail = ({
           isDisabled
           count={5}
         />
-        <Text style={styles.ratingCountText}>{reviewCount} reviews</Text>
+        <Text style={styles.ratingCountText}>
+          {reviewCount} {i18n.t('reviews')}
+        </Text>
       </View>
     );
   };
@@ -586,7 +588,7 @@ export const ProductDetail = ({
           }
         }}>
         {settings.productReviewsAddonIsEnabled ? (
-          <ReviewList
+          <ReviewsBlock
             componentId={componentId}
             productId={product.product_id}
           />

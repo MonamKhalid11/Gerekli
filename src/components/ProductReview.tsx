@@ -1,5 +1,5 @@
 import React from 'react';
-import { bindActionCreators, Action } from 'redux';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { View, Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -12,6 +12,7 @@ import * as productsActions from '../actions/productsActions';
 // Components
 import StarsRating from './StarsRating';
 import Icon from './Icon';
+import i18n from '../utils/i18n';
 
 const styles = EStyleSheet.create({
   reviewContainer: {
@@ -92,6 +93,9 @@ interface Review {
 interface ProductReviewsProps {
   review: Review;
   productId: number;
+  productsActions: {
+    [key: string]: Function;
+  };
 }
 
 export const ProductReview: React.FC<ProductReviewsProps> = ({
@@ -117,7 +121,7 @@ export const ProductReview: React.FC<ProductReviewsProps> = ({
       <View style={styles.reviewNameStarsDateWrapper}>
         <View style={styles.reviewNameStarsWrapper}>
           <Text style={styles.reviewName}>
-            {review.user_data?.name || 'Stranger'}
+            {review.user_data?.name || i18n.t('Stranger')}
           </Text>
           <StarsRating
             count={5}
@@ -137,30 +141,34 @@ export const ProductReview: React.FC<ProductReviewsProps> = ({
         return (
           <View key={index}>
             <Text style={styles.reviewCommentTitle}>
-              {capitalizeFirstLetter(el)}
+              {i18n.t(capitalizeFirstLetter(el))}
             </Text>
             <Text style={styles.reviewCommentText}>{review.message[el]}</Text>
           </View>
         );
       })}
-      <View style={styles.reviewLikesWrapper}>
-        <TouchableOpacity
-          style={styles.voteUpWrapper}
-          onPress={() => likeDislikeHandler('up', review.product_review_id)}>
-          <Icon name={'thumb-up'} style={styles.likeDislikeIcons} />
-          <Text style={styles.votesCountText}>
-            {review.helpfulness.vote_up}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.voteDownWrapper}
-          onPress={() => likeDislikeHandler('down', review.product_review_id)}>
-          <Icon name={'thumb-down'} style={styles.likeDislikeIcons} />
-          <Text style={styles.votesCountText}>
-            {review.helpfulness.vote_down}
-          </Text>
-        </TouchableOpacity>
-      </View>
+      {false && ( // TODO likes/dislikes for product reviews
+        <View style={styles.reviewLikesWrapper}>
+          <TouchableOpacity
+            style={styles.voteUpWrapper}
+            onPress={() => likeDislikeHandler('up', review.product_review_id)}>
+            <Icon name={'thumb-up'} style={styles.likeDislikeIcons} />
+            <Text style={styles.votesCountText}>
+              {review.helpfulness.vote_up}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.voteDownWrapper}
+            onPress={() =>
+              likeDislikeHandler('down', review.product_review_id)
+            }>
+            <Icon name={'thumb-down'} style={styles.likeDislikeIcons} />
+            <Text style={styles.votesCountText}>
+              {review.helpfulness.vote_down}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };

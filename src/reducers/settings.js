@@ -1,4 +1,3 @@
-import { get } from 'lodash';
 import {
   SET_CURRENCY,
   SET_LANGUAGE,

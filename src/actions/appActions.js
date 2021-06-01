@@ -74,6 +74,16 @@ export async function setStartSettings(currentLanguage, currentCurrency) {
       data: { currencies, languages, properties },
     } = await API.get('sra_storefront');
 
+    const productReviewAddonIsEnabled = get(
+      properties,
+      'addons.product_reviews.is_enabled',
+    );
+
+    store.dispatch({
+      type: SET_ADDONS_SETTINGS,
+      payload: productReviewAddonIsEnabled,
+    });
+
     if (properties.length) {
       store.dispatch({
         type: SET_DATE_FORMAT,
