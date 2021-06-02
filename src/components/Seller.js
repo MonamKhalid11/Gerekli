@@ -85,7 +85,7 @@ export const Seller = ({
       </View>
       <View style={styles(null, 'lastBlock').containerBlock}>
         <Text style={styles().priceText}>
-          {productOffer.base_price_formatted.price}
+          {productOffer.price_formatted.price}
         </Text>
         <View style={styles().buttonsWrapper}>
           <TouchableOpacity onPress={handleAddToWishList}>
