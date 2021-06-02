@@ -236,7 +236,7 @@ export class VendorDetail extends Component {
           <Text style={styles.vendorName}>{vendors.currentVendor.company}</Text>
           <StarsRating
             value={discussion.average_rating}
-            ratingSelectionDisabled
+            isRatingSelectionDisabled
             size={RATING_STAR_SIZE}
           />
           <Text style={styles.vendorDescription}>

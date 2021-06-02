@@ -20,7 +20,7 @@ import StarsRating from '../components/StarsRating';
 // Import actions.
 import * as productsActions from '../actions/productsActions';
 
-const RATIN_STAR_SIZE = 25;
+const RATING_STAR_SIZE = 25;
 
 const styles = EStyleSheet.create({
   container: {
@@ -113,7 +113,7 @@ export const WriteReviewNew = ({ componentId, productId, productsActions }) => {
       setRequredFiledsNotice(true);
       productsActions.sendErrorNotification(
         i18n.t('Error'),
-        i18n.t('Please fill in the required fields*.'),
+        i18n.t('Please fill in the required fields.'),
       );
       return;
     }
@@ -130,9 +130,9 @@ export const WriteReviewNew = ({ componentId, productId, productsActions }) => {
     <View style={styles.container}>
       <ScrollView style={styles.ratingAndCommentWrapper}>
         <StarsRating
-          size={RATIN_STAR_SIZE}
+          size={RATING_STAR_SIZE}
           value={rating}
-          ratingSelectionDisabled={false}
+          isRatingSelectionDisabled={false}
           onFinishRating={(value) => setRating(value)}
           containerStyle={styles.ratingWrapper}
           isEmpty={true}

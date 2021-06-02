@@ -9,7 +9,7 @@ import i18n from '../utils/i18n';
 import StarsRating from './StarsRating';
 import ProductReview from './ProductReview';
 
-const RATIN_STAR_SIZE = 25;
+const RATING_STAR_SIZE = 25;
 
 const styles = (
   filledRatingPercentage: number | null,
@@ -141,9 +141,9 @@ export const ReviewsBlock: React.FC<ReviewsBlockProps> = ({
     return (
       <View style={styles(null, null).starsContainer}>
         <StarsRating
-          size={RATIN_STAR_SIZE}
+          size={RATING_STAR_SIZE}
           value={Number(currentProductReviews.averageRating)}
-          ratingSelectionDisabled
+          isRatingSelectionDisabled
           containerStyle={styles(null, null).starsRatingContainerStyle}
         />
         <Text style={styles(null, null).averageRatingText}>

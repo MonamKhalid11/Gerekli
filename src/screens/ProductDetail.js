@@ -437,7 +437,7 @@ export const ProductDetail = ({
         <StarsRating
           size={RATING_STAR_SIZE}
           value={Math.floor(Number(ratingValue))}
-          ratingSelectionDisabled
+          isRatingSelectionDisabled
         />
         <Text style={styles.ratingCountText}>
           {reviewCount} {i18n.t('reviews')}

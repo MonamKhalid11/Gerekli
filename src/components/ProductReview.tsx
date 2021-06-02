@@ -131,7 +131,7 @@ export const ProductReview: React.FC<ProductReviewsProps> = ({
           </Text>
           <StarsRating
             size={RATING_STAR_SIZE}
-            ratingSelectionDisabled
+            isRatingSelectionDisabled
             value={Number(review.rating_value)}
           />
         </View>

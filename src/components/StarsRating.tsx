@@ -21,7 +21,7 @@ const styles = (iconSize: number | null) =>
 interface StarsRatingProps {
   size: number;
   value: number;
-  ratingSelectionDisabled: boolean;
+  isRatingSelectionDisabled: boolean;
   count?: number;
   onFinishRating?: Function;
   containerStyle?: object;
@@ -31,7 +31,7 @@ interface StarsRatingProps {
 export const StarsRating: React.FC<StarsRatingProps> = ({
   size,
   value,
-  ratingSelectionDisabled,
+  isRatingSelectionDisabled,
   count = 5,
   onFinishRating,
   containerStyle,
@@ -68,9 +68,9 @@ export const StarsRating: React.FC<StarsRatingProps> = ({
         style={styles(null).iconWrapper}
         key={index}
         onPress={
-          ratingSelectionDisabled ? undefined : () => ratingHandler(index)
+          isRatingSelectionDisabled ? undefined : () => ratingHandler(index)
         }
-        activeOpacity={ratingSelectionDisabled ? 1 : 0.2}>
+        activeOpacity={isRatingSelectionDisabled ? 1 : 0.2}>
         <Image style={styles(size).icon} source={path} />
       </TouchableOpacity>
     );

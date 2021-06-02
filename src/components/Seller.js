@@ -82,7 +82,7 @@ export const Seller = ({
           {productOffer.company?.average_rating && (
             <StarsRating
               value={productOffer.company.average_rating}
-              ratingSelectionDisabled
+              isRatingSelectionDisabled
               size={RATING_STAR_SIZE}
             />
           )}

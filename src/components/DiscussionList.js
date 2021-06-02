@@ -114,7 +114,7 @@ export default class DiscussionList extends Component {
             <StarsRating
               value={item.rating_value}
               size={RATING_STAR_SIZE}
-              ratingSelectionDisabled
+              isRatingSelectionDisabled
             />
           )}
         </View>

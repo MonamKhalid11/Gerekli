@@ -173,7 +173,7 @@ class ProductListView extends PureComponent {
       <StarsRating
         value={item.average_rating}
         size={RATING_STAR_SIZE}
-        ratingSelectionDisabled
+        isRatingSelectionDisabled
       />
     );
   };
