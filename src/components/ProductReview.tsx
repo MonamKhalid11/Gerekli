@@ -100,6 +100,10 @@ interface ProductReviewsProps {
   };
   settings: {
     dateFormat: string;
+    productReviewsAddon: {
+      isEnabled: boolean;
+      isCommentOnly: boolean;
+    };
   };
 }
 
@@ -145,9 +149,11 @@ export const ProductReview: React.FC<ProductReviewsProps> = ({
 
         return (
           <View key={index}>
-            <Text style={styles.reviewCommentTitle}>
-              {i18n.t(capitalizeFirstLetter(el))}
-            </Text>
+            {!settings.productReviewsAddon.isCommentOnly && (
+              <Text style={styles.reviewCommentTitle}>
+                {i18n.t(capitalizeFirstLetter(el))}
+              </Text>
+            )}
             <Text style={styles.reviewCommentText}>{review.message[el]}</Text>
           </View>
         );

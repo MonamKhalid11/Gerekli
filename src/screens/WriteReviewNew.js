@@ -66,7 +66,12 @@ const styles = EStyleSheet.create({
   },
 });
 
-export const WriteReviewNew = ({ componentId, productId, productsActions }) => {
+export const WriteReviewNew = ({
+  componentId,
+  productId,
+  productsActions,
+  settings,
+}) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState({
     advantages: '',
@@ -137,27 +142,30 @@ export const WriteReviewNew = ({ componentId, productId, productsActions }) => {
           containerStyle={styles.ratingWrapper}
           isEmpty={true}
         />
-
-        <TextInput
-          numberOfLines={3}
-          multiline
-          style={styles.input}
-          value={comment.advantages}
-          placeholder={i18n.t('Advantages')}
-          onChangeText={(value) => {
-            setComment({ ...comment, advantages: value });
-          }}
-        />
-        <TextInput
-          numberOfLines={3}
-          multiline
-          style={styles.input}
-          value={comment.input}
-          placeholder={i18n.t('Disadvantages')}
-          onChangeText={(value) => {
-            setComment({ ...comment, disadvantages: value });
-          }}
-        />
+        {!settings.productReviewsAddon.isCommentOnly && (
+          <>
+            <TextInput
+              numberOfLines={3}
+              multiline
+              style={styles.input}
+              value={comment.advantages}
+              placeholder={i18n.t('Advantages')}
+              onChangeText={(value) => {
+                setComment({ ...comment, advantages: value });
+              }}
+            />
+            <TextInput
+              numberOfLines={3}
+              multiline
+              style={styles.input}
+              value={comment.input}
+              placeholder={i18n.t('Disadvantages')}
+              onChangeText={(value) => {
+                setComment({ ...comment, disadvantages: value });
+              }}
+            />
+          </>
+        )}
         <TextInput
           numberOfLines={3}
           multiline
@@ -190,11 +198,6 @@ export const WriteReviewNew = ({ componentId, productId, productsActions }) => {
 export default connect(
   (state) => ({
     settings: state.settings,
-    productDetail: state.productDetail,
-    discussion: state.discussion,
-    auth: state.auth,
-    cart: state.cart,
-    wishList: state.wishList,
   }),
   (dispatch) => ({
     productsActions: bindActionCreators(productsActions, dispatch),

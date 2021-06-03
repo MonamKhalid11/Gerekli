@@ -419,7 +419,7 @@ export const ProductDetail = ({
     let ratingValue;
     let reviewCount;
 
-    if (settings.productReviewsAddonIsEnabled) {
+    if (settings.productReviewsAddon.isEnabled) {
       ratingValue = product.average_rating;
       reviewCount = product.product_reviews_count;
     } else {
@@ -623,11 +623,11 @@ export const ProductDetail = ({
    * @return {JSX.Element}
    */
   const renderDiscussion = () => {
-    if (product.rating && !settings.productReviewsAddonIsEnabled) {
+    if (product.rating && !settings.productReviewsAddon.isEnabled) {
       return renderOldDiscussion();
     }
 
-    if (settings.productReviewsAddonIsEnabled) {
+    if (settings.productReviewsAddon.isEnabled) {
       return renderNewDiscussion();
     }
 
