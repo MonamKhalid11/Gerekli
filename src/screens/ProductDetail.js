@@ -623,7 +623,7 @@ export const ProductDetail = ({
    * @return {JSX.Element}
    */
   const renderDiscussion = () => {
-    if (product.rating) {
+    if (product.rating && !settings.productReviewsAddonIsEnabled) {
       return renderOldDiscussion();
     }
 
