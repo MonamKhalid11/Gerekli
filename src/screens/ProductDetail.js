@@ -424,8 +424,8 @@ export const ProductDetail = ({
       reviewCount = product.product_reviews_count;
     } else {
       const activeDiscussion = discussion.items[`p_${product.product_id}`];
-      ratingValue = activeDiscussion.average_rating;
-      reviewCount = activeDiscussion.posts.length;
+      ratingValue = activeDiscussion?.average_rating;
+      reviewCount = activeDiscussion?.posts.length;
     }
 
     if (!ratingValue) {
@@ -553,16 +553,32 @@ export const ProductDetail = ({
     );
   };
 
-  /**
-   * Renders descussion block.
-   *
-   * @return {JSX.Element}
-   */
-  const renderDiscussion = () => {
-    if (!product.rating) {
-      return null;
-    }
+  const renderNewDiscussion = () => {
+    const title = i18n.t('Reviews');
 
+    return (
+      <Section
+        title={title}
+        topDivider
+        wrapperStyle={styles.wrapperStyle}
+        showRightButton={true}
+        rightButtonText={i18n.t('Write a Review')}
+        onRightButtonPress={() => {
+          nav.showModalWriteReviewNew({
+            discussionType: 'P',
+            productId: product.product_id,
+          });
+        }}>
+        <ReviewsBlock
+          componentId={componentId}
+          productId={product.product_id}
+          productReviews={product.product_reviews}
+        />
+      </Section>
+    );
+  };
+
+  const renderOldDiscussion = () => {
     let activeDiscussion = discussion.items[`p_${product.product_id}`];
     const masMore = activeDiscussion.search.total_items > 2;
     const title = i18n.t('Reviews');
@@ -575,31 +591,17 @@ export const ProductDetail = ({
         showRightButton={true}
         rightButtonText={i18n.t('Write a Review')}
         onRightButtonPress={() => {
-          if (settings.productReviewsAddonIsEnabled) {
-            nav.showModalWriteReviewNew({
-              discussionType: 'P',
-              productId: product.product_id,
-            });
-          } else {
-            nav.pushWriteReview(componentId, {
-              activeDiscussion,
-              discussionType: 'P',
-              discussionId: product.product_id,
-            });
-          }
+          nav.pushWriteReview(componentId, {
+            activeDiscussion,
+            discussionType: 'P',
+            discussionId: product.product_id,
+          });
         }}>
-        {settings.productReviewsAddonIsEnabled ? (
-          <ReviewsBlock
-            componentId={componentId}
-            productId={product.product_id}
-          />
-        ) : (
-          <DiscussionList
-            items={activeDiscussion.posts.slice(0, 2)}
-            type={activeDiscussion.type}
-          />
-        )}
-        {masMore && !settings.productReviewsAddonIsEnabled && (
+        <DiscussionList
+          items={activeDiscussion.posts.slice(0, 2)}
+          type={activeDiscussion.type}
+        />
+        {masMore && (
           <TouchableOpacity
             style={styles.sectionBtn}
             onPress={() => {
@@ -613,6 +615,23 @@ export const ProductDetail = ({
         )}
       </Section>
     );
+  };
+
+  /**
+   * Renders descussion block.
+   *
+   * @return {JSX.Element}
+   */
+  const renderDiscussion = () => {
+    if (product.rating) {
+      return renderOldDiscussion();
+    }
+
+    if (settings.productReviewsAddonIsEnabled) {
+      return renderNewDiscussion();
+    }
+
+    return null;
   };
 
   /**
