@@ -125,14 +125,6 @@ export class CheckoutShipping extends Component {
     cart: PropTypes.shape({}),
   };
 
-  static options = {
-    topBar: {
-      title: {
-        text: i18n.t('Checkout').toUpperCase(),
-      },
-    },
-  };
-
   constructor(props) {
     super(props);
 
