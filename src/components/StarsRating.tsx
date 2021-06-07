@@ -59,16 +59,20 @@ export const StarsRating: React.FC<StarsRatingProps> = ({
   }, [ratingHandler, value]);
 
   const renderStar = (star: { isActive: boolean }, index: number) => {
-    const path = star.isActive
+    let path = star.isActive
       ? require('../assets/filled_star.png')
       : require('../assets/unfilled_star.png');
+
+    if (value - index >= 0.25 && value - index < 0.75) {
+      path = require('../assets/halffilled_star.png');
+    }
 
     return (
       <TouchableOpacity
         style={styles(null).iconWrapper}
         key={index}
         onPress={
-          isRatingSelectionDisabled ? undefined : () => ratingHandler(index)
+          isRatingSelectionDisabled ? undefined : () => ratingHandler(index + 1)
         }
         activeOpacity={isRatingSelectionDisabled ? 1 : 0.2}>
         <Image style={styles(size).icon} source={path} />
@@ -83,7 +87,7 @@ export const StarsRating: React.FC<StarsRatingProps> = ({
   return (
     <View style={{ ...styles(null).container, ...containerStyle }}>
       {stars.map((star, index) => {
-        return renderStar(star, index + 1);
+        return renderStar(star, index);
       })}
     </View>
   );

@@ -436,7 +436,7 @@ export const ProductDetail = ({
       <View style={styles.starsRatingWrapper}>
         <StarsRating
           size={RATING_STAR_SIZE}
-          value={Math.floor(Number(ratingValue))}
+          value={Number(ratingValue)}
           isRatingSelectionDisabled
         />
         <Text style={styles.ratingCountText}>
