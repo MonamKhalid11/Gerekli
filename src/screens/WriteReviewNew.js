@@ -71,6 +71,7 @@ export const WriteReviewNew = ({
   productId,
   productsActions,
   settings,
+  fetchData,
 }) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState({
@@ -128,6 +129,7 @@ export const WriteReviewNew = ({
       rating_value: rating,
       ...comment,
     });
+    await fetchData(productId);
     Navigation.dismissModal(componentId);
   };
 

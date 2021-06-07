@@ -567,6 +567,7 @@ export const ProductDetail = ({
           nav.showModalWriteReviewNew({
             discussionType: 'P',
             productId: product.product_id,
+            fetchData,
           });
         }}>
         <ReviewsBlock
