@@ -33,6 +33,9 @@ const styles = (
       color: '#8F8F8F',
       fontSize: 14,
     },
+    ratingBarListWrapper: {
+      marginBottom: 30,
+    },
     ratingBarContainer: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -187,14 +190,18 @@ export const ReviewsBlock: React.FC<ReviewsBlockProps> = ({
       currentProductReviews.ratingStats.ratings,
     );
 
-    return ratingStatsNumbers.map((ratingNumber, index) => {
-      return renderRatingBar(
-        currentProductReviews.ratingStats.ratings[Number(ratingNumber)]
-          .percentage,
-        ratingNumber,
-        index,
-      );
-    });
+    return (
+      <View style={styles(null, null).ratingBarListWrapper}>
+        {ratingStatsNumbers.map((ratingNumber, index) => {
+          return renderRatingBar(
+            currentProductReviews.ratingStats.ratings[Number(ratingNumber)]
+              .percentage,
+            ratingNumber,
+            index,
+          );
+        })}
+      </View>
+    );
   };
 
   const renderReviewList = () => {

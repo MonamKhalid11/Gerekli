@@ -18,7 +18,7 @@ const RATING_STAR_SIZE = 14;
 
 const styles = EStyleSheet.create({
   reviewContainer: {
-    marginTop: 40,
+    marginBottom: 20,
   },
   reviewNameStarsDateWrapper: {
     flexDirection: 'row',
@@ -41,6 +41,7 @@ const styles = EStyleSheet.create({
   reviewCommentTitle: {
     fontSize: '0.9rem',
     marginBottom: 10,
+    fontWeight: '300',
   },
   reviewCommentText: {
     fontSize: 14,
