@@ -1,12 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ScrollView } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect, RootStateOrAny } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import ProductReview from '../components/ProductReview';
+import { Navigation } from 'react-native-navigation';
+import i18n from '../utils/i18n';
+import { iconsMap } from '../utils/navIcons';
+import * as nav from '../services/navigation';
 
 // Import actions.
 import * as productsActions from '../actions/productsActions';
+
+// Components
+import ProductReview from '../components/ProductReview';
 
 const styles = EStyleSheet.create({
   container: {
@@ -56,12 +62,53 @@ interface ProductReviews {
 interface AllProductReviewsProps {
   productId: string;
   productReviews: ProductReviews;
+  componentId: string;
+  fetchData: Function;
 }
 
 export const AllProductReviews: React.FC<AllProductReviewsProps> = ({
   productId,
   productReviews,
+  componentId,
+  fetchData,
 }) => {
+  const listener = {
+    navigationButtonPressed: ({ buttonId }) => {
+      if (buttonId === 'newComment') {
+        nav.showModalWriteReviewNew({
+          discussionType: 'P',
+          productId,
+          fetchData,
+        });
+      }
+    },
+  };
+
+  useEffect(() => {
+    Navigation.mergeOptions(componentId, {
+      topBar: {
+        title: {
+          text: i18n.t('All reviews').toUpperCase(),
+        },
+        rightButtons: [
+          {
+            id: 'newComment',
+            icon: iconsMap.create,
+          },
+        ],
+      },
+    });
+
+    const listeners = Navigation.events().registerComponentListener(
+      listener,
+      componentId,
+    );
+
+    return () => {
+      listeners.remove();
+    };
+  });
+
   const currentProductReviews = productReviews[parseInt(productId, 10)];
   return (
     <ScrollView style={styles.container}>

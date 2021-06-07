@@ -117,12 +117,14 @@ interface ReviewsBlockProps {
   productReviews: ProductReviews;
   componentId: string;
   productId: number;
+  fetchData: Function;
 }
 
 export const ReviewsBlock: React.FC<ReviewsBlockProps> = ({
   productReviews,
   componentId,
   productId,
+  fetchData,
 }) => {
   const [currentProductReviews, setCurrentProductReviews] = useState<
     ProductReview
@@ -222,6 +224,7 @@ export const ReviewsBlock: React.FC<ReviewsBlockProps> = ({
           onPress={() =>
             nav.pushAllProductReviews(componentId, {
               productId,
+              fetchData,
             })
           }>
           <Text style={styles(null, null).showAllReviewsText}>

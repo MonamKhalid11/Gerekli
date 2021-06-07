@@ -574,6 +574,7 @@ export const ProductDetail = ({
           componentId={componentId}
           productId={product.product_id}
           productReviews={product.product_reviews}
+          fetchData={fetchData}
         />
       </Section>
     );
