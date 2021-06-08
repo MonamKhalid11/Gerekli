@@ -144,7 +144,7 @@ export const WriteReviewNew = ({
           containerStyle={styles.ratingWrapper}
           isEmpty={true}
         />
-        {!settings.productReviewsAddon.isCommentOnly && (
+        {!settings.productReviewsAddon?.isCommentOnly && (
           <>
             <TextInput
               numberOfLines={3}

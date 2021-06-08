@@ -163,7 +163,7 @@ export function sendReview(data) {
         payload: {
           type: 'error',
           title: i18n.t('Error'),
-          text: i18n.t(error.response.data.message),
+          text: error.response.data.message,
         },
       });
       dispatch({

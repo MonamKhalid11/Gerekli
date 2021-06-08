@@ -150,7 +150,7 @@ export const ProductReview: React.FC<ProductReviewsProps> = ({
 
         return (
           <View key={index}>
-            {!settings.productReviewsAddon.isCommentOnly && (
+            {!settings.productReviewsAddon?.isCommentOnly && (
               <Text style={styles.reviewCommentTitle}>
                 {i18n.t(capitalizeFirstLetter(el))}
               </Text>

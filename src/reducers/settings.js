@@ -90,12 +90,12 @@ export default function (state = initialState, action) {
       action.payload === 'day_first' ? 'dd/MM/yyyy' : 'MM/dd/yyyy';
       const productReviewsAddon = get(action.payload, 'addons.product_reviews');
       const isCommentOnly =
-        productReviewsAddon.review_fields.length === 1 ? true : false;
+        productReviewsAddon?.review_fields.length === 1 ? true : false;
 
       return {
         ...state,
         productReviewsAddon: {
-          isEnabled: productReviewsAddon.is_enabled,
+          isEnabled: productReviewsAddon?.is_enabled,
           isCommentOnly,
         },
         dateFormat: dateFormat === 'day_first' ? 'dd/MM/yyyy' : 'MM/dd/yyyy',
