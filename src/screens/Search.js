@@ -215,7 +215,7 @@ export class Search extends Component {
           <FlatList
             data={search.items}
             keyExtractor={(item) => uniqueId(+item.product_id)}
-            numColumns={2}
+            numColumns={3}
             ListEmptyComponent={() => this.renderEmptyList()}
             ListFooterComponent={() => this.renderFooter()}
             onEndReached={this.handleLoadMore}

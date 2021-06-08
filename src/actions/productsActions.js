@@ -17,11 +17,18 @@ import {
   POST_DISCUSSION_REQUEST,
   POST_DISCUSSION_SUCCESS,
   POST_DISCUSSION_FAIL,
+  POST_SEND_REVIEW_REQUEST,
+  POST_SEND_REVIEW_SUCCESS,
+  POST_SEND_REVIEW_FAIL,
   NOTIFICATION_SHOW,
   CHANGE_PRODUCTS_SORT,
   FETCH_COMMON_PRODUCTS_REQUEST,
   FETCH_COMMON_PRODUCTS_FAIL,
   FETCH_COMMON_PRODUCTS_SUCCESS,
+  LIKE_DISLIKE_REVIEW_REQUEST,
+  LIKE_DISLIKE_REVIEW_SUCCESS,
+  LIKE_DISLIKE_REVIEW_FAIL,
+  SET_PRODUCT_REVIEWS,
 } from '../constants';
 import Api from '../services/api';
 import i18n from '../utils/i18n';
@@ -92,6 +99,81 @@ export function postDiscussion(data) {
   };
 }
 
+export function sendErrorNotification(title, message) {
+  return async (dispatch) => {
+    dispatch({
+      type: NOTIFICATION_SHOW,
+      payload: {
+        type: 'error',
+        title: title,
+        text: message,
+      },
+    });
+  };
+}
+
+export function likeDislikeReview(data) {
+  return async (dispatch) => {
+    dispatch({
+      type: LIKE_DISLIKE_REVIEW_REQUEST,
+    });
+    try {
+      await Api.post('/sra_product_reviews_votes', {
+        action: data.action,
+        product_review_id: data.product_review_id,
+      });
+      dispatch({
+        type: LIKE_DISLIKE_REVIEW_SUCCESS,
+        payload: {
+          productId: data.productId,
+          reviewAction: data.action,
+          productReviewId: data.product_review_id,
+        },
+      });
+    } catch (error) {
+      dispatch({
+        type: LIKE_DISLIKE_REVIEW_FAIL,
+        error,
+      });
+    }
+  };
+}
+
+export function sendReview(data) {
+  return async (dispatch) => {
+    dispatch({
+      type: POST_SEND_REVIEW_REQUEST,
+    });
+    try {
+      await Api.post('/sra_product_reviews', data);
+      dispatch({
+        type: POST_SEND_REVIEW_SUCCESS,
+      });
+      dispatch({
+        type: NOTIFICATION_SHOW,
+        payload: {
+          type: 'success',
+          title: i18n.t('Thank you for your post.'),
+          text: i18n.t('Your post will be checked before it gets published.'),
+        },
+      });
+    } catch (error) {
+      dispatch({
+        type: NOTIFICATION_SHOW,
+        payload: {
+          type: 'error',
+          title: i18n.t('Error'),
+          text: error.response.data.message,
+        },
+      });
+      dispatch({
+        type: POST_SEND_REVIEW_FAIL,
+        error,
+      });
+    }
+  };
+}
+
 export function recalculatePrice(pid, options) {
   return async (dispatch) => {
     dispatch({ type: RECALCULATE_PRODUCT_PRICE_REQUEST });
@@ -143,6 +225,11 @@ export function fetch(pid) {
 
       dispatch({
         type: FETCH_ONE_PRODUCT_SUCCESS,
+      });
+
+      dispatch({
+        type: SET_PRODUCT_REVIEWS,
+        payload: product,
       });
 
       return product;

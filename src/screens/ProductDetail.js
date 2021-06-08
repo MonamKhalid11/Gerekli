@@ -41,13 +41,16 @@ import { ProductDetailOptions } from '../components/ProductDetailOptions';
 import ProductImageSwiper from '../components/ProductImageSwiper';
 import { AddToCartButton } from '../components/AddToCartButton';
 import DiscussionList from '../components/DiscussionList';
+import StarsRating from '../components/StarsRating';
+import ReviewsBlock from '../components/ReviewsBlock';
 import InAppPayment from '../components/InAppPayment';
 import { QtyOption } from '../components/QtyOption';
 import SectionRow from '../components/SectionRow';
 import { Seller } from '../components/Seller';
 import Section from '../components/Section';
 import Spinner from '../components/Spinner';
-import Rating from '../components/Rating';
+
+const RATING_STAR_SIZE = 14;
 
 const styles = EStyleSheet.create({
   container: {
@@ -63,6 +66,14 @@ const styles = EStyleSheet.create({
     color: '$darkColor',
     marginBottom: 5,
     textAlign: 'left',
+  },
+  starsRatingWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  ratingCountText: {
+    color: '#8F8F8F',
+    marginLeft: 10,
   },
   priceText: {
     fontSize: '1rem',
@@ -132,8 +143,8 @@ const styles = EStyleSheet.create({
   },
   sectionBtnText: {
     color: '$primaryColor',
-    fontSize: '0.9rem',
     textAlign: 'left',
+    fontSize: 14,
     maxWidth: 100,
   },
   vendorWrapper: {
@@ -215,6 +226,7 @@ export const ProductDetail = ({
   hideWishList,
   wishList,
   cart,
+  settings,
 }) => {
   const [product, setProduct] = useState('');
   const [amount, setAmount] = useState(1);
@@ -404,17 +416,33 @@ export const ProductDetail = ({
    * @return {JSX.Element}
    */
   const renderRating = () => {
-    if (!product.rating) {
+    let ratingValue;
+    let reviewCount;
+
+    if (settings.productReviewsAddon?.isEnabled) {
+      ratingValue = product.average_rating;
+      reviewCount = product.product_reviews_count;
+    } else {
+      const activeDiscussion = discussion.items[`p_${product.product_id}`];
+      ratingValue = activeDiscussion?.average_rating;
+      reviewCount = activeDiscussion?.posts.length;
+    }
+
+    if (!ratingValue) {
       return null;
     }
 
-    let activeDiscussion = discussion.items[`p_${product.product_id}`];
     return (
-      <Rating
-        containerStyle={styles.rating}
-        value={activeDiscussion.average_rating}
-        count={activeDiscussion.search.total_items}
-      />
+      <View style={styles.starsRatingWrapper}>
+        <StarsRating
+          size={RATING_STAR_SIZE}
+          value={Number(ratingValue)}
+          isRatingSelectionDisabled
+        />
+        <Text style={styles.ratingCountText}>
+          {reviewCount} {i18n.t('reviews')}
+        </Text>
+      </View>
     );
   };
 
@@ -525,26 +553,37 @@ export const ProductDetail = ({
     );
   };
 
-  /**
-   * Renders descussion block.
-   *
-   * @return {JSX.Element}
-   */
-  const renderDiscussion = () => {
-    if (!product.rating) {
-      return null;
-    }
+  const renderNewDiscussion = () => {
+    const title = i18n.t('Reviews');
 
+    return (
+      <Section
+        title={title}
+        topDivider
+        wrapperStyle={styles.wrapperStyle}
+        showRightButton={true}
+        rightButtonText={i18n.t('Write a Review')}
+        onRightButtonPress={() => {
+          nav.showModalWriteReviewNew({
+            discussionType: 'P',
+            productId: product.product_id,
+            fetchData,
+          });
+        }}>
+        <ReviewsBlock
+          componentId={componentId}
+          productId={product.product_id}
+          productReviews={product.product_reviews}
+          fetchData={fetchData}
+        />
+      </Section>
+    );
+  };
+
+  const renderOldDiscussion = () => {
     let activeDiscussion = discussion.items[`p_${product.product_id}`];
-
-    const masMore = activeDiscussion.search.total_items > 10;
-    let title = i18n.t('Reviews');
-    // eslint-disable-next-line eqeqeq
-    if (activeDiscussion.search.total_items != 0) {
-      title = i18n.t('Reviews ({{count}})', {
-        count: activeDiscussion.search.total_items,
-      });
-    }
+    const masMore = activeDiscussion.search.total_items > 2;
+    const title = i18n.t('Reviews');
 
     return (
       <Section
@@ -561,20 +600,40 @@ export const ProductDetail = ({
           });
         }}>
         <DiscussionList
-          items={activeDiscussion.posts.slice(0, 4)}
+          items={activeDiscussion.posts.slice(0, 2)}
           type={activeDiscussion.type}
         />
         {masMore && (
           <TouchableOpacity
             style={styles.sectionBtn}
             onPress={() => {
-              nav.showDiscussion(componentId);
+              nav.showDiscussion({
+                componentId,
+                productId: product.product_id,
+              });
             }}>
             <Text style={styles.sectionBtnText}>{i18n.t('View All')}</Text>
           </TouchableOpacity>
         )}
       </Section>
     );
+  };
+
+  /**
+   * Renders descussion block.
+   *
+   * @return {JSX.Element}
+   */
+  const renderDiscussion = () => {
+    if (product.rating && !settings.productReviewsAddon?.isEnabled) {
+      return renderOldDiscussion();
+    }
+
+    if (settings.productReviewsAddon?.isEnabled) {
+      return renderNewDiscussion();
+    }
+
+    return null;
   };
 
   /**
@@ -849,7 +908,6 @@ export const ProductDetail = ({
 export default connect(
   (state) => ({
     settings: state.settings,
-    productDetail: state.productDetail,
     discussion: state.discussion,
     auth: state.auth,
     cart: state.cart,

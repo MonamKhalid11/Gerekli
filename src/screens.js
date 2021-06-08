@@ -14,6 +14,7 @@ import WishList from './screens/WishList';
 import Discussion from './screens/Discussion';
 import Categories from './screens/Categories';
 import WriteReview from './screens/WriteReview';
+import WriteReviewNew from './screens/WriteReviewNew';
 import OrderDetail from './screens/OrderDetail';
 import ImagePicker from './screens/ImagePicker';
 import VendorDetail from './screens/VendorDetail';
@@ -39,6 +40,7 @@ import VendorManageCategoriesPicker from './screens/VendorManage/CategoriesPicke
 import VendorManageOrderDetail from './screens/VendorManage/OrderDetail';
 import LanguageSelection from './screens/LanguageSelection';
 import CurrencySelection from './screens/CurrencySelection';
+import AllProductReviews from './screens/AllProductReviews';
 
 const screenList = [
   { name: 'Page', component: Page },
@@ -59,6 +61,7 @@ const screenList = [
   { name: 'CheckoutShipping', component: CheckoutShipping },
   { name: 'CheckoutPayment', component: CheckoutPayment },
   { name: 'WriteReview', component: WriteReview },
+  { name: 'WriteReviewNew', component: WriteReviewNew },
   { name: 'CheckoutComplete', component: CheckoutComplete },
   { name: 'Notification', component: Notification },
   { name: 'Discussion', component: Discussion },
@@ -74,6 +77,7 @@ const screenList = [
   { name: 'ImagePicker', component: ImagePicker },
   { name: 'LanguageSelection', component: LanguageSelection },
   { name: 'CurrencySelection', component: CurrencySelection },
+  { name: 'AllProductReviews', component: AllProductReviews },
   {
     name: 'VendorManageAddProductStep1',
     component: VendorManageAddProductStep1,

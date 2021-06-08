@@ -4,7 +4,6 @@ import get from 'lodash/get';
 import values from 'lodash/values';
 import countries from '../config/countries';
 import i18n from './i18n';
-import { format } from 'date-fns';
 
 // Calculate product image width and items count.
 const WINDOW_WIDTH = Dimensions.get('window').width;

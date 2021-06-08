@@ -29,6 +29,10 @@ store.subscribe(() => {
       settings: {
         ...store.getState().settings,
         languageCurrencyFeatureFlag: true,
+        productReviewsAddon: {
+          isEnabled: false,
+          isCommentOnly: false,
+        },
       },
     }),
   );

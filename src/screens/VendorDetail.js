@@ -11,7 +11,7 @@ import * as productsActions from '../actions/productsActions';
 
 // Components
 import Spinner from '../components/Spinner';
-import Rating from '../components/Rating';
+import StarsRating from '../components/StarsRating';
 import Section from '../components/Section';
 import SectionRow from '../components/SectionRow';
 import DiscussionList from '../components/DiscussionList';
@@ -20,6 +20,8 @@ import { stripTags } from '../utils';
 import { iconsMap } from '../utils/navIcons';
 import { Navigation } from 'react-native-navigation';
 import * as nav from '../services/navigation';
+
+const RATING_STAR_SIZE = 14;
 
 // Styles
 const styles = EStyleSheet.create({
@@ -232,9 +234,10 @@ export class VendorDetail extends Component {
       <Section topDivider>
         <View style={styles.descriptionWrapper}>
           <Text style={styles.vendorName}>{vendors.currentVendor.company}</Text>
-          <Rating
+          <StarsRating
             value={discussion.average_rating}
-            count={discussion.search.total_items}
+            isRatingSelectionDisabled
+            size={RATING_STAR_SIZE}
           />
           <Text style={styles.vendorDescription}>
             {stripTags(vendors.currentVendor.description)}
