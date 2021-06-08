@@ -153,6 +153,21 @@ export function pushCategory(componentId, params) {
   });
 }
 
+export function showModalScrollPicker(params) {
+  Navigation.showModal({
+    stack: {
+      children: [
+        {
+          component: {
+            name: 'ScrollPicker',
+            passProps: params,
+          },
+        },
+      ],
+    },
+  });
+}
+
 export function showModalVendorDetail(params) {
   Navigation.showModal({
     stack: {
