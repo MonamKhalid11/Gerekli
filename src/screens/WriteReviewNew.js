@@ -152,6 +152,7 @@ export const WriteReviewNew = ({
               style={styles.input}
               value={comment.advantages}
               placeholder={i18n.t('Advantages')}
+              placeholderTextColor={'#B3B3B3'}
               onChangeText={(value) => {
                 setComment({ ...comment, advantages: value });
               }}
@@ -162,6 +163,7 @@ export const WriteReviewNew = ({
               style={styles.input}
               value={comment.input}
               placeholder={i18n.t('Disadvantages')}
+              placeholderTextColor={'#B3B3B3'}
               onChangeText={(value) => {
                 setComment({ ...comment, disadvantages: value });
               }}
@@ -177,7 +179,9 @@ export const WriteReviewNew = ({
           }}
           value={comment.input}
           placeholder={`${i18n.t('Comment')}*`}
-          placeholderTextColor={requredFiledsNotice ? theme.$dangerColor : null}
+          placeholderTextColor={
+            requredFiledsNotice ? theme.$dangerColor : '#B3B3B3'
+          }
           onChangeText={(value) => {
             setRequredFiledsNotice(false);
             setComment({ ...comment, comment: value });
