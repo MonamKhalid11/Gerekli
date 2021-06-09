@@ -1,10 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from '../components/Icon';
-import Picker from 'react-native-picker-view';
-import RawBottomSheet from 'react-native-raw-bottom-sheet';
+import * as nav from '../services/navigation';
 
 const styles = EStyleSheet.create({
   container: {
@@ -41,12 +40,6 @@ const styles = EStyleSheet.create({
  * @return {JSX.Element}
  */
 const SelectBoxOption = ({ option, value, onChange }) => {
-  const currentSelectBoxIndex = option.selectVariants
-    .map((variant) => variant.selectValue)
-    .indexOf(value.selectValue);
-
-  const refRawBottomSheet = useRef();
-  const [selectBoxIndex, setSelectBoxIndex] = useState(currentSelectBoxIndex);
   if (!value) {
     return null;
   }
@@ -63,39 +56,24 @@ const SelectBoxOption = ({ option, value, onChange }) => {
   };
 
   return (
-    <>
-      <TouchableOpacity
-        onPress={() => refRawBottomSheet.current.open()}
-        style={styles.container}>
-        <View style={styles.selectWrapper}>
-          <Text style={styles.selectBoxText}>{option.selectTitle}</Text>
-          <View style={styles.iconAndValueWrapper}>
-            <Text style={styles.selectBoxText}>{value.selectValue}</Text>
-            <Icon name="arrow-drop-down" style={styles.menuItemIcon} />
-          </View>
+    <TouchableOpacity
+      onPress={() => {
+        nav.showModalScrollPicker({
+          pickerValues: pickerValues,
+          changePickerValueHandler,
+          selectValue: value.selectValue,
+          title: option.selectTitle,
+        });
+      }}
+      style={styles.container}>
+      <View style={styles.selectWrapper}>
+        <Text style={styles.selectBoxText}>{option.selectTitle}</Text>
+        <View style={styles.iconAndValueWrapper}>
+          <Text style={styles.selectBoxText}>{value.selectValue}</Text>
+          <Icon name="arrow-drop-down" style={styles.menuItemIcon} />
         </View>
-      </TouchableOpacity>
-
-      <RawBottomSheet
-        ref={refRawBottomSheet}
-        customStyles={{
-          wrapper: {
-            backgroundColor: 'transparent',
-          },
-          draggableIcon: {
-            backgroundColor: '#000',
-          },
-        }}>
-        <Picker
-          values={pickerValues}
-          selected={selectBoxIndex}
-          onSelect={(value, index) => {
-            setSelectBoxIndex(index);
-            changePickerValueHandler(value);
-          }}
-        />
-      </RawBottomSheet>
-    </>
+      </View>
+    </TouchableOpacity>
   );
 };
 
