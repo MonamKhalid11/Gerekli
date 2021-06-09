@@ -15,12 +15,12 @@ const styles = (isItemActive: boolean | null) =>
       textAlign: 'center',
       paddingVertical: 5,
       borderRadius: '$borderRadius',
-      backgroundColor: isItemActive ? '$primaryColor' : null,
+      backgroundColor: isItemActive ? '$primaryColor' : undefined,
     },
     itemText: {
       fontSize: '1rem',
       textAlign: 'center',
-      color: isItemActive ? '#fff' : null,
+      color: isItemActive ? '#fff' : undefined,
     },
   });
 
