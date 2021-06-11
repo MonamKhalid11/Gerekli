@@ -1,12 +1,12 @@
 {
   "images" : [
     {
-      "filename" : "portrait_2778x2778@1x.png",
+      "filename" : "portrait_926x926@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "portrait_2778x2778@2x.png",
+      "filename" : "portrait_1852x1852@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
