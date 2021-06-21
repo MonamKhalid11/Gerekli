@@ -36,6 +36,7 @@ import VendorManageAddProductStep2 from './screens/VendorManage/AddProductStep2'
 import VendorManageAddProductStep3 from './screens/VendorManage/AddProductStep3';
 import VendorManageEditProduct from './screens/VendorManage/EditProduct';
 import VendorManagePricingInventory from './screens/VendorManage/PricingInventory';
+import VendorManageFeatures from './screens/VendorManage/Features';
 import VendorManageShippingProperties from './screens/VendorManage/ShippingProperties';
 import VendorManageCategoriesPicker from './screens/VendorManage/CategoriesPicker';
 import VendorManageOrderDetail from './screens/VendorManage/OrderDetail';
@@ -99,6 +100,10 @@ const screenList = [
   {
     name: 'VendorManagePricingInventory',
     component: VendorManagePricingInventory,
+  },
+  {
+    name: 'VendorManageFeatures',
+    component: VendorManageFeatures,
   },
   {
     name: 'VendorManageShippingProperties',

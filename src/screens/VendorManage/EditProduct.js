@@ -492,6 +492,13 @@ export class EditProduct extends Component {
                   );
                 },
               )}
+              {this.renderMenuItem(
+                i18n.t('Features'),
+                '6 features added',
+                () => {
+                  nav.pushVendorManageFeatures(this.props.componentId);
+                },
+              )}
             </Section>
           </ScrollView>
           <BottomActions onBtnPress={this.handleSave} />
