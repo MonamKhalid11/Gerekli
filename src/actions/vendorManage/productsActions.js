@@ -15,6 +15,9 @@ import {
   VENDOR_CREATE_PRODUCT_FAIL,
   VENDOR_CREATE_PRODUCT_SUCCESS,
   VENDOR_PRODUCT_CHANGE_CATEGORY,
+  VENDOR_FETCH_PRODUCT_FEATURES_REQUEST,
+  VENDOR_FETCH_PRODUCT_FEATURES_SUCCESS,
+  VENDOR_FETCH_PRODUCT_FEATURES_FAIL,
   NOTIFICATION_SHOW,
 } from '../../constants';
 import * as vendorService from '../../services/vendors';
@@ -63,6 +66,28 @@ export function fetchProduct(id = 0, loading = true) {
     } catch (error) {
       dispatch({
         type: VENDOR_FETCH_PRODUCT_FAIL,
+        error,
+      });
+    }
+  };
+}
+
+export function fetchProductFeatures(id) {
+  return async (dispatch) => {
+    dispatch({
+      type: VENDOR_FETCH_PRODUCT_FEATURES_REQUEST,
+    });
+
+    try {
+      const result = await vendorService.getProductFeatures(id);
+      dispatch({
+        type: VENDOR_FETCH_PRODUCT_FEATURES_SUCCESS,
+      });
+
+      return result.data.product.product_features;
+    } catch (error) {
+      dispatch({
+        type: VENDOR_FETCH_PRODUCT_FEATURES_FAIL,
         error,
       });
     }

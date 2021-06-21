@@ -80,6 +80,23 @@ export const getProductDetail = (id) => {
   return gql(QUERY, { id }).then((result) => result.data);
 };
 
+export const getProductFeatures = (id) => {
+  const QUERY = `query getProducts($id: Int!) {
+      product(id: $id, get_icon: true, get_detailed: true, get_additional: true) {
+        product_features {
+          feature_id
+          value
+          variant_id
+          variant
+          feature_type
+          description
+        }
+      }
+    }
+  `;
+  return gql(QUERY, { id }).then((result) => result.data);
+};
+
 export const updateProduct = (id, product) => {
   const data = new FormData();
   const renderImagePairs = () => {

@@ -425,7 +425,13 @@ export class EditProduct extends Component {
    * @return {JSX.Element}
    */
   render() {
-    const { loading, product, productsActions, isUpdating } = this.props;
+    const {
+      loading,
+      product,
+      productsActions,
+      isUpdating,
+      productID,
+    } = this.props;
     const isProductOffer = !!product.master_product_id;
 
     if (loading) {
@@ -496,7 +502,9 @@ export class EditProduct extends Component {
                 i18n.t('Features'),
                 '6 features added',
                 () => {
-                  nav.pushVendorManageFeatures(this.props.componentId);
+                  nav.pushVendorManageFeatures(this.props.componentId, {
+                    productId: productID,
+                  });
                 },
               )}
             </Section>

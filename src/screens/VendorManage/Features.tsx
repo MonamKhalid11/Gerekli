@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect, RootStateOrAny } from 'react-redux';
-import { View, ScrollView, Text } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import i18n from '../../utils/i18n';
 
 // Components
 import BottomActions from '../../components/BottomActions';
+import { ProductFeaturesList } from '../../components/ProductFeaturesList';
 
 // Actions
 import * as productsActions from '../../actions/vendorManage/productsActions';
@@ -21,18 +22,27 @@ const styles = EStyleSheet.create({
   },
 });
 
-/**
- * Renders pricing inventory screen.
- *
- * @reactProps {object} stepsData - Data from previous steps of create product flow.
- * @reactProps {object} productsActions - Products actions.
- * @reactProps {object} product - Product information.
- */
-export const Features: React.FC = () => {
+export const Features: React.FC = ({ productsActions, productId }) => {
+  const [productFeatures, setProductFeatures] = useState(null);
+
+  useEffect(() => {
+    const getProductFeatures = async () => {
+      const result = await productsActions.fetchProductFeatures(productId);
+      console.log(result);
+      
+      // setProductFeatures(result);
+    };
+    getProductFeatures();
+  }, []);
+
+  if (!productFeatures) {
+    return null;
+  }
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Text>we</Text>
+        <ProductFeaturesList productFeatures={productFeatures} />
       </ScrollView>
       <BottomActions onBtnPress={() => console.log('im here')} />
     </View>
