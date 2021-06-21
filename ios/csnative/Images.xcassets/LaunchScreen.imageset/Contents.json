@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "portrait_640x960.png",
+      "filename" : "portrait_926x926@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "portrait_750x1334.png",
+      "filename" : "portrait_1852x1852@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "portrait_768x1024.png",
+      "filename" : "portrait_2778x2778@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
