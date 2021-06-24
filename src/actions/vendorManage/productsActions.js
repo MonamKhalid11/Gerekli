@@ -21,6 +21,7 @@ import {
   NOTIFICATION_SHOW,
 } from '../../constants';
 import * as vendorService from '../../services/vendors';
+import { convertProductFeatures } from '../../services/VendorManageProductFeatures';
 import i18n from '../../utils/i18n';
 
 export function fetchProducts(page = 0) {
@@ -80,11 +81,38 @@ export function fetchProductFeatures(id) {
 
     try {
       const result = await vendorService.getProductFeatures(id);
+      const convertedFeatures = convertProductFeatures(
+        result.data.product.product_features,
+      );
+
       dispatch({
         type: VENDOR_FETCH_PRODUCT_FEATURES_SUCCESS,
       });
 
-      return result.data.product.product_features;
+      return convertedFeatures;
+    } catch (error) {
+      dispatch({
+        type: VENDOR_FETCH_PRODUCT_FEATURES_FAIL,
+        error,
+      });
+    }
+  };
+}
+
+export function updateProductFeatures(productId, data) {
+  return async (dispatch) => {
+    dispatch({
+      type: VENDOR_FETCH_PRODUCT_FEATURES_REQUEST,
+    });
+
+    try {
+      const result = await vendorService.changeProductFeatures(productId, data);
+
+      console.log('result: ', result);
+
+      dispatch({
+        type: VENDOR_FETCH_PRODUCT_FEATURES_SUCCESS,
+      });
     } catch (error) {
       dispatch({
         type: VENDOR_FETCH_PRODUCT_FEATURES_FAIL,

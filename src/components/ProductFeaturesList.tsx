@@ -1,7 +1,6 @@
 import React from 'react';
 import { FEATURE_TYPE_DATE, FEATURE_TYPE_CHECKBOX } from '../constants';
 import { format } from 'date-fns';
-import { bindActionCreators } from 'redux';
 import { connect, RootStateOrAny } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import i18n from '../utils/i18n';
@@ -16,11 +15,33 @@ const styles = EStyleSheet.create({
   },
 });
 
-export const ProductFeaturesList: React.FC = ({
+interface Feature {
+  description: string;
+  feature_id: number;
+  feature_type: string;
+  value: string;
+  variant: string;
+  variant_id: string;
+  value_int: number;
+}
+
+interface ProductFeaturesListProps {
+  productFeatures: {
+    [key: string]: Feature;
+  };
+  title: boolean;
+}
+
+export const ProductFeaturesList: React.FC<ProductFeaturesListProps> = ({
   productFeatures,
+  title = true,
   settings,
 }) => {
-  const renderFeatureItem = (feature, index, last) => {
+  const renderFeatureItem = (
+    feature: Feature,
+    index: number,
+    last: boolean,
+  ) => {
     const { description, feature_type, value_int, value, variant } = feature;
 
     let newValue = null;
@@ -40,7 +61,9 @@ export const ProductFeaturesList: React.FC = ({
     );
   };
 
-  const features = Object.keys(productFeatures).map((k) => productFeatures[k]);
+  const features = Object.keys(productFeatures).map(
+    (k: string) => productFeatures[k],
+  );
 
   if (!features.length) {
     return null;
@@ -50,7 +73,7 @@ export const ProductFeaturesList: React.FC = ({
 
   return (
     <Section
-      title={i18n.t('Features')}
+      title={title ? i18n.t('Features') : ''}
       wrapperStyle={styles.wrapperStyle}
       topDivider>
       {features.map((item, index) =>
@@ -60,12 +83,7 @@ export const ProductFeaturesList: React.FC = ({
   );
 };
 
-export default connect(
-  (state: RootStateOrAny) => ({
-    productReviews: state.productReviews,
-    settings: state.settings,
-  }),
-  (dispatch) => ({
-    // productsActions: bindActionCreators(productsActions, dispatch),
-  }),
-)(ProductFeaturesList);
+export default connect((state: RootStateOrAny) => ({
+  productReviews: state.productReviews,
+  settings: state.settings,
+}))(ProductFeaturesList);

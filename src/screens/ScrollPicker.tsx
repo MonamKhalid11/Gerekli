@@ -30,6 +30,9 @@ interface ScrollPickerProps {
   changePickerValueHandler: Function;
   selectValue: string;
   title: string;
+  additionalData: {
+    [key: string]: any;
+  };
 }
 
 export const ScrollPicker: React.FC<ScrollPickerProps> = ({
@@ -38,6 +41,7 @@ export const ScrollPicker: React.FC<ScrollPickerProps> = ({
   changePickerValueHandler,
   selectValue,
   title,
+  additionalData,
 }) => {
   const listener = {
     navigationButtonPressed: ({ buttonId }) => {
@@ -82,7 +86,7 @@ export const ScrollPicker: React.FC<ScrollPickerProps> = ({
         onPress={
           !isItemActive
             ? () => {
-                changePickerValueHandler(value);
+                changePickerValueHandler(value, additionalData);
                 Navigation.dismissModal(componentId);
               }
             : undefined
