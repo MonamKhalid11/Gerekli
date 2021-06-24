@@ -34,7 +34,7 @@ import { Navigation } from 'react-native-navigation';
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '$grayColor',
+    padding: 20,
   },
   scrollContainer: {
     paddingBottom: 14,
@@ -46,8 +46,6 @@ const styles = EStyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingLeft: 20,
-    paddingRight: 10,
     paddingTop: 10,
     paddingBottom: 10,
   },
@@ -60,7 +58,7 @@ const styles = EStyleSheet.create({
     width: '90%',
   },
   btnIcon: {
-    color: '#898989',
+    color: '$mediumGrayColor',
   },
   horizontalScroll: {
     marginTop: 20,

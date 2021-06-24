@@ -24,11 +24,11 @@ import * as productsActions from '../../actions/vendorManage/productsActions';
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '$grayColor',
+    padding: 20,
   },
-  sectionRawWrapper: {
-    paddingHorizontal: 10,
-    backgroundColor: '#fff',
+  checkboxWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   scrollContainer: {
     paddingBottom: 14,
@@ -84,10 +84,12 @@ export const Features: React.FC<FeaturesProps> = ({
   useEffect(() => {
     const getProductFeatures = async () => {
       const result = await productsActions.fetchProductFeatures(productId);
+      console.log('result:', result);
+
       setProductFeatures(result);
     };
     getProductFeatures();
-  }, []);
+  }, [productId, productsActions]);
 
   const renderCheckbox = (feature: Feature) => {
     const { value, description } = feature;
@@ -112,7 +114,6 @@ export const Features: React.FC<FeaturesProps> = ({
 
     return (
       <TouchableOpacity
-        style={styles.sectionRawWrapper}
         onPress={() => {
           nav.showModalScrollPicker({
             pickerValues: pickerValues,
@@ -214,13 +215,15 @@ export const Features: React.FC<FeaturesProps> = ({
   };
 
   const renderFeatureItem = (feature: Feature) => {
-    const { feature_type, value_int } = feature;
-    let newValue: string;
+    const { feature_type } = feature;
+    console.log('feature: ', feature);
+
+    // let newValue: string;
     let renderElement = null;
 
     switch (feature_type) {
       case FEATURE_TYPE_DATE:
-        newValue = format(value_int * 1000, settings.dateFormat);
+        // newValue = format(value_int * 1000, settings.dateFormat);
         renderElement = () => renderDate();
         break;
       case FEATURE_TYPE_CHECKBOX:
