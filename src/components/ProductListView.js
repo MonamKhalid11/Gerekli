@@ -7,27 +7,30 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import Rating from './Rating';
 import { PRODUCT_IMAGE_WIDTH, formatPrice, getImagePath } from '../utils';
 import i18n from '../utils/i18n';
+import { PRODUCT_NUM_COLUMNS } from '../utils';
 
 const styles = EStyleSheet.create({
   container: {
     borderWidth: 1,
     borderColor: '$productBorderColor',
+    borderRadius: '$borderRadius',
     backgroundColor: '#fff',
+    margin: 5,
     padding: 15,
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    height: 240,
+    alignItems: 'center',
+    height: 300,
     flex: 2,
-    maxWidth: '50%',
+    maxWidth: `${Math.floor(94 / PRODUCT_NUM_COLUMNS)}%`,
   },
   productImage: {
     width: PRODUCT_IMAGE_WIDTH,
     height: PRODUCT_IMAGE_WIDTH,
   },
   description: {
-    paddingTop: 8,
-    paddingBottom: 8,
+    // paddingTop: 8,
+    // paddingBottom: 8,
   },
   productName: {
     color: 'black',
@@ -48,7 +51,7 @@ const styles = EStyleSheet.create({
     paddingBottom: 2,
     paddingLeft: 4,
     paddingRight: 4,
-    borderRadius: 2,
+    borderRadius: '$borderRadius',
   },
   priceWrapper: {
     flex: 1,
@@ -191,7 +194,7 @@ class ProductListView extends PureComponent {
         </View>
         {this.renderDiscount()}
         <View style={styles.description}>
-          <Text numberOfLines={1} style={styles.productName}>
+          <Text numberOfLines={4} style={styles.productName}>
             {item.product}
           </Text>
           {this.renderRating()}

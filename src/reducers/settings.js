@@ -5,6 +5,7 @@ import {
   GET_LANGUAGES,
   RESTORE_STATE,
   LANGUAGE_CURRENCY_FEATURE_FLAG_OFF,
+  SET_DATE_FORMAT,
 } from '../constants';
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
     langCode: '',
     name: '',
   },
+  dateFormat: '',
   languageCurrencyFeatureFlag: true,
   languages: null,
   currencies: null,
@@ -36,6 +38,7 @@ export default function (state = initialState, action) {
     case GET_CURRENCIES:
       return {
         ...state,
+        languageCurrencyFeatureFlag: true,
         currencies: action.payload.map((el) => {
           return {
             selected: el.currency_code === state.selectedCurrency.currencyCode,
@@ -58,6 +61,7 @@ export default function (state = initialState, action) {
     case GET_LANGUAGES:
       return {
         ...state,
+        languageCurrencyFeatureFlag: true,
         languages: action.payload.map((el) => {
           return {
             selected: el.lang_code === state.selectedLanguage.langCode,
@@ -77,6 +81,14 @@ export default function (state = initialState, action) {
       return {
         ...state,
         ...action.payload.settings,
+      };
+
+    case SET_DATE_FORMAT:
+      const dateFormat =
+        action.payload === 'day_first' ? 'dd/MM/yyyy' : 'MM/dd/yyyy';
+      return {
+        ...state,
+        dateFormat,
       };
 
     default:

@@ -20,56 +20,58 @@ const formFields = t.struct({
   phone: t.String,
   notes: t.maybe(t.String),
 });
-const formOptions = {
-  disableOrder: true,
-  fields: {
-    phone: {
-      label: i18n.t('Phone'),
-      clearButtonMode: 'while-editing',
-      returnKeyType: 'done',
-      keyboardType: 'phone-pad',
-    },
-    notes: {
-      label: i18n.t('Comment'),
-      i18n: {
-        optional: '',
-        required: '',
+const getFormOptions = () => {
+  return {
+    disableOrder: true,
+    fields: {
+      phone: {
+        label: i18n.t('Phone'),
+        clearButtonMode: 'while-editing',
+        returnKeyType: 'done',
+        keyboardType: 'phone-pad',
       },
-      help: `${i18n.t('(Optional)')}`,
-      clearButtonMode: 'while-editing',
-      returnKeyType: 'done',
-      multiline: true,
-      blurOnSubmit: true,
-      stylesheet: {
-        ...Form.stylesheet,
-        controlLabel: {
-          ...Form.stylesheet.controlLabel,
-          normal: {
-            ...Form.stylesheet.controlLabel.normal,
-            textAlign: 'left',
+      notes: {
+        label: i18n.t('Comment'),
+        i18n: {
+          optional: '',
+          required: '',
+        },
+        help: `${i18n.t('(Optional)')}`,
+        clearButtonMode: 'while-editing',
+        returnKeyType: 'done',
+        multiline: true,
+        blurOnSubmit: true,
+        stylesheet: {
+          ...Form.stylesheet,
+          controlLabel: {
+            ...Form.stylesheet.controlLabel,
+            normal: {
+              ...Form.stylesheet.controlLabel.normal,
+              textAlign: 'left',
+            },
+            error: {
+              ...Form.stylesheet.controlLabel.error,
+              textAlign: 'left',
+            },
           },
-          error: {
-            ...Form.stylesheet.controlLabel.error,
-            textAlign: 'left',
+          textbox: {
+            ...Form.stylesheet.textbox,
+            normal: {
+              ...Form.stylesheet.textbox.normal,
+              height: 150,
+              textAlign: I18nManager.isRTL ? 'right' : 'left',
+              writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
+            },
+            error: {
+              ...Form.stylesheet.textbox.error,
+              textAlign: I18nManager.isRTL ? 'right' : 'left',
+              writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
+            },
           },
         },
-        textbox: {
-          ...Form.stylesheet.textbox,
-          normal: {
-            ...Form.stylesheet.textbox.normal,
-            height: 150,
-            textAlign: I18nManager.isRTL ? 'right' : 'left',
-            writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
-          },
-          error: {
-            ...Form.stylesheet.textbox.error,
-            textAlign: I18nManager.isRTL ? 'right' : 'left',
-            writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
-          },
-        },
       },
     },
-  },
+  };
 };
 
 /**
@@ -98,7 +100,7 @@ export default class PaymentPhoneForm extends Component {
         <Form
           ref="form"
           type={formFields}
-          options={formOptions}
+          options={getFormOptions}
           value={this.props.value}
         />
       </View>

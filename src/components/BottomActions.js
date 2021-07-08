@@ -23,7 +23,7 @@ export default class extends PureComponent {
   };
 
   static defaultProps = {
-    btnText: i18n.t('Save'),
+    btnText: 'Save',
   };
 
   render() {
@@ -31,7 +31,7 @@ export default class extends PureComponent {
     return (
       <View style={styles.container}>
         <Button type="primary" onPress={() => onBtnPress()} disabled={disabled}>
-          <Text style={styles.placeOrderBtnText}>{btnText}</Text>
+          <Text style={styles.placeOrderBtnText}>{i18n.t(btnText)}</Text>
         </Button>
       </View>
     );

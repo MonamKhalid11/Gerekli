@@ -64,7 +64,6 @@ export default class CategoriesBlocks extends Component {
    */
   render() {
     const { items, wrapper, onPress } = this.props;
-    console.log("showing fetched catogeries", this.props)
 
     if (!items.length) {
       return null;

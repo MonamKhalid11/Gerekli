@@ -23,8 +23,6 @@ export function setRoot() {
     },
     bottomTabs: {
       backgroundColor: theme.$bottomTabsBackgroundColor,
-      // drawBehind: true,
-      // translucent: true,
     },
     bottomTab: {
       badgeColor: theme.$bottomTabsPrimaryBadgeColor,
@@ -54,8 +52,7 @@ export function setRoot() {
               options: {
                 bottomTab: {
                   icon: iconsMap.home,
-                  selectedIconColor: 'black',
-                  text: i18n.t('home'),
+                  text: i18n.t('Home'),
                 },
               },
             },
@@ -74,7 +71,6 @@ export function setRoot() {
               options: {
                 bottomTab: {
                   icon: iconsMap.search,
-                  selectedIconColor: 'black',
                   text: i18n.t('Search'),
                 },
               },
@@ -94,7 +90,6 @@ export function setRoot() {
               options: {
                 bottomTab: {
                   icon: iconsMap['shopping-cart'],
-                  selectedIconColor: 'black',
                   text: i18n.t('Cart'),
                 },
               },
@@ -114,7 +109,6 @@ export function setRoot() {
               options: {
                 bottomTab: {
                   icon: iconsMap.favorite,
-                  selectedIconColor: 'black',
                   text: i18n.t('Favorite'),
                 },
               },
@@ -134,7 +128,6 @@ export function setRoot() {
               options: {
                 bottomTab: {
                   icon: iconsMap.person,
-                  selectedIconColor: 'black',
                   text: i18n.t('Profile'),
                 },
               },
@@ -156,6 +149,21 @@ export function pushCategory(componentId, params) {
         },
       },
       passProps: params,
+    },
+  });
+}
+
+export function showModalScrollPicker(params) {
+  Navigation.showModal({
+    stack: {
+      children: [
+        {
+          component: {
+            name: 'ScrollPicker',
+            passProps: params,
+          },
+        },
+      ],
     },
   });
 }
@@ -236,6 +244,30 @@ export function showRegistration(params) {
   });
 }
 
+export function showResetPassword(params) {
+  Navigation.showModal({
+    stack: {
+      children: [
+        {
+          component: {
+            name: 'ResetPassword',
+            passProps: params,
+          },
+        },
+      ],
+    },
+  });
+}
+
+export function popResetPassword(componentId, params) {
+  Navigation.pop(componentId, {
+    component: {
+      name: 'ResetPassword',
+      passProps: params,
+    },
+  });
+}
+
 export function pushProductDetail(componentId, params) {
   Navigation.push(componentId, {
     component: {
@@ -304,13 +336,13 @@ export function showGallery(params = {}) {
   });
 }
 
-export function showCheckoutDelivery(params) {
+export function showCheckoutProfile(params) {
   Navigation.showModal({
     stack: {
       children: [
         {
           component: {
-            name: 'CheckoutDelivery',
+            name: 'CheckoutProfile',
             passProps: params,
           },
         },
@@ -323,24 +355,6 @@ export function pushCheckoutAuth(componentId, params) {
   Navigation.push(componentId, {
     component: {
       name: 'CheckoutAuth',
-      passProps: params,
-    },
-  });
-}
-
-export function pushCheckoutShipping(componentId, params) {
-  Navigation.push(componentId, {
-    component: {
-      name: 'CheckoutShipping',
-      passProps: params,
-    },
-  });
-}
-
-export function pushCheckoutPayment(componentId, params) {
-  Navigation.push(componentId, {
-    component: {
-      name: 'CheckoutPayment',
       passProps: params,
     },
   });
@@ -572,22 +586,6 @@ export function pushVendorManageCategoriesPicker(componentId, params = {}) {
   });
 }
 
-export function pushVendorManageAddProductStep1(componentId, params = {}) {
-  Navigation.push(componentId, {
-    component: {
-      name: 'VendorManageAddProductStep1',
-      passProps: params,
-      options: {
-        topBar: {
-          title: {
-            text: params.title || i18n.t('Select product image'),
-          },
-        },
-      },
-    },
-  });
-}
-
 export function showImagePicker(params = {}) {
   Navigation.showModal({
     stack: {
@@ -610,38 +608,6 @@ export function showImagePicker(params = {}) {
   });
 }
 
-export function pushVendorManageAddProductStep2(componentId, params = {}) {
-  Navigation.push(componentId, {
-    component: {
-      name: 'VendorManageAddProductStep2',
-      passProps: params,
-      options: {
-        topBar: {
-          title: {
-            text: params.title || i18n.t('Enter the name'),
-          },
-        },
-      },
-    },
-  });
-}
-
-export function pushVendorManageAddProductStep3(componentId, params = {}) {
-  Navigation.push(componentId, {
-    component: {
-      name: 'VendorManageAddProductStep3',
-      passProps: params,
-      options: {
-        topBar: {
-          title: {
-            text: params.title || i18n.t('Enter the price'),
-          },
-        },
-      },
-    },
-  });
-}
-
 export function pushVendorManagePricingInventory(componentId, params = {}) {
   Navigation.push(componentId, {
     component: {
@@ -650,7 +616,7 @@ export function pushVendorManagePricingInventory(componentId, params = {}) {
       options: {
         topBar: {
           title: {
-            text: params.title || i18n.t('Pricing / inventory'),
+            text: params.title || i18n.t('Pricing / Inventory'),
           },
         },
       },
@@ -666,7 +632,7 @@ export function pushVendorManageShippingProperties(componentId, params = {}) {
       options: {
         topBar: {
           title: {
-            text: params.title || i18n.t('Shipping Properties'),
+            text: params.title || i18n.t('Shipping properties'),
           },
         },
       },

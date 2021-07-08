@@ -6,6 +6,7 @@ import { View, FlatList } from 'react-native';
 import ActionSheet from 'react-native-actionsheet';
 import Swipeout from 'react-native-swipeout';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { Navigation } from 'react-native-navigation';
 
 // Styles
 import theme from '../../config/theme';
@@ -20,7 +21,6 @@ import EmptyList from '../../components/EmptyList';
 import OrderListItem from '../../components/OrderListItem';
 
 import i18n from '../../utils/i18n';
-import { orderStatuses } from '../../utils';
 import * as nav from '../../services/navigation';
 
 const styles = EStyleSheet.create({
@@ -29,10 +29,6 @@ const styles = EStyleSheet.create({
     backgroundColor: '#fff',
   },
 });
-
-const itemsList = [...orderStatuses.map((item) => item.text), i18n.t('Cancel')];
-
-const CANCEL_INDEX = itemsList.length - 1;
 
 /**
  * Renders orders screen.
@@ -69,17 +65,6 @@ export class Orders extends Component {
   /**
    * @ignore
    */
-  static options = {
-    topBar: {
-      title: {
-        text: i18n.t('Vendor Orders').toUpperCase(),
-      },
-    },
-  };
-
-  /**
-   * @ignore
-   */
   constructor(props) {
     super(props);
 
@@ -91,7 +76,7 @@ export class Orders extends Component {
   }
 
   /**
-   * Gets orders.
+   * Gets orders. Sets top bar options.
    */
   componentDidMount() {
     const {
@@ -99,6 +84,14 @@ export class Orders extends Component {
       orders: { page },
     } = this.props;
     ordersActions.fetch(page);
+    ordersActions.getOrderStatuses();
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        title: {
+          text: i18n.t('Vendor Orders').toUpperCase(),
+        },
+      },
+    });
   }
 
   /**
@@ -154,10 +147,13 @@ export class Orders extends Component {
    * @param {number} index - Order index.
    */
   handleChangeStatus = (index) => {
-    const { ordersActions } = this.props;
+    const { ordersActions, orders } = this.props;
 
-    if (orderStatuses[index]) {
-      ordersActions.updateStatus(this.orderID, orderStatuses[index].code);
+    if (orders.orderStatuses[index]) {
+      ordersActions.updateVendorOrderStatus(
+        this.orderID,
+        orders.orderStatuses[index].status,
+      );
     }
   };
 
@@ -171,7 +167,8 @@ export class Orders extends Component {
     const swipeoutBtns = [
       {
         text: i18n.t('Status'),
-        type: 'delete',
+        type: 'status',
+        backgroundColor: '#ff6002',
         onPress: () => this.showActionSheet(item.order_id),
       },
     ];
@@ -203,13 +200,20 @@ export class Orders extends Component {
     const { orders } = this.props;
     const { refreshing } = this.state;
 
-    if (orders.loading) {
+    if (orders.loading || !orders.orderStatuses) {
       return <Spinner visible />;
     }
 
+    const orderStatusesList = [
+      ...orders.orderStatuses.map((item) => item.description),
+      i18n.t('Cancel'),
+    ];
+
+    const ORDER_STATUSES_CANCEL_INDEX = orderStatusesList.length - 1;
+
     return (
       <View style={styles.container}>
-        <FlatList
+        {/* <FlatList
           keyExtractor={(item, index) => `order_${index}`}
           data={orders.items}
           ListEmptyComponent={<EmptyList />}
@@ -217,13 +221,13 @@ export class Orders extends Component {
           onEndReached={this.handleLoadMore}
           refreshing={refreshing}
           onRefresh={() => this.handleRefresh()}
-        />
+        /> */}
         <ActionSheet
           ref={(ref) => {
             this.ActionSheet = ref;
           }}
-          options={itemsList}
-          cancelButtonIndex={CANCEL_INDEX}
+          options={orderStatusesList}
+          cancelButtonIndex={ORDER_STATUSES_CANCEL_INDEX}
           onPress={this.handleChangeStatus}
         />
       </View>

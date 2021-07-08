@@ -1,19 +1,23 @@
 import React, { Component } from 'react';
+import { Navigation } from 'react-native-navigation';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { Navigation } from 'react-native-navigation';
-import * as authActions from '../actions/authActions';
 import i18n from '../utils/i18n';
 import theme from '../config/theme';
 import config from '../config';
 import * as nav from '../services/navigation';
 import { registerDrawerDeepLinks } from '../utils/deepLinks';
-import * as pagesActions from '../actions/pagesActions';
 import Icon from '../components/Icon';
 import { USER_TYPE_VENDOR } from '../constants/index';
+
+// Actions
+import * as pagesActions from '../actions/pagesActions';
+import * as authActions from '../actions/authActions';
+import * as settingsActions from '../actions/settingsActions';
+import setStartSettings from '../actions/appActions';
 
 const styles = EStyleSheet.create({
   container: {
@@ -106,9 +110,7 @@ const styles = EStyleSheet.create({
  *
  * @reactProps {object} authActions - Auth actions.
  */
-
 export class ProfileEdit extends Component {
-
   /**
    * @ignore
    */
@@ -119,24 +121,14 @@ export class ProfileEdit extends Component {
   };
 
   /**
-   * @ignore
-   */
-
-
-  // static options = {
-  //   topBar: {
-  //     title: {
-  //       text: i18n.t('Profile').toLocaleUpperCase()
-  //     },
-  //   },
-  // };
-
-  /**
    * Gets data for Pages block.
    */
   componentDidMount() {
-    const { pagesActions } = this.props;
+    const { pagesActions, settings } = this.props;
     pagesActions.fetch(config.layoutId);
+    if (!settings.languageCurrencyFeatureFlag) {
+      setStartSettings(settings.selectedLanguage, settings.selectedCurrency);
+    }
     Navigation.mergeOptions(this.props.componentId, {
       topBar: {
         title: {
@@ -144,9 +136,7 @@ export class ProfileEdit extends Component {
         },
       },
     });
-
   }
-
 
   /**
    * Renders Seller block if the user is vendor.
@@ -178,7 +168,7 @@ export class ProfileEdit extends Component {
           <View style={styles.IconNameWrapper}>
             <Icon name="pages" style={styles.menuItemIcon} />
             <Text style={styles.signInBtnText}>
-              {i18n.t('Vendor Products')}
+              {i18n.t('Vendor products')}
             </Text>
           </View>
           <Icon name="chevron-right" style={styles.rightArrowIcon} />
@@ -189,7 +179,7 @@ export class ProfileEdit extends Component {
           style={styles.signInBtnContainer}>
           <View style={styles.IconNameWrapper}>
             <Icon name="add-circle" style={styles.menuItemIcon} />
-            <Text style={styles.signInBtnText}>{i18n.t('Add Products')}</Text>
+            <Text style={styles.signInBtnText}>{i18n.t('Add product')}</Text>
           </View>
           <Icon name="chevron-right" style={styles.rightArrowIcon} />
         </TouchableOpacity>
@@ -214,7 +204,7 @@ export class ProfileEdit extends Component {
         <TouchableOpacity
           onPress={() => nav.pushLanguageSelection(this.props.componentId)}
           style={styles.signInBtnContainer}>
-          <Text style={styles.signInBtnText}>{i18n.t('languages')}</Text>
+          <Text style={styles.signInBtnText}>{i18n.t('Language')}</Text>
           <View style={styles.IconNameWrapper}>
             <Text style={styles.hintText}>
               {settings.selectedLanguage.langCode.toUpperCase()}
@@ -245,6 +235,39 @@ export class ProfileEdit extends Component {
    *
    * @return {JSX.Element}
    */
+  // renderPages = (pages) => {
+  //   return (
+  //     <View>
+  //       <View style={styles.signInSectionContainer}>
+  //         <Text style={styles.signInSectionText}>
+  //           {i18n.t('Pages').toUpperCase()}
+  //         </Text>
+  //       </View>
+  //       {pages.items.map((page, index) => {
+  //         console.log("showing data of pages ",page)
+  //         return (
+  //           <TouchableOpacity
+  //             key={index}
+  //             style={styles.signInBtnContainer}
+  //             onPress={() =>
+  //               registerDrawerDeepLinks(
+  //                 {
+  //                   link: `dispatch=pages.view&page_id=${page.page_id}`,
+  //                   payload: {
+  //                     title: page.page,
+  //                   },
+  //                 },
+  //                 this.props.componentId,
+  //               )
+  //             }>
+  //             <Text style={styles.signInBtnText}>{page.page}</Text>
+  //             <Icon name="chevron-right" style={styles.rightArrowIcon} />
+  //           </TouchableOpacity>
+  //         );
+  //       })}
+  //     </View>
+  //   );
+  // };
   renderPages = (pages) => {
     return (
       <View>
@@ -316,13 +339,13 @@ export class ProfileEdit extends Component {
           {(cart.user_data.b_firstname ||
             cart.user_data.b_lastname ||
             cart.user_data.email) && (
-              <View style={styles.signInInfo}>
-                <Text style={styles.userNameText} numberOfLines={2}>
-                  {cart.user_data.b_firstname} {cart.user_data.b_lastname}
-                </Text>
-                <Text style={styles.userMailText}>{cart.user_data.email}</Text>
-              </View>
-            )}
+            <View style={styles.signInInfo}>
+              <Text style={styles.userNameText} numberOfLines={2}>
+                {cart.user_data.b_firstname} {cart.user_data.b_lastname}
+              </Text>
+              <Text style={styles.userMailText}>{cart.user_data.email}</Text>
+            </View>
+          )}
         </>
       );
     }
@@ -351,7 +374,7 @@ export class ProfileEdit extends Component {
               onPress={() => nav.showLogin()}
               style={{ ...styles.btn, backgroundColor: '#4fbe31' }}>
               <Text style={{ ...styles.btnText, color: '#fff' }}>
-                {i18n.t('Login')}
+                {i18n.t('Sign in')}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -361,8 +384,8 @@ export class ProfileEdit extends Component {
             </TouchableOpacity>
           </View>
         ) : (
-            this.renderUserInformation(cart)
-          )}
+          this.renderUserInformation(cart)
+        )}
       </>
     );
   };
@@ -424,14 +447,11 @@ export class ProfileEdit extends Component {
   render() {
     const { profile, pages, auth, cart, authActions, settings } = this.props;
 
-    console.log("showing props selected ", this.props)
-
     return (
       <ScrollView style={styles.container}>
         {this.renderSignedIn(auth, cart)}
 
-        {/* {settings.languageCurrencyFeatureFlag && this.renderSettings(settings)} */}
-        {this.renderSettings(settings)}
+        {settings.languageCurrencyFeatureFlag && this.renderSettings(settings)}
 
         {auth.logged && this.renderSignedInMenu(authActions)}
 
@@ -454,5 +474,6 @@ export default connect(
   (dispatch) => ({
     authActions: bindActionCreators(authActions, dispatch),
     pagesActions: bindActionCreators(pagesActions, dispatch),
+    settingsActions: bindActionCreators(settingsActions, dispatch),
   }),
 )(ProfileEdit);

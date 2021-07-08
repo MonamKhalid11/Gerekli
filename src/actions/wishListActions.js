@@ -41,15 +41,12 @@ export function fetch(fetching = true) {
 }
 
 export function add(data, componentId) {
-  console.log("gping to api called for wish list", data,)
-
   return (dispatch) => {
     dispatch({
       type: WISH_LIST_ADD_REQUEST,
     });
     return Api.post('/sra_wish_list', data)
       .then((response) => {
-        console.log("response coming from api called for wish list", response)
         dispatch({
           type: WISH_LIST_ADD_SUCCESS,
           payload: response.data,

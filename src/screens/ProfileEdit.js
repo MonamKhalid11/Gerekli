@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import { View } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import omit from 'lodash/omit';
+import { isDate } from 'date-fns';
+import { format } from 'date-fns';
 
 // Import actions.
 import * as authActions from '../actions/authActions';
@@ -70,9 +72,26 @@ export class ProfileEdit extends Component {
    */
   handleSave = (values) => {
     const { profile } = this.state;
-    const { authActions, componentId } = this.props;
+    const { authActions, componentId, settings } = this.props;
     if (values) {
-      authActions.updateProfile(profile.user_id, values, componentId);
+      const data = { ...values };
+      Object.keys(data).forEach((key) => {
+        if (isDate(data[key])) {
+          data[key] = format(data[key], settings.dateFormat);
+        }
+      });
+
+      data.b_address = data.s_address;
+      data.b_address_2 = data.s_address_2;
+      data.b_city = data.s_city;
+      data.b_country = data.s_country;
+      data.b_firstname = data.s_firstname;
+      data.b_lastname = data.s_lastname;
+      data.b_phone = data.s_phone;
+      data.b_state = data.s_state;
+      data.b_zipcode = data.s_zipcode;
+
+      authActions.updateProfile(profile.user_id, data, componentId);
     }
   };
 
@@ -83,6 +102,7 @@ export class ProfileEdit extends Component {
    */
   render() {
     const { fetching, forms } = this.state;
+    const { settings } = this.props;
 
     if (fetching) {
       return (
@@ -98,6 +118,7 @@ export class ProfileEdit extends Component {
           fields={omit(forms, 'B')}
           isEdit
           onSubmit={(values) => this.handleSave(values)}
+          dateFormat={settings.dateFormat}
         />
       </View>
     );
@@ -107,6 +128,7 @@ export class ProfileEdit extends Component {
 export default connect(
   (state) => ({
     auth: state.auth,
+    settings: state.settings,
   }),
   (dispatch) => ({
     authActions: bindActionCreators(authActions, dispatch),

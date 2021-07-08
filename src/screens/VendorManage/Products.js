@@ -26,13 +26,6 @@ import * as nav from '../../services/navigation';
 import { iconsMap } from '../../utils/navIcons';
 import { Navigation } from 'react-native-navigation';
 
-const STATUS_ACTIONS_LIST = [
-  i18n.t('Make Product Active'),
-  i18n.t('Make Product Hidden'),
-  i18n.t('Make Product Disabled'),
-  i18n.t('Cancel'),
-];
-
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
@@ -102,17 +95,6 @@ export class Products extends Component {
   /**
    * @ignore
    */
-  static options = {
-    topBar: {
-      title: {
-        text: i18n.t('Vendor products').toUpperCase(),
-      },
-    },
-  };
-
-  /**
-   * @ignore
-   */
   constructor(props) {
     super(props);
 
@@ -131,6 +113,9 @@ export class Products extends Component {
 
     Navigation.mergeOptions(this.props.componentId, {
       topBar: {
+        title: {
+          text: i18n.t('Vendor products').toUpperCase(),
+        },
         rightButtons: [
           {
             id: 'add',
@@ -272,8 +257,9 @@ export class Products extends Component {
               <View>
                 <Text style={styles.listItemText}>{item.product_code}</Text>
                 <Text style={styles.listItemText}>
-                  {`${i18n.t('Price')}: ${item.price} ${item.amount !== 0 && '|'
-                    } ${i18n.t('In stock')}: ${item.amount}`}
+                  {`${i18n.t('Price')}: ${item.price} ${
+                    item.amount !== 0 && '|'
+                  } ${i18n.t('In stock')}: ${item.amount}`}
                 </Text>
               </View>
             </View>
@@ -281,6 +267,18 @@ export class Products extends Component {
         </TouchableOpacity>
       </Swipeout>
     );
+  };
+
+  /**
+   * Returns field names for changing the status of the order.
+   */
+  getStatusActionsList = () => {
+    return [
+      i18n.t('Make Product Active'),
+      i18n.t('Make Product Hidden'),
+      i18n.t('Make Product Disabled'),
+      i18n.t('Cancel'),
+    ];
   };
 
   /**
@@ -311,7 +309,7 @@ export class Products extends Component {
           ref={(ref) => {
             this.StatusActionSheet = ref;
           }}
-          options={STATUS_ACTIONS_LIST}
+          options={this.getStatusActionsList()}
           cancelButtonIndex={3}
           destructiveButtonIndex={2}
           onPress={this.handleStatusActionSheet}

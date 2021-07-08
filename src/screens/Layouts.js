@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, RefreshControl } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import get from 'lodash/get';
-import { firebase } from '@react-native-firebase/analytics';
 
 // Constants
 import {
@@ -20,6 +19,7 @@ import {
 // Import actions.
 import * as notificationsActions from '../actions/notificationsActions';
 import * as layoutsActions from '../actions/layoutsActions';
+import { firebase } from '@react-native-firebase/analytics';
 
 // Components
 import Spinner from '../components/Spinner';
@@ -74,7 +74,11 @@ export class Layouts extends Component {
     this.isFetchBlocksSend = false;
     this.pushNotificationListener = null;
     this.pushNotificationOpenListener = null;
-    this.bottomTabEventListener = null;
+    this.backToHomeScreenHandler = null;
+
+    this.state = {
+      refreshing: false,
+    };
   }
 
   /**
@@ -82,16 +86,20 @@ export class Layouts extends Component {
    * 1. Shows notifications if they came.
    * 2. Listens to click on notification.
    */
+   getAnalytics = async () => {
+    await firebase.analytics().setAnalyticsCollectionEnabled(true);
+
+  }
+
   componentDidMount() {
     this.getAnalytics()
 
     const { layoutsActions, componentId } = this.props;
-    // Listener for bottom tabs.
-    // Removes last screen from navigation stack
-    this.bottomTabEventListener = Navigation.events().registerBottomTabSelectedListener(
+    // Listener for home button. Returns to home screen.
+    this.backToHomeScreenHandler = Navigation.events().registerBottomTabSelectedListener(
       ({ selectedTabIndex, unselectedTabIndex }) => {
         if (selectedTabIndex === 0 && unselectedTabIndex === 0) {
-          Navigation.pop(componentId);
+          Navigation.popToRoot(componentId);
         }
       },
     );
@@ -112,10 +120,7 @@ export class Layouts extends Component {
       );
     }
   }
-  getAnalytics = async () => {
-    await firebase.analytics().setAnalyticsCollectionEnabled(true);
 
-  }
   /**
    * Shows and hides notifications.
    */
@@ -154,7 +159,7 @@ export class Layouts extends Component {
     if (config.pushNotifications) {
       this.pushNotificationListener();
     }
-    this.bottomTabEventListener.remove();
+    this.backToHomeScreenHandler.remove();
   }
 
   /**
@@ -259,6 +264,15 @@ export class Layouts extends Component {
     }
   };
 
+  onRefresh() {
+    const { layoutsActions } = this.props;
+    this.setState({ refreshing: true });
+    setTimeout(() => {
+      this.setState({ refreshing: false });
+      layoutsActions.fetch(undefined, true);
+    }, 1000);
+  }
+
   /**
    * Renders component
    *
@@ -275,11 +289,16 @@ export class Layouts extends Component {
     }
 
     return (
-      <View style={styles.container}>
-        <ScrollView contentContainerStyle={styles.contentContainer}>
-          {blocksList}
-        </ScrollView>
-      </View>
+      <ScrollView
+        style={styles.container}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={() => this.onRefresh()}
+          />
+        }>
+        {blocksList}
+      </ScrollView>
     );
   }
 }

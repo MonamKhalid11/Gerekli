@@ -10,7 +10,6 @@ const styles = EStyleSheet.create({
   },
   title: {
     fontSize: '0.9rem',
-    fontWeight: 'bold',
     textAlign: 'left',
   },
   commentText: {
@@ -21,8 +20,8 @@ const styles = EStyleSheet.create({
     fontSize: '0.9rem',
     height: 60,
     borderColor: '#EEEEEE',
-    borderWidth: 2,
-    borderRadius: 3,
+    borderWidth: 1,
+    borderRadius: 10,
     marginTop: 8,
     padding: 8,
   },
@@ -110,11 +109,11 @@ export default class extends Component {
    * @return {JSX.Element}
    */
   render() {
-    const { option } = this.props;
+    const { option, style } = this.props;
     const { value } = this.state;
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>{option.option_name}</Text>
+      <View style={{ ...styles.container, ...style }}>
+        <Text style={styles.title}>{option.option_name}:</Text>
         <View style={styles.optionsVariants}>
           <TextInput
             multiline

@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { TouchableOpacity, View, SafeAreaView, Image } from 'react-native';
+import {
+  TouchableOpacity,
+  View,
+  SafeAreaView,
+  Image,
+  BackHandler,
+} from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swiper from 'react-native-swiper';
 
@@ -46,7 +52,7 @@ const styles = EStyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
-  }
+  },
 });
 
 /**
@@ -66,6 +72,33 @@ export default class Gallery extends Component {
     images: PropTypes.arrayOf(PropTypes.string),
     activeIndex: PropTypes.number,
   };
+
+  constructor(props) {
+    super(props);
+
+    this.backHandler = null;
+  }
+
+  /**
+   * Sets listener for Android back button.
+   */
+  componentDidMount() {
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      this.closeOverlay();
+      return true;
+    });
+  }
+
+  /**
+   * Removes the listener.
+   */
+  componentWillUnmount() {
+    this.backHandler.remove();
+  }
+
+  closeOverlay() {
+    Navigation.dismissOverlay(this.props.componentId);
+  }
 
   /**
    * Renders component
@@ -91,7 +124,7 @@ export default class Gallery extends Component {
           </Swiper>
           <TouchableOpacity
             style={styles.closeBtnContainer}
-            onPress={() => Navigation.dismissOverlay(this.props.componentId)}>
+            onPress={() => this.closeOverlay()}>
             <Icon name="close" style={styles.closeBtn} />
           </TouchableOpacity>
           {onRemove && (

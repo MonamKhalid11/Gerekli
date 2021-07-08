@@ -85,7 +85,7 @@ const styles = EStyleSheet.create({
   },
   addImageIcon: {
     fontSize: '3rem',
-    color: '$categoryEmptyImage',
+    color: 'red',
   },
 });
 
@@ -96,39 +96,6 @@ const formFields = t.struct({
   full_description: t.maybe(t.String),
   price: t.Number,
 });
-const formOptions = {
-  disableOrder: true,
-  fields: {
-    product: {
-      label: i18n.t('Name'),
-    },
-    full_description: {
-      label: i18n.t('Full description'),
-      numberOfLines: 4,
-      multiline: true,
-      stylesheet: {
-        ...Form.stylesheet,
-        textbox: {
-          ...Form.stylesheet.textbox,
-          normal: {
-            ...Form.stylesheet.textbox.normal,
-            height: 130,
-          },
-        },
-      },
-      clearButtonMode: 'while-editing',
-    },
-  },
-};
-
-const MORE_ACTIONS_LIST = [i18n.t('Delete This Product'), i18n.t('Cancel')];
-
-const STATUS_ACTIONS_LIST = [
-  i18n.t('Make Product Active'),
-  i18n.t('Make Product Hidden'),
-  i18n.t('Make Product Disabled'),
-  i18n.t('Cancel'),
-];
 
 /**
  * Renders categories picker.
@@ -172,6 +139,13 @@ export class EditProduct extends Component {
     this.formRef = React.createRef();
     Navigation.events().bindComponent(this);
   }
+
+  /**
+   * Returns field names for more action list.
+   */
+  getMoreActionsList = () => {
+    return [i18n.t('Delete This Product'), i18n.t('Cancel')];
+  };
 
   /**
    * Sets header setup.
@@ -226,6 +200,49 @@ export class EditProduct extends Component {
       Navigation.dismissAllModals();
     }
   }
+
+  /**
+   * Returns form options (field names, etc.)
+   */
+  getFormOptions = () => {
+    const { product } = this.props;
+
+    const isProductOffer = !!product.master_product_id;
+
+    return {
+      disableOrder: true,
+      fields: {
+        product: {
+          label: i18n.t('Name'),
+          editable: !isProductOffer,
+        },
+        full_description: {
+          label: i18n.t('Full description'),
+          numberOfLines: 4,
+          editable: !isProductOffer,
+          i18n: {
+            optional: '',
+            required: '',
+          },
+          multiline: true,
+          stylesheet: {
+            ...Form.stylesheet,
+            textbox: {
+              ...Form.stylesheet.textbox,
+              normal: {
+                ...Form.stylesheet.textbox.normal,
+                height: 130,
+              },
+            },
+          },
+          clearButtonMode: 'while-editing',
+        },
+        price: {
+          label: i18n.t('Price'),
+        },
+      },
+    };
+  };
 
   handleMoreActionSheet = (index) => {
     const { product, productsActions, componentId, showClose } = this.props;
@@ -310,6 +327,7 @@ export class EditProduct extends Component {
    */
   renderImages = () => {
     const { product, selectedImages } = this.props;
+    const isProductOffer = !!product.master_product_id;
     const images = [];
 
     if (product.main_pair) {
@@ -324,14 +342,16 @@ export class EditProduct extends Component {
 
     return (
       <ScrollView contentContainerStyle={styles.horizontalScroll} horizontal>
-        <View style={styles.imgWrapper}>
-          <TouchableOpacity
-            onPress={() => {
-              nav.showImagePicker({});
-            }}>
-            <Icon name="add" style={styles.addImageIcon} />
-          </TouchableOpacity>
-        </View>
+        {!isProductOffer && (
+          <View style={styles.imgWrapper}>
+            <TouchableOpacity
+              onPress={() => {
+                nav.showImagePicker({});
+              }}>
+              <Icon name="add" style={styles.addImageIcon} />
+            </TouchableOpacity>
+          </View>
+        )}
         {selectedImages.map((image) => (
           <View style={styles.imgWrapper} key={uniqueId('image-')}>
             <TouchableOpacity
@@ -372,15 +392,32 @@ export class EditProduct extends Component {
    *
    * @return {JSX.Element}
    */
-  renderMenuItem = (title, subTitle, fn = () => {}) => (
-    <TouchableOpacity style={styles.menuItem} onPress={fn}>
+  renderMenuItem = (title, subTitle, fn = () => {}, isProductOffer = false) => (
+    <TouchableOpacity
+      style={styles.menuItem}
+      activeOpacity={isProductOffer ? 1 : 0}
+      onPress={isProductOffer ? null : fn}>
       <View style={styles.menuItemText}>
         <Text style={styles.menuItemTitle}>{title}</Text>
         <Text style={styles.menuItemSubTitle}>{subTitle}</Text>
       </View>
-      <Icon name="keyboard-arrow-right" style={styles.btnIcon} />
+      {!isProductOffer && (
+        <Icon name="keyboard-arrow-right" style={styles.btnIcon} />
+      )}
     </TouchableOpacity>
   );
+
+  /**
+   * Returns field names for changing the status of the order.
+   */
+  getStatusActionsList = () => {
+    return [
+      i18n.t('Make Product Active'),
+      i18n.t('Make Product Hidden'),
+      i18n.t('Make Product Disabled'),
+      i18n.t('Cancel'),
+    ];
+  };
 
   /**
    * Renders component.
@@ -389,6 +426,7 @@ export class EditProduct extends Component {
    */
   render() {
     const { loading, product, productsActions, isUpdating } = this.props;
+    const isProductOffer = !!product.master_product_id;
 
     if (loading) {
       return <Spinner visible />;
@@ -404,7 +442,7 @@ export class EditProduct extends Component {
                 ref={this.formRef}
                 type={formFields}
                 value={product}
-                options={formOptions}
+                options={this.getFormOptions()}
               />
             </Section>
             <Section wrapperStyle={{ padding: 0 }}>
@@ -417,11 +455,9 @@ export class EditProduct extends Component {
               )}
               {this.renderMenuItem(
                 i18n.t('Pricing / Inventory'),
-                i18n.t('{{code}}, List price: {{list}}, In stock: {{stock}}', {
-                  code: product.product_code,
-                  list: product.list_price,
-                  stock: product.amount,
-                }),
+                `${product.product_code}, ${i18n.t('List price')}: ${
+                  product.list_price
+                }, ${i18n.t('In stock')}: ${product.amount}`,
                 () => {
                   nav.pushVendorManagePricingInventory(this.props.componentId);
                 },
@@ -438,11 +474,12 @@ export class EditProduct extends Component {
                     },
                   });
                 },
+                isProductOffer,
               )}
               {this.renderMenuItem(
                 i18n.t('Shipping properties'),
-                `${i18n.t('Weight: {{count}} ', { count: product.weight })} ${
-                  product.free_shipping ? i18n.t('Free shipping') : ''
+                `${i18n.t('Weight (lbs)')}: ${product.weight}${
+                  product.free_shipping ? `, ${i18n.t('Free shipping')}` : ''
                 }`,
                 () => {
                   nav.pushVendorManageShippingProperties(
@@ -462,7 +499,7 @@ export class EditProduct extends Component {
             ref={(ref) => {
               this.ActionSheet = ref;
             }}
-            options={MORE_ACTIONS_LIST}
+            options={this.getMoreActionsList()}
             cancelButtonIndex={1}
             destructiveButtonIndex={0}
             onPress={this.handleMoreActionSheet}
@@ -471,7 +508,7 @@ export class EditProduct extends Component {
             ref={(ref) => {
               this.StatusActionSheet = ref;
             }}
-            options={STATUS_ACTIONS_LIST}
+            options={this.getStatusActionsList()}
             cancelButtonIndex={3}
             destructiveButtonIndex={2}
             onPress={this.handleStatusActionSheet}

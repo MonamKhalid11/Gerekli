@@ -131,7 +131,12 @@ export class WishList extends Component {
       fetching: true,
       refreshing: false,
     };
-    Navigation.events().bindComponent(this);
+
+    Navigation.events().registerNavigationButtonPressedListener(
+      ({ buttonId }) => {
+        this.topNavigationButtonPressed(buttonId);
+      },
+    );
   }
 
   /**
@@ -182,7 +187,7 @@ export class WishList extends Component {
    *
    * @param {object} event - Information about the element on which the event occurred.
    */
-  navigationButtonPressed({ buttonId }) {
+  topNavigationButtonPressed(buttonId) {
     if (buttonId === 'clearWishList') {
       Alert.alert(
         i18n.t('Clear wish list?'),
@@ -190,7 +195,7 @@ export class WishList extends Component {
         [
           {
             text: i18n.t('Cancel'),
-            onPress: () => { },
+            onPress: () => {},
             style: 'cancel',
           },
           {
@@ -304,13 +309,10 @@ export class WishList extends Component {
    */
   renderList() {
     const { wishList } = this.props;
-
-    console.log("showing data in the wishlist", wishList)
     return (
       <View style={styles.container}>
         <FlatList
           data={wishList.items}
-          extraData={wishList.items}
           keyExtractor={(item, index) => `wishlist_${index}`}
           renderItem={({ item }) => this.renderProductItem(item)}
           onRefresh={() => this.handleRefresh()}

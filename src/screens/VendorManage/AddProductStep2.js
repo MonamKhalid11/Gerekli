@@ -3,16 +3,17 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, ScrollView } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { bindActionCreators } from 'redux';
+import i18n from '../../utils/i18n';
+import { Navigation } from 'react-native-navigation';
 
 // Components
 import Section from '../../components/Section';
-import CheckoutSteps from '../../components/CheckoutSteps';
+import StepByStepSwitcher from '../../components/StepByStepSwitcher';
 import BottomActions from '../../components/BottomActions';
-import { steps } from '../../services/vendors';
 
-import i18n from '../../utils/i18n';
-import * as nav from '../../services/navigation';
-import { Navigation } from 'react-native-navigation';
+// Import actions
+import * as stepsActions from '../../actions/stepsActions';
 
 const styles = EStyleSheet.create({
   container: {
@@ -34,28 +35,6 @@ const formFields = t.struct({
   name: t.String,
   description: t.maybe(t.String),
 });
-const formOptions = {
-  disableOrder: true,
-  fields: {
-    description: {
-      label: i18n.t('Description'),
-      clearButtonMode: 'while-editing',
-      multiline: true,
-      returnKeyType: 'done',
-      blurOnSubmit: true,
-      stylesheet: {
-        ...Form.stylesheet,
-        textbox: {
-          ...Form.stylesheet.textbox,
-          normal: {
-            ...Form.stylesheet.textbox.normal,
-            height: 150,
-          },
-        },
-      },
-    },
-  },
-};
 
 /**
  * Renders add product screen step 2.
@@ -84,18 +63,67 @@ export class AddProductStep2 extends Component {
    * Moves to the next screen.
    */
   handleGoNext = () => {
-    const { stepsData } = this.props;
+    const { stepsData, stateSteps, currentStep } = this.props;
 
     const value = this.formRef.current.getValue();
     if (value) {
-      nav.pushVendorManageAddProductStep3(this.props.componentId, {
-        stepsData: {
-          ...stepsData,
-          name: value.name,
-          description: value.description,
+      // Define next step
+      const nextStep =
+        stateSteps.flowSteps[
+          Object.keys(stateSteps.flowSteps)[currentStep.stepNumber + 1]
+        ];
+      stepsActions.setNextStep(nextStep);
+
+      Navigation.push(this.props.componentId, {
+        component: {
+          name: nextStep.screenName,
+          passProps: {
+            stepsData: {
+              ...stepsData,
+              name: value.name,
+              description: value.description,
+              steps: this.props.stepsData.steps,
+            },
+            currentStep: nextStep,
+          },
         },
       });
     }
+  };
+
+  /**
+   * Returns form options (field names, etc.)
+   */
+  getFormOptions = () => {
+    return {
+      disableOrder: true,
+      fields: {
+        description: {
+          label: i18n.t('Description'),
+          i18n: {
+            optional: '',
+            required: '',
+          },
+          clearButtonMode: 'while-editing',
+          multiline: true,
+          returnKeyType: 'done',
+          blurOnSubmit: true,
+          stylesheet: {
+            ...Form.stylesheet,
+            textbox: {
+              ...Form.stylesheet.textbox,
+              normal: {
+                ...Form.stylesheet.textbox.normal,
+                height: 150,
+              },
+            },
+          },
+        },
+        name: {
+          label: i18n.t('Name'),
+        },
+      },
+    };
   };
 
   /**
@@ -103,11 +131,15 @@ export class AddProductStep2 extends Component {
    *
    * @return {JSX.Element}
    */
-  renderHeader = () => (
-    <View style={styles.header}>
-      <CheckoutSteps step={1} steps={steps} />
-    </View>
-  );
+  renderHeader = () => {
+    const { currentStep } = this.props;
+
+    return (
+      <View style={styles.header}>
+        <StepByStepSwitcher currentStep={currentStep} />
+      </View>
+    );
+  };
 
   /**
    * Renders component.
@@ -120,7 +152,11 @@ export class AddProductStep2 extends Component {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {this.renderHeader()}
           <Section>
-            <Form ref={this.formRef} type={formFields} options={formOptions} />
+            <Form
+              ref={this.formRef}
+              type={formFields}
+              options={this.getFormOptions()}
+            />
           </Section>
         </ScrollView>
         <BottomActions
@@ -132,4 +168,11 @@ export class AddProductStep2 extends Component {
   }
 }
 
-export default connect(() => ({}))(AddProductStep2);
+export default connect(
+  (state) => ({
+    stateSteps: state.steps,
+  }),
+  (dispatch) => ({
+    stepsActions: bindActionCreators(stepsActions, dispatch),
+  }),
+)(AddProductStep2);

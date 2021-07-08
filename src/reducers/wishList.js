@@ -38,10 +38,8 @@ export default function (state = initialState, action) {
       return initialState;
 
     case WISH_LIST_ADD_SUCCESS:
-      let productPassed = action.payload
       return {
         ...state,
-        items: productPassed,
         fetching: false,
       };
 

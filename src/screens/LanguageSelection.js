@@ -15,10 +15,6 @@ export const LanguageSelection = ({ settingsActions, settings }) => {
   };
 
   if (settings.currencies) {
-    settings.languages.map((el) => {
-      console.log("showing el here is ", el)
-
-    })
     return (
       <ScrollView>
         {settings.languages.map((el, index) => (

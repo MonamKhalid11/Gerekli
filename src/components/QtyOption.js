@@ -69,7 +69,7 @@ export const QtyOption = ({ initialValue, step, onChange, max, min }) => {
   const increment = () => {
     const newProductsAmount = initialValue + step;
 
-    if (max !== 1 && newProductsAmount > max) {
+    if (newProductsAmount > max) {
       return;
     }
 

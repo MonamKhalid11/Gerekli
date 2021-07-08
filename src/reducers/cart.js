@@ -12,7 +12,6 @@ import {
   CART_CLEAR_SUCCESS,
   CART_CLEAR_FAIL,
   CART_RECALCULATE_SUCCESS,
-  CART_ADD_COUPON_CODE,
   CART_REMOVE_COUPON_CODE,
   CHANGE_AMOUNT,
   AUTH_LOGOUT,
@@ -27,14 +26,16 @@ const initialState = {
   ids: [],
   fetching: false,
   user_data: {},
-  coupons: [],
   vendorCarts: [],
   isSeparateCart: null,
+  coupons: {},
   carts: {},
 };
 
 let newProducts = [];
 let newState = {};
+let newCarts = {};
+let newCoupons = {};
 
 export default function (state = initialState, action) {
   switch (action.type) {
@@ -75,11 +76,16 @@ export default function (state = initialState, action) {
       };
 
     case CART_SUCCESS:
+      newCoupons = {};
+      Object.keys(action.payload.carts).forEach((cartId) => {
+        newCoupons[cartId] = action.payload.carts[cartId].coupons;
+      });
+
       return {
         ...state,
         carts: action.payload.carts,
         isSeparateCart: action.payload.isSeparateCart,
-        coupons: [],
+        coupons: newCoupons,
       };
 
     case CART_FAIL:
@@ -98,6 +104,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         carts: {},
+        coupons: {},
         fetching: false,
       };
 
@@ -131,16 +138,22 @@ export default function (state = initialState, action) {
       };
 
     case CART_RECALCULATE_SUCCESS:
+      newCarts = JSON.parse(JSON.stringify(state.carts));
 
+      newCoupons = state.coupons;
+
+      if (state.carts.general) {
+        newCarts.general = action.payload.cart;
+        newCoupons.general = action.payload.cart.coupons;
+      } else if (action.payload.cartId) {
+        newCoupons[action.payload.cartId] = action.payload.cart.coupons;
+        newCarts[action.payload.cartId] = action.payload.cart;
+      }
 
       return {
         ...state,
-        total: action.payload.total,
-        total_formatted: action.payload.total_formatted,
-        subtotal: action.payload.total_formatted,
-        subtotal_formatted: action.payload.subtotal_formatted,
-        shipping: action.payload.shipping,
-        coupons: Object.keys(action.payload.coupons).map((k) => k),
+        carts: { ...newCarts },
+        coupons: newCoupons,
       };
 
     case AUTH_LOGOUT:
@@ -167,16 +180,10 @@ export default function (state = initialState, action) {
         fetching: false,
       };
 
-    case CART_ADD_COUPON_CODE:
-      return {
-        ...state,
-        coupons: [...state.coupons, action.payload],
-      };
-
     case CART_REMOVE_COUPON_CODE:
       return {
         ...state,
-        coupons: [...state.coupons].filter((item) => item !== action.payload),
+        coupons: { ...action.payload.newCoupons },
       };
 
     default:

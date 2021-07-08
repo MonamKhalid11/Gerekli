@@ -40,6 +40,7 @@ export default {
 
   // Shades of gray. Used to display dividers and borders.
   $darkColor: '#242424',
+  $mediumGrayColor: '#B8B8B8',
   $grayColor: '#FAFAFA',
 
   // The radius of the rounding of buttons and form elements.
@@ -71,10 +72,6 @@ export default {
   $categoryBorderRadius: 6,
   $categoryEmptyImage: '#989898',
 
-
-  // The background color of the add to wishlist button.
-  $addToWishListColor: '#989898',
-
   // Rating stars color.
   $ratingStarsColor: '#EAA944',
 
@@ -82,5 +79,7 @@ export default {
   $discussionMessageColor: '#808080',
 
   // Store logo size 760x240.
+  // $logoUrl: 'https://mobile.mve.demo.cs-cart.com/images/logos/logo-transparent.png',
   $logoUrl: require('../assets/logo.png'),
+
 };

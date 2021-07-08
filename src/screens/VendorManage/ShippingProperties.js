@@ -26,17 +26,6 @@ const formFields = t.struct({
   weight: t.Number,
   free_shipping: t.Boolean,
 });
-const formOptions = {
-  disableOrder: true,
-  fields: {
-    weight: {
-      label: i18n.t('Weight (lbs)'),
-    },
-    free_shipping: {
-      label: i18n.t('Free shipping'),
-    },
-  },
-};
 
 /**
  * Shipping setup screen.
@@ -62,6 +51,23 @@ export class ShippingProperties extends Component {
 
     this.formRef = React.createRef();
   }
+
+  /**
+   * Returns form options (field names, etc.)
+   */
+  getFormOptions = () => {
+    return {
+      disableOrder: true,
+      fields: {
+        weight: {
+          label: i18n.t('Weight (lbs)'),
+        },
+        free_shipping: {
+          label: i18n.t('Free shipping'),
+        },
+      },
+    };
+  };
 
   /**
    * Saves changes.
@@ -92,7 +98,7 @@ export class ShippingProperties extends Component {
             <Form
               ref={this.formRef}
               type={formFields}
-              options={formOptions}
+              options={this.getFormOptions()}
               value={product}
             />
           </Section>

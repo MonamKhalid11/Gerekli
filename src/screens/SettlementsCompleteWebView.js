@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { Navigation } from 'react-native-navigation';
 
 // Import actions.
 import * as authActions from '../actions/authActions';
@@ -29,14 +30,24 @@ export class SettlementsCompleteWebView extends Component {
     }),
   };
 
-  onNavigationStateChange = ({ url }, cart) => {
-    const { return_url, cartActions, orderId } = this.props;
+  onNavigationStateChange = ({ nativeEvent }, cart) => {
+    const { return_url, cartActions, orderId, cancel_url } = this.props;
 
-    if (url && return_url) {
-      if (url.toLowerCase().startsWith(return_url.toLowerCase())) {
-        cartActions.clear(cart);
-        nav.pushCheckoutComplete(this.props.componentId, { orderId });
-      }
+    if (
+      nativeEvent.url &&
+      return_url &&
+      nativeEvent.url.toLowerCase().startsWith(return_url.toLowerCase())
+    ) {
+      cartActions.clear(cart);
+      nav.pushCheckoutComplete(this.props.componentId, { orderId });
+    }
+
+    if (
+      nativeEvent.url &&
+      cancel_url &&
+      nativeEvent.url.toLowerCase().startsWith(cancel_url.toLowerCase())
+    ) {
+      Navigation.pop(this.props.componentId);
     }
   };
 
@@ -44,7 +55,7 @@ export class SettlementsCompleteWebView extends Component {
     const { payment_url, query_parameters, cart } = this.props;
     let url = payment_url;
 
-    if (query_parameters) {
+    if (Object.keys(query_parameters)?.length) {
       url = `${url}?${objectToQuerystring(query_parameters)}`;
     }
 
@@ -59,7 +70,7 @@ export class SettlementsCompleteWebView extends Component {
           source={{
             uri: url,
           }}
-          onNavigationStateChange={(e) => this.onNavigationStateChange(e, cart)}
+          onLoadStart={(e) => this.onNavigationStateChange(e, cart)}
         />
       </View>
     );

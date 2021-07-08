@@ -18,7 +18,7 @@ import * as cartActions from '../actions/cartActions';
 import * as paymentsActions from '../actions/paymentsActions';
 
 // Components
-import CheckoutSteps from '../components/CheckoutSteps';
+import StepByStepSwitcher from '../components/StepByStepSwitcher';
 import CartFooter from '../components/CartFooter';
 import FormBlock from '../components/FormBlock';
 import PaymentPhoneForm from '../components/PaymentPhoneForm';
@@ -27,7 +27,6 @@ import PaymentEmpty from '../components/PaymentEmpty';
 import PaymentCheckForm from '../components/PaymentCheckForm';
 import PaymentPaypalForm from '../components/PaymentPaypalForm';
 import PaymentYandexKassaForm from '../components/PaymentYandexKassaForm';
-import CouponCodes from '../components/CouponCodes';
 import Spinner from '../components/Spinner';
 import Icon from '../components/Icon';
 import { stripTags, formatPrice } from '../utils';
@@ -77,23 +76,31 @@ const styles = EStyleSheet.create({
   },
 });
 
-const PAYMENT_CASH_ONLY = 'views/orders/components/payments/cod.tpl';
-const PAYMENT_CREDIT_CARD = 'views/orders/components/payments/cc.tpl';
-const PAYMENT_EMPTY = 'views/orders/components/payments/empty.tpl';
-const PAYMENT_CHECK = 'views/orders/components/payments/check.tpl';
-const PAYMENT_PAYPAL_EXPRESS =
-  'addons/paypal/views/orders/components/payments/paypal_express.tpl';
-const PAYMENT_PHONE = 'views/orders/components/payments/phone.tpl';
-const PAYMENT_YANDEX_KASSA =
-  'addons/rus_payments/views/orders/components/payments/yandex_money.tpl';
-const PAYMENTS = [
-  PAYMENT_CREDIT_CARD,
-  PAYMENT_EMPTY,
-  PAYMENT_YANDEX_KASSA,
-  PAYMENT_CHECK,
-  PAYMENT_PAYPAL_EXPRESS,
-  PAYMENT_PHONE,
-  PAYMENT_CASH_ONLY
+const TPL_CREDIT_CARD = 'views/orders/components/payments/cc.tpl';
+const TPL_EMPTY = 'views/orders/components/payments/empty.tpl';
+const TPL_CHECK = 'views/orders/components/payments/check.tpl';
+const TPL_PHONE = 'views/orders/components/payments/phone.tpl';
+const TPL_CASH_ONLY = 'views/orders/components/payments/cod.tpl';
+
+const SUPPORTED_PAYMENT_TPLS = [
+  TPL_CREDIT_CARD,
+  TPL_EMPTY,
+  TPL_CHECK,
+  TPL_PHONE,
+  TPL_CASH_ONLY,
+
+  
+];
+
+const SCRIPT_YOOKASSA = 'yandex_checkout.php';
+const SCRIPT_YOOKASSA_FOR_MARKETPLACES = 'yandex_checkout_for_marketplaces.php';
+const SCRIPT_YOOKASSA_LEGACY = 'yandex_money.php';
+const SCRIPT_PAYPAL_EXPRESS = 'paypal_express.php';
+const SUPPORTED_PAYMENT_SCRIPTS = [
+  SCRIPT_YOOKASSA,
+  SCRIPT_YOOKASSA_FOR_MARKETPLACES,
+  SCRIPT_YOOKASSA_LEGACY,
+  SCRIPT_PAYPAL_EXPRESS,
 ];
 
 /**
@@ -135,15 +142,17 @@ export class CheckoutPayment extends Component {
    * Defines the available payment methods.
    */
   componentDidMount() {
-    const { cart, stateCart } = this.props;
-
-    console.log("[Payments]shwoing existing carts here ", cart)
-
+    const { cart } = this.props;
+    console.log("showing values here forcart.payments ",cart.payments)
     const items = Object.keys(cart.payments)
       .map((k) => cart.payments[k])
-      .filter((p) => PAYMENTS.includes(p.template));
-
-    console.log("showing items here", items)
+      // .filter(
+      //   (p) =>
+      //    { console.log("showing values of P",SUPPORTED_PAYMENT_TPLS.includes(p.template))
+      //     SUPPORTED_PAYMENT_TPLS.includes(p.template) ||
+      //     SUPPORTED_PAYMENT_SCRIPTS.includes(p.script)
+      // }
+      // );
     // FIXME: Default selected payment method.
     const selectedItem = items[0];
 
@@ -162,10 +171,7 @@ export class CheckoutPayment extends Component {
       return null;
     }
 
-    if (
-      selectedItem.template === PAYMENT_PAYPAL_EXPRESS ||
-      selectedItem.template === PAYMENT_YANDEX_KASSA
-    ) {
+    if (SUPPORTED_PAYMENT_SCRIPTS.includes(selectedItem.script)) {
       return this.placeSettlements();
     }
 
@@ -176,81 +182,76 @@ export class CheckoutPayment extends Component {
    * Redirects to CheckoutComplete.
    */
   placeOrderAndComplete() {
-    try {
-      const { cart, shipping_id, ordersActions, cartActions } = this.props;
-      console.log("showing values here ", this.paymentFormRef)
+    const { cart, ordersActions, cartActions, storeCart } = this.props;
+    let { shipping_id } = this.props;
+    const values = this.paymentFormRef.getValue();
 
-      const values = this.paymentFormRef.getValue();
-
-      if (!values) {
-        return null;
-      }
-
-      this.setState({
-        fetching: true,
-      });
-
-      const orderInfo = {
-        products: {},
-        coupon_codes: cart.coupons,
-        shipping_id,
-        payment_id: this.state.selectedItem.payment_id,
-        user_data: cart.user_data,
-        ...values,
-      };
-      Object.keys(cart.products).map((key) => {
-        const p = cart.products[key];
-        orderInfo.products[p.product_id] = {
-          product_id: p.product_id,
-          amount: p.amount,
-          product_options: p.product_options,
-        };
-        return orderInfo;
-      });
-
-      if (values.phone) {
-        orderInfo.payment_info = {
-          ...orderInfo.payment_info,
-          customer_phone: values.phone,
-        };
-      } else if (values.cardNumber) {
-        orderInfo.payment_info = {
-          ...orderInfo.payment_info,
-          card_number: values.cardNumber,
-          expiry_month: values.expiryMonth,
-          expiry_year: values.expiryYear,
-          cardholder_name: values.cardholderName,
-          cvv2: values.ccv,
-        };
-      }
-      console.log("Hey machine show me placed order info:", orderInfo)
-
-
-      ordersActions
-        .create(orderInfo)
-        .then(({ data }) => {
-          this.setState({
-            fetching: false,
-          });
-          if (!data) {
-            return;
-          }
-          cartActions.clear(cart);
-          nav.pushCheckoutComplete(this.props.componentId, {
-            orderId: data.order_id,
-          });
-        })
-        .catch(() => {
-          this.setState({
-            fetching: false,
-          });
-        });
+    if (!values) {
       return null;
-    } catch (error) {
-      console.log("whats the issue with payment passing on", error)
-
     }
 
+    this.setState({
+      fetching: true,
+    });
+
+    if (!cart?.isShippingRequired) {
+      shipping_id = 0;
+    }
+
+    const orderInfo = {
+      products: {},
+      coupon_codes: Object.keys(cart.coupons),
+      shipping_id,
+      payment_id: this.state.selectedItem.payment_id,
+      user_data: cart.user_data,
+      ...values,
+    };
+    Object.keys(cart.products).map((key) => {
+      const p = cart.products[key];
+      orderInfo.products[p.product_id] = {
+        product_id: p.product_id,
+        amount: p.amount,
+        product_options: p.product_options,
+      };
+      return orderInfo;
+    });
+
+    if (values.phone) {
+      orderInfo.payment_info = {
+        ...orderInfo.payment_info,
+        customer_phone: values.phone,
+      };
+    } else if (values.cardNumber) {
+      orderInfo.payment_info = {
+        ...orderInfo.payment_info,
+        card_number: values.cardNumber,
+        expiry_month: values.expiryMonth,
+        expiry_year: values.expiryYear,
+        cardholder_name: values.cardholderName,
+        cvv2: values.ccv,
+      };
+    }
+
+    ordersActions
+      .create(orderInfo)
+      .then(({ data }) => {
+        this.setState({
+          fetching: false,
+        });
+        if (!data) {
+          return;
+        }
+        cartActions.clear(cart, storeCart.coupons);
+        nav.pushCheckoutComplete(this.props.componentId, {
+          orderId: data.order_id,
+        });
+      })
+      .catch(() => {
+        this.setState({
+          fetching: false,
+        });
+      });
+    return null;
   }
 
   /**
@@ -338,8 +339,8 @@ export class CheckoutPayment extends Component {
         {isSelected ? (
           <Icon name="radio-button-checked" style={styles.checkIcon} />
         ) : (
-            <Icon name="radio-button-unchecked" style={styles.uncheckIcon} />
-          )}
+          <Icon name="radio-button-unchecked" style={styles.uncheckIcon} />
+        )}
         <Text style={styles.paymentItemText}>{stripTags(item.payment)}</Text>
       </TouchableOpacity>
     );
@@ -350,11 +351,14 @@ export class CheckoutPayment extends Component {
    *
    * @return {JSX.Element}
    */
-  renderHeader = () => (
-    <View style={styles.stepsWrapper}>
-      <CheckoutSteps step={3} />
-    </View>
-  );
+  renderHeader = () => {
+    const { currentStep } = this.props;
+    return (
+      <View style={styles.stepsWrapper}>
+        <StepByStepSwitcher currentStep={currentStep} />
+      </View>
+    );
+  };
 
   /**
    * Renders form fields.
@@ -362,16 +366,15 @@ export class CheckoutPayment extends Component {
    * @return {JSX.Element}
    */
   renderFooter() {
-    const { cart, shipping_id, cartActions } = this.props;
+    const { cart } = this.props;
     const { selectedItem } = this.state;
     if (!selectedItem) {
       return null;
     }
     let form = null;
     // FIXME: HARDCODE
-    console.log("selected item passeed with template", selectedItem.template)
     switch (selectedItem.template) {
-      case PAYMENT_EMPTY:
+      case TPL_EMPTY:
         form = (
           <PaymentEmpty
             onInit={(ref) => {
@@ -380,7 +383,7 @@ export class CheckoutPayment extends Component {
           />
         );
         break;
-      case PAYMENT_CREDIT_CARD:
+      case TPL_CREDIT_CARD:
         form = (
           <PaymentCreditCardForm
             onInit={(ref) => {
@@ -389,7 +392,7 @@ export class CheckoutPayment extends Component {
           />
         );
         break;
-      case PAYMENT_CHECK:
+      case TPL_CHECK:
         form = (
           <PaymentCheckForm
             onInit={(ref) => {
@@ -398,7 +401,33 @@ export class CheckoutPayment extends Component {
           />
         );
         break;
-      case PAYMENT_PAYPAL_EXPRESS:
+      case TPL_PHONE:
+        form = (
+          <PaymentPhoneForm
+            onInit={(ref) => {
+              this.paymentFormRef = ref;
+            }}
+            value={{ phone: cart.user_data.b_phone }}
+          />
+        );
+        break;
+        case TPL_CASH_ONLY:
+          form = (
+            <PaymentPhoneForm
+              onInit={(ref) => {
+                this.paymentFormRef = ref;
+              }}
+              value={{ phone: cart.user_data.b_phone }}
+            />
+          );
+          break;
+
+      default:
+        break;
+    }
+
+    switch (selectedItem.script) {
+      case SCRIPT_PAYPAL_EXPRESS:
         form = (
           <PaymentPaypalForm
             onInit={(ref) => {
@@ -407,32 +436,14 @@ export class CheckoutPayment extends Component {
           />
         );
         break;
-      case PAYMENT_YANDEX_KASSA:
+      case SCRIPT_YOOKASSA:
+      case SCRIPT_YOOKASSA_FOR_MARKETPLACES:
+      case SCRIPT_YOOKASSA_LEGACY:
         form = (
           <PaymentYandexKassaForm
             onInit={(ref) => {
               this.paymentFormRef = ref;
             }}
-          />
-        );
-        break;
-      case PAYMENT_PHONE:
-        form = (
-          <PaymentPhoneForm
-            onInit={(ref) => {
-              this.paymentFormRef = ref;
-            }}
-            value={{ phone: cart.user_data.b_phone }}
-          />
-        );
-        break;
-      case PAYMENT_CASH_ONLY:
-        form = (
-          <PaymentPhoneForm
-            onInit={(ref) => {
-              this.paymentFormRef = ref;
-            }}
-            value={{ phone: cart.user_data.b_phone }}
           />
         );
         break;
@@ -449,27 +460,6 @@ export class CheckoutPayment extends Component {
             {stripTags(selectedItem.instructions)}
           </Text>
         </FormBlock>
-        <CouponCodes
-          items={cart.coupons}
-          onAddPress={(value) => {
-            cartActions.addCoupon(value);
-            setTimeout(() => {
-              cartActions.recalculateTotal(
-                shipping_id,
-                this.props.cart.coupons,
-              );
-            }, 400);
-          }}
-          onRemovePress={(value) => {
-            cartActions.removeCoupon(value);
-            setTimeout(() => {
-              cartActions.recalculateTotal(
-                shipping_id,
-                this.props.cart.coupons,
-              );
-            }, 400);
-          }}
-        />
       </View>
     );
   }
@@ -491,6 +481,8 @@ export class CheckoutPayment extends Component {
    */
   render() {
     const { cart } = this.props;
+    console.log("showing everything in cart",cart)
+
     return (
       <SafeAreaView style={styles.container}>
         <KeyboardAwareScrollView>
@@ -522,7 +514,7 @@ export class CheckoutPayment extends Component {
 export default connect(
   (state) => ({
     auth: state.auth,
-    stateCart: state.cart,
+    storeCart: state.cart,
   }),
   (dispatch) => ({
     ordersActions: bindActionCreators(ordersActions, dispatch),

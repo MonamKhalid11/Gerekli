@@ -7,10 +7,9 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Components
 import Section from '../../components/Section';
-import CheckoutSteps from '../../components/CheckoutSteps';
+import StepByStepSwitcher from '../../components/StepByStepSwitcher';
 import BottomActions from '../../components/BottomActions';
 import Spinner from '../../components/Spinner';
-import { steps } from '../../services/vendors';
 
 // Action
 import * as productsActions from '../../actions/vendorManage/productsActions';
@@ -41,9 +40,6 @@ const formFields = t.struct({
   in_stock: t.Number,
   list_price: t.Number,
 });
-const formOptions = {
-  disableOrder: true,
-};
 
 /**
  * Renders add product screen step 3.
@@ -116,15 +112,39 @@ export class AddProductStep3 extends Component {
   };
 
   /**
+   * Returns form options (field names, etc.)
+   */
+  getFormOptions = () => {
+    return {
+      disableOrder: true,
+      fields: {
+        price: {
+          label: i18n.t('Price'),
+        },
+        in_stock: {
+          label: i18n.t('In stock'),
+        },
+        list_price: {
+          label: i18n.t('List price'),
+        },
+      },
+    };
+  };
+
+  /**
    * Renders header.
    *
    * @return {JSX.Element}
    */
-  renderHeader = () => (
-    <View style={styles.header}>
-      <CheckoutSteps step={2} steps={steps} />
-    </View>
-  );
+  renderHeader = () => {
+    const { currentStep } = this.props;
+
+    return (
+      <View style={styles.header}>
+        <StepByStepSwitcher currentStep={currentStep} />
+      </View>
+    );
+  };
 
   /**
    * Renders component.
@@ -138,7 +158,11 @@ export class AddProductStep3 extends Component {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {this.renderHeader()}
           <Section>
-            <Form ref={this.formRef} type={formFields} options={formOptions} />
+            <Form
+              ref={this.formRef}
+              type={formFields}
+              options={this.getFormOptions()}
+            />
           </Section>
         </ScrollView>
         <BottomActions

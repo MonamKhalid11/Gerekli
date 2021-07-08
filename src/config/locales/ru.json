@@ -1,7 +1,7 @@
 {
     "": {
-        "language": "ru",
-        "plural-forms": "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);"
+    "language": "ru",
+    "plural-forms": "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);"
     },
     "Cart": "Корзина",
     "Total": "Итого",
@@ -44,7 +44,6 @@
     "First name": "Имя",
     "Go To Store": "Перейти в магазин",
     "Home": "Главная",
-    "home": "Главная",
     "Information": "Информация",
     "{{count}} item(s)": "{{count}} шт.",
     "Last name": "Фамилия",
@@ -975,13 +974,6 @@
     "Out of stock": "Нет в наличии",
     "Including tax": "Включая налог",
     "Contact us for a price": "Свяжитесь с нами насчёт цены",
-    "Vendor Login": "Профиль Продавца",
-    "Поставщики": "Продавцы",
-    "Settings": "Настройки",
-    "Pages": "Страницы",
-    "languages": "Язык",
-    "Favorite": "Избранное",
-    "Taxes": "Налоги",
-    "Logout": "Выйти",
     "Becomeaseller": "Стать продавцом"
+
 }

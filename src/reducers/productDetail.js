@@ -3,13 +3,14 @@ import {
   FETCH_ONE_PRODUCT_FAIL,
   FETCH_ONE_PRODUCT_SUCCESS,
   RECALCULATE_PRODUCT_PRICE_SUCCESS,
-  CHANGE_PRODUCTS_AMOUNT,
 } from '../constants';
 
-const initialState = {
+const productInstance = {
   fetching: true,
   amount: 1,
   options: [],
+  convertedOptions: [],
+  convertedVariants: [],
   price_formatted: {
     price: '',
   },
@@ -19,6 +20,11 @@ const initialState = {
   taxed_price_formatted: {
     price: '',
   },
+  master_product_offers_count: 0,
+};
+
+const initialState = {
+  byId: {},
 };
 
 export default function (state = initialState, action) {
@@ -26,40 +32,53 @@ export default function (state = initialState, action) {
     case FETCH_ONE_PRODUCT_REQUEST:
       return {
         ...state,
-        fetching: true,
-        options: [],
-        list_discount_prc: 0,
-        amount: 1,
-        qty_step: 1,
-        selectedAmount: 1,
-        discount_prc: 0,
-        discount: null,
+        byId: {
+          ...state.byId,
+          [action.payload.pid]: {
+            ...productInstance,
+            fetching: true,
+            options: [],
+            list_discount_prc: 0,
+            amount: 1,
+            qty_step: 1,
+            selectedAmount: 1,
+            discount_prc: 0,
+            discount: null,
+            product_features: {},
+          },
+        },
       };
 
     case FETCH_ONE_PRODUCT_SUCCESS:
     case RECALCULATE_PRODUCT_PRICE_SUCCESS:
       return {
-        ...initialState,
-        ...action.payload.product,
-        options: Object.keys(action.payload.product.product_options).map(
-          (k) => action.payload.product.product_options[k],
-        ),
-        fetching: false,
-        qty_step: parseInt(action.payload.product.qty_step, 10) || 1,
-        amount: parseInt(action.payload.product.amount, 10) || 0,
-        selectedAmount: parseInt(action.payload.product.qty_step, 10) || 1,
+        ...state,
+        byId: {
+          ...state.byId,
+          [action.payload.pid]: {
+            ...state.byId[action.payload.pid],
+            ...action.payload.product,
+            options: Object.keys(action.payload.product.product_options).map(
+              (k) => action.payload.product.product_options[k],
+            ),
+            fetching: false,
+            qty_step: parseInt(action.payload.product.qty_step, 10) || 1,
+            amount: parseInt(action.payload.product.amount, 10) || 0,
+            selectedAmount: parseInt(action.payload.product.qty_step, 10) || 1,
+          },
+        },
       };
 
     case FETCH_ONE_PRODUCT_FAIL:
       return {
         ...state,
-        fetching: false,
-      };
-
-    case CHANGE_PRODUCTS_AMOUNT:
-      return {
-        ...state,
-        selectedAmount: action.payload,
+        byId: {
+          ...state.byId,
+          [action.payload.pid]: {
+            ...state.byId[action.payload.pid],
+            fetching: false,
+          },
+        },
       };
 
     default:

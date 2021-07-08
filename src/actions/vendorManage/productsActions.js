@@ -86,7 +86,7 @@ export function deleteProduct(id = null) {
         payload: {
           type: 'success',
           title: i18n.t('Success'),
-          text: i18n.t('The product was deleted.'),
+          text: i18n.t('The product was deleted'),
         },
       });
     } catch (error) {
@@ -122,7 +122,7 @@ export function updateProduct(id = null, product = {}) {
         payload: {
           type: 'success',
           title: i18n.t('Success'),
-          text: i18n.t('The product was updated.'),
+          text: i18n.t('The product was updated'),
         },
       });
     } catch (error) {
@@ -160,7 +160,7 @@ export function createProduct(product) {
         payload: {
           type: 'success',
           title: i18n.t('Success'),
-          text: i18n.t('The product was created.'),
+          text: i18n.t('The product was created'),
         },
       });
 

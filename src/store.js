@@ -26,7 +26,10 @@ store.subscribe(() => {
       auth: store.getState().auth,
       cart: store.getState().cart,
       profile: store.getState().profile,
-      settings: store.getState().settings,
+      settings: {
+        ...store.getState().settings,
+        languageCurrencyFeatureFlag: true,
+      },
     }),
   );
 });
