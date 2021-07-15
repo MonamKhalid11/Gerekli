@@ -40,6 +40,7 @@ import VendorManageCategoriesPicker from './screens/VendorManage/CategoriesPicke
 import VendorManageOrderDetail from './screens/VendorManage/OrderDetail';
 import LanguageSelection from './screens/LanguageSelection';
 import CurrencySelection from './screens/CurrencySelection';
+import { ShopClosed } from './screens/ShopClosed';
 
 const screenList = [
   { name: 'Page', component: Page },
@@ -76,6 +77,7 @@ const screenList = [
   { name: 'ImagePicker', component: ImagePicker },
   { name: 'LanguageSelection', component: LanguageSelection },
   { name: 'CurrencySelection', component: CurrencySelection },
+  { name: 'ShopClosed', component: ShopClosed },
   {
     name: 'VendorManageAddProductStep1',
     component: VendorManageAddProductStep1,

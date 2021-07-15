@@ -152,26 +152,28 @@ export async function setStartSettings(currentLanguage, currentCurrency) {
       type: LANGUAGE_CURRENCY_FEATURE_FLAG_OFF,
     });
     console.log('Error loading languages and currencies', e);
+
+    return currentLanguage;
   }
 }
 
 export async function initApp() {
-  const persist = await AsyncStorage.getItem(STORE_KEY);
-  if (persist) {
-    store.dispatch({
-      type: RESTORE_STATE,
-      payload: JSON.parse(persist),
-    });
-  }
-
-  const savedLanguage = get(JSON.parse(persist), 'settings.selectedLanguage');
-  const savedCurrency = get(JSON.parse(persist), 'settings.selectedCurrency');
-  const currentLanguage = await setStartSettings(savedLanguage, savedCurrency);
-
-  I18nManager.allowRTL(true);
-  I18nManager.forceRTL(['ar', 'he', 'fa'].includes(currentLanguage.langCode));
+  let currentLanguage;
 
   try {
+    const persist = await AsyncStorage.getItem(STORE_KEY);
+    if (persist) {
+      store.dispatch({
+        type: RESTORE_STATE,
+        payload: JSON.parse(persist),
+      });
+    }
+    const savedLanguage = get(JSON.parse(persist), 'settings.selectedLanguage');
+    const savedCurrency = get(JSON.parse(persist), 'settings.selectedCurrency');
+    currentLanguage = await setStartSettings(savedLanguage, savedCurrency);
+
+    I18nManager.allowRTL(true);
+    I18nManager.forceRTL(['ar', 'he', 'fa'].includes(currentLanguage.langCode));
     // Load remote lang variables
     const transResult = await API.get(
       `/sra_translations/?name=mobile_app.mobile_&lang_code=${currentLanguage.langCode}`,
