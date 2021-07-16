@@ -5,11 +5,14 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import Swiper from 'react-native-swiper';
 import chunk from 'lodash/chunk';
 import ProductListView from './ProductListView';
-import { PRODUCT_NUM_COLUMNS } from '../utils';
+import { PRODUCT_NUM_COLUMNS, PRODUCT_IMAGE_WIDTH } from '../utils';
 
 const styles = EStyleSheet.create({
   container: {
     marginTop: 5,
+  },
+  swiperWrapper: {
+    height: PRODUCT_IMAGE_WIDTH + 150,
   },
   img: {
     width: '100%',
@@ -89,7 +92,7 @@ export default class ProductBlock extends Component {
         <Swiper
           horizontal
           height={300}
-          style={styles.container}
+          containerStyle={styles.swiperWrapper}
           loadMinimal={6}>
           {itemsList}
         </Swiper>
