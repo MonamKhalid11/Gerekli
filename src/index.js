@@ -22,6 +22,13 @@ function Start() {
   Navigation.events().registerAppLaunchedListener(async () => {
     await appActions.initApp();
     await prepareIcons();
+    const state = store.getState();
+
+    if (state.settings.isShopClosed) {
+      Navigation.setRoot(nav.setClosedRoot());
+      return;
+    }
+
     Navigation.setRoot(nav.setRoot());
   });
 }
