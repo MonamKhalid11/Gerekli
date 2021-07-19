@@ -98,7 +98,7 @@ export default class BannerBlocks extends Component {
     return (
       <View style={styles.container}>
         {wrapper !== '' && <Text style={styles.header}>{name}</Text>}
-        <Swiper horizontal height={200} loadMinimal={6}>
+        <Swiper horizontal height={200} loadMinimal={true}>
           {itemsList}
         </Swiper>
       </View>

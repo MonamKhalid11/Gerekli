@@ -3,6 +3,50 @@ import { iconsMap } from '../utils/navIcons';
 import i18n from '../utils/i18n';
 import theme from '../config/theme';
 
+export function setClosedRoot() {
+  Navigation.setDefaultOptions({
+    topBar: {
+      backButton: {
+        color: theme.$navBarButtonColor,
+        showTitle: false,
+      },
+      title: {
+        fontSize: theme.$navBarTitleFontSize,
+        color: theme.$navBarTextColor,
+      },
+      background: {
+        color: theme.$navBarBackgroundColor,
+      },
+    },
+    layout: {
+      backgroundColor: theme.$screenBackgroundColor,
+    },
+    bottomTabs: {
+      backgroundColor: theme.$bottomTabsBackgroundColor,
+    },
+    bottomTab: {
+      badgeColor: theme.$bottomTabsPrimaryBadgeColor,
+      textColor: theme.$bottomTabsTextColor,
+      selectedTextColor: theme.$bottomTabsSelectedTextColor,
+      iconColor: theme.$bottomTabsIconColor,
+      selectedIconColor: theme.$bottomTabsSelectedIconColor,
+    },
+  });
+  return {
+    root: {
+      stack: {
+        children: [
+          {
+            component: {
+              name: 'ShopClosed',
+            },
+          },
+        ],
+      },
+    },
+  };
+}
+
 export function setRoot() {
   Navigation.setDefaultOptions({
     topBar: {

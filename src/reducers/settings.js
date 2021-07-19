@@ -6,6 +6,7 @@ import {
   RESTORE_STATE,
   LANGUAGE_CURRENCY_FEATURE_FLAG_OFF,
   SET_DATE_FORMAT,
+  SHOP_CLOSED,
 } from '../constants';
 
 const initialState = {
@@ -21,6 +22,7 @@ const initialState = {
   languageCurrencyFeatureFlag: true,
   languages: null,
   currencies: null,
+  isShopClosed: false,
 };
 
 export default function (state = initialState, action) {
@@ -75,6 +77,12 @@ export default function (state = initialState, action) {
       return {
         ...state,
         languageCurrencyFeatureFlag: false,
+      };
+
+    case SHOP_CLOSED:
+      return {
+        ...state,
+        isShopClosed: true,
       };
 
     case RESTORE_STATE:

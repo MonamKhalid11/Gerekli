@@ -93,7 +93,7 @@ export default class ProductBlock extends Component {
           horizontal
           height={300}
           containerStyle={styles.swiperWrapper}
-          loadMinimal={6}>
+          loadMinimal={true}>
           {itemsList}
         </Swiper>
       </View>
