@@ -2,16 +2,19 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { View, Text, TouchableOpacity } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import Rating from './Rating';
-import { AddToCartButton } from './AddToCartButton';
 import i18n from '../utils/i18n';
 import Icon from './Icon';
+
+// Components
+import StarsRating from './StarsRating';
+import { AddToCartButton } from './AddToCartButton';
+
+const RATING_STAR_SIZE = 14;
 
 const styles = (isStock, lastBlock, lastVendor, wishListActive) =>
   EStyleSheet.create({
     container: {
       paddingVertical: '1rem',
-      paddingHorizontal: '1rem',
       borderBottomWidth: lastVendor ? 0 : 1,
       borderColor: '$menuItemsBorderColor',
     },
@@ -53,7 +56,7 @@ const styles = (isStock, lastBlock, lastVendor, wishListActive) =>
 
 export const Seller = ({
   productOffer,
-  lastVendor,
+  isLastVendor,
   onPress,
   handleAddToWishList,
 }) => {
@@ -65,7 +68,7 @@ export const Seller = ({
   );
 
   return (
-    <View style={styles(null, null, lastVendor).container}>
+    <View style={styles(null, null, isLastVendor).container}>
       <View style={{ ...styles().containerBlock }}>
         <View>
           <Text style={styles().title}>{productOffer.company_name}</Text>
@@ -77,7 +80,11 @@ export const Seller = ({
         </View>
         <View>
           {productOffer.company?.average_rating && (
-            <Rating value={productOffer.company.average_rating} />
+            <StarsRating
+              value={productOffer.company.average_rating}
+              isRatingSelectionDisabled
+              size={RATING_STAR_SIZE}
+            />
           )}
           <Text style={styles(isStock).stock}>
             {isStock ? i18n.t('In stock') : i18n.t('Out of stock')}
@@ -86,7 +93,7 @@ export const Seller = ({
       </View>
       <View style={styles(null, 'lastBlock').containerBlock}>
         <Text style={styles().priceText}>
-          {productOffer.base_price_formatted.price}
+          {productOffer.price_formatted.price}
         </Text>
         <View style={styles().buttonsWrapper}>
           <TouchableOpacity onPress={handleAddToWishList}>

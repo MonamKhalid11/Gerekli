@@ -8,7 +8,7 @@ const styles = EStyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 15,
+    paddingVertical: 14,
   },
   text: {
     fontSize: '0.9rem',

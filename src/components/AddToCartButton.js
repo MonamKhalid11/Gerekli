@@ -12,7 +12,6 @@ const styles = EStyleSheet.create({
   addToCartBtn: {
     backgroundColor: '$primaryColor',
     padding: 10,
-    width: '100%',
     borderRadius: 3,
     justifyContent: 'center',
     alignItems: 'center',

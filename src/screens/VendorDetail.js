@@ -11,7 +11,7 @@ import * as productsActions from '../actions/productsActions';
 
 // Components
 import Spinner from '../components/Spinner';
-import Rating from '../components/Rating';
+import StarsRating from '../components/StarsRating';
 import Section from '../components/Section';
 import SectionRow from '../components/SectionRow';
 import DiscussionList from '../components/DiscussionList';
@@ -21,21 +21,33 @@ import { iconsMap } from '../utils/navIcons';
 import { Navigation } from 'react-native-navigation';
 import * as nav from '../services/navigation';
 
+const RATING_STAR_SIZE = 14;
+
 // Styles
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    paddingHorizontal: 14,
+  },
+  logoWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
   },
   logo: {
     height: 60,
     width: 100,
     resizeMode: 'contain',
   },
+  descriptionWrapper: {
+    marginBottom: 20,
+  },
   vendorName: {
+    paddingBottom: 10,
     fontSize: '1rem',
-    fontWeight: 'bold',
     textAlign: 'left',
+    fontWeight: '500',
   },
   vendorDescription: {
     color: 'gray',
@@ -43,15 +55,13 @@ const styles = EStyleSheet.create({
     marginTop: 10,
     textAlign: 'left',
   },
+  contactsWrapper: {
+    marginBottom: 20,
+  },
   address: {
     color: 'gray',
     fontSize: '0.9rem',
     textAlign: 'left',
-  },
-  logoWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   noPadding: {
     padding: 0,
@@ -221,12 +231,13 @@ export class VendorDetail extends Component {
     const { discussion } = this.state;
     const { vendors } = this.props;
     return (
-      <Section>
-        <View style={styles.vendorWrapper}>
+      <Section topDivider>
+        <View style={styles.descriptionWrapper}>
           <Text style={styles.vendorName}>{vendors.currentVendor.company}</Text>
-          <Rating
+          <StarsRating
             value={discussion.average_rating}
-            count={discussion.search.total_items}
+            isRatingSelectionDisabled
+            size={RATING_STAR_SIZE}
           />
           <Text style={styles.vendorDescription}>
             {stripTags(vendors.currentVendor.description)}
@@ -278,18 +289,20 @@ export class VendorDetail extends Component {
     });
 
     return (
-      <Section title={i18n.t('Contact Information')}>
-        {Object.keys(contactInformationData).map((contact) => {
-          if (!contactInformationData[contact].fieldValue) {
-            return null;
-          }
-          return (
-            <SectionRow
-              name={i18n.t(contactInformationData[contact].fieldName)}
-              value={contactInformationData[contact].fieldValue}
-            />
-          );
-        })}
+      <Section topDivider title={i18n.t('Contact Information')}>
+        <View style={styles.contactsWrapper}>
+          {Object.keys(contactInformationData).map((contact) => {
+            if (!contactInformationData[contact].fieldValue) {
+              return null;
+            }
+            return (
+              <SectionRow
+                name={i18n.t(contactInformationData[contact].fieldName)}
+                value={contactInformationData[contact].fieldValue}
+              />
+            );
+          })}
+        </View>
       </Section>
     );
   }
@@ -313,6 +326,7 @@ export class VendorDetail extends Component {
 
     return (
       <Section
+        topDivider
         title={title}
         wrapperStyle={styles.noPadding}
         showRightButton={!discussion.disable_adding && auth.logged}
@@ -343,7 +357,7 @@ export class VendorDetail extends Component {
   render() {
     const { vendors } = this.props;
 
-    if (!vendors.currentVendor && vendors.fetching) {
+    if (!vendors.currentVendor || vendors.fetching) {
       return <Spinner visible />;
     }
 
