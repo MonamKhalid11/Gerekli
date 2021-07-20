@@ -90,7 +90,7 @@ export async function setStartSettings(currentLanguage, currentCurrency) {
         }
       });
 
-      if (!currentCurrency.currencyCode && currencies.length) {
+      if (!currentCurrency?.currencyCode && currencies.length) {
         currentCurrency = {
           currencyCode: currencies[0].currency_code,
           symbol: currencies[0].symbol,
