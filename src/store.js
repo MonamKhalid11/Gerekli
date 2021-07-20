@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 import { STORE_KEY } from './constants';
 
-import rootReducer from './reducers';
+import { rootReducer } from './reducers';
 
 const middlewares = [thunk];
 
@@ -29,6 +29,7 @@ store.subscribe(() => {
       settings: {
         ...store.getState().settings,
         languageCurrencyFeatureFlag: true,
+        isShopClosed: false,
         productReviewsAddon: {
           isEnabled: false,
           isCommentOnly: false,
