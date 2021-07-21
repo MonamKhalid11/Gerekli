@@ -30,6 +30,10 @@ store.subscribe(() => {
         ...store.getState().settings,
         languageCurrencyFeatureFlag: true,
         isShopClosed: false,
+        productReviewsAddon: {
+          isEnabled: false,
+          isCommentOnly: false,
+        },
       },
     }),
   );

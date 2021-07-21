@@ -1,3 +1,4 @@
+import { get } from 'lodash';
 import {
   SET_CURRENCY,
   SET_LANGUAGE,
@@ -5,8 +6,8 @@ import {
   GET_LANGUAGES,
   RESTORE_STATE,
   LANGUAGE_CURRENCY_FEATURE_FLAG_OFF,
-  SET_DATE_FORMAT,
   SHOP_CLOSED,
+  SET_ADDONS_SETTINGS,
 } from '../constants';
 
 const initialState = {
@@ -17,6 +18,10 @@ const initialState = {
   selectedLanguage: {
     langCode: '',
     name: '',
+  },
+  productReviewsAddon: {
+    isEnabled: false,
+    isCommentOnly: false,
   },
   dateFormat: '',
   languageCurrencyFeatureFlag: true,
@@ -86,17 +91,29 @@ export default function (state = initialState, action) {
       };
 
     case RESTORE_STATE:
+    case SET_ADDONS_SETTINGS:
+      const dateFormat = get(
+        action.payload,
+        'settings.appearance.calendar_date_format',
+      );
+      action.payload === 'day_first' ? 'dd/MM/yyyy' : 'MM/dd/yyyy';
+      const productReviewsAddon = get(action.payload, 'addons.product_reviews');
+      const isCommentOnly =
+        productReviewsAddon?.review_fields.length === 1 ? true : false;
+
+      return {
+        ...state,
+        productReviewsAddon: {
+          isEnabled: productReviewsAddon?.is_enabled,
+          isCommentOnly,
+        },
+        dateFormat: dateFormat === 'day_first' ? 'dd/MM/yyyy' : 'MM/dd/yyyy',
+      };
+
+    case RESTORE_STATE:
       return {
         ...state,
         ...action.payload.settings,
-      };
-
-    case SET_DATE_FORMAT:
-      const dateFormat =
-        action.payload === 'day_first' ? 'dd/MM/yyyy' : 'MM/dd/yyyy';
-      return {
-        ...state,
-        dateFormat,
       };
 
     default:

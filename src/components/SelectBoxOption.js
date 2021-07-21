@@ -10,8 +10,6 @@ const styles = EStyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'stretch',
-    paddingBottom: 8,
-    paddingTop: 8,
     marginVertical: 10,
   },
   selectWrapper: {

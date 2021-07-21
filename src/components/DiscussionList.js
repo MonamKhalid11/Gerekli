@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Text, View, FlatList, ActivityIndicator } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import Rating from './Rating';
-
+import StarsRating from './StarsRating';
 import {
   DISCUSSION_COMMUNICATION,
   DISCUSSION_COMMUNICATION_AND_RATING,
@@ -11,28 +10,20 @@ import {
 } from '../constants';
 import i18n from '../utils/i18n';
 
+const RATING_STAR_SIZE = 14;
+
 const styles = EStyleSheet.create({
   container: {
-    marginTop: 5,
-    marginBottom: 0,
     flex: 1,
-  },
-  rating: {
-    marginTop: -2,
-    marginBottom: 10,
   },
   msg: {
     color: '$discussionMessageColor',
     marginTop: 0,
     paddingBottom: 10,
-    textAlign: 'left',
+    textAlign: 'justify',
   },
   itemContainer: {
     marginBottom: 10,
-    borderBottomWidth: 1,
-    borderColor: '#F0F0F0',
-    paddingLeft: 14,
-    paddingRight: 14,
   },
   itemContainerNoBorder: {
     borderBottomWidth: 0,
@@ -42,9 +33,9 @@ const styles = EStyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     flexDirection: 'row',
+    marginBottom: 10,
   },
   name: {
-    fontWeight: '800',
     fontSize: '0.9rem',
     textAlign: 'left',
     color: '$darkColor',
@@ -120,7 +111,11 @@ export default class DiscussionList extends Component {
         <View style={styles.itemWrapper}>
           <Text style={styles.name}>{item.name}</Text>
           {showRating && (
-            <Rating value={item.rating_value} containerStyle={styles.rating} />
+            <StarsRating
+              value={item.rating_value}
+              size={RATING_STAR_SIZE}
+              isRatingSelectionDisabled
+            />
           )}
         </View>
         {showMessage && <Text style={styles.msg}>{item.message}</Text>}

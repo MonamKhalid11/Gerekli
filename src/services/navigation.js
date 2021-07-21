@@ -326,6 +326,20 @@ export function pushProductDetail(componentId, params) {
   });
 }
 
+export function pushAllProductReviews(componentId, params) {
+  Navigation.push(componentId, {
+    component: {
+      name: 'AllProductReviews',
+      options: {
+        topBar: {
+          backButtonTitle: '',
+        },
+      },
+      passProps: params,
+    },
+  });
+}
+
 export function pushWriteReview(componentId, params) {
   Navigation.push(componentId, {
     component: {
@@ -336,6 +350,21 @@ export function pushWriteReview(componentId, params) {
         },
       },
       passProps: params,
+    },
+  });
+}
+
+export function showModalWriteReviewNew(params) {
+  Navigation.showModal({
+    stack: {
+      children: [
+        {
+          component: {
+            name: 'WriteReviewNew',
+            passProps: params,
+          },
+        },
+      ],
     },
   });
 }
