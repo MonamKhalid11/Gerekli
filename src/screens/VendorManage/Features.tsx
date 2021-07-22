@@ -33,6 +33,9 @@ const styles = EStyleSheet.create({
   scrollContainer: {
     paddingBottom: 14,
   },
+  itemDescription: {
+    fontSize: '0.9rem',
+  },
 });
 
 interface Feature {
@@ -84,7 +87,7 @@ export const Features: React.FC<FeaturesProps> = ({
   useEffect(() => {
     const getProductFeatures = async () => {
       const result = await productsActions.fetchProductFeatures(productId);
-      console.log('result:', result);
+      // console.log('result:', result);
 
       setProductFeatures(result);
     };
@@ -132,8 +135,24 @@ export const Features: React.FC<FeaturesProps> = ({
     return null;
   };
 
-  const renderMultipleCheckbox = () => {
-    return null;
+  const renderMultipleCheckbox = (feature: Feature) => {
+    const { variant, description } = feature;
+    const pickerValues = feature.variants.map((variant) => variant.variant);
+
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          nav.showModalMultipleCheckboxPicker({
+            pickerValues: pickerValues,
+            changeMultipleCheckboxValueHandler: changeMultipleCheckboxValueHandler,
+            selectValue: variant,
+            title: i18n.t('Edit features'),
+            additionalData: feature,
+          });
+        }}>
+        <SectionRow name={description} value={variant} />
+      </TouchableOpacity>
+    );
   };
 
   const changeSelectValueHandler = (
@@ -170,6 +189,25 @@ export const Features: React.FC<FeaturesProps> = ({
     }
 
     productFeatures[feature_id].value = switcherValue ? 'N' : 'Y';
+    setProductFeatures({ ...productFeatures });
+  };
+
+  const changeMultipleCheckboxValueHandler = (feature, data) => {
+    const { feature_id } = data;
+    let chosenVariant;
+    data.variants.map((variant) => {
+      if (variant.variant === feature) {
+        chosenVariant = variant;
+      }
+    });
+
+    if (!productFeatures || !chosenVariant) {
+      return;
+    }
+
+    console.log('chosenVariant: ', feature, data, chosenVariant);
+    productFeatures[feature_id].variant = chosenVariant.variant;
+    productFeatures[feature_id].variant_id = chosenVariant.variant_id;
     setProductFeatures({ ...productFeatures });
   };
 
@@ -234,7 +272,7 @@ export const Features: React.FC<FeaturesProps> = ({
         renderElement = () => renderSelect(feature);
         break;
       case FEATURE_TYPE_CHECKBOX_MULTIPLE:
-        renderElement = () => renderMultipleCheckbox();
+        renderElement = () => renderMultipleCheckbox(feature);
         break;
       default:
         return;

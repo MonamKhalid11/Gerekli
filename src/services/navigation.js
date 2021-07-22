@@ -168,6 +168,21 @@ export function showModalScrollPicker(params) {
   });
 }
 
+export function showModalMultipleCheckboxPicker(params) {
+  Navigation.showModal({
+    stack: {
+      children: [
+        {
+          component: {
+            name: 'MultipleCheckboxPicker',
+            passProps: params,
+          },
+        },
+      ],
+    },
+  });
+}
+
 export function showModalVendorDetail(params) {
   Navigation.showModal({
     stack: {

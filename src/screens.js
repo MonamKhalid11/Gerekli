@@ -19,6 +19,7 @@ import OrderDetail from './screens/OrderDetail';
 import ImagePicker from './screens/ImagePicker';
 import VendorDetail from './screens/VendorDetail';
 import ScrollPicker from './screens/ScrollPicker';
+import MultipleCheckboxPicker from './screens/MultipleCheckboxPicker';
 import CheckoutAuth from './screens/CheckoutAuth';
 import Registration from './screens/Registration';
 import ResetPassword from './screens/ResetPassword';
@@ -58,6 +59,7 @@ const screenList = [
   { name: 'Categories', component: Categories },
   { name: 'VendorDetail', component: VendorDetail },
   { name: 'ScrollPicker', component: ScrollPicker },
+  { name: 'MultipleCheckboxPicker', component: MultipleCheckboxPicker },
   { name: 'CheckoutAuth', component: CheckoutAuth },
   { name: 'ProductDetail', component: ProductDetail },
   { name: 'CheckoutProfile', component: CheckoutProfile },
