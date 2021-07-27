@@ -26,6 +26,8 @@ import * as nav from '../../services/navigation';
 import { iconsMap } from '../../utils/navIcons';
 import { Navigation } from 'react-native-navigation';
 
+const PRODUCT_STATUS_REQUEST_APPROVAL = 'R';
+
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
@@ -217,7 +219,9 @@ export class Products extends Component {
     return (
       <Swipeout
         autoClose
-        right={swipeoutBtns}
+        right={
+          item.status === PRODUCT_STATUS_REQUEST_APPROVAL ? [] : swipeoutBtns
+        }
         backgroundColor={theme.$navBarBackgroundColor}>
         <TouchableOpacity
           onPress={() =>

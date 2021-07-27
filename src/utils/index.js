@@ -175,6 +175,12 @@ export function getProductStatus(status) {
         style: { color: '#ff0000' },
       };
 
+    case 'R':
+      return {
+        text: i18n.t('Request approval'),
+        style: { color: '#ff9c12' },
+      };
+
     default:
       return {
         text: i18n.t(''),
