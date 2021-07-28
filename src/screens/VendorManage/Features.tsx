@@ -49,7 +49,7 @@ interface Feature {
   variants: {
     variant: string;
     variant_id: number;
-    selected?: boolean;
+    selected: boolean;
   }[];
 }
 
@@ -131,23 +131,27 @@ export const Features: React.FC<FeaturesProps> = ({
     );
   };
 
-  const renderDate = () => {
-    return null;
+  const renderDate = (feature: Feature) => {
+    const { description, value_int } = feature;
+    const date = format(value_int * 1000, settings.dateFormat);
+
+    return (
+      <TouchableOpacity onPress={() => console.log('im here')}>
+        <SectionRow name={description} value={date} />
+      </TouchableOpacity>
+    );
   };
 
   const renderMultipleCheckbox = (feature: Feature) => {
     const { variant, description } = feature;
-    const pickerValues = feature.variants.map((variant) => variant.variant);
 
     return (
       <TouchableOpacity
         onPress={() => {
           nav.showModalMultipleCheckboxPicker({
-            pickerValues: pickerValues,
+            feature: feature,
             changeMultipleCheckboxValueHandler: changeMultipleCheckboxValueHandler,
-            selectValue: variant,
             title: i18n.t('Edit features'),
-            additionalData: feature,
           });
         }}>
         <SectionRow name={description} value={variant} />
@@ -192,22 +196,17 @@ export const Features: React.FC<FeaturesProps> = ({
     setProductFeatures({ ...productFeatures });
   };
 
-  const changeMultipleCheckboxValueHandler = (feature, data) => {
-    const { feature_id } = data;
-    let chosenVariant;
-    data.variants.map((variant) => {
-      if (variant.variant === feature) {
-        chosenVariant = variant;
-      }
-    });
-
-    if (!productFeatures || !chosenVariant) {
+  const changeMultipleCheckboxValueHandler = (
+    featureId: number,
+    feature: Feature,
+  ) => {
+    if (!productFeatures) {
       return;
     }
 
-    console.log('chosenVariant: ', feature, data, chosenVariant);
-    productFeatures[feature_id].variant = chosenVariant.variant;
-    productFeatures[feature_id].variant_id = chosenVariant.variant_id;
+    productFeatures[featureId] = feature;
+    console.log(productFeatures);
+
     setProductFeatures({ ...productFeatures });
   };
 
@@ -262,7 +261,7 @@ export const Features: React.FC<FeaturesProps> = ({
     switch (feature_type) {
       case FEATURE_TYPE_DATE:
         // newValue = format(value_int * 1000, settings.dateFormat);
-        renderElement = () => renderDate();
+        renderElement = () => renderDate(feature);
         break;
       case FEATURE_TYPE_CHECKBOX:
         renderElement = () => renderCheckbox(feature);

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, Text, View, Switch } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import i18n from '../utils/i18n';
@@ -20,24 +20,35 @@ const styles = EStyleSheet.create({
   },
 });
 
-interface ScrollPickerProps {
-  componentId: string;
-  pickerValues: [string];
-  changeMultipleCheckboxValueHandler: Function;
-  selectValue: string;
-  title: string;
-  additionalData: {
-    [key: string]: any;
-  };
+interface FeatureVariant {
+  variant: string;
+  variant_id: number;
+  selected: boolean;
 }
 
-export const MultipleCheckboxPicker: React.FC<ScrollPickerProps> = ({
+interface Feature {
+  description: string;
+  feature_id: number;
+  feature_type: string;
+  value: string;
+  variant: string;
+  variant_id: number;
+  value_int: number;
+  variants: [FeatureVariant];
+}
+
+interface MultipleCheckboxPickerProps {
+  componentId: string;
+  feature: Feature;
+  changeMultipleCheckboxValueHandler: Function;
+  title: string;
+}
+
+export const MultipleCheckboxPicker: React.FC<MultipleCheckboxPickerProps> = ({
   componentId,
-  pickerValues,
+  feature,
   changeMultipleCheckboxValueHandler,
-  selectValue,
   title,
-  additionalData,
 }) => {
   const listener = {
     navigationButtonPressed: ({ buttonId }) => {
@@ -46,6 +57,8 @@ export const MultipleCheckboxPicker: React.FC<ScrollPickerProps> = ({
       }
     },
   };
+
+  const [currentFeature, setCurrentFeature] = useState<Feature | null>(null);
 
   useEffect(() => {
     Navigation.mergeOptions(componentId, {
@@ -67,29 +80,53 @@ export const MultipleCheckboxPicker: React.FC<ScrollPickerProps> = ({
       componentId,
     );
 
+    setCurrentFeature(feature);
+
     return () => {
       listeners.remove();
     };
-  });
+  }, []);
 
-  const renderItem = (value: string) => {
-    const isItemActive = value === selectValue;
+  const { feature_id } = feature;
+
+  const changeHandler = (variantId: number) => {
+    if (!currentFeature) {
+      return;
+    }
+
+    currentFeature.variants.map((variant) => {
+      if (variant.variant_id === variantId) {
+        variant.selected = !variant.selected;
+      }
+      return variant;
+    });
+
+    setCurrentFeature({ ...currentFeature });
+    changeMultipleCheckboxValueHandler(feature_id, currentFeature);
+  };
+
+  const renderItem = (featureVariant: FeatureVariant) => {
+    const { variant, selected, variant_id } = featureVariant;
 
     return (
       <View style={styles.itemWrapper}>
-        <Text style={styles.itemText}>{value}</Text>
+        <Text style={styles.itemText}>{variant}</Text>
         <Switch
-          value={isItemActive}
-          onValueChange={() => changeMultipleCheckboxValueHandler(value, additionalData)}
+          value={selected}
+          onValueChange={() => changeHandler(variant_id)}
         />
       </View>
     );
   };
 
+  if (!currentFeature) {
+    return <View />;
+  }
+
   return (
     <ScrollView style={styles.container}>
-      {pickerValues.map((value) => {
-        return renderItem(value);
+      {currentFeature.variants.map((featureVariant) => {
+        return renderItem(featureVariant);
       })}
     </ScrollView>
   );
