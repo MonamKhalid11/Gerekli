@@ -89,10 +89,12 @@ export const getProductFeatures = (id) => {
           variant_id
           variant
           feature_type
+          value_int
           description
-          variants{
+          variants(items_per_page: 200){
             variant
             variant_id
+            selected
           }
         }
       }
