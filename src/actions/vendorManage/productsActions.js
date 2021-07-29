@@ -81,7 +81,6 @@ export function fetchProductFeatures(id) {
 
     try {
       const result = await vendorService.getProductFeatures(id);
-      console.log('result: ', result)
       const convertedFeatures = convertProductFeatures(
         result.data.product.product_features,
       );
@@ -107,9 +106,7 @@ export function updateProductFeatures(productId, data) {
     });
 
     try {
-      const result = await vendorService.changeProductFeatures(productId, data);
-
-      console.log('result: ', result);
+      await vendorService.changeProductFeatures(productId, data);
 
       dispatch({
         type: VENDOR_FETCH_PRODUCT_FEATURES_SUCCESS,

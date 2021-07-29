@@ -320,6 +320,8 @@ PODS:
     - React-RCTText
   - RNCAsyncStorage (1.12.0):
     - React
+  - RNDateTimePicker (3.5.2):
+    - React-Core
   - RNFBApp (8.4.5):
     - Firebase/CoreOnly (~> 6.30.0)
     - React-Core
@@ -364,6 +366,7 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - ReactNativeNavigation (from `../node_modules/react-native-navigation`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
+  - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
@@ -445,6 +448,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-navigation"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-community/async-storage"
+  RNDateTimePicker:
+    :path: "../node_modules/@react-native-community/datetimepicker"
   RNFBApp:
     :path: "../node_modules/@react-native-firebase/app"
   RNFBMessaging:
@@ -497,11 +502,12 @@ SPEC CHECKSUMS:
   ReactCommon: 4167844018c9ed375cc01a843e9ee564399e53c3
   ReactNativeNavigation: 67d1f3d7f335f39873a5cf26058f03d0511dd0de
   RNCAsyncStorage: 2a692bcb9b69b76a2f1a95f33db057129700af64
+  RNDateTimePicker: 7658208086d86d09e1627b5c34ba0cf237c60140
   RNFBApp: 570b136767f588b7eef0ab918284e9fe364d0c3e
   RNFBMessaging: dc3849747c2c61bfcd3c1ce6b5390f27ff4f7756
   RNVectorIcons: da6fe858f5a65d7bbc3379540a889b0b12aa5976
   Yoga: 7d13633d129fd179e01b8953d38d47be90db185a
 
-PODFILE CHECKSUM: c27cd9956125d1c96608a51bc29f46835d86c299
+PODFILE CHECKSUM: 28bd72ccb3e3ddda9a050df0b0de542ea96a9202
 
 COCOAPODS: 1.10.1

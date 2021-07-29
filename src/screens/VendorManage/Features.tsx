@@ -13,10 +13,12 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import i18n from '../../utils/i18n';
 import { format } from 'date-fns';
 import * as nav from '../../services/navigation';
+import { toTimestamp } from '../../utils/index';
 
 // Components
 import BottomActions from '../../components/BottomActions';
 import SectionRow from '../../components/SectionRow';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 // Actions
 import * as productsActions from '../../actions/vendorManage/productsActions';
@@ -35,6 +37,20 @@ const styles = EStyleSheet.create({
   },
   itemDescription: {
     fontSize: '0.9rem',
+  },
+  dateRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 14,
+  },
+  dateRowTitle: {
+    fontSize: '0.9rem',
+  },
+  datePickerWrapper: {
+    borderWidth: 1,
+    width: 200,
+    padding: 0,
   },
 });
 
@@ -87,7 +103,6 @@ export const Features: React.FC<FeaturesProps> = ({
   useEffect(() => {
     const getProductFeatures = async () => {
       const result = await productsActions.fetchProductFeatures(productId);
-      // console.log('result:', result);
 
       setProductFeatures(result);
     };
@@ -132,13 +147,24 @@ export const Features: React.FC<FeaturesProps> = ({
   };
 
   const renderDate = (feature: Feature) => {
-    const { description, value_int } = feature;
-    const date = format(value_int * 1000, settings.dateFormat);
+    const { description, value_int, feature_id } = feature;
+    // const date = format(value_int * 1000, settings.dateFormat);
+    const date = new Date(value_int);
 
     return (
-      <TouchableOpacity onPress={() => console.log('im here')}>
-        <SectionRow name={description} value={date} />
-      </TouchableOpacity>
+      <View style={styles.dateRow}>
+        <View>
+          <Text style={styles.dateRowTitle}>{description}</Text>
+        </View>
+        <View style={styles.datePickerWrapper}>
+          <DateTimePicker
+            value={date}
+            onChange={(event: Event, selectedDate: Date | undefined) =>
+              changeDateValueHandler(event, selectedDate, feature_id)
+            }
+          />
+        </View>
+      </View>
     );
   };
 
@@ -205,8 +231,19 @@ export const Features: React.FC<FeaturesProps> = ({
     }
 
     productFeatures[featureId] = feature;
-    console.log(productFeatures);
+    setProductFeatures({ ...productFeatures });
+  };
 
+  const changeDateValueHandler = (
+    event: Event,
+    selectedDate: Date | undefined,
+    featureId: number,
+  ) => {
+    if (!productFeatures) {
+      return;
+    }
+
+    productFeatures[featureId].value_int = toTimestamp(selectedDate);
     setProductFeatures({ ...productFeatures });
   };
 
@@ -246,14 +283,11 @@ export const Features: React.FC<FeaturesProps> = ({
       ] = feature;
     }
 
-    console.log('sentProductFeatures: ', sentProductFeatures);
-
     await productsActions.updateProductFeatures(productId, sentProductFeatures);
   };
 
   const renderFeatureItem = (feature: Feature) => {
     const { feature_type } = feature;
-    console.log('feature: ', feature);
 
     // let newValue: string;
     let renderElement = null;
