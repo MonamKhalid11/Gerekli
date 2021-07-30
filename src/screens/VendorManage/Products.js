@@ -26,7 +26,8 @@ import * as nav from '../../services/navigation';
 import { iconsMap } from '../../utils/navIcons';
 import { Navigation } from 'react-native-navigation';
 
-const PRODUCT_STATUS_REQUEST_APPROVAL = 'R';
+const PRODUCT_STATUS_REQUIRES_APPROVAL = 'R';
+const PRODUCT_STATUS_DISAPPROVED = 'X';
 
 const styles = EStyleSheet.create({
   container: {
@@ -198,15 +199,6 @@ export class Products extends Component {
     const { productsActions } = this.props;
     const swipeoutBtns = [
       {
-        text: i18n.t('Status'),
-        type: 'status',
-        backgroundColor: '#ff6002',
-        onPress: () => {
-          this.product_id = item.product_id;
-          this.StatusActionSheet.show();
-        },
-      },
-      {
         text: i18n.t('Delete'),
         type: 'delete',
         backgroundColor: '#ff362b',
@@ -216,12 +208,25 @@ export class Products extends Component {
     const imageUri = getImagePath(item);
     const status = getProductStatus(item.status);
 
+    if (
+      item.status !== PRODUCT_STATUS_REQUIRES_APPROVAL &&
+      item.status !== PRODUCT_STATUS_DISAPPROVED
+    ) {
+      swipeoutBtns.unshift({
+        text: i18n.t('Status'),
+        type: 'status',
+        backgroundColor: '#ff6002',
+        onPress: () => {
+          this.product_id = item.product_id;
+          this.StatusActionSheet.show();
+        },
+      });
+    }
+
     return (
       <Swipeout
         autoClose
-        right={
-          item.status === PRODUCT_STATUS_REQUEST_APPROVAL ? [] : swipeoutBtns
-        }
+        right={swipeoutBtns}
         backgroundColor={theme.$navBarBackgroundColor}>
         <TouchableOpacity
           onPress={() =>

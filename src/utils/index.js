@@ -177,8 +177,14 @@ export function getProductStatus(status) {
 
     case 'R':
       return {
-        text: i18n.t('Request approval'),
+        text: i18n.t('Requires approval'),
         style: { color: '#ff9c12' },
+      };
+
+    case 'X':
+      return {
+        text: i18n.t('Disapproved'),
+        style: { color: '#ff2b2b' },
       };
 
     default:
