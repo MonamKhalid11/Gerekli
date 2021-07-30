@@ -2,7 +2,7 @@ import axios from 'axios';
 import base64 from 'base-64';
 import config from '../config';
 import store from '../store';
-import { AUTH_LOGOUT } from '../constants';
+import { AUTH_LOGOUT, SHOP_CLOSED } from '../constants';
 
 // Config axios defaults.
 const AxiosInstance = axios.create({
@@ -42,6 +42,10 @@ AxiosInstance.interceptors.response.use(
       });
     } else if (error.response.status === 408 || error.code === 'ECONNABORTED') {
       console.log(`A time happend on url ${error.config.url}`);
+    } else if (error.response.status === 404) {
+      store.dispatch({
+        type: SHOP_CLOSED,
+      });
     }
     return Promise.reject(error);
   },

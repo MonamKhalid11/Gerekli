@@ -22,7 +22,7 @@ import vendorManageProducts from './vendorManage/products';
 import vendorManageCategories from './vendorManage/categories';
 import vendorManageOrders from './vendorManage/orders';
 
-export default combineReducers({
+export const rootReducer = combineReducers({
   cart,
   auth,
   pages,
@@ -45,3 +45,5 @@ export default combineReducers({
   vendorManageCategories,
   vendorManageOrders,
 });
+
+export type RootState = ReturnType<typeof rootReducer>;

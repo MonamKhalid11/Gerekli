@@ -43,6 +43,7 @@ import VendorManageCategoriesPicker from './screens/VendorManage/CategoriesPicke
 import VendorManageOrderDetail from './screens/VendorManage/OrderDetail';
 import LanguageSelection from './screens/LanguageSelection';
 import CurrencySelection from './screens/CurrencySelection';
+import { ShopClosed } from './screens/ShopClosed';
 import AllProductReviews from './screens/AllProductReviews';
 import DatePickerScreen from './screens/DatePickerScreen';
 
@@ -84,6 +85,7 @@ const screenList = [
   { name: 'ImagePicker', component: ImagePicker },
   { name: 'LanguageSelection', component: LanguageSelection },
   { name: 'CurrencySelection', component: CurrencySelection },
+  { name: 'ShopClosed', component: ShopClosed },
   { name: 'AllProductReviews', component: AllProductReviews },
   {
     name: 'VendorManageAddProductStep1',

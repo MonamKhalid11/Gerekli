@@ -6,6 +6,7 @@ import {
   GET_LANGUAGES,
   RESTORE_STATE,
   LANGUAGE_CURRENCY_FEATURE_FLAG_OFF,
+  SHOP_CLOSED,
   SET_ADDONS_SETTINGS,
 } from '../constants';
 
@@ -26,6 +27,7 @@ const initialState = {
   languageCurrencyFeatureFlag: true,
   languages: null,
   currencies: null,
+  isShopClosed: false,
 };
 
 export default function (state = initialState, action) {
@@ -82,6 +84,13 @@ export default function (state = initialState, action) {
         languageCurrencyFeatureFlag: false,
       };
 
+    case SHOP_CLOSED:
+      return {
+        ...state,
+        isShopClosed: true,
+      };
+
+    case RESTORE_STATE:
     case SET_ADDONS_SETTINGS:
       const dateFormat = get(
         action.payload,

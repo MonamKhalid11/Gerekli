@@ -82,6 +82,7 @@ export class Page extends Component {
           source={{
             uri,
           }}
+          contentInset={{ top: -1, left: -1, bottom: -1, right: -1 }}
         />
       </View>
     );

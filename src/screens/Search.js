@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { PRODUCT_NUM_COLUMNS } from '../utils';
 import {
   View,
   Text,
@@ -215,7 +216,7 @@ export class Search extends Component {
           <FlatList
             data={search.items}
             keyExtractor={(item) => uniqueId(+item.product_id)}
-            numColumns={3}
+            numColumns={PRODUCT_NUM_COLUMNS}
             ListEmptyComponent={() => this.renderEmptyList()}
             ListFooterComponent={() => this.renderFooter()}
             onEndReached={this.handleLoadMore}
