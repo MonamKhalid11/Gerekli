@@ -498,7 +498,7 @@ export class EditProduct extends Component {
               )}
               {this.renderMenuItem(
                 i18n.t('Features'),
-                '6 features added',
+                i18n.t('Edit Features'),
                 () => {
                   nav.pushVendorManageFeatures(this.props.componentId, {
                     productId: productID,
