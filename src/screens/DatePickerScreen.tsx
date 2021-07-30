@@ -1,9 +1,5 @@
-import React, { useState } from 'react';
-import {
-  Text,
-  View,
-  TouchableOpacity,
-} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, View, TouchableOpacity } from 'react-native';
 import i18n from '../utils/i18n';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import DatePicker from 'react-native-date-picker';
@@ -11,16 +7,22 @@ import { Navigation } from 'react-native-navigation';
 
 const styles = EStyleSheet.create({
   container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'space-around',
     padding: 10,
   },
-  itemWrapper: {
-    marginVertical: 10,
+button: {
+    width: '30%',
+    alignItems: 'center',
     paddingVertical: 5,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    borderRadius: '$borderRadius',
+    backgroundColor: '$primaryColor',
   },
-  itemText: {
-    fontSize: '1rem',
+  buttonText: {
+    color: '$primaryColorText',
+    fontSize: '0.9rem',
   },
 });
 
@@ -56,14 +58,26 @@ export const DatePickerScreen: React.FC<DatePickerScreenProps> = ({
 }) => {
   const [date, setDate] = useState(new Date(feature.value_int * 1000));
 
+  useEffect(() => {
+    Navigation.mergeOptions(componentId, {
+      topBar: {
+        title: {
+          text: `${i18n.t('Select')} ${title}`.toUpperCase(),
+        },
+      },
+    });
+  }, []);
+
   return (
     <View style={styles.container}>
       <DatePicker date={date} onDateChange={setDate} mode={'date'} />
-      <TouchableOpacity onPress={() => {
-          changeDateHandler(feature, date)
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          changeDateHandler(feature, date);
           Navigation.dismissModal(componentId);
         }}>
-        <Text>Ok</Text>
+        <Text style={styles.buttonText}>Ok</Text>
       </TouchableOpacity>
     </View>
   );

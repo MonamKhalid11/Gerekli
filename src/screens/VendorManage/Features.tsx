@@ -16,7 +16,6 @@ import * as nav from '../../services/navigation';
 
 // Components
 import BottomActions from '../../components/BottomActions';
-import SectionRow from '../../components/SectionRow';
 
 // Actions
 import * as productsActions from '../../actions/vendorManage/productsActions';
@@ -26,21 +25,35 @@ const styles = EStyleSheet.create({
     flex: 1,
     padding: 20,
   },
+  featureWrapper: {
+    borderBottomWidth: 1,
+    borderColor: '$mediumGrayColor',
+    paddingVertical: 14,
+  },
   checkboxWrapper: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   scrollContainer: {
-    paddingBottom: 14,
+    paddingBottom: 40,
   },
-  itemDescription: {
-    fontSize: '0.9rem',
-  },
-  dateRow: {
+  row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 14,
+  },
+  rowDescriptionWrapper: {
+    width: '40%',
+    flexDirection: 'row',
+  },
+  rowVariantWrapper: {
+    width: '40%',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+  },
+  text: {
+    fontSize: '0.8rem',
+    color: '$darkColor',
   },
 });
 
@@ -61,7 +74,7 @@ interface Feature {
 
 interface FeatureForSend {
   feature_id: number;
-  value: string;
+  value: string | number;
   value_int?: number;
   variants: {
     variant: string;
@@ -105,8 +118,10 @@ export const Features: React.FC<FeaturesProps> = ({
     const switcherValue = value === 'Y';
 
     return (
-      <View style={styles.checkboxWrapper}>
-        <Text style={styles.itemDescription}>{description}: </Text>
+      <View style={{ ...styles.checkboxWrapper, ...styles.featureWrapper }}>
+        <View style={styles.rowDescriptionWrapper}>
+          <Text style={styles.text}>{description}: </Text>
+        </View>
         <Switch
           value={switcherValue}
           onValueChange={() =>
@@ -123,6 +138,7 @@ export const Features: React.FC<FeaturesProps> = ({
 
     return (
       <TouchableOpacity
+        style={styles.featureWrapper}
         onPress={() => {
           nav.showModalScrollPicker({
             pickerValues: pickerValues,
@@ -132,7 +148,14 @@ export const Features: React.FC<FeaturesProps> = ({
             additionalData: feature,
           });
         }}>
-        <SectionRow name={description} value={variant} />
+        <View style={styles.row}>
+          <View style={styles.rowDescriptionWrapper}>
+            <Text style={styles.text}>{description}</Text>
+          </View>
+          <View style={styles.rowVariantWrapper}>
+            <Text style={styles.text}>{variant}</Text>
+          </View>
+        </View>
       </TouchableOpacity>
     );
   };
@@ -143,6 +166,7 @@ export const Features: React.FC<FeaturesProps> = ({
 
     return (
       <TouchableOpacity
+        style={styles.featureWrapper}
         onPress={() => {
           nav.showModalDatePickerScreen({
             feature: feature,
@@ -151,16 +175,24 @@ export const Features: React.FC<FeaturesProps> = ({
             title: i18n.t('Date'),
           });
         }}>
-        <SectionRow name={description} value={date} />
+        <View style={styles.row}>
+          <View style={styles.rowDescriptionWrapper}>
+            <Text style={styles.text}>{description}</Text>
+          </View>
+          <View style={styles.rowVariantWrapper}>
+            <Text style={styles.text}>{date}</Text>
+          </View>
+        </View>
       </TouchableOpacity>
     );
   };
 
   const renderMultipleCheckbox = (feature: Feature) => {
-    const { variant, description } = feature;
+    const { description, variants } = feature;
 
     return (
       <TouchableOpacity
+        style={styles.featureWrapper}
         onPress={() => {
           nav.showModalMultipleCheckboxPicker({
             feature: feature,
@@ -168,7 +200,18 @@ export const Features: React.FC<FeaturesProps> = ({
             title: i18n.t('Edit features'),
           });
         }}>
-        <SectionRow name={description} value={variant} />
+        <View style={styles.row}>
+          <View style={styles.rowDescriptionWrapper}>
+            <Text style={styles.text}>{description}</Text>
+          </View>
+          <View style={styles.rowVariantWrapper}>
+            {variants.map((variant) => {
+              if (variant.selected) {
+                return <Text style={styles.text}>{variant.variant}</Text>;
+              }
+            })}
+          </View>
+        </View>
       </TouchableOpacity>
     );
   };
@@ -249,7 +292,7 @@ export const Features: React.FC<FeaturesProps> = ({
       feature.value = productFeatures[productFeaturesKeys[i]].value;
 
       if (productFeatures[productFeaturesKeys[i]].value_int) {
-        feature.value_int = productFeatures[productFeaturesKeys[i]].value_int;
+        feature.value = productFeatures[productFeaturesKeys[i]].value_int;
       }
 
       if (productFeatures[productFeaturesKeys[i]].variants.length) {
