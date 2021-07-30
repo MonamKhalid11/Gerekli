@@ -44,6 +44,7 @@ import VendorManageOrderDetail from './screens/VendorManage/OrderDetail';
 import LanguageSelection from './screens/LanguageSelection';
 import CurrencySelection from './screens/CurrencySelection';
 import AllProductReviews from './screens/AllProductReviews';
+import DatePickerScreen from './screens/DatePickerScreen';
 
 const screenList = [
   { name: 'Page', component: Page },
@@ -60,6 +61,7 @@ const screenList = [
   { name: 'VendorDetail', component: VendorDetail },
   { name: 'ScrollPicker', component: ScrollPicker },
   { name: 'MultipleCheckboxPicker', component: MultipleCheckboxPicker },
+  { name: 'DatePickerScreen', component: DatePickerScreen },
   { name: 'CheckoutAuth', component: CheckoutAuth },
   { name: 'ProductDetail', component: ProductDetail },
   { name: 'CheckoutProfile', component: CheckoutProfile },

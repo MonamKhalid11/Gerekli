@@ -39,11 +39,6 @@ export const stripTags = (str) => {
     .trimLeft();
 };
 
-export const toTimestamp = (strDate) => {
-  var datum = Date.parse(strDate);
-  return datum / 1000;
-};
-
 export const formatPrice = (str) => {
   if (str) {
     return String(str).replace(/&nbsp;/, '');

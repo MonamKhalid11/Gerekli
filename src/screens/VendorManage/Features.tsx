@@ -13,12 +13,10 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import i18n from '../../utils/i18n';
 import { format } from 'date-fns';
 import * as nav from '../../services/navigation';
-import { toTimestamp } from '../../utils/index';
 
 // Components
 import BottomActions from '../../components/BottomActions';
 import SectionRow from '../../components/SectionRow';
-import DateTimePicker from '@react-native-community/datetimepicker';
 
 // Actions
 import * as productsActions from '../../actions/vendorManage/productsActions';
@@ -44,14 +42,6 @@ const styles = EStyleSheet.create({
     alignItems: 'center',
     paddingVertical: 14,
   },
-  dateRowTitle: {
-    fontSize: '0.9rem',
-  },
-  datePickerWrapper: {
-    borderWidth: 1,
-    width: 200,
-    padding: 0,
-  },
 });
 
 interface Feature {
@@ -72,6 +62,7 @@ interface Feature {
 interface FeatureForSend {
   feature_id: number;
   value: string;
+  value_int?: number;
   variants: {
     variant: string;
     variant_id: number;
@@ -147,24 +138,21 @@ export const Features: React.FC<FeaturesProps> = ({
   };
 
   const renderDate = (feature: Feature) => {
-    const { description, value_int, feature_id } = feature;
-    // const date = format(value_int * 1000, settings.dateFormat);
-    const date = new Date(value_int);
+    const { description, value_int } = feature;
+    const date = format(value_int * 1000, settings.dateFormat);
 
     return (
-      <View style={styles.dateRow}>
-        <View>
-          <Text style={styles.dateRowTitle}>{description}</Text>
-        </View>
-        <View style={styles.datePickerWrapper}>
-          <DateTimePicker
-            value={date}
-            onChange={(event: Event, selectedDate: Date | undefined) =>
-              changeDateValueHandler(event, selectedDate, feature_id)
-            }
-          />
-        </View>
-      </View>
+      <TouchableOpacity
+        onPress={() => {
+          nav.showModalDatePickerScreen({
+            feature: feature,
+            startDate: date,
+            changeDateHandler,
+            title: i18n.t('Date'),
+          });
+        }}>
+        <SectionRow name={description} value={date} />
+      </TouchableOpacity>
     );
   };
 
@@ -183,6 +171,15 @@ export const Features: React.FC<FeaturesProps> = ({
         <SectionRow name={description} value={variant} />
       </TouchableOpacity>
     );
+  };
+
+  const changeDateHandler = (feature: Feature, date: Date) => {
+    if (!productFeatures) {
+      return;
+    }
+
+    productFeatures[feature.feature_id].value_int = date.getTime() / 1000;
+    setProductFeatures({ ...productFeatures });
   };
 
   const changeSelectValueHandler = (
@@ -234,19 +231,6 @@ export const Features: React.FC<FeaturesProps> = ({
     setProductFeatures({ ...productFeatures });
   };
 
-  const changeDateValueHandler = (
-    event: Event,
-    selectedDate: Date | undefined,
-    featureId: number,
-  ) => {
-    if (!productFeatures) {
-      return;
-    }
-
-    productFeatures[featureId].value_int = toTimestamp(selectedDate);
-    setProductFeatures({ ...productFeatures });
-  };
-
   const saveHandler = async () => {
     if (!productFeatures) {
       return;
@@ -263,6 +247,10 @@ export const Features: React.FC<FeaturesProps> = ({
       };
       feature.feature_id = productFeatures[productFeaturesKeys[i]].feature_id;
       feature.value = productFeatures[productFeaturesKeys[i]].value;
+
+      if (productFeatures[productFeaturesKeys[i]].value_int) {
+        feature.value_int = productFeatures[productFeaturesKeys[i]].value_int;
+      }
 
       if (productFeatures[productFeaturesKeys[i]].variants.length) {
         feature.variants = productFeatures[productFeaturesKeys[i]].variants.map(

@@ -183,6 +183,21 @@ export function showModalMultipleCheckboxPicker(params) {
   });
 }
 
+export function showModalDatePickerScreen(params) {
+  Navigation.showModal({
+    stack: {
+      children: [
+        {
+          component: {
+            name: 'DatePickerScreen',
+            passProps: params,
+          },
+        },
+      ],
+    },
+  });
+}
+
 export function showModalVendorDetail(params) {
   Navigation.showModal({
     stack: {

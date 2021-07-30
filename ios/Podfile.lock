@@ -245,6 +245,8 @@ PODS:
   - React-jsinspector (0.63.3)
   - react-native-cameraroll (4.0.1):
     - React
+  - react-native-date-picker (3.3.2):
+    - React-Core
   - react-native-notifications (3.3.4):
     - React
   - react-native-webview (10.8.0):
@@ -320,8 +322,6 @@ PODS:
     - React-RCTText
   - RNCAsyncStorage (1.12.0):
     - React
-  - RNDateTimePicker (3.5.2):
-    - React-Core
   - RNFBApp (8.4.5):
     - Firebase/CoreOnly (~> 6.30.0)
     - React-Core
@@ -352,6 +352,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - "react-native-cameraroll (from `../node_modules/@react-native-community/cameraroll`)"
+  - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - react-native-notifications (from `../node_modules/react-native-notifications`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -366,7 +367,6 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - ReactNativeNavigation (from `../node_modules/react-native-navigation`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
-  - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
@@ -420,6 +420,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-cameraroll:
     :path: "../node_modules/@react-native-community/cameraroll"
+  react-native-date-picker:
+    :path: "../node_modules/react-native-date-picker"
   react-native-notifications:
     :path: "../node_modules/react-native-notifications"
   react-native-webview:
@@ -448,8 +450,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-navigation"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-community/async-storage"
-  RNDateTimePicker:
-    :path: "../node_modules/@react-native-community/datetimepicker"
   RNFBApp:
     :path: "../node_modules/@react-native-firebase/app"
   RNFBMessaging:
@@ -488,6 +488,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: b56c03e61c0dd5f5801255f2160a815f4a53d451
   React-jsinspector: 8e68ffbfe23880d3ee9bafa8be2777f60b25cbe2
   react-native-cameraroll: 60ba0068826eab1c8d43146191bafd4363ea58a7
+  react-native-date-picker: 96a07ca27a6225da8a3935324d85046028456b0f
   react-native-notifications: 09086eb278cde6ccb463fe5f1dbd57e315c7f642
   react-native-webview: bbe20ef0e39caf153c1446621f0d56d460c1f1f5
   React-RCTActionSheet: 53ea72699698b0b47a6421cb1c8b4ab215a774aa
@@ -502,7 +503,6 @@ SPEC CHECKSUMS:
   ReactCommon: 4167844018c9ed375cc01a843e9ee564399e53c3
   ReactNativeNavigation: 67d1f3d7f335f39873a5cf26058f03d0511dd0de
   RNCAsyncStorage: 2a692bcb9b69b76a2f1a95f33db057129700af64
-  RNDateTimePicker: 7658208086d86d09e1627b5c34ba0cf237c60140
   RNFBApp: 570b136767f588b7eef0ab918284e9fe364d0c3e
   RNFBMessaging: dc3849747c2c61bfcd3c1ce6b5390f27ff4f7756
   RNVectorIcons: da6fe858f5a65d7bbc3379540a889b0b12aa5976
