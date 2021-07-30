@@ -144,7 +144,7 @@ export const Features: React.FC<FeaturesProps> = ({
             pickerValues: pickerValues,
             changePickerValueHandler: changeSelectValueHandler,
             selectValue: variant,
-            title: i18n.t('Feature'),
+            title: i18n.t('Select Feature'),
             additionalData: feature,
           });
         }}>
@@ -172,7 +172,7 @@ export const Features: React.FC<FeaturesProps> = ({
             feature: feature,
             startDate: date,
             changeDateHandler,
-            title: i18n.t('Date'),
+            title: i18n.t('Select Date'),
           });
         }}>
         <View style={styles.row}>
@@ -197,7 +197,7 @@ export const Features: React.FC<FeaturesProps> = ({
           nav.showModalMultipleCheckboxPicker({
             feature: feature,
             changeMultipleCheckboxValueHandler: changeMultipleCheckboxValueHandler,
-            title: i18n.t('Features'),
+            title: i18n.t('Select Features'),
           });
         }}>
         <View style={styles.row}>

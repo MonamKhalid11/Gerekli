@@ -62,7 +62,7 @@ export const DatePickerScreen: React.FC<DatePickerScreenProps> = ({
     Navigation.mergeOptions(componentId, {
       topBar: {
         title: {
-          text: `${i18n.t('Select')} ${title}`.toUpperCase(),
+          text: title.toUpperCase(),
         },
       },
     });
