@@ -5,8 +5,8 @@ import { View, ScrollView, TouchableOpacity, Text, Switch } from 'react-native';
 import {
   FEATURE_TYPE_DATE,
   FEATURE_TYPE_CHECKBOX,
-  FEATURE_TYPE_SELECT_S,
-  FEATURE_TYPE_SELECT_E,
+  FEATURE_TYPE_SELECT,
+  FEATURE_TYPE_BRAND,
   FEATURE_TYPE_CHECKBOX_MULTIPLE,
 } from '../../constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -23,7 +23,7 @@ import * as productsActions from '../../actions/vendorManage/productsActions';
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: '$containerPadding',
   },
   featureWrapper: {
     borderBottomWidth: 1,
@@ -331,8 +331,8 @@ export const Features: React.FC<FeaturesProps> = ({
       case FEATURE_TYPE_CHECKBOX:
         renderElement = () => renderCheckbox(feature);
         break;
-      case FEATURE_TYPE_SELECT_S:
-      case FEATURE_TYPE_SELECT_E:
+      case FEATURE_TYPE_SELECT:
+      case FEATURE_TYPE_BRAND:
         renderElement = () => renderSelect(feature);
         break;
       case FEATURE_TYPE_CHECKBOX_MULTIPLE:

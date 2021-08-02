@@ -34,7 +34,7 @@ import { Navigation } from 'react-native-navigation';
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: '$containerPadding',
   },
   scrollContainer: {
     paddingBottom: 14,

@@ -19,7 +19,7 @@ const styles = EStyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '$screenBackgroundColor',
-    padding: 20,
+    padding: '$containerPadding',
   },
 });
 

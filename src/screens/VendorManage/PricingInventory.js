@@ -17,7 +17,7 @@ import i18n from '../../utils/i18n';
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: '$containerPadding',
   },
   scrollContainer: {
     paddingBottom: 14,

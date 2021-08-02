@@ -27,7 +27,7 @@ const styles = EStyleSheet.create({
     height: '100%',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
+    padding: '$containerPadding',
   },
   ratingWrapper: {
     width: '100%',
