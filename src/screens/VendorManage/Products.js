@@ -6,6 +6,10 @@ import { View, Text, Image, FlatList, TouchableOpacity } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import ActionSheet from 'react-native-actionsheet';
+import {
+  PRODUCT_STATUS_REQUIRES_APPROVAL,
+  PRODUCT_STATUS_DISAPPROVED,
+} from '../../constants/index';
 
 // Styles
 import theme from '../../config/theme';
@@ -25,9 +29,6 @@ import * as nav from '../../services/navigation';
 
 import { iconsMap } from '../../utils/navIcons';
 import { Navigation } from 'react-native-navigation';
-
-const PRODUCT_STATUS_REQUIRES_APPROVAL = 'R';
-const PRODUCT_STATUS_DISAPPROVED = 'X';
 
 const styles = EStyleSheet.create({
   container: {
