@@ -13,6 +13,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import i18n from '../../utils/i18n';
 import { format } from 'date-fns';
 import * as nav from '../../services/navigation';
+import { Navigation } from 'react-native-navigation';
 
 // Components
 import BottomActions from '../../components/BottomActions';
@@ -96,6 +97,7 @@ interface ProductFeatures {
 }
 
 interface FeaturesProps {
+  componentId: string;
   productId: string;
   productsActions: {
     [key: string]: Function;
@@ -103,6 +105,7 @@ interface FeaturesProps {
 }
 
 export const Features: React.FC<FeaturesProps> = ({
+  componentId,
   productsActions,
   productId,
   settings,
@@ -328,6 +331,7 @@ export const Features: React.FC<FeaturesProps> = ({
     }
 
     await productsActions.updateProductFeatures(productId, sentProductFeatures);
+    Navigation.pop(componentId);
   };
 
   const renderNoFeaturesMessage = () => {

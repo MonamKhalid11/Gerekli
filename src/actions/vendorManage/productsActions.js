@@ -111,6 +111,14 @@ export function updateProductFeatures(productId, data) {
       dispatch({
         type: VENDOR_FETCH_PRODUCT_FEATURES_SUCCESS,
       });
+      dispatch({
+        type: NOTIFICATION_SHOW,
+        payload: {
+          type: 'success',
+          title: i18n.t('Success'),
+          text: i18n.t('Your changes have been saved.'),
+        },
+      });
     } catch (error) {
       dispatch({
         type: VENDOR_FETCH_PRODUCT_FEATURES_FAIL,
