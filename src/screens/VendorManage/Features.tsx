@@ -338,7 +338,7 @@ export const Features: React.FC<FeaturesProps> = ({
     return (
       <View style={styles.noFeaturesMessageWrapper}>
         <Text style={styles.noFeaturesMessageText}>
-          {i18n.t('There is no features yet.')}
+          {i18n.t('There are no features.')}
         </Text>
       </View>
     );
