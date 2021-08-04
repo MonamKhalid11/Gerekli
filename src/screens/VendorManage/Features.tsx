@@ -55,6 +55,14 @@ const styles = EStyleSheet.create({
     fontSize: '0.8rem',
     color: '$darkColor',
   },
+  noFeaturesMessageWrapper: {
+    padding: '$containerPadding',
+  },
+  noFeaturesMessageText: {
+    textAlign: 'center',
+    fontSize: '0.8rem',
+    color: '$mediumGrayColor',
+  },
 });
 
 interface Feature {
@@ -118,7 +126,9 @@ export const Features: React.FC<FeaturesProps> = ({
     const switcherValue = value === 'Y';
 
     return (
-      <View style={{ ...styles.checkboxWrapper, ...styles.featureWrapper }}>
+      <View
+        style={{ ...styles.checkboxWrapper, ...styles.featureWrapper }}
+        key={feature.feature_id}>
         <View style={styles.rowDescriptionWrapper}>
           <Text style={styles.text}>{description}: </Text>
         </View>
@@ -138,6 +148,7 @@ export const Features: React.FC<FeaturesProps> = ({
 
     return (
       <TouchableOpacity
+        key={feature.feature_id}
         style={styles.featureWrapper}
         onPress={() => {
           nav.showModalScrollPicker({
@@ -166,6 +177,7 @@ export const Features: React.FC<FeaturesProps> = ({
 
     return (
       <TouchableOpacity
+        key={feature.feature_id}
         style={styles.featureWrapper}
         onPress={() => {
           nav.showModalDatePickerScreen({
@@ -192,6 +204,7 @@ export const Features: React.FC<FeaturesProps> = ({
 
     return (
       <TouchableOpacity
+        key={feature.feature_id}
         style={styles.featureWrapper}
         onPress={() => {
           nav.showModalMultipleCheckboxPicker({
@@ -317,6 +330,16 @@ export const Features: React.FC<FeaturesProps> = ({
     await productsActions.updateProductFeatures(productId, sentProductFeatures);
   };
 
+  const renderNoFeaturesMessage = () => {
+    return (
+      <View style={styles.noFeaturesMessageWrapper}>
+        <Text style={styles.noFeaturesMessageText}>
+          {i18n.t('There is no features yet.')}
+        </Text>
+      </View>
+    );
+  };
+
   const renderFeatureItem = (feature: Feature) => {
     const { feature_type } = feature;
 
@@ -352,6 +375,10 @@ export const Features: React.FC<FeaturesProps> = ({
   const features = Object.keys(productFeatures).map(
     (k: string) => productFeatures[k],
   );
+
+  if (!features.length) {
+    return renderNoFeaturesMessage();
+  }
 
   return (
     <View style={styles.container}>
