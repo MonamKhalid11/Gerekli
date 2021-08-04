@@ -19,7 +19,6 @@ import {
 // Import components
 import BottomActions from '../../components/BottomActions';
 import StepByStepSwitcher from '../../components/StepByStepSwitcher';
-import Section from '../../components/Section';
 
 // Import actions
 import * as imagePickerActions from '../../actions/imagePickerActions';
@@ -28,7 +27,6 @@ import * as stepsActions from '../../actions/stepsActions';
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '$grayColor',
   },
   scrollContainer: {
     paddingBottom: 14,
@@ -43,9 +41,9 @@ const styles = EStyleSheet.create({
   imageWrapper: {
     position: 'relative',
   },
-  containerStyle: {
-    marginTop: 0,
-    marginBottom: 22,
+  imagePickerWrapper: {
+    padding: 20,
+    backgroundColor: '#fff',
   },
   sectionText: {
     color: '$primaryColor',
@@ -120,14 +118,13 @@ export class AddProductStep1 extends Component {
         <View style={styles.header}>
           <StepByStepSwitcher currentStep={currentStep} />
         </View>
-        <Section containerStyle={styles.containerStyle}>
-          <TouchableOpacity
-            onPress={() => {
-              nav.showImagePicker();
-            }}>
-            <Text style={styles.sectionText}>{i18n.t('Select image')}</Text>
-          </TouchableOpacity>
-        </Section>
+        <TouchableOpacity
+          style={styles.imagePickerWrapper}
+          onPress={() => {
+            nav.showImagePicker();
+          }}>
+          <Text style={styles.sectionText}>{i18n.t('Select image')}</Text>
+        </TouchableOpacity>
       </View>
     );
   };

@@ -8,7 +8,6 @@ import i18n from '../../utils/i18n';
 import { Navigation } from 'react-native-navigation';
 
 // Components
-import Section from '../../components/Section';
 import StepByStepSwitcher from '../../components/StepByStepSwitcher';
 import BottomActions from '../../components/BottomActions';
 
@@ -18,7 +17,6 @@ import * as stepsActions from '../../actions/stepsActions';
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '$grayColor',
   },
   header: {
     marginLeft: 14,
@@ -26,6 +24,9 @@ const styles = EStyleSheet.create({
   },
   scrollContainer: {
     paddingBottom: 14,
+  },
+  formWrapper: {
+    padding: 20,
   },
 });
 
@@ -151,13 +152,13 @@ export class AddProductStep2 extends Component {
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {this.renderHeader()}
-          <Section>
+          <View style={styles.formWrapper}>
             <Form
               ref={this.formRef}
               type={formFields}
               options={this.getFormOptions()}
             />
-          </Section>
+          </View>
         </ScrollView>
         <BottomActions
           onBtnPress={this.handleGoNext}
