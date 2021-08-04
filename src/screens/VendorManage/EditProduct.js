@@ -13,6 +13,10 @@ import {
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import uniqueId from 'lodash/uniqueId';
+import {
+  PRODUCT_STATUS_REQUIRES_APPROVAL,
+  PRODUCT_STATUS_DISAPPROVED,
+} from '../../constants/index';
 
 // Components
 import Section from '../../components/Section';
@@ -432,6 +436,15 @@ export class EditProduct extends Component {
       return <Spinner visible />;
     }
 
+    let isStatusChanging = true;
+
+    if (
+      product.status === PRODUCT_STATUS_REQUIRES_APPROVAL ||
+      product.status === PRODUCT_STATUS_DISAPPROVED
+    ) {
+      isStatusChanging = false;
+    }
+
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.container}>
@@ -446,13 +459,14 @@ export class EditProduct extends Component {
               />
             </Section>
             <Section wrapperStyle={{ padding: 0 }}>
-              {this.renderMenuItem(
-                i18n.t('Status'),
-                getProductStatus(product.status).text,
-                () => {
-                  this.StatusActionSheet.show();
-                },
-              )}
+              {isStatusChanging &&
+                this.renderMenuItem(
+                  i18n.t('Status'),
+                  getProductStatus(product.status).text,
+                  () => {
+                    this.StatusActionSheet.show();
+                  },
+                )}
               {this.renderMenuItem(
                 i18n.t('Pricing / Inventory'),
                 `${product.product_code}, ${i18n.t('List price')}: ${
