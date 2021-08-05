@@ -396,16 +396,22 @@ export class EditProduct extends Component {
    *
    * @return {JSX.Element}
    */
-  renderMenuItem = (title, subTitle, fn = () => {}, isProductOffer = false) => (
+  renderMenuItem = (
+    title,
+    subTitle,
+    fn = () => {},
+    isProductOffer = false,
+    isStatusChanging = true,
+  ) => (
     <TouchableOpacity
       style={styles.menuItem}
-      activeOpacity={isProductOffer ? 1 : 0}
-      onPress={isProductOffer ? null : fn}>
+      activeOpacity={isProductOffer || !isStatusChanging ? 1 : 0}
+      onPress={isProductOffer || !isStatusChanging ? null : fn}>
       <View style={styles.menuItemText}>
         <Text style={styles.menuItemTitle}>{title}</Text>
         <Text style={styles.menuItemSubTitle}>{subTitle}</Text>
       </View>
-      {!isProductOffer && (
+      {!isProductOffer && isStatusChanging && (
         <Icon name="keyboard-arrow-right" style={styles.btnIcon} />
       )}
     </TouchableOpacity>
@@ -459,14 +465,15 @@ export class EditProduct extends Component {
               />
             </Section>
             <Section wrapperStyle={{ padding: 0 }}>
-              {isStatusChanging &&
-                this.renderMenuItem(
-                  i18n.t('Status'),
-                  getProductStatus(product.status).text,
-                  () => {
-                    this.StatusActionSheet.show();
-                  },
-                )}
+              {this.renderMenuItem(
+                i18n.t('Status'),
+                getProductStatus(product.status).text,
+                () => {
+                  this.StatusActionSheet.show();
+                },
+                undefined,
+                isStatusChanging,
+              )}
               {this.renderMenuItem(
                 i18n.t('Pricing / Inventory'),
                 `${product.product_code}, ${i18n.t('List price')}: ${
