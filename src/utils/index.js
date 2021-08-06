@@ -4,6 +4,13 @@ import get from 'lodash/get';
 import values from 'lodash/values';
 import countries from '../config/countries';
 import i18n from './i18n';
+import {
+  PRODUCT_STATUS_ACTIVE,
+  PRODUCT_STATUS_HIDDEN,
+  PRODUCT_STATUS_DISABLED,
+  PRODUCT_STATUS_REQUIRES_APPROVAL,
+  PRODUCT_STATUS_DISAPPROVED,
+} from '../constants/index';
 
 // Calculate product image width and items count.
 const WINDOW_WIDTH = Dimensions.get('window').width;
@@ -157,22 +164,34 @@ export function parseQueryString(query) {
 
 export function getProductStatus(status) {
   switch (status) {
-    case 'A':
+    case PRODUCT_STATUS_ACTIVE:
       return {
         text: i18n.t('Active'),
         style: { color: '#97cf4d' },
       };
 
-    case 'H':
+    case PRODUCT_STATUS_HIDDEN:
       return {
         text: i18n.t('Hidden'),
         style: { color: '#000000' },
       };
 
-    case 'D':
+    case PRODUCT_STATUS_DISABLED:
       return {
         text: i18n.t('Disabled'),
         style: { color: '#ff0000' },
+      };
+
+    case PRODUCT_STATUS_REQUIRES_APPROVAL:
+      return {
+        text: i18n.t('Requires approval'),
+        style: { color: '#ff9c12' },
+      };
+
+    case PRODUCT_STATUS_DISAPPROVED:
+      return {
+        text: i18n.t('Disapproved'),
+        style: { color: '#ff2b2b' },
       };
 
     default:
