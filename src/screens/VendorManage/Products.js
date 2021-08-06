@@ -6,6 +6,10 @@ import { View, Text, Image, FlatList, TouchableOpacity } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import ActionSheet from 'react-native-actionsheet';
+import {
+  PRODUCT_STATUS_REQUIRES_APPROVAL,
+  PRODUCT_STATUS_DISAPPROVED,
+} from '../../constants/index';
 
 // Styles
 import theme from '../../config/theme';
@@ -196,15 +200,6 @@ export class Products extends Component {
     const { productsActions } = this.props;
     const swipeoutBtns = [
       {
-        text: i18n.t('Status'),
-        type: 'status',
-        backgroundColor: '#ff6002',
-        onPress: () => {
-          this.product_id = item.product_id;
-          this.StatusActionSheet.show();
-        },
-      },
-      {
         text: i18n.t('Delete'),
         type: 'delete',
         backgroundColor: '#ff362b',
@@ -213,6 +208,21 @@ export class Products extends Component {
     ];
     const imageUri = getImagePath(item);
     const status = getProductStatus(item.status);
+
+    if (
+      item.status !== PRODUCT_STATUS_REQUIRES_APPROVAL &&
+      item.status !== PRODUCT_STATUS_DISAPPROVED
+    ) {
+      swipeoutBtns.unshift({
+        text: i18n.t('Status'),
+        type: 'status',
+        backgroundColor: '#ff6002',
+        onPress: () => {
+          this.product_id = item.product_id;
+          this.StatusActionSheet.show();
+        },
+      });
+    }
 
     return (
       <Swipeout
