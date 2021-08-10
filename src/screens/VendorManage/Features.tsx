@@ -135,19 +135,23 @@ export const Features: React.FC<FeaturesProps> = ({
         <View style={styles.rowDescriptionWrapper}>
           <Text style={styles.text}>{description}: </Text>
         </View>
-        <Switch
+        {/* <Switch
           value={switcherValue}
           onValueChange={() =>
             changeCheckboxValueHandler(feature, switcherValue)
           }
-        />
+        /> */}
       </View>
     );
   };
 
   const renderSelect = (feature: Feature) => {
     const { variant, description } = feature;
-    const pickerValues = feature.variants.map((variant) => variant.variant);
+
+    let pickerValues = [];
+    if (feature.variants) {
+      pickerValues = feature.variants.map((variant) => variant.variant);
+    }
 
     return (
       <TouchableOpacity

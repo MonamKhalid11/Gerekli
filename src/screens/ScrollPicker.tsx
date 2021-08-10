@@ -26,7 +26,7 @@ const styles = (isItemActive: boolean | null) =>
 
 interface ScrollPickerProps {
   componentId: string;
-  pickerValues: [string];
+  pickerValues: [string] | [];
   changePickerValueHandler: Function;
   selectValue: string;
   title: string;
