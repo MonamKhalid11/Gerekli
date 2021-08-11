@@ -26,13 +26,17 @@ const styles = (isItemActive: boolean | null) =>
 
 interface ScrollPickerProps {
   componentId: string;
-  pickerValues: [string] | [];
+  pickerValues: string[];
   changePickerValueHandler: Function;
   selectValue: string;
   title: string;
   additionalData: {
     [key: string]: any;
   };
+}
+
+interface NavigationButtonPressedProps {
+  buttonId: string;
 }
 
 export const ScrollPicker: React.FC<ScrollPickerProps> = ({
@@ -44,7 +48,7 @@ export const ScrollPicker: React.FC<ScrollPickerProps> = ({
   additionalData,
 }) => {
   const listener = {
-    navigationButtonPressed: ({ buttonId }) => {
+    navigationButtonPressed: ({ buttonId }: NavigationButtonPressedProps) => {
       if (buttonId === 'close') {
         Navigation.dismissModal(componentId);
       }

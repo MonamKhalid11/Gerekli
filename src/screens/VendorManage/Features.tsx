@@ -135,12 +135,12 @@ export const Features: React.FC<FeaturesProps> = ({
         <View style={styles.rowDescriptionWrapper}>
           <Text style={styles.text}>{description}: </Text>
         </View>
-        {/* <Switch
+        <Switch
           value={switcherValue}
           onValueChange={() =>
             changeCheckboxValueHandler(feature, switcherValue)
           }
-        /> */}
+        />
       </View>
     );
   };
@@ -148,7 +148,7 @@ export const Features: React.FC<FeaturesProps> = ({
   const renderSelect = (feature: Feature) => {
     const { variant, description } = feature;
 
-    let pickerValues = [];
+    let pickerValues: string[] = [];
     if (feature.variants) {
       pickerValues = feature.variants.map((variant) => variant.variant);
     }

@@ -29,9 +29,5 @@ export const convertProductFeatures = (
     }
   });
 
-  console.log('convertedFeatures: ', convertedFeatures);
-
-  console.log('featuresListWithoutValues: ', featuresListWithoutValues);
-
   return convertedFeatures;
 };

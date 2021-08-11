@@ -94,7 +94,6 @@ export const getProductFeaturesList = (id) => {
         variants(items_per_page: 200){
           variant
           variant_id
-          selected
         }
       }
     }
