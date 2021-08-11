@@ -13,6 +13,10 @@ import {
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import uniqueId from 'lodash/uniqueId';
+import {
+  PRODUCT_STATUS_REQUIRES_APPROVAL,
+  PRODUCT_STATUS_DISAPPROVED,
+} from '../../constants/index';
 
 // Components
 import Section from '../../components/Section';
@@ -390,16 +394,22 @@ export class EditProduct extends Component {
    *
    * @return {JSX.Element}
    */
-  renderMenuItem = (title, subTitle, fn = () => {}, isProductOffer = false) => (
+  renderMenuItem = (
+    title,
+    subTitle,
+    fn = () => {},
+    isProductOffer = false,
+    isStatusChanging = true,
+  ) => (
     <TouchableOpacity
       style={styles.menuItem}
-      activeOpacity={isProductOffer ? 1 : 0}
-      onPress={isProductOffer ? null : fn}>
+      activeOpacity={isProductOffer || !isStatusChanging ? 1 : 0}
+      onPress={isProductOffer || !isStatusChanging ? null : fn}>
       <View style={styles.menuItemText}>
         <Text style={styles.menuItemTitle}>{title}</Text>
         <Text style={styles.menuItemSubTitle}>{subTitle}</Text>
       </View>
-      {!isProductOffer && (
+      {!isProductOffer && isStatusChanging && (
         <Icon name="keyboard-arrow-right" style={styles.btnIcon} />
       )}
     </TouchableOpacity>
@@ -436,6 +446,15 @@ export class EditProduct extends Component {
       return <Spinner visible />;
     }
 
+    let isStatusChanging = true;
+
+    if (
+      product.status === PRODUCT_STATUS_REQUIRES_APPROVAL ||
+      product.status === PRODUCT_STATUS_DISAPPROVED
+    ) {
+      isStatusChanging = false;
+    }
+
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.container}>
@@ -456,6 +475,8 @@ export class EditProduct extends Component {
                 () => {
                   this.StatusActionSheet.show();
                 },
+                undefined,
+                isStatusChanging,
               )}
               {this.renderMenuItem(
                 i18n.t('Pricing / Inventory'),

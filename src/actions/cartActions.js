@@ -61,6 +61,12 @@ export function fetch(calculateShipping = 'A', coupons) {
           coupon_codes: appliedCoupons,
         },
       });
+
+      // Removing duplicate shipping.
+      res.data.product_groups = res.data.product_groups.filter(
+        (product_group) => !product_group.shipping_by_marketplace,
+      );
+
       const carts = {};
       if (!res.data.amount) {
         dispatch({
