@@ -30,6 +30,7 @@ const initialState = {
   isSeparateCart: null,
   coupons: {},
   carts: {},
+  dummyCart:{}
 };
 
 let newProducts = [];
@@ -46,9 +47,11 @@ export default function (state = initialState, action) {
       };
 
     case CART_LOADED:
+      console.log("showing values of cart loaded",action.dummyCart)
       return {
         ...state,
         fetching: false,
+        dummyCart:action.dummyCart
       };
 
     case RESTORE_STATE:
@@ -149,10 +152,10 @@ export default function (state = initialState, action) {
         newCoupons[action.payload.cartId] = action.payload.cart.coupons;
         newCarts[action.payload.cartId] = action.payload.cart;
       }
-
       return {
         ...state,
         carts: { ...newCarts },
+        shipping:action.payload.cart,
         coupons: newCoupons,
       };
 

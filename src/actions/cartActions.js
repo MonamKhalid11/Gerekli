@@ -111,6 +111,7 @@ export function fetch(calculateShipping = 'A', coupons) {
       }
       dispatch({
         type: CART_LOADED,
+        dummyCart:carts
       });
     } catch (error) {
       dispatch({
@@ -163,6 +164,7 @@ export function recalculateTotal(ids, coupons = [], cartId = '') {
 }
 
 export function saveUserData(data, coupons) {
+  console.log("showing values of data here is ",data)
   let appliedCoupons = [];
   if (coupons) {
     const allAppliedCoupons = getAllAppliedCoupons(coupons);

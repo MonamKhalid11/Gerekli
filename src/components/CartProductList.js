@@ -128,6 +128,7 @@ export const CartProductList = ({
    * Moves to the next page.
    */
   const handlePlaceOrder = async (auth, cart) => {
+    console.log("showing values of inital cart added",cart)
     const newCartProducts = filterObject(
       cart.products,
       (p) => !p.extra.exclude_from_calculate,

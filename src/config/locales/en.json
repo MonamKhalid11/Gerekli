@@ -869,6 +869,6 @@
     "Out of stock": "Out of stock",
     "Including tax": "Including tax",
     "Contact us for a price": "Contact us for a price",
-    "Becomeaseller": "Become a seller"
-
+    "Becomeaseller": "Become a seller",
+    "sorryMessage":"Sorry, it seems that we have no shipping options available for your location.Please check your shipping address and contact us if everything is okay. We`ll see what we can do about it."
 }

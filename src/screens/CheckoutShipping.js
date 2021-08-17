@@ -150,8 +150,15 @@ export class CheckoutShipping extends Component {
    * Sets shipping methods.
    */
   componentWillReceiveProps(nextProps) {
-    const { cart } = nextProps;
-    this.setDefaults(cart);
+    if(nextProps.stateCart != this.props.stateCart){
+      this.setDefaults(nextProps.stateCart.shipping);
+    }
+
+
+    
+    // const { cart } = nextProps;
+    // this.setDefaults(cart);
+
   }
 
   /**
@@ -160,26 +167,29 @@ export class CheckoutShipping extends Component {
    * @param {object} cart - Cart information.
    */
   setDefaults(cart) {
-    const items = this.normalizeData(cart.product_groups);
-    const shippings = [];
-    let isShippingForbidden = false;
-
-    items.forEach((item) => {
-      if (item) {
-        item.shippings.forEach((shipping) => {
-          shippings.push(shipping);
-        });
-      }
-      if (item.isShippingForbidden) {
-        isShippingForbidden = true;
-      }
-    });
-
-    this.setState({
-      items,
-      total: cart.total_formatted.price,
-      isNextDisabled: isShippingForbidden || shippings.length === 0,
-    });
+    if(cart.product_groups){
+      const items = this.normalizeData(cart.product_groups);
+      const shippings = [];
+      let isShippingForbidden = false;
+  
+      items.forEach((item) => {
+        if (item) {
+          item.shippings.forEach((shipping) => {
+            shippings.push(shipping);
+          });
+        }
+        if (item.isShippingForbidden) {
+          isShippingForbidden = true;
+        }
+      });
+  
+      this.setState({
+        items,
+        total: cart.total_formatted.price,
+        isNextDisabled: isShippingForbidden || shippings.length === 0,
+      });
+    }
+    
   }
 
   /**
@@ -383,9 +393,7 @@ export class CheckoutShipping extends Component {
     return (
       <View style={styles.shippingForbiddenContainer}>
         <Text style={styles.shippingForbiddenText}>
-          {i18n.t(
-            'Sorry, it seems that we have no shipping options available for your location.Please check your shipping address and contact us if everything is okay. We`ll see what we can do about it.',
-          )}
+          {i18n.t('sorryMessage')}
         </Text>
       </View>
     );
@@ -461,20 +469,28 @@ export class CheckoutShipping extends Component {
     if (stateCart.fetching) {
       return <Spinner visible />;
     }
+   
 
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.contentContainer}>
           {this.renderSteps()}
           {items
-            .filter((item) => item.isShippingRequired)
+            // .filter((item) => item.isShippingRequired)
             .map((item, itemIndex) => (
               <View key={item.company_id}>
                 {this.renderCompany(item.name)}
-                {item.isShippingForbidden
+                {!item.shippings.length > 0
                   ? this.renderShippingNotAvailableMessage()
-                  : item.shippings.map((shipping, shippingIndex) =>
-                      this.renderItem(shipping, shippingIndex, itemIndex, item),
+                  : 
+                 
+                  
+                  item.shippings.map((shipping, shippingIndex) =>{
+                    shipping.isSelected = true
+                    return(
+                      this.renderItem(shipping, shippingIndex, itemIndex, item)
+                    )
+                  }
                     )}
               </View>
             ))}

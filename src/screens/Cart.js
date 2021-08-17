@@ -249,6 +249,7 @@ export class Cart extends Component {
    * @return {JSX.Element}
    */
   render() {
+    console.log('showing values here for the props are',this.props)
     const { cart } = this.props;
 
     return (
