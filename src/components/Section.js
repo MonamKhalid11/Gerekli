@@ -28,7 +28,7 @@ const styles = EStyleSheet.create({
     right: 14,
   },
   rightButtonText: {
-    color: '$primaryColor',
+    color: '$buttonWithoutBackgroundTextColor',
     fontSize: '1rem',
   },
 });

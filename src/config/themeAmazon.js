@@ -3,7 +3,7 @@ export default {
   $statusBarColor: '#c1c1c1',
 
   // The background of the top navigation bar.
-  $navBarBackgroundColor: '#fff',
+  $navBarBackgroundColor: '#8dd9d4',
 
   // The color of the top navigation bar buttons.
   $navBarButtonColor: '#010005',
@@ -19,21 +19,21 @@ export default {
 
   // Background, icons and text color of the bottom tab menu.
   $bottomTabsBackgroundColor: '#fff',
-  $bottomTabsTextColor: '#6A6A6A',
-  $bottomTabsSelectedTextColor: '#F8642D',
-  $bottomTabsIconColor: '#6A6A6A',
-  $bottomTabsSelectedIconColor: '#F8642D',
+  $bottomTabsTextColor: '#4b5151',
+  $bottomTabsSelectedTextColor: '#2f848d',
+  $bottomTabsIconColor: '#4b5151',
+  $bottomTabsSelectedIconColor: '#2f848d',
 
   // Color of the icon with the number of products.
-  $bottomTabsPrimaryBadgeColor: '#F8642D',
+  $bottomTabsPrimaryBadgeColor: '#026C79',
 
   // The base color is used for action buttons.
   // For example add to cart.
-  $buttonBackgroundColor: '#FF4843',
-  $buttonWithBackgroundTextColor: '#fff',
+  $buttonBackgroundColor: '#ffd816',
+  $buttonWithBackgroundTextColor: '#120c00',
 
   // The base color is used for action buttons without background.
-  $buttonWithoutBackgroundTextColor: '#FF4843',
+  $buttonWithoutBackgroundTextColor: '#026C79',
 
   // Background color of messages.
   // Success, Info, Danger
@@ -47,13 +47,13 @@ export default {
   $grayColor: '#FAFAFA',
 
   // Color of swiper dots.
-  $dotsSwiperColor: '#FF4843',
+  $dotsSwiperColor: '#026C79',
 
   // The radius of the rounding of buttons and form elements.
   $borderRadius: 8,
 
   // Discount label background on product.
-  $productDiscountColor: '#FA9300',
+  $productDiscountColor: '#EB7700',
 
   // Color of the border on the product list.
   // It is not visible by default.

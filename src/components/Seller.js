@@ -47,7 +47,7 @@ const styles = (isStock, lastBlock, lastVendor, wishListActive) =>
       marginLeft: 10,
     },
     favoriteIcon: {
-      color: wishListActive ? '$primaryColor' : '$navBarButtonColor',
+      color: wishListActive ? '$buttonBackgroundColor' : '$navBarButtonColor',
     },
   });
 

@@ -51,6 +51,7 @@ const styles = EStyleSheet.create({
     paddingLeft: 4,
     paddingRight: 4,
     borderRadius: '$borderRadius',
+    width: 100,
   },
   priceWrapper: {
     flex: 1,
@@ -109,7 +110,7 @@ class ProductListView extends PureComponent {
 
     return (
       <View style={styles.listDiscountWrapper}>
-        <Text style={styles.listDiscountText}>
+        <Text style={styles.listDiscountText} numberOfLines={1}>
           {i18n.t('Discount')} {`${discount}%`}
         </Text>
       </View>
