@@ -3,16 +3,16 @@ export default {
   $statusBarColor: '#c1c1c1',
 
   // The background of the top navigation bar.
-  $navBarBackgroundColor: '#fff',
+  $navBarBackgroundColor: '#171A1F',
 
   // The color of the top navigation bar buttons.
-  $navBarButtonColor: '#010005',
+  $navBarButtonColor: '#fff',
 
   // The size of the title text.
   $navBarTitleFontSize: 16,
 
   // Button text color.
-  $navBarTextColor: '#242424',
+  $navBarTextColor: '#fff',
 
   // Main background.
   $screenBackgroundColor: '#fff',
@@ -53,7 +53,7 @@ export default {
   $borderRadius: 8,
 
   // Discount label background on product.
-  $productDiscountColor: '#3665F1',
+  $productDiscountColor: '#ED1754',
 
   // Color of the border on the product list.
   // It is not visible by default.
