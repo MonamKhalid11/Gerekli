@@ -56,7 +56,7 @@ const styles = EStyleSheet.create({
   sendButton: {
     width: '100%',
     alignItems: 'center',
-    backgroundColor: '$primaryColor',
+    backgroundColor: '$buttonBackgroundColor',
     paddingVertical: 10,
     borderRadius: '$borderRadius',
   },

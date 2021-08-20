@@ -3,6 +3,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { TouchableOpacity, Image } from 'react-native';
 import Swiper from 'react-native-swiper';
 import * as nav from '../services/navigation';
+import theme from '../config/theme';
 
 const styles = EStyleSheet.create({
   productImage: {
@@ -14,7 +15,11 @@ const styles = EStyleSheet.create({
 
 const SwiperWrapper = ({ children }) => {
   return (
-    <Swiper horizontal={true} height={300} removeClippedSubviews={false}>
+    <Swiper
+      horizontal={true}
+      height={300}
+      removeClippedSubviews={false}
+      activeDotColor={theme.$dotsSwiperColor}>
       {children.map((img, index) => (
         <TouchableOpacity
           key={index}

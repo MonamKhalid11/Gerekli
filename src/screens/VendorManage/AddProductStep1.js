@@ -48,7 +48,7 @@ const styles = EStyleSheet.create({
     marginBottom: 22,
   },
   sectionText: {
-    color: '$primaryColor',
+    color: '$buttonBackgroundColor',
   },
 });
 

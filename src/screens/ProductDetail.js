@@ -142,7 +142,8 @@ const styles = EStyleSheet.create({
     paddingBottom: 6,
   },
   sectionBtnText: {
-    color: '$primaryColor',
+    color: '$buttonWithoutBackgroundTextColor',
+    fontSize: '0.9rem',
     textAlign: 'left',
     fontSize: 14,
     maxWidth: 100,
@@ -281,7 +282,7 @@ export const ProductDetail = ({
             id: 'wishlist',
             icon: iconsMap.favorite,
             color: wishListActive
-              ? theme.$primaryColor
+              ? theme.$buttonWithoutBackgroundTextColor
               : theme.$navBarButtonColor,
           });
         }

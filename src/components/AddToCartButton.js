@@ -6,11 +6,11 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 const styles = EStyleSheet.create({
   addToCartBtnText: {
     textAlign: 'center',
-    color: '$primaryColorText',
+    color: '$buttonWithBackgroundTextColor',
     fontSize: 16,
   },
   addToCartBtn: {
-    backgroundColor: '$primaryColor',
+    backgroundColor: '$buttonBackgroundColor',
     padding: 10,
     borderRadius: 3,
     justifyContent: 'center',
