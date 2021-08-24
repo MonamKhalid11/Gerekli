@@ -58,6 +58,7 @@ import { Navigation } from 'react-native-navigation';
 import theme from '../config/theme';
 
 const OPTION_TYPE_CHECKBOX = 'C';
+const PRODUCT_IS_DOWNLOADABLE = 'Y';
 
 const styles = EStyleSheet.create({
   container: {
@@ -696,7 +697,12 @@ export class ProductDetail extends Component {
       showDiscount = true;
     }
 
-    const inStock = !Number(product.amount);
+    console.log('product: ', product);
+
+    const inStock =
+      !Number(product.amount) && product.is_edp !== PRODUCT_IS_DOWNLOADABLE
+        ? true
+        : false;
     const isProductPriceZero = Math.ceil(product.price) !== 0;
     const productTaxedPrice = get(product, 'taxed_price_formatted.price', '');
     const productPrice =
