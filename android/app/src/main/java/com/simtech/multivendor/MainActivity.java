@@ -1,4 +1,4 @@
-package com.simtech.multivendor;
+package com.simtech.multivendortest1;
 
 import com.reactnativenavigation.NavigationActivity;
 import android.os.Bundle;
