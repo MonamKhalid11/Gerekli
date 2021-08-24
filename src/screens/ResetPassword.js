@@ -162,7 +162,7 @@ const ResetPassword = ({ componentId, authActions }) => {
         <>
           <TextInput
             value={oneTimePassword}
-            placeholder={'Code'}
+            placeholder={'Recovery code'}
             style={[styles.input, !isValidate && styles.validateWarning]}
             onChangeText={(value) => {
               setOneTimePassword(value);
