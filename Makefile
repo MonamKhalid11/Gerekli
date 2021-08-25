@@ -16,7 +16,7 @@ build_debug_apk:
 	@cd android; \
 		./gradlew clean
 	@cd android; \
-		./gradlew assembleDebug
+		./gradlew assembleDebug -x bundleReleaseJsAndAssets
 
 build_release_aab:
 	@rm -rf node_modules

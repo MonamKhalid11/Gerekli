@@ -130,7 +130,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.simtech.multivendortest1"
+        applicationId "com.simtech.multivendor"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
