@@ -80,7 +80,7 @@ export const ScrollPicker: React.FC<ScrollPickerProps> = ({
     };
   });
 
-  const renderItem = (value: string) => {
+  const renderItem = (value: string, index: number) => {
     const isItemActive = value === selectValue;
 
     return (
@@ -94,7 +94,8 @@ export const ScrollPicker: React.FC<ScrollPickerProps> = ({
                 Navigation.dismissModal(componentId);
               }
             : undefined
-        }>
+        }
+        key={index}>
         <Text style={styles(isItemActive).itemText}>{value}</Text>
       </TouchableOpacity>
     );
@@ -102,8 +103,8 @@ export const ScrollPicker: React.FC<ScrollPickerProps> = ({
 
   return (
     <ScrollView style={styles(null).container}>
-      {pickerValues.map((value) => {
-        return renderItem(value);
+      {pickerValues.map((value, index) => {
+        return renderItem(value, index);
       })}
     </ScrollView>
   );

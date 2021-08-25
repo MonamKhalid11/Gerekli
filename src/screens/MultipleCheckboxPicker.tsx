@@ -105,11 +105,11 @@ export const MultipleCheckboxPicker: React.FC<MultipleCheckboxPickerProps> = ({
     changeMultipleCheckboxValueHandler(feature_id, currentFeature);
   };
 
-  const renderItem = (featureVariant: FeatureVariant) => {
+  const renderItem = (featureVariant: FeatureVariant, index: number) => {
     const { variant, selected, variant_id } = featureVariant;
 
     return (
-      <View style={styles.itemWrapper}>
+      <View style={styles.itemWrapper} key={index}>
         <Text style={styles.itemText}>{variant}</Text>
         <Switch
           value={selected}
@@ -125,8 +125,8 @@ export const MultipleCheckboxPicker: React.FC<MultipleCheckboxPickerProps> = ({
 
   return (
     <ScrollView style={styles.container}>
-      {currentFeature.variants.map((featureVariant) => {
-        return renderItem(featureVariant);
+      {currentFeature.variants.map((featureVariant, index) => {
+        return renderItem(featureVariant, index);
       })}
     </ScrollView>
   );
