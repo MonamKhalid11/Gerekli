@@ -697,12 +697,8 @@ export class ProductDetail extends Component {
       showDiscount = true;
     }
 
-    console.log('product: ', product);
-
-    const inStock =
-      !Number(product.amount) && product.is_edp !== PRODUCT_IS_DOWNLOADABLE
-        ? true
-        : false;
+    const outOfStock =
+      !Number(product.amount) && product.is_edp !== PRODUCT_IS_DOWNLOADABLE;
     const isProductPriceZero = Math.ceil(product.price) !== 0;
     const productTaxedPrice = get(product, 'taxed_price_formatted.price', '');
     const productPrice =
@@ -735,7 +731,7 @@ export class ProductDetail extends Component {
             {i18n.t('Contact us for a price')}
           </Text>
         )}
-        {inStock && (
+        {outOfStock && (
           <Text style={styles.outOfStockText}>{i18n.t('Out of stock')}</Text>
         )}
       </View>
