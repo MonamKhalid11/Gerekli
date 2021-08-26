@@ -16,8 +16,9 @@ build_debug_apk:
 	@rm -rf node_modules
 	@npm i
 	@react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
+	@rm ./android/app/src/main/res/raw/*
 	@cd android; \
-		./gradlew assembleRelease -x bundleReleaseJsAndAssets
+		./gradlew assembleDebug -x bundleReleaseJsAndAssets
 
 build_release_aab:
 	@cd android; \
