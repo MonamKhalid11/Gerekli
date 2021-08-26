@@ -14,6 +14,7 @@ import i18n from '../../utils/i18n';
 import { format } from 'date-fns';
 import * as nav from '../../services/navigation';
 import { Navigation } from 'react-native-navigation';
+import { filterObject } from '../../utils/index';
 
 // Components
 import BottomActions from '../../components/BottomActions';
@@ -225,9 +226,13 @@ export const Features: React.FC<FeaturesProps> = ({
             <Text style={styles.text}>{description}</Text>
           </View>
           <View style={styles.rowVariantWrapper}>
-            {variants.map((variant) => {
+            {variants.map((variant, index) => {
               if (variant.selected) {
-                return <Text style={styles.text}>{variant.variant}</Text>;
+                return (
+                  <Text style={styles.text} key={index}>
+                    {variant.variant}
+                  </Text>
+                );
               }
             })}
           </View>
@@ -318,12 +323,9 @@ export const Features: React.FC<FeaturesProps> = ({
       if (productFeatures[productFeaturesKeys[i]].variants.length) {
         feature.variants = productFeatures[productFeaturesKeys[i]].variants.map(
           (variant) => {
-            if (
+            variant.selected =
               variant.variant_id ===
-              productFeatures[productFeaturesKeys[i]].variant_id
-            ) {
-              variant.selected = true;
-            }
+              productFeatures[productFeaturesKeys[i]].variant_id;
             return variant;
           },
         );
