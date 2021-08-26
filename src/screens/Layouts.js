@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { ScrollView, RefreshControl } from 'react-native';
+import { ScrollView, RefreshControl, StatusBar } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import get from 'lodash/get';
@@ -289,6 +289,7 @@ export class Layouts extends Component {
             onRefresh={() => this.onRefresh()}
           />
         }>
+        <StatusBar backgroundColor="aqua" barStyle="light-content" />
         {blocksList}
       </ScrollView>
     );

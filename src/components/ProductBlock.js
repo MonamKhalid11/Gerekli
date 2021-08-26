@@ -6,6 +6,7 @@ import Swiper from 'react-native-swiper';
 import chunk from 'lodash/chunk';
 import ProductListView from './ProductListView';
 import { PRODUCT_NUM_COLUMNS, PRODUCT_IMAGE_WIDTH } from '../utils';
+import theme from '../config/theme';
 
 const styles = EStyleSheet.create({
   container: {
@@ -93,7 +94,8 @@ export default class ProductBlock extends Component {
           horizontal
           height={300}
           containerStyle={styles.swiperWrapper}
-          loadMinimal={true}>
+          loadMinimal={true}
+          activeDotColor={theme.$dotsSwiperColor}>
           {itemsList}
         </Swiper>
       </View>

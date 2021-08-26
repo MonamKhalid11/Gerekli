@@ -54,7 +54,7 @@ const styles = EStyleSheet.create({
     marginRight: 20,
   },
   text: {
-    color: '$primaryColor',
+    color: '$buttonWithoutBackgroundTextColor',
     fontSize: '0.9rem',
   },
   filterText: {

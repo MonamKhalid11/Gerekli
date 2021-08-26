@@ -69,7 +69,7 @@ const styles = (
       marginTop: 10,
     },
     showAllReviewsText: {
-      color: '$primaryColor',
+      color: '$buttonWithoutBackgroundTextColor',
       fontSize: 14,
     },
     noReviewText: {
