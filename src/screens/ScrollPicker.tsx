@@ -15,7 +15,7 @@ const styles = (isItemActive: boolean | null) =>
       textAlign: 'center',
       paddingVertical: 5,
       borderRadius: '$borderRadius',
-      backgroundColor: isItemActive ? '$primaryColor' : undefined,
+      backgroundColor: isItemActive ? '$buttonBackgroundColor' : undefined,
     },
     itemText: {
       fontSize: '1rem',

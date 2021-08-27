@@ -3,10 +3,10 @@ export default {
   $statusBarColor: '#c1c1c1',
 
   // The background of the top navigation bar.
-  $navBarBackgroundColor: '#FAFAFA',
+  $navBarBackgroundColor: '#8dd9d4',
 
   // The color of the top navigation bar buttons.
-  $navBarButtonColor: '#989898',
+  $navBarButtonColor: '#010005',
 
   // The size of the title text.
   $navBarTitleFontSize: 16,
@@ -19,21 +19,21 @@ export default {
 
   // Background, icons and text color of the bottom tab menu.
   $bottomTabsBackgroundColor: '#fff',
-  $bottomTabsTextColor: '#888888',
-  $bottomTabsSelectedTextColor: '#000',
-  $bottomTabsIconColor: '#888888',
-  $bottomTabsSelectedIconColor: '#000',
+  $bottomTabsTextColor: '#4b5151',
+  $bottomTabsSelectedTextColor: '#2f848d',
+  $bottomTabsIconColor: '#4b5151',
+  $bottomTabsSelectedIconColor: '#2f848d',
 
   // Color of the icon with the number of products.
-  $bottomTabsPrimaryBadgeColor: '#FD542A',
+  $bottomTabsPrimaryBadgeColor: '#026C79',
 
   // The base color is used for action buttons.
   // For example add to cart.
-  $buttonBackgroundColor: '#FF6008',
-  $buttonWithBackgroundTextColor: '#fff',
+  $buttonBackgroundColor: '#ffd816',
+  $buttonWithBackgroundTextColor: '#120c00',
 
   // The base color is used for action buttons without background.
-  $buttonWithoutBackgroundTextColor: '#FF6008',
+  $buttonWithoutBackgroundTextColor: '#026C79',
 
   // Background color of messages.
   // Success, Info, Danger
@@ -47,16 +47,13 @@ export default {
   $grayColor: '#FAFAFA',
 
   // Color of swiper dots.
-  $dotsSwiperColor: '#0085FE',
+  $dotsSwiperColor: '#026C79',
 
   // The radius of the rounding of buttons and form elements.
   $borderRadius: 8,
 
-  // Padding from the edges of the screen.
-  $containerPadding: 20,
-
   // Discount label background on product.
-  $productDiscountColor: '#EAA944',
+  $productDiscountColor: '#EB7700',
 
   // Color of the border on the product list.
   // It is not visible by default.
@@ -75,9 +72,9 @@ export default {
   $categoriesBackgroundColor: '#FAFAFA',
 
   // The color of the title on the category screen.
-  $categoriesHeaderColor: '#000',
+  $categoriesHeaderColor: '#303433',
   $categoryBlockBackgroundColor: '#FFF',
-  $categoryBlockTextColor: '#000',
+  $categoryBlockTextColor: '#303433',
   $categoryBorderRadius: 6,
   $categoryEmptyImage: '#989898',
 

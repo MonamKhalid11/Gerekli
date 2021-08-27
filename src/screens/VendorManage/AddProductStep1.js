@@ -46,7 +46,7 @@ const styles = EStyleSheet.create({
     backgroundColor: '#fff',
   },
   sectionText: {
-    color: '$primaryColor',
+    color: '$buttonBackgroundColor',
   },
 });
 

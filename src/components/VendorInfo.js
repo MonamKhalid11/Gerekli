@@ -33,7 +33,7 @@ const styles = EStyleSheet.create({
     color: 'gray',
   },
   vendorDetailBtnText: {
-    color: '$primaryColor',
+    color: '$buttonBackgroundColor',
     fontSize: '0.9rem',
   },
 });

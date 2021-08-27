@@ -35,7 +35,7 @@ const styles = EStyleSheet.create({
     borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: theme.$primaryColor,
+    backgroundColor: theme.$buttonBackgroundColor,
   },
   badgeAndroid: {
     position: 'absolute',
