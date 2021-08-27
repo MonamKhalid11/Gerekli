@@ -806,6 +806,10 @@ export class ProductDetail extends Component {
     const max = parseInt(product.max_qty, 10) || parseInt(product.amount, 10);
     const min = parseInt(product.min_qty, 10) || step;
 
+    if (!Number(product.amount) || product.is_edp === PRODUCT_IS_DOWNLOADABLE) {
+      return;
+    }
+
     return (
       <Section>
         {!productOffers && (
