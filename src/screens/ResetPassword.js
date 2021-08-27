@@ -6,7 +6,6 @@ import { bindActionCreators } from 'redux';
 import { Navigation } from 'react-native-navigation';
 import i18n from '../utils/i18n';
 import { iconsMap } from '../utils/navIcons';
-import * as nav from '../services/navigation';
 
 // Import actions.
 import * as authActions from '../actions/authActions';
@@ -162,7 +161,7 @@ const ResetPassword = ({ componentId, authActions }) => {
         <>
           <TextInput
             value={oneTimePassword}
-            placeholder={'Code'}
+            placeholder={i18n.t('Recovery code')}
             style={[styles.input, !isValidate && styles.validateWarning]}
             onChangeText={(value) => {
               setOneTimePassword(value);

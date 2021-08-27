@@ -2,6 +2,7 @@ import { Platform } from 'react-native';
 import { Dispatch } from 'redux';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Navigation } from 'react-native-navigation';
+import { stripTags } from '../utils/index';
 
 import {
   AuthActionTypes,
@@ -144,7 +145,7 @@ export function updateProfile(
           payload: {
             type: 'warning',
             title: i18n.t('Profile update fail'),
-            text: error.response.data.message,
+            text: stripTags(error.response.data.message),
           },
         });
       });
@@ -186,7 +187,7 @@ export function createProfile(data: CreateProfileParams, componentId: string) {
           payload: {
             type: 'warning',
             title: i18n.t('Registration fail'),
-            text: error.response.data.message,
+            text: stripTags(error.response.data.message),
           },
         });
       });
