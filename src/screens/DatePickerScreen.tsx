@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
-import i18n from '../utils/i18n';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import DatePicker from 'react-native-date-picker';
 import { Navigation } from 'react-native-navigation';
@@ -18,10 +17,10 @@ button: {
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: '$borderRadius',
-    backgroundColor: '$primaryColor',
+    backgroundColor: '$buttonBackgroundColor',
   },
   buttonText: {
-    color: '$primaryColorText',
+    color: '$buttonWithBackgroundTextColor',
     fontSize: '0.9rem',
   },
 });
