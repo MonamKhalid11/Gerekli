@@ -186,7 +186,7 @@ export function createProfile(data: CreateProfileParams, componentId: string) {
           type: NOTIFICATION_SHOW,
           payload: {
             type: 'warning',
-            title: i18n.t('Registration fail'),
+            title: i18n.t('Registration failed'),
             text: stripTags(error.response.data.message),
           },
         });
