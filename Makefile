@@ -11,8 +11,6 @@ change:
 	@cp -R ./users/${USER}/android ./
 
 build_release_aab:
-	@git checkout .
-	@git clean -f -d
 	@node changeBundleIdAndAppVersion ${BUNDLE_ID} ${APP_VERSION}
 	@cd android; \
 		./gradlew clean
