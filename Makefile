@@ -22,5 +22,3 @@ build_release_aab:
 build_debug_apk: build_release_aab
 	@cd android; \
 		./gradlew assembleDebug -x bundleReleaseJsAndAssets
-	@mv /opt/mobile-app/repo/android/app/build/outputs/apk/debug/app-debug.apk /opt/mobile-app/repo/android/app/build/outputs/apk/debug/${BUNDLE_NAME}.apk
-	@mv /opt/mobile-app/repo/android/app/build/outputs/apk/debug/${BUNDLE_NAME}.apk /opt/mobile-app/build/
