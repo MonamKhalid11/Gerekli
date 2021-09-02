@@ -1,18 +1,16 @@
 import {
   VENDOR_FETCH_PRODUCTS_FAIL,
   VENDOR_FETCH_PRODUCTS_SUCCESS,
-
   VENDOR_FETCH_PRODUCT_REQUEST,
   VENDOR_FETCH_PRODUCT_FAIL,
   VENDOR_FETCH_PRODUCT_SUCCESS,
-
   VENDOR_DELETE_PRODUCT_SUCCESS,
-
   VENDOR_UPDATE_PRODUCT_REQUEST,
   VENDOR_UPDATE_PRODUCT_FAIL,
   VENDOR_UPDATE_PRODUCT_SUCCESS,
-
   VENDOR_PRODUCT_CHANGE_CATEGORY,
+  VENDOR_FETCH_PRODUCT_FEATURES_SUCCESS,
+  UPDATE_LOCAL_PRODUCT_FEATURES,
 } from '../../constants';
 
 const initialState = {
@@ -21,7 +19,9 @@ const initialState = {
   hasMore: true,
   page: 0,
   loadingCurrent: true,
+  loadingProductFeatures: true,
   current: {},
+  productFeatures: {},
 };
 
 let foundProduct;
@@ -42,15 +42,16 @@ export default function (state = initialState, action) {
         loading: false,
         hasMore: action.payload.hasMore,
         page: action.payload.page,
-        items: action.payload.page === 1
-          ? action.payload.items
-          : [...state.items, ...action.payload.items],
+        items:
+          action.payload.page === 1
+            ? action.payload.items
+            : [...state.items, ...action.payload.items],
       };
 
     case VENDOR_DELETE_PRODUCT_SUCCESS:
       return {
         ...state,
-        items: state.items.filter(item => item.product_id !== action.payload),
+        items: state.items.filter((item) => item.product_id !== action.payload),
       };
 
     case VENDOR_UPDATE_PRODUCT_FAIL:
@@ -71,7 +72,9 @@ export default function (state = initialState, action) {
       };
 
     case VENDOR_UPDATE_PRODUCT_SUCCESS:
-      foundProduct = state.items.findIndex(item => item.product_id === action.payload.id);
+      foundProduct = state.items.findIndex(
+        (item) => item.product_id === action.payload.id,
+      );
       newItems = [...state.items];
       newItems[foundProduct] = {
         ...newItems[foundProduct],
@@ -97,8 +100,8 @@ export default function (state = initialState, action) {
     case VENDOR_FETCH_PRODUCT_SUCCESS:
       return {
         ...state,
-        current: action.payload,
         loadingCurrent: false,
+        current: action.payload,
       };
 
     case VENDOR_FETCH_PRODUCT_FAIL:
@@ -113,7 +116,20 @@ export default function (state = initialState, action) {
         current: {
           ...state.current,
           categories: action.payload,
-        }
+        },
+      };
+
+    case VENDOR_FETCH_PRODUCT_FEATURES_SUCCESS:
+      return {
+        ...state,
+        productFeatures: action.payload,
+        loadingProductFeatures: false,
+      };
+
+    case UPDATE_LOCAL_PRODUCT_FEATURES:
+      return {
+        ...state,
+        productFeatures: { ...action.payload },
       };
 
     default:

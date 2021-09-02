@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { connect, RootStateOrAny } from 'react-redux';
 import { ScrollView, Text, View, Switch } from 'react-native';
 import { Navigation } from 'react-native-navigation';
-import i18n from '../utils/i18n';
 import { iconsMap } from '../utils/navIcons';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -26,6 +26,10 @@ interface FeatureVariant {
   selected: boolean;
 }
 
+interface ProductFeatures {
+  [key: string]: Feature;
+}
+
 interface Feature {
   description: string;
   feature_id: number;
@@ -39,16 +43,18 @@ interface Feature {
 
 interface MultipleCheckboxPickerProps {
   componentId: string;
-  feature: Feature;
+  featureId: string;
   changeMultipleCheckboxValueHandler: Function;
   title: string;
+  productFeatures: ProductFeatures;
 }
 
 export const MultipleCheckboxPicker: React.FC<MultipleCheckboxPickerProps> = ({
   componentId,
-  feature,
+  featureId,
   changeMultipleCheckboxValueHandler,
   title,
+  productFeatures,
 }) => {
   const listener = {
     navigationButtonPressed: ({ buttonId }) => {
@@ -58,7 +64,7 @@ export const MultipleCheckboxPicker: React.FC<MultipleCheckboxPickerProps> = ({
     },
   };
 
-  const [currentFeature, setCurrentFeature] = useState<Feature | null>(null);
+  // const [currentFeature, setCurrentFeature] = useState<Feature | null>(null);
 
   useEffect(() => {
     Navigation.mergeOptions(componentId, {
@@ -80,29 +86,29 @@ export const MultipleCheckboxPicker: React.FC<MultipleCheckboxPickerProps> = ({
       componentId,
     );
 
-    setCurrentFeature(feature);
+    // setCurrentFeature(feature);
 
     return () => {
       listeners.remove();
     };
   }, []);
 
-  const { feature_id } = feature;
+  // const { feature_id } = feature;
 
   const changeHandler = (variantId: number) => {
-    if (!currentFeature) {
+    if (!productFeatures[featureId]) {
       return;
     }
 
-    currentFeature.variants.map((variant) => {
+    productFeatures[featureId].variants.map((variant) => {
       if (variant.variant_id === variantId) {
         variant.selected = !variant.selected;
       }
       return variant;
     });
 
-    setCurrentFeature({ ...currentFeature });
-    changeMultipleCheckboxValueHandler(feature_id, currentFeature);
+    // setCurrentFeature({ ...currentFeature });
+    changeMultipleCheckboxValueHandler(featureId, productFeatures[featureId]);
   };
 
   const renderItem = (featureVariant: FeatureVariant, index: number) => {
@@ -119,17 +125,19 @@ export const MultipleCheckboxPicker: React.FC<MultipleCheckboxPickerProps> = ({
     );
   };
 
-  if (!currentFeature) {
+  if (!productFeatures[featureId]) {
     return <View />;
   }
 
   return (
     <ScrollView style={styles.container}>
-      {currentFeature.variants.map((featureVariant, index) => {
+      {productFeatures[featureId].variants.map((featureVariant, index) => {
         return renderItem(featureVariant, index);
       })}
     </ScrollView>
   );
 };
 
-export default MultipleCheckboxPicker;
+export default connect((state: RootStateOrAny) => ({
+  productFeatures: state.vendorManageProducts.productFeatures,
+}))(MultipleCheckboxPicker);

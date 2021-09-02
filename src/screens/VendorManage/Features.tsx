@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect, RootStateOrAny } from 'react-redux';
 import { View, ScrollView, TouchableOpacity, Text, Switch } from 'react-native';
@@ -14,7 +14,6 @@ import i18n from '../../utils/i18n';
 import { format } from 'date-fns';
 import * as nav from '../../services/navigation';
 import { Navigation } from 'react-native-navigation';
-import { filterObject } from '../../utils/index';
 
 // Components
 import BottomActions from '../../components/BottomActions';
@@ -103,6 +102,7 @@ interface FeaturesProps {
   productsActions: {
     [key: string]: Function;
   };
+  productFeatures: ProductFeatures;
 }
 
 export const Features: React.FC<FeaturesProps> = ({
@@ -110,17 +110,11 @@ export const Features: React.FC<FeaturesProps> = ({
   productsActions,
   productId,
   settings,
+  productFeatures,
 }) => {
-  const [
-    productFeatures,
-    setProductFeatures,
-  ] = useState<ProductFeatures | null>(null);
-
   useEffect(() => {
     const getProductFeatures = async () => {
-      const result = await productsActions.fetchProductFeatures(productId);
-
-      setProductFeatures(result);
+      await productsActions.fetchProductFeatures(productId);
     };
     getProductFeatures();
   }, [productId, productsActions]);
@@ -216,7 +210,7 @@ export const Features: React.FC<FeaturesProps> = ({
         style={styles.featureWrapper}
         onPress={() => {
           nav.showModalMultipleCheckboxPicker({
-            feature: feature,
+            featureId: feature.feature_id,
             changeMultipleCheckboxValueHandler: changeMultipleCheckboxValueHandler,
             title: i18n.t('Select Features'),
           });
@@ -247,7 +241,7 @@ export const Features: React.FC<FeaturesProps> = ({
     }
 
     productFeatures[feature.feature_id].value_int = date.getTime() / 1000;
-    setProductFeatures({ ...productFeatures });
+    productsActions.updateLocalProductFeatures(productFeatures);
   };
 
   const changeSelectValueHandler = (
@@ -269,8 +263,7 @@ export const Features: React.FC<FeaturesProps> = ({
 
     productFeatures[feature_id].variant_id = selectedFeatureVariantId;
     productFeatures[feature_id].variant = selectedFeatureVariant;
-
-    setProductFeatures({ ...productFeatures });
+    productsActions.updateLocalProductFeatures(productFeatures);
   };
 
   const changeCheckboxValueHandler = (
@@ -284,7 +277,7 @@ export const Features: React.FC<FeaturesProps> = ({
     }
 
     productFeatures[feature_id].value = switcherValue ? 'N' : 'Y';
-    setProductFeatures({ ...productFeatures });
+    productsActions.updateLocalProductFeatures(productFeatures);
   };
 
   const changeMultipleCheckboxValueHandler = (
@@ -296,7 +289,7 @@ export const Features: React.FC<FeaturesProps> = ({
     }
 
     productFeatures[featureId] = feature;
-    setProductFeatures({ ...productFeatures });
+    productsActions.updateLocalProductFeatures(productFeatures);
   };
 
   const saveHandler = async () => {
@@ -320,7 +313,10 @@ export const Features: React.FC<FeaturesProps> = ({
         feature.value = productFeatures[productFeaturesKeys[i]].value_int;
       }
 
-      if (productFeatures[productFeaturesKeys[i]].variants.length) {
+      if (
+        productFeatures[productFeaturesKeys[i]].variants.length &&
+        productFeatures[productFeaturesKeys[i]].feature_type === 'S'
+      ) {
         feature.variants = productFeatures[productFeaturesKeys[i]].variants.map(
           (variant) => {
             variant.selected =
@@ -329,6 +325,13 @@ export const Features: React.FC<FeaturesProps> = ({
             return variant;
           },
         );
+      }
+
+      if (
+        productFeatures[productFeaturesKeys[i]].variants.length &&
+        productFeatures[productFeaturesKeys[i]].feature_type === 'M'
+      ) {
+        feature.variants = productFeatures[productFeaturesKeys[i]].variants;
       }
 
       sentProductFeatures[
@@ -404,6 +407,7 @@ export default connect(
   (state: RootStateOrAny) => ({
     product: state.vendorManageProducts.current,
     settings: state.settings,
+    productFeatures: state.vendorManageProducts.productFeatures,
   }),
   (dispatch) => ({
     productsActions: bindActionCreators(productsActions, dispatch),

@@ -19,6 +19,7 @@ import {
   VENDOR_FETCH_PRODUCT_FEATURES_SUCCESS,
   VENDOR_FETCH_PRODUCT_FEATURES_FAIL,
   NOTIFICATION_SHOW,
+  UPDATE_LOCAL_PRODUCT_FEATURES,
 } from '../../constants';
 import * as vendorService from '../../services/vendors';
 import { convertProductFeatures } from '../../services/VendorManageProductFeatures';
@@ -92,6 +93,7 @@ export function fetchProductFeatures(id) {
 
       dispatch({
         type: VENDOR_FETCH_PRODUCT_FEATURES_SUCCESS,
+        payload: convertedFeatures,
       });
 
       return convertedFeatures;
@@ -101,6 +103,15 @@ export function fetchProductFeatures(id) {
         error,
       });
     }
+  };
+}
+
+export function updateLocalProductFeatures(productFeatures) {
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_LOCAL_PRODUCT_FEATURES,
+      payload: productFeatures,
+    });
   };
 }
 
