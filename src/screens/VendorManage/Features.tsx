@@ -1,13 +1,22 @@
 import React, { useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect, RootStateOrAny } from 'react-redux';
-import { View, ScrollView, TouchableOpacity, Text, Switch } from 'react-native';
+import {
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Text,
+  Switch,
+  TextInput,
+  Keyboard,
+} from 'react-native';
 import {
   FEATURE_TYPE_DATE,
   FEATURE_TYPE_CHECKBOX,
   FEATURE_TYPE_SELECT,
   FEATURE_TYPE_BRAND,
   FEATURE_TYPE_CHECKBOX_MULTIPLE,
+  FEATURE_TYPE_TEXT,
 } from '../../constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import i18n from '../../utils/i18n';
@@ -44,17 +53,23 @@ const styles = EStyleSheet.create({
     justifyContent: 'space-between',
   },
   rowDescriptionWrapper: {
+    // paddingVertical: 5,
     width: '40%',
-    flexDirection: 'row',
   },
   rowVariantWrapper: {
     width: '40%',
-    flexDirection: 'column',
     alignItems: 'flex-end',
   },
   text: {
     fontSize: '0.8rem',
     color: '$darkColor',
+  },
+  input: {
+    fontSize: '0.8rem',
+    color: '$darkColor',
+    paddingVertical: 0,
+    borderWidth: 1,
+    textAlignVertical: 'top',
   },
   noFeaturesMessageWrapper: {
     padding: '$containerPadding',
@@ -117,6 +132,13 @@ export const Features: React.FC<FeaturesProps> = ({
       await productsActions.fetchProductFeatures(productId);
     };
     getProductFeatures();
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {});
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {});
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
   }, [productId, productsActions]);
 
   const renderCheckbox = (feature: Feature) => {
@@ -170,6 +192,28 @@ export const Features: React.FC<FeaturesProps> = ({
           </View>
         </View>
       </TouchableOpacity>
+    );
+  };
+
+  const renderTextInput = (feature: Feature) => {
+    const { description, value } = feature;
+
+    return (
+      <View style={styles.featureWrapper}>
+        <View style={styles.row}>
+          <View style={styles.rowDescriptionWrapper}>
+            <Text style={styles.text}>{description}</Text>
+          </View>
+          <View style={styles.rowVariantWrapper}>
+            <TextInput
+              onSubmitEditing={Keyboard.dismiss}
+              style={styles.input}
+              placeholder="Click here…"
+              value={value}
+            />
+          </View>
+        </View>
+      </View>
     );
   };
 
@@ -315,7 +359,8 @@ export const Features: React.FC<FeaturesProps> = ({
 
       if (
         productFeatures[productFeaturesKeys[i]].variants.length &&
-        productFeatures[productFeaturesKeys[i]].feature_type === 'S'
+        productFeatures[productFeaturesKeys[i]].feature_type ===
+          FEATURE_TYPE_SELECT
       ) {
         feature.variants = productFeatures[productFeaturesKeys[i]].variants.map(
           (variant) => {
@@ -329,7 +374,8 @@ export const Features: React.FC<FeaturesProps> = ({
 
       if (
         productFeatures[productFeaturesKeys[i]].variants.length &&
-        productFeatures[productFeaturesKeys[i]].feature_type === 'M'
+        productFeatures[productFeaturesKeys[i]].feature_type ===
+          FEATURE_TYPE_CHECKBOX_MULTIPLE
       ) {
         feature.variants = productFeatures[productFeaturesKeys[i]].variants;
       }
@@ -356,12 +402,10 @@ export const Features: React.FC<FeaturesProps> = ({
   const renderFeatureItem = (feature: Feature) => {
     const { feature_type } = feature;
 
-    // let newValue: string;
     let renderElement = null;
 
     switch (feature_type) {
       case FEATURE_TYPE_DATE:
-        // newValue = format(value_int * 1000, settings.dateFormat);
         renderElement = () => renderDate(feature);
         break;
       case FEATURE_TYPE_CHECKBOX:
@@ -373,6 +417,9 @@ export const Features: React.FC<FeaturesProps> = ({
         break;
       case FEATURE_TYPE_CHECKBOX_MULTIPLE:
         renderElement = () => renderMultipleCheckbox(feature);
+        break;
+      case FEATURE_TYPE_TEXT:
+        renderElement = () => renderTextInput(feature);
         break;
       default:
         return;

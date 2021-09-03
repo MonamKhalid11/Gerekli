@@ -82,6 +82,7 @@ export function fetchProductFeatures(id) {
 
     try {
       const result = await vendorService.getProductFeatures(id);
+      console.log('result: ', result)
       const featuresListWithoutValues = await vendorService.getProductFeaturesList(
         id,
       );
