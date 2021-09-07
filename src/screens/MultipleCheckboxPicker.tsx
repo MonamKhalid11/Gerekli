@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect, RootStateOrAny } from 'react-redux';
 import { ScrollView, Text, View, Switch } from 'react-native';
 import { Navigation } from 'react-native-navigation';
@@ -64,8 +64,6 @@ export const MultipleCheckboxPicker: React.FC<MultipleCheckboxPickerProps> = ({
     },
   };
 
-  // const [currentFeature, setCurrentFeature] = useState<Feature | null>(null);
-
   useEffect(() => {
     Navigation.mergeOptions(componentId, {
       topBar: {
@@ -86,14 +84,10 @@ export const MultipleCheckboxPicker: React.FC<MultipleCheckboxPickerProps> = ({
       componentId,
     );
 
-    // setCurrentFeature(feature);
-
     return () => {
       listeners.remove();
     };
   }, []);
-
-  // const { feature_id } = feature;
 
   const changeHandler = (variantId: number) => {
     if (!productFeatures[featureId]) {
@@ -107,7 +101,6 @@ export const MultipleCheckboxPicker: React.FC<MultipleCheckboxPickerProps> = ({
       return variant;
     });
 
-    // setCurrentFeature({ ...currentFeature });
     changeMultipleCheckboxValueHandler(featureId, productFeatures[featureId]);
   };
 

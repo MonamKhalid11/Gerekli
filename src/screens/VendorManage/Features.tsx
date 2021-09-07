@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect, RootStateOrAny } from 'react-redux';
 import {
@@ -53,11 +53,9 @@ const styles = EStyleSheet.create({
     justifyContent: 'space-between',
   },
   rowDescriptionWrapper: {
-    // paddingVertical: 5,
     width: '40%',
   },
   rowVariantWrapper: {
-    width: '40%',
     alignItems: 'flex-end',
   },
   text: {
@@ -67,9 +65,9 @@ const styles = EStyleSheet.create({
   input: {
     fontSize: '0.8rem',
     color: '$darkColor',
-    paddingVertical: 0,
-    borderWidth: 1,
+    padding: 0,
     textAlignVertical: 'top',
+    textAlign: 'right',
   },
   noFeaturesMessageWrapper: {
     padding: '$containerPadding',
@@ -120,6 +118,10 @@ interface FeaturesProps {
   productFeatures: ProductFeatures;
 }
 
+interface InputValue {
+  [key: number]: string;
+}
+
 export const Features: React.FC<FeaturesProps> = ({
   componentId,
   productsActions,
@@ -127,6 +129,8 @@ export const Features: React.FC<FeaturesProps> = ({
   settings,
   productFeatures,
 }) => {
+  const inputsRef = useRef<Array<TextInput | null>>([]);
+
   useEffect(() => {
     const getProductFeatures = async () => {
       await productsActions.fetchProductFeatures(productId);
@@ -199,22 +203,36 @@ export const Features: React.FC<FeaturesProps> = ({
     const { description, value } = feature;
 
     return (
-      <View style={styles.featureWrapper}>
+      <TouchableOpacity
+        style={styles.featureWrapper}
+        onPress={() => {
+          inputsRef.current[feature.feature_id].focus();
+        }}>
         <View style={styles.row}>
           <View style={styles.rowDescriptionWrapper}>
             <Text style={styles.text}>{description}</Text>
           </View>
           <View style={styles.rowVariantWrapper}>
             <TextInput
+              ref={(el) => (inputsRef.current[feature.feature_id] = el)}
               onSubmitEditing={Keyboard.dismiss}
               style={styles.input}
               placeholder="Click here…"
               value={value}
+              onChangeText={(newValue) =>
+                changeTextInputHandler(newValue, feature)
+              }
             />
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
+  };
+
+  const changeTextInputHandler = (newValue: string, feature: Feature) => {
+    feature.value = newValue;
+    productFeatures[feature.feature_id] = feature;
+    productsActions.updateLocalProductFeatures(productFeatures);
   };
 
   const renderDate = (feature: Feature) => {
