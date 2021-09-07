@@ -323,7 +323,6 @@ export const Features: React.FC<FeaturesProps> = ({
     productFeatures[feature_id].variant_id = selectedFeatureVariantId;
     productFeatures[feature_id].variant = selectedFeatureVariant;
 
-    console.log('productFeatures: ', productFeatures);
     productsActions.updateLocalProductFeatures(productFeatures);
   };
 
@@ -376,8 +375,10 @@ export const Features: React.FC<FeaturesProps> = ({
 
       if (
         productFeatures[productFeaturesKeys[i]].variants.length &&
-        productFeatures[productFeaturesKeys[i]].feature_type ===
-          (FEATURE_TYPE_SELECT || FEATURE_TYPE_NUMBER_SLIDER)
+        (productFeatures[productFeaturesKeys[i]].feature_type ===
+          FEATURE_TYPE_SELECT ||
+          productFeatures[productFeaturesKeys[i]].feature_type ===
+            FEATURE_TYPE_NUMBER_SLIDER)
       ) {
         feature.variants = productFeatures[productFeaturesKeys[i]].variants.map(
           (variant) => {

@@ -82,12 +82,9 @@ export function fetchProductFeatures(id) {
 
     try {
       const result = await vendorService.getProductFeatures(id);
-      console.log('result: ', result)
       const featuresListWithoutValues = await vendorService.getProductFeaturesList(
         id,
       );
-
-      console.log('featuresListWithoutValues: ', featuresListWithoutValues)
 
       const convertedFeatures = convertProductFeatures(
         result.data.product.product_features,
