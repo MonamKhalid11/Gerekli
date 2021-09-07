@@ -87,6 +87,8 @@ export function fetchProductFeatures(id) {
         id,
       );
 
+      console.log('featuresListWithoutValues: ', featuresListWithoutValues)
+
       const convertedFeatures = convertProductFeatures(
         result.data.product.product_features,
         featuresListWithoutValues.data.product_features,

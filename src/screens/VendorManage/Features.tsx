@@ -17,6 +17,7 @@ import {
   FEATURE_TYPE_BRAND,
   FEATURE_TYPE_CHECKBOX_MULTIPLE,
   FEATURE_TYPE_TEXT,
+  FEATURE_TYPE_NUMBER_SLIDER,
 } from '../../constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import i18n from '../../utils/i18n';
@@ -116,10 +117,6 @@ interface FeaturesProps {
     [key: string]: Function;
   };
   productFeatures: ProductFeatures;
-}
-
-interface InputValue {
-  [key: number]: string;
 }
 
 export const Features: React.FC<FeaturesProps> = ({
@@ -325,6 +322,8 @@ export const Features: React.FC<FeaturesProps> = ({
 
     productFeatures[feature_id].variant_id = selectedFeatureVariantId;
     productFeatures[feature_id].variant = selectedFeatureVariant;
+
+    console.log('productFeatures: ', productFeatures);
     productsActions.updateLocalProductFeatures(productFeatures);
   };
 
@@ -378,7 +377,7 @@ export const Features: React.FC<FeaturesProps> = ({
       if (
         productFeatures[productFeaturesKeys[i]].variants.length &&
         productFeatures[productFeaturesKeys[i]].feature_type ===
-          FEATURE_TYPE_SELECT
+          (FEATURE_TYPE_SELECT || FEATURE_TYPE_NUMBER_SLIDER)
       ) {
         feature.variants = productFeatures[productFeaturesKeys[i]].variants.map(
           (variant) => {
@@ -430,6 +429,7 @@ export const Features: React.FC<FeaturesProps> = ({
         renderElement = () => renderCheckbox(feature);
         break;
       case FEATURE_TYPE_SELECT:
+      case FEATURE_TYPE_NUMBER_SLIDER:
       case FEATURE_TYPE_BRAND:
         renderElement = () => renderSelect(feature);
         break;

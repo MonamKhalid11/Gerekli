@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { ScrollView, TouchableOpacity, Text } from 'react-native';
 import { Navigation } from 'react-native-navigation';
-import i18n from '../utils/i18n';
 import { iconsMap } from '../utils/navIcons';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
