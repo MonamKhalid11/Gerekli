@@ -51,6 +51,7 @@ import Section from '../components/Section';
 import Spinner from '../components/Spinner';
 
 const RATING_STAR_SIZE = 14;
+const PRODUCT_IS_DOWNLOADABLE = 'Y';
 
 const styles = EStyleSheet.create({
   container: {
@@ -145,7 +146,6 @@ const styles = EStyleSheet.create({
     color: '$buttonWithoutBackgroundTextColor',
     fontSize: '0.9rem',
     textAlign: 'left',
-    fontSize: 14,
     maxWidth: 100,
   },
   vendorWrapper: {
@@ -467,14 +467,15 @@ export const ProductDetail = ({
       showDiscount = true;
     }
 
-    const inStock = !Number(product.amount);
+    const outOfStock =
+      !Number(product.amount) && product.is_edp !== PRODUCT_IS_DOWNLOADABLE;
     const isProductPriceZero = Math.ceil(product.price) !== 0;
     const productTaxedPrice = get(product, 'taxed_price_formatted.price', '');
     const productPrice =
       productTaxedPrice || get(product, 'price_formatted.price', '');
     const showTaxedPrice = isPriceIncludesTax(product);
 
-    if (inStock) {
+    if (outOfStock) {
       return (
         <Text style={styles.outOfStockText}>{i18n.t('Out of stock')}</Text>
       );
