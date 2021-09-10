@@ -94,12 +94,12 @@ export async function setStartSettings(currentLanguage, currentCurrency) {
           symbol: currencies[0].symbol,
         };
       }
-
-      store.dispatch({
-        type: SET_CURRENCY,
-        payload: currentCurrency,
-      });
     }
+
+    store.dispatch({
+      type: SET_CURRENCY,
+      payload: currentCurrency,
+    });
 
     if (!currentLanguage?.langCode) {
       // If the device language is among the languages of the store
