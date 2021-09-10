@@ -31,6 +31,12 @@ import BottomActions from '../../components/BottomActions';
 // Actions
 import * as productsActions from '../../actions/vendorManage/productsActions';
 
+const featuresWithSelectInterface = [
+  FEATURE_TYPE_SELECT,
+  FEATURE_TYPE_BRAND,
+  FEATURE_TYPE_NUMBER_SLIDER,
+];
+
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
@@ -375,10 +381,9 @@ export const Features: React.FC<FeaturesProps> = ({
 
       if (
         productFeatures[productFeaturesKeys[i]].variants.length &&
-        (productFeatures[productFeaturesKeys[i]].feature_type ===
-          FEATURE_TYPE_SELECT ||
-          productFeatures[productFeaturesKeys[i]].feature_type ===
-            FEATURE_TYPE_NUMBER_SLIDER)
+        featuresWithSelectInterface.includes(
+          productFeatures[productFeaturesKeys[i]].feature_type,
+        )
       ) {
         feature.variants = productFeatures[productFeaturesKeys[i]].variants.map(
           (variant) => {
