@@ -80,6 +80,63 @@ export const getProductDetail = (id) => {
   return gql(QUERY, { id }).then((result) => result.data);
 };
 
+// Gets all features includes features which don't have values.
+export const getProductFeaturesList = (id) => {
+  const QUERY = `query getProductFeaturesList($id: Int!) {
+      product_features(product_id: $id, exclude_group: true, items_per_page: 200) {
+        description
+        feature_id
+        feature_type
+        value
+        variant
+        variant_id
+        value_int
+        variants(items_per_page: 200){
+          variant
+          variant_id
+        }
+      }
+    }
+  `;
+  return gql(QUERY, { id }).then((result) => result.data);
+};
+
+// Gets all features which have values.
+export const getProductFeatures = (id) => {
+  const QUERY = `query getProductFeatures($id: Int!) {
+      product(id: $id, get_icon: true, get_detailed: true, get_additional: true) {
+        product_features {
+          feature_id
+          value
+          variant_id
+          variant
+          feature_type
+          value_int
+          description
+          variants(items_per_page: 200){
+            variant
+            variant_id
+            selected
+          }
+        }
+      }
+    }
+  `;
+  return gql(QUERY, { id }).then((result) => result.data);
+};
+
+export const changeProductFeatures = (productId, data) => {
+  const product = { product_features: data };
+  const QUERY = `mutation($productId: Int!, $product: UpdateProductInput!) {
+    update_product(
+      id: $productId
+      product: $product
+    )
+  }
+  `;
+  return gql(QUERY, { productId, product }).then((result) => result.data);
+};
+
 export const updateProduct = (id, product) => {
   const data = new FormData();
   const renderImagePairs = () => {

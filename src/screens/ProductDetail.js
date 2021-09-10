@@ -10,17 +10,8 @@ import i18n from '../utils/i18n';
 import { isEmpty } from 'lodash';
 import config from '../config';
 import theme from '../config/theme';
-import {
-  formatPrice,
-  isPriceIncludesTax,
-  stripTags,
-  formatDate,
-} from '../utils';
-import {
-  VERSION_MVE,
-  FEATURE_TYPE_DATE,
-  FEATURE_TYPE_CHECKBOX,
-} from '../constants';
+import { formatPrice, isPriceIncludesTax, stripTags } from '../utils';
+import { VERSION_MVE } from '../constants';
 import {
   View,
   ScrollView,
@@ -37,6 +28,7 @@ import * as cartActions from '../actions/cartActions';
 import * as vendorActions from '../actions/vendorActions';
 
 // Components
+import { ProductFeaturesList } from '../components/ProductFeaturesList';
 import { ProductDetailOptions } from '../components/ProductDetailOptions';
 import ProductImageSwiper from '../components/ProductImageSwiper';
 import { AddToCartButton } from '../components/AddToCartButton';
@@ -45,7 +37,6 @@ import StarsRating from '../components/StarsRating';
 import ReviewsBlock from '../components/ReviewsBlock';
 import InAppPayment from '../components/InAppPayment';
 import { QtyOption } from '../components/QtyOption';
-import SectionRow from '../components/SectionRow';
 import { Seller } from '../components/Seller';
 import Section from '../components/Section';
 import Spinner from '../components/Spinner';
@@ -692,59 +683,6 @@ export const ProductDetail = ({
   };
 
   /**
-   * Renders features block.
-   *
-   * @return {JSX.Element}
-   */
-  const renderFeatures = () => {
-    const renderFeatureItem = (feature, index, last) => {
-      const { description, feature_type, value_int, value, variant } = feature;
-
-      let newValue = null;
-      switch (feature_type) {
-        case FEATURE_TYPE_DATE:
-          newValue = formatDate(value_int * 1000);
-          break;
-        case FEATURE_TYPE_CHECKBOX:
-          newValue = feature.value === 'Y' ? i18n.t('Yes') : i18n.t('No');
-          break;
-        default:
-          newValue = value || variant;
-      }
-
-      return (
-        <SectionRow
-          name={description}
-          value={newValue}
-          last={last}
-          key={index}
-        />
-      );
-    };
-
-    const features = Object.keys(product.product_features).map(
-      (k) => product.product_features[k],
-    );
-
-    if (!features.length) {
-      return null;
-    }
-
-    const lastElement = features.length - 1;
-
-    return (
-      <Section
-        title={i18n.t('Features')}
-        wrapperStyle={styles.wrapperStyle}
-        topDivider>
-        {features.map((item, index) =>
-          renderFeatureItem(item, index, index === lastElement),
-        )}
-      </Section>
-    );
-  };
-
-  /**
    * Renders vendor information.
    *
    * @return {JSX.Element}
@@ -896,7 +834,7 @@ export const ProductDetail = ({
           {renderVariationsAndOptions()}
           {renderSellers()}
           {renderDesc()}
-          {renderFeatures()}
+          <ProductFeaturesList productFeatures={product.product_features} />
           {renderDiscussion()}
           {renderVendorInfo()}
         </ScrollView>

@@ -19,6 +19,7 @@ import OrderDetail from './screens/OrderDetail';
 import ImagePicker from './screens/ImagePicker';
 import VendorDetail from './screens/VendorDetail';
 import ScrollPicker from './screens/ScrollPicker';
+import MultipleCheckboxPicker from './screens/MultipleCheckboxPicker';
 import CheckoutAuth from './screens/CheckoutAuth';
 import Registration from './screens/Registration';
 import ResetPassword from './screens/ResetPassword';
@@ -36,6 +37,7 @@ import VendorManageAddProductStep2 from './screens/VendorManage/AddProductStep2'
 import VendorManageAddProductStep3 from './screens/VendorManage/AddProductStep3';
 import VendorManageEditProduct from './screens/VendorManage/EditProduct';
 import VendorManagePricingInventory from './screens/VendorManage/PricingInventory';
+import VendorManageFeatures from './screens/VendorManage/Features';
 import VendorManageShippingProperties from './screens/VendorManage/ShippingProperties';
 import VendorManageCategoriesPicker from './screens/VendorManage/CategoriesPicker';
 import VendorManageOrderDetail from './screens/VendorManage/OrderDetail';
@@ -43,6 +45,7 @@ import LanguageSelection from './screens/LanguageSelection';
 import CurrencySelection from './screens/CurrencySelection';
 import { ShopClosed } from './screens/ShopClosed';
 import AllProductReviews from './screens/AllProductReviews';
+import DatePickerScreen from './screens/DatePickerScreen';
 
 const screenList = [
   { name: 'Page', component: Page },
@@ -58,6 +61,8 @@ const screenList = [
   { name: 'Categories', component: Categories },
   { name: 'VendorDetail', component: VendorDetail },
   { name: 'ScrollPicker', component: ScrollPicker },
+  { name: 'MultipleCheckboxPicker', component: MultipleCheckboxPicker },
+  { name: 'DatePickerScreen', component: DatePickerScreen },
   { name: 'CheckoutAuth', component: CheckoutAuth },
   { name: 'ProductDetail', component: ProductDetail },
   { name: 'CheckoutProfile', component: CheckoutProfile },
@@ -101,6 +106,10 @@ const screenList = [
   {
     name: 'VendorManagePricingInventory',
     component: VendorManagePricingInventory,
+  },
+  {
+    name: 'VendorManageFeatures',
+    component: VendorManageFeatures,
   },
   {
     name: 'VendorManageShippingProperties',

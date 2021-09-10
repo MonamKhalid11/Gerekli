@@ -216,6 +216,36 @@ export function showModalScrollPicker(params) {
   });
 }
 
+export function showModalMultipleCheckboxPicker(params) {
+  Navigation.showModal({
+    stack: {
+      children: [
+        {
+          component: {
+            name: 'MultipleCheckboxPicker',
+            passProps: params,
+          },
+        },
+      ],
+    },
+  });
+}
+
+export function showModalDatePickerScreen(params) {
+  Navigation.showModal({
+    stack: {
+      children: [
+        {
+          component: {
+            name: 'DatePickerScreen',
+            passProps: params,
+          },
+        },
+      ],
+    },
+  });
+}
+
 export function showModalVendorDetail(params) {
   Navigation.showModal({
     stack: {
@@ -694,6 +724,22 @@ export function pushVendorManagePricingInventory(componentId, params = {}) {
         topBar: {
           title: {
             text: params.title || i18n.t('Pricing / Inventory'),
+          },
+        },
+      },
+    },
+  });
+}
+
+export function pushVendorManageFeatures(componentId, params = {}) {
+  Navigation.push(componentId, {
+    component: {
+      name: 'VendorManageFeatures',
+      passProps: params,
+      options: {
+        topBar: {
+          title: {
+            text: params.title || i18n.t('Features'),
           },
         },
       },

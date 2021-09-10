@@ -16,7 +16,7 @@ import ProductReview from '../components/ProductReview';
 
 const styles = EStyleSheet.create({
   container: {
-    padding: 20,
+    padding: '$containerPadding',
   },
 });
 

@@ -52,6 +52,9 @@ export default {
   // The radius of the rounding of buttons and form elements.
   $borderRadius: 8,
 
+  // Padding from the edges of the screen.
+  $containerPadding: 20,
+
   // Discount label background on product.
   $productDiscountColor: '#EAA944',
 
