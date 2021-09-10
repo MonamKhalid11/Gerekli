@@ -60,6 +60,7 @@ buck-out/
 
 # Docs
 docs/esdoc/
+build.mk
 
 #Users
 users/*
