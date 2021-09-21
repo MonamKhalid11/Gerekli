@@ -133,8 +133,8 @@ android {
         applicationId "com.simtech.multivendor.mk"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 7
-        versionName "2.5"
+        versionCode 8
+        versionName "2.6"
         multiDexEnabled true
     }
     splits {

@@ -167,7 +167,7 @@ export class CheckoutShipping extends Component {
    * @param {object} cart - Cart information.
    */
   setDefaults(cart) {
-    if(cart.product_groups){
+    if(cart && cart.product_groups){
       const items = this.normalizeData(cart.product_groups);
       const shippings = [];
       let isShippingForbidden = false;
@@ -486,7 +486,7 @@ export class CheckoutShipping extends Component {
                  
                   
                   item.shippings.map((shipping, shippingIndex) =>{
-                    shipping.isSelected = true
+                    
                     return(
                       this.renderItem(shipping, shippingIndex, itemIndex, item)
                     )

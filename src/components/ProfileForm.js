@@ -411,6 +411,7 @@ export default class ProfileForm extends Component {
   render() {
     const { forms } = this.state;
     const { isEdit, showTitles } = this.props;
+    console.log("showing values of form here ",forms)
 
     return (
       <Fragment>
@@ -419,18 +420,22 @@ export default class ProfileForm extends Component {
           {forms.map((form, index) => {
             return (
               <View key={index} style={styles.form}>
-                <FormBlock
-                  title={isEdit || showTitles ? form.description : null}>
-                  <Form
-                    ref={(ref) => {
-                      this.formsRef[form.type] = ref;
-                    }}
-                    type={form.formFields}
-                    options={form.formOptions}
-                    value={form.formValues}
-                    onChange={(values) => this.handleChange(values, index)}
-                  />
-                </FormBlock>
+                {form.type == "B" ?
+                null
+               :
+               <FormBlock
+               title={isEdit || showTitles ? form.description : null}>
+               <Form
+                 ref={(ref) => {
+                   this.formsRef[form.type] = ref;
+                 }}
+                 type={form.formFields}
+                 options={form.formOptions}
+                 value={form.formValues}
+                 onChange={(values) => this.handleChange(values, index)}
+               />
+             </FormBlock>
+                }
               </View>
             );
           })}

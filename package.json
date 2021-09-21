@@ -9,7 +9,9 @@
     "test": "jest",
     "lint": "eslint .",
     "test:watch": "npm run test -- --watch",
-    "esdoc": "./node_modules/.bin/esdoc"
+    "esdoc": "./node_modules/.bin/esdoc",
+    "bundle:ios": "react-native bundle --entry-file index.js --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios",
+    "postinstall": "yarn run bundle:ios"
   },
   "dependencies": {
     "@ptomasroos/react-native-multi-slider": "^2.2.2",
