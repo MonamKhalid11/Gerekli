@@ -29,8 +29,11 @@ export default {
 
   // The base color is used for action buttons.
   // For example add to cart.
-  $primaryColor: '#FF6008',
-  $primaryColorText: '#fff',
+  $buttonBackgroundColor: '#FF6008',
+  $buttonWithBackgroundTextColor: '#fff',
+
+  // The base color is used for action buttons without background.
+  $buttonWithoutBackgroundTextColor: '#FF6008',
 
   // Background color of messages.
   // Success, Info, Danger
@@ -40,10 +43,17 @@ export default {
 
   // Shades of gray. Used to display dividers and borders.
   $darkColor: '#242424',
+  $mediumGrayColor: '#B8B8B8',
   $grayColor: '#FAFAFA',
+
+  // Color of swiper dots.
+  $dotsSwiperColor: '#0085FE',
 
   // The radius of the rounding of buttons and form elements.
   $borderRadius: 8,
+
+  // Padding from the edges of the screen.
+  $containerPadding: 20,
 
   // Discount label background on product.
   $productDiscountColor: '#EAA944',
@@ -70,9 +80,6 @@ export default {
   $categoryBlockTextColor: '#000',
   $categoryBorderRadius: 6,
   $categoryEmptyImage: '#989898',
-
-  // The background color of the add to wishlist button.
-  $addToWishListColor: '#989898',
 
   // Rating stars color.
   $ratingStarsColor: '#EAA944',

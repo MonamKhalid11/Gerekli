@@ -12,7 +12,10 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import get from 'lodash/get';
 import uniqueId from 'lodash/uniqueId';
 
-import Rating from './Rating';
+// Components
+import StarsRating from './StarsRating';
+
+const RATING_STAR_SIZE = 14;
 
 const styles = EStyleSheet.create({
   container: {
@@ -90,7 +93,11 @@ export default class VendorBlock extends Component {
         onPress={() => this.props.onPress(item)}
         style={styles.item}>
         <Image source={{ uri: imageUri }} style={styles.img} />
-        <Rating value={item.average_rating} />
+        <StarsRating
+          value={item.average_rating}
+          size={RATING_STAR_SIZE}
+          isRatingSelectionDisabled
+        />
       </TouchableOpacity>
     );
   };

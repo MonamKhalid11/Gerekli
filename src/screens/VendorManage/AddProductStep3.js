@@ -22,7 +22,6 @@ import { Navigation } from 'react-native-navigation';
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '$grayColor',
   },
   header: {
     marginLeft: 14,
@@ -31,6 +30,9 @@ const styles = EStyleSheet.create({
   scrollContainer: {
     paddingBottom: 14,
   },
+  formWrapper: {
+    padding: 20,
+  }
 });
 
 const t = require('tcomb-form-native');
@@ -157,13 +159,13 @@ export class AddProductStep3 extends Component {
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {this.renderHeader()}
-          <Section>
+          <View style={styles.formWrapper}>
             <Form
               ref={this.formRef}
               type={formFields}
               options={this.getFormOptions()}
             />
-          </Section>
+          </View>
         </ScrollView>
         <BottomActions
           onBtnPress={this.handleCreate}

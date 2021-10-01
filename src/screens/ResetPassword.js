@@ -12,7 +12,7 @@ import * as authActions from '../actions/authActions';
 
 const styles = EStyleSheet.create({
   container: {
-    padding: 20,
+    padding: '$containerPadding',
     alignItems: 'center',
   },
   input: {

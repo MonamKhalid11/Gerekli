@@ -5,6 +5,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import Swiper from 'react-native-swiper';
 import { get } from 'lodash';
 import { stripTags } from '../utils';
+import theme from '../config/theme';
 
 const styles = EStyleSheet.create({
   imageWrapper: {
@@ -35,6 +36,7 @@ const styles = EStyleSheet.create({
     color: '$categoriesHeaderColor',
     textAlign: I18nManager.isRTL ? 'right' : 'left',
   },
+  dotsSwiper: {},
 });
 
 /**
@@ -98,7 +100,11 @@ export default class BannerBlocks extends Component {
     return (
       <View style={styles.container}>
         {wrapper !== '' && <Text style={styles.header}>{name}</Text>}
-        <Swiper horizontal height={200} loadMinimal={true}>
+        <Swiper
+          horizontal
+          height={200}
+          loadMinimal={true}
+          activeDotColor={theme.$dotsSwiperColor}>
           {itemsList}
         </Swiper>
       </View>

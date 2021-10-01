@@ -15,9 +15,14 @@ import {
   VENDOR_CREATE_PRODUCT_FAIL,
   VENDOR_CREATE_PRODUCT_SUCCESS,
   VENDOR_PRODUCT_CHANGE_CATEGORY,
+  VENDOR_FETCH_PRODUCT_FEATURES_REQUEST,
+  VENDOR_FETCH_PRODUCT_FEATURES_SUCCESS,
+  VENDOR_FETCH_PRODUCT_FEATURES_FAIL,
   NOTIFICATION_SHOW,
+  UPDATE_LOCAL_PRODUCT_FEATURES,
 } from '../../constants';
 import * as vendorService from '../../services/vendors';
+import { convertProductFeatures } from '../../services/VendorManageProductFeatures';
 import i18n from '../../utils/i18n';
 
 export function fetchProducts(page = 0) {
@@ -63,6 +68,76 @@ export function fetchProduct(id = 0, loading = true) {
     } catch (error) {
       dispatch({
         type: VENDOR_FETCH_PRODUCT_FAIL,
+        error,
+      });
+    }
+  };
+}
+
+export function fetchProductFeatures(id) {
+  return async (dispatch) => {
+    dispatch({
+      type: VENDOR_FETCH_PRODUCT_FEATURES_REQUEST,
+    });
+
+    try {
+      const result = await vendorService.getProductFeatures(id);
+      const featuresListWithoutValues = await vendorService.getProductFeaturesList(
+        id,
+      );
+
+      const convertedFeatures = convertProductFeatures(
+        result.data.product.product_features,
+        featuresListWithoutValues.data.product_features,
+      );
+
+      dispatch({
+        type: VENDOR_FETCH_PRODUCT_FEATURES_SUCCESS,
+        payload: convertedFeatures,
+      });
+
+      return convertedFeatures;
+    } catch (error) {
+      dispatch({
+        type: VENDOR_FETCH_PRODUCT_FEATURES_FAIL,
+        error,
+      });
+    }
+  };
+}
+
+export function updateLocalProductFeatures(productFeatures) {
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_LOCAL_PRODUCT_FEATURES,
+      payload: productFeatures,
+    });
+  };
+}
+
+export function updateProductFeatures(productId, data) {
+  return async (dispatch) => {
+    dispatch({
+      type: VENDOR_FETCH_PRODUCT_FEATURES_REQUEST,
+    });
+
+    try {
+      await vendorService.changeProductFeatures(productId, data);
+
+      dispatch({
+        type: VENDOR_FETCH_PRODUCT_FEATURES_SUCCESS,
+      });
+      dispatch({
+        type: NOTIFICATION_SHOW,
+        payload: {
+          type: 'success',
+          title: i18n.t('Success'),
+          text: i18n.t('Your changes have been saved.'),
+        },
+      });
+    } catch (error) {
+      dispatch({
+        type: VENDOR_FETCH_PRODUCT_FEATURES_FAIL,
         error,
       });
     }

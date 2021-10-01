@@ -16,7 +16,7 @@ const styles = EStyleSheet.create({
     fontSize: '0.9rem',
   },
   primary: {
-    backgroundColor: '$primaryColor',
+    backgroundColor: '$buttonBackgroundColor',
     paddingTop: 8,
     paddingBottom: 8,
     paddingLeft: 22,
@@ -33,11 +33,11 @@ const styles = EStyleSheet.create({
   },
   primaryText: {
     textAlign: 'center',
-    color: '$primaryColorText',
+    color: '$buttonWithBackgroundTextColor',
     fontSize: '1rem',
   },
   round: {
-    backgroundColor: '$primaryColor',
+    backgroundColor: '$buttonBackgroundColor',
     paddingTop: 4,
     paddingBottom: 4,
     paddingLeft: 12,
@@ -49,13 +49,13 @@ const styles = EStyleSheet.create({
   },
   roundText: {
     textAlign: 'center',
-    color: '$primaryColorText',
+    color: '$buttonWithBackgroundTextColor',
     fontSize: '0.8rem',
   },
   ghost: {
     backgroundColor: '#fff',
     borderWidth: 0.5,
-    borderColor: '$primaryColor',
+    borderColor: '$buttonBackgroundColor',
     paddingTop: 4,
     paddingBottom: 4,
     paddingLeft: 12,
@@ -66,7 +66,7 @@ const styles = EStyleSheet.create({
   },
   ghostText: {
     textAlign: 'center',
-    color: '$primaryColor',
+    color: '$buttonBackgroundColor',
     fontSize: '0.8rem',
   },
   label: {
@@ -85,7 +85,7 @@ const styles = EStyleSheet.create({
     fontSize: '0.8rem',
   },
   labelActive: {
-    backgroundColor: '$primaryColor',
+    backgroundColor: '$buttonBackgroundColor',
   },
   labelActiveText: {
     color: '#fff',

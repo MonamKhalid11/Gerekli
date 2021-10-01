@@ -11,12 +11,12 @@ import wishList from './wishList';
 import products from './products';
 import discussion from './discussion';
 import notifications from './notifications';
-import productDetail from './productDetail';
 import vendorCategories from './vendorCategories';
 import profile from './profile';
 import imagePicker from './imagePicker';
 import settings from './settings';
 import steps from './steps';
+import productReviews from './productReviews';
 
 import vendorManageProducts from './vendorManage/products';
 import vendorManageCategories from './vendorManage/categories';
@@ -35,11 +35,11 @@ export const rootReducer = combineReducers({
   products,
   discussion,
   notifications,
-  productDetail,
   vendorCategories,
   imagePicker,
   settings,
   steps,
+  productReviews,
 
   vendorManageProducts,
   vendorManageCategories,

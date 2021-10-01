@@ -245,6 +245,8 @@ PODS:
   - React-jsinspector (0.63.3)
   - react-native-cameraroll (4.0.1):
     - React
+  - react-native-date-picker (3.3.2):
+    - React-Core
   - react-native-notifications (3.3.4):
     - React
   - react-native-webview (10.8.0):
@@ -350,6 +352,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - "react-native-cameraroll (from `../node_modules/@react-native-community/cameraroll`)"
+  - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - react-native-notifications (from `../node_modules/react-native-notifications`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -417,6 +420,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-cameraroll:
     :path: "../node_modules/@react-native-community/cameraroll"
+  react-native-date-picker:
+    :path: "../node_modules/react-native-date-picker"
   react-native-notifications:
     :path: "../node_modules/react-native-notifications"
   react-native-webview:
@@ -483,6 +488,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: b56c03e61c0dd5f5801255f2160a815f4a53d451
   React-jsinspector: 8e68ffbfe23880d3ee9bafa8be2777f60b25cbe2
   react-native-cameraroll: 60ba0068826eab1c8d43146191bafd4363ea58a7
+  react-native-date-picker: 96a07ca27a6225da8a3935324d85046028456b0f
   react-native-notifications: 09086eb278cde6ccb463fe5f1dbd57e315c7f642
   react-native-webview: bbe20ef0e39caf153c1446621f0d56d460c1f1f5
   React-RCTActionSheet: 53ea72699698b0b47a6421cb1c8b4ab215a774aa
@@ -502,6 +508,6 @@ SPEC CHECKSUMS:
   RNVectorIcons: da6fe858f5a65d7bbc3379540a889b0b12aa5976
   Yoga: 7d13633d129fd179e01b8953d38d47be90db185a
 
-PODFILE CHECKSUM: c27cd9956125d1c96608a51bc29f46835d86c299
+PODFILE CHECKSUM: 28bd72ccb3e3ddda9a050df0b0de542ea96a9202
 
 COCOAPODS: 1.10.1

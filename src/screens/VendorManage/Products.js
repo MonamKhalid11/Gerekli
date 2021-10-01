@@ -267,7 +267,7 @@ export class Products extends Component {
               <View>
                 <Text style={styles.listItemText}>{item.product_code}</Text>
                 <Text style={styles.listItemText}>
-                  {`${i18n.t('Price')}: ${item.price} ${
+                  {`${i18n.t('Price')}: ${item.price_formatted.price} ${
                     item.amount !== 0 && '|'
                   } ${i18n.t('In stock')}: ${item.amount}`}
                 </Text>

@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { ScrollView, TouchableOpacity, Text } from 'react-native';
 import { Navigation } from 'react-native-navigation';
-import i18n from '../utils/i18n';
 import { iconsMap } from '../utils/navIcons';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -15,7 +14,7 @@ const styles = (isItemActive: boolean | null) =>
       textAlign: 'center',
       paddingVertical: 5,
       borderRadius: '$borderRadius',
-      backgroundColor: isItemActive ? '$primaryColor' : undefined,
+      backgroundColor: isItemActive ? '$buttonBackgroundColor' : undefined,
     },
     itemText: {
       fontSize: '1rem',
@@ -26,10 +25,17 @@ const styles = (isItemActive: boolean | null) =>
 
 interface ScrollPickerProps {
   componentId: string;
-  pickerValues: [string];
+  pickerValues: string[];
   changePickerValueHandler: Function;
   selectValue: string;
   title: string;
+  additionalData: {
+    [key: string]: any;
+  };
+}
+
+interface NavigationButtonPressedProps {
+  buttonId: string;
 }
 
 export const ScrollPicker: React.FC<ScrollPickerProps> = ({
@@ -38,9 +44,10 @@ export const ScrollPicker: React.FC<ScrollPickerProps> = ({
   changePickerValueHandler,
   selectValue,
   title,
+  additionalData,
 }) => {
   const listener = {
-    navigationButtonPressed: ({ buttonId }) => {
+    navigationButtonPressed: ({ buttonId }: NavigationButtonPressedProps) => {
       if (buttonId === 'close') {
         Navigation.dismissModal(componentId);
       }
@@ -51,7 +58,7 @@ export const ScrollPicker: React.FC<ScrollPickerProps> = ({
     Navigation.mergeOptions(componentId, {
       topBar: {
         title: {
-          text: `${i18n.t('Select')} ${title}`.toUpperCase(),
+          text: title.toUpperCase(),
         },
         rightButtons: [
           {
@@ -72,7 +79,7 @@ export const ScrollPicker: React.FC<ScrollPickerProps> = ({
     };
   });
 
-  const renderItem = (value: string) => {
+  const renderItem = (value: string, index: number) => {
     const isItemActive = value === selectValue;
 
     return (
@@ -82,11 +89,12 @@ export const ScrollPicker: React.FC<ScrollPickerProps> = ({
         onPress={
           !isItemActive
             ? () => {
-                changePickerValueHandler(value);
+                changePickerValueHandler(value, additionalData);
                 Navigation.dismissModal(componentId);
               }
             : undefined
-        }>
+        }
+        key={index}>
         <Text style={styles(isItemActive).itemText}>{value}</Text>
       </TouchableOpacity>
     );
@@ -94,8 +102,8 @@ export const ScrollPicker: React.FC<ScrollPickerProps> = ({
 
   return (
     <ScrollView style={styles(null).container}>
-      {pickerValues.map((value) => {
-        return renderItem(value);
+      {pickerValues.map((value, index) => {
+        return renderItem(value, index);
       })}
     </ScrollView>
   );

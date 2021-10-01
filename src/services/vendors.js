@@ -80,6 +80,63 @@ export const getProductDetail = (id) => {
   return gql(QUERY, { id }).then((result) => result.data);
 };
 
+// Gets all features includes features which don't have values.
+export const getProductFeaturesList = (id) => {
+  const QUERY = `query getProductFeaturesList($id: Int!) {
+      product_features(product_id: $id, exclude_group: true, items_per_page: 200) {
+        description
+        feature_id
+        feature_type
+        value
+        variant
+        variant_id
+        value_int
+        variants(items_per_page: 200){
+          variant
+          variant_id
+        }
+      }
+    }
+  `;
+  return gql(QUERY, { id }).then((result) => result.data);
+};
+
+// Gets all features which have values.
+export const getProductFeatures = (id) => {
+  const QUERY = `query getProductFeatures($id: Int!) {
+      product(id: $id, get_icon: true, get_detailed: true, get_additional: true) {
+        product_features {
+          feature_id
+          value
+          variant_id
+          variant
+          feature_type
+          value_int
+          description
+          variants(items_per_page: 200){
+            variant
+            variant_id
+            selected
+          }
+        }
+      }
+    }
+  `;
+  return gql(QUERY, { id }).then((result) => result.data);
+};
+
+export const changeProductFeatures = (productId, data) => {
+  const product = { product_features: data };
+  const QUERY = `mutation($productId: Int!, $product: UpdateProductInput!) {
+    update_product(
+      id: $productId
+      product: $product
+    )
+  }
+  `;
+  return gql(QUERY, { productId, product }).then((result) => result.data);
+};
+
 export const updateProduct = (id, product) => {
   const data = new FormData();
   const renderImagePairs = () => {
@@ -328,6 +385,9 @@ export const getProductsList = (page = 1) => {
     products(page: $page, items_per_page: 100) {
       product
       price
+      price_formatted {
+        price
+      }
       status
       amount
       product_code
@@ -365,6 +425,9 @@ export const getOrdersList = (page = 1) => {
         status
         description
         color
+      }
+      total_formatted {
+        price
       }
       order_id
       status
@@ -416,13 +479,22 @@ export const getOrder = (id) => {
         description
         color
       }
+      total_formatted {
+        price
+      }
       order_id
       status
       total
       timestamp
       subtotal
+      subtotal_formatted {
+        price
+      }
       subtotal_discount
       shipping_cost
+      shipping_cost_formatted {
+        price
+      }
       notes
       details
       products {
@@ -434,6 +506,9 @@ export const getOrder = (id) => {
         product_type
         status
         list_price
+        price_formatted {
+          price
+        }
         main_pair {
           icon {
             image_path

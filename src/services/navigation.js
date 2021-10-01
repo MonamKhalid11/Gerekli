@@ -49,6 +49,10 @@ export function setClosedRoot() {
 
 export function setRoot() {
   Navigation.setDefaultOptions({
+    statusBar: {
+      backgroundColor: 'white',
+      style: 'light'
+    },
     topBar: {
       backButton: {
         color: theme.$navBarButtonColor,
@@ -212,6 +216,36 @@ export function showModalScrollPicker(params) {
   });
 }
 
+export function showModalMultipleCheckboxPicker(params) {
+  Navigation.showModal({
+    stack: {
+      children: [
+        {
+          component: {
+            name: 'MultipleCheckboxPicker',
+            passProps: params,
+          },
+        },
+      ],
+    },
+  });
+}
+
+export function showModalDatePickerScreen(params) {
+  Navigation.showModal({
+    stack: {
+      children: [
+        {
+          component: {
+            name: 'DatePickerScreen',
+            passProps: params,
+          },
+        },
+      ],
+    },
+  });
+}
+
 export function showModalVendorDetail(params) {
   Navigation.showModal({
     stack: {
@@ -326,6 +360,20 @@ export function pushProductDetail(componentId, params) {
   });
 }
 
+export function pushAllProductReviews(componentId, params) {
+  Navigation.push(componentId, {
+    component: {
+      name: 'AllProductReviews',
+      options: {
+        topBar: {
+          backButtonTitle: '',
+        },
+      },
+      passProps: params,
+    },
+  });
+}
+
 export function pushWriteReview(componentId, params) {
   Navigation.push(componentId, {
     component: {
@@ -336,6 +384,21 @@ export function pushWriteReview(componentId, params) {
         },
       },
       passProps: params,
+    },
+  });
+}
+
+export function showModalWriteReviewNew(params) {
+  Navigation.showModal({
+    stack: {
+      children: [
+        {
+          component: {
+            name: 'WriteReviewNew',
+            passProps: params,
+          },
+        },
+      ],
     },
   });
 }
@@ -661,6 +724,22 @@ export function pushVendorManagePricingInventory(componentId, params = {}) {
         topBar: {
           title: {
             text: params.title || i18n.t('Pricing / Inventory'),
+          },
+        },
+      },
+    },
+  });
+}
+
+export function pushVendorManageFeatures(componentId, params = {}) {
+  Navigation.push(componentId, {
+    component: {
+      name: 'VendorManageFeatures',
+      passProps: params,
+      options: {
+        topBar: {
+          title: {
+            text: params.title || i18n.t('Features'),
           },
         },
       },

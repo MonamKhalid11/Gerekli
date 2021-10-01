@@ -19,6 +19,7 @@ const styles = EStyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '$screenBackgroundColor',
+    padding: '$containerPadding',
   },
 });
 
@@ -26,7 +27,7 @@ const styles = EStyleSheet.create({
  * Renders modal with discussions.
  *
  * @reactProps {object} navigator - Navigator.
- * @reactProps {object} productDetail - Product detail.
+ * @reactProps {object} productId - Product id.
  * @reactProps {object} productActions - Product actions.
  * @reactProps {object} discussion - Discussion information.
  */
@@ -35,7 +36,7 @@ export class Discussion extends Component {
    * @ignore
    */
   static propTypes = {
-    productDetail: PropTypes.shape({}),
+    productId: PropTypes.string,
     productsActions: PropTypes.shape({
       fetchDiscussion: PropTypes.func,
     }),
@@ -60,8 +61,8 @@ export class Discussion extends Component {
    * Removes the add button if comments are disabled.
    */
   componentWillMount() {
-    const { discussion, productDetail } = this.props;
-    let activeDiscussion = discussion.items[`p_${productDetail.product_id}`];
+    const { discussion, productId } = this.props;
+    let activeDiscussion = discussion.items[`p_${productId}`];
 
     if (!activeDiscussion) {
       activeDiscussion = {
@@ -110,9 +111,8 @@ export class Discussion extends Component {
    * Updates active discussion.
    */
   componentWillReceiveProps(nextProps) {
-    const { productDetail } = this.props;
-    const activeDiscussion =
-      nextProps.discussion.items[`p_${productDetail.product_id}`];
+    const { productId } = this.props;
+    const activeDiscussion = nextProps.discussion.items[`p_${productId}`];
     this.setState(
       {
         discussion: activeDiscussion,
@@ -125,6 +125,7 @@ export class Discussion extends Component {
 
   navigationButtonPressed({ buttonId }) {
     const { discussion } = this.state;
+
     if (buttonId === 'close') {
       Navigation.dismissModal(this.props.componentId);
     } else if (buttonId === 'newComment') {
@@ -138,13 +139,13 @@ export class Discussion extends Component {
    * Load more discussions.
    */
   handleLoadMore() {
-    const { productDetail } = this.props;
+    const { productId } = this.props;
     const { discussion } = this.state;
     const hasMore = discussion.search.total_items != discussion.posts.length;
 
     if (hasMore && !this.requestSent && !this.props.discussion.fetching) {
       this.requestSent = true;
-      this.props.productsActions.fetchDiscussion(productDetail.product_id, {
+      this.props.productsActions.fetchDiscussion(productId, {
         page: discussion.search.page + 1,
       });
     }
@@ -173,7 +174,6 @@ export class Discussion extends Component {
 
 export default connect(
   (state) => ({
-    productDetail: state.productDetail,
     discussion: state.discussion,
   }),
   (dispatch) => ({

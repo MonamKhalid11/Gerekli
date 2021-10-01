@@ -38,7 +38,7 @@ import { Navigation } from 'react-native-navigation';
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '$grayColor',
+    padding: '$containerPadding',
   },
   scrollContainer: {
     paddingBottom: 14,
@@ -50,8 +50,6 @@ const styles = EStyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingLeft: 20,
-    paddingRight: 10,
     paddingTop: 10,
     paddingBottom: 10,
   },
@@ -64,7 +62,7 @@ const styles = EStyleSheet.create({
     width: '90%',
   },
   btnIcon: {
-    color: '#898989',
+    color: '$mediumGrayColor',
   },
   horizontalScroll: {
     marginTop: 20,
@@ -435,7 +433,13 @@ export class EditProduct extends Component {
    * @return {JSX.Element}
    */
   render() {
-    const { loading, product, productsActions, isUpdating } = this.props;
+    const {
+      loading,
+      product,
+      productsActions,
+      isUpdating,
+      productID,
+    } = this.props;
     const isProductOffer = !!product.master_product_id;
 
     if (loading) {
@@ -511,6 +515,15 @@ export class EditProduct extends Component {
                       },
                     },
                   );
+                },
+              )}
+              {this.renderMenuItem(
+                i18n.t('Features'),
+                i18n.t('Edit Features'),
+                () => {
+                  nav.pushVendorManageFeatures(this.props.componentId, {
+                    productId: productID,
+                  });
                 },
               )}
             </Section>

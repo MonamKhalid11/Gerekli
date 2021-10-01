@@ -1,13 +1,16 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import toInteger from 'lodash/toInteger';
 import get from 'lodash/get';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import Rating from './Rating';
 import { PRODUCT_IMAGE_WIDTH, formatPrice, getImagePath } from '../utils';
 import i18n from '../utils/i18n';
+import StarsRating from '../components/StarsRating';
 import { PRODUCT_NUM_COLUMNS } from '../utils';
+
+const RATING_STAR_SIZE = 14;
 
 const styles = EStyleSheet.create({
   container: {
@@ -51,6 +54,7 @@ const styles = EStyleSheet.create({
     paddingLeft: 4,
     paddingRight: 4,
     borderRadius: '$borderRadius',
+    width: 100,
   },
   priceWrapper: {
     flex: 1,
@@ -109,7 +113,7 @@ class ProductListView extends PureComponent {
 
     return (
       <View style={styles.listDiscountWrapper}>
-        <Text style={styles.listDiscountText}>
+        <Text style={styles.listDiscountText} numberOfLines={1}>
           {i18n.t('Discount')} {`${discount}%`}
         </Text>
       </View>
@@ -164,8 +168,13 @@ class ProductListView extends PureComponent {
     const {
       product: { item },
     } = this.props;
+
     return (
-      <Rating containerStyle={styles.rating} value={item.average_rating} />
+      <StarsRating
+        value={item.average_rating}
+        size={RATING_STAR_SIZE}
+        isRatingSelectionDisabled
+      />
     );
   };
 
@@ -204,4 +213,6 @@ class ProductListView extends PureComponent {
   }
 }
 
-export default ProductListView;
+export default connect((state) => ({
+  settings: state.settings,
+}))(ProductListView);

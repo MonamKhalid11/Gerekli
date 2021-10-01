@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swiper from 'react-native-swiper';
+import theme from '../config/theme';
 
 // Components
 import Icon from '../components/Icon';
@@ -119,7 +120,11 @@ export default class Gallery extends Component {
     return (
       <SafeAreaView style={styles.wrapper}>
         <View style={styles.container}>
-          <Swiper horizontal index={activeIndex} loadMinimal={6}>
+          <Swiper
+            horizontal
+            index={activeIndex}
+            loadMinimal={6}
+            activeDotColor={theme.$dotsSwiperColor}>
             {items}
           </Swiper>
           <TouchableOpacity
