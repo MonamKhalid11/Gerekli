@@ -1383,6 +1383,11 @@
     opencollective-postinstall "^2.0.1"
     superstruct "^0.6.2"
 
+"@react-native-firebase/in-app-messaging@^12.9.0":
+  version "12.9.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/in-app-messaging/-/in-app-messaging-12.9.0.tgz#0c12c8addc372378d951ec049d42c652455661c4"
+  integrity sha512-w6MQBJ8RL2toEi1NkbMJ8gApL5J2JOpz7EFgrWKqtwM9sY9S5pVnIwlZV1HxkyFQURWrJOm7HMo4j6YhD4l5RQ==
+
 "@react-native-firebase/messaging@^7.9.0":
   version "7.9.0"
   resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-7.9.0.tgz#d7b8bc5a7391c2363e16607610f301118c6049b9"

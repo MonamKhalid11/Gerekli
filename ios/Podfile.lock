@@ -32,9 +32,14 @@ PODS:
     - FirebaseAnalytics (= 6.7.2)
   - Firebase/CoreOnly (6.30.0):
     - FirebaseCore (= 6.10.0)
+  - Firebase/InAppMessaging (6.30.0):
+    - Firebase/CoreOnly
+    - FirebaseInAppMessaging (~> 0.23.0)
   - Firebase/Messaging (6.30.0):
     - Firebase/CoreOnly
     - FirebaseMessaging (~> 4.6.1)
+  - FirebaseABTesting (4.2.0):
+    - FirebaseCore (~> 6.10)
   - FirebaseAnalytics (6.7.2):
     - FirebaseCore (~> 6.8)
     - FirebaseInstallations (~> 1.4)
@@ -52,6 +57,12 @@ PODS:
     - GoogleDataTransport (~> 7.0)
     - GoogleUtilities/Environment (~> 6.7)
     - GoogleUtilities/Logger (~> 6.7)
+    - nanopb (~> 1.30905.0)
+  - FirebaseInAppMessaging (0.23.0):
+    - FirebaseABTesting (~> 4.1)
+    - FirebaseCore (~> 6.8)
+    - FirebaseInstallations (~> 1.1)
+    - GoogleUtilities/Environment (~> 6.7)
     - nanopb (~> 1.30905.0)
   - FirebaseInstallations (1.7.0):
     - FirebaseCore (~> 6.10)
@@ -382,6 +393,10 @@ PODS:
   - RNFBApp (8.4.5):
     - Firebase/CoreOnly (~> 6.30.0)
     - React-Core
+  - RNFBInAppMessaging (12.9.0):
+    - Firebase/InAppMessaging (~> 6.30.0)
+    - React-Core
+    - RNFBApp
   - RNFBMessaging (7.9.0):
     - Firebase/Messaging (~> 6.30.0)
     - React-Core
@@ -427,6 +442,7 @@ DEPENDENCIES:
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
   - "RNFBAnalytics (from `../node_modules/@react-native-firebase/analytics`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
+  - "RNFBInAppMessaging (from `../node_modules/@react-native-firebase/in-app-messaging`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -439,9 +455,11 @@ SPEC REPOS:
     - FBSDKLoginKit
     - FBSDKShareKit
     - Firebase
+    - FirebaseABTesting
     - FirebaseAnalytics
     - FirebaseCore
     - FirebaseCoreDiagnostics
+    - FirebaseInAppMessaging
     - FirebaseInstallations
     - FirebaseInstanceID
     - FirebaseMessaging
@@ -521,6 +539,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/analytics"
   RNFBApp:
     :path: "../node_modules/@react-native-firebase/app"
+  RNFBInAppMessaging:
+    :path: "../node_modules/@react-native-firebase/in-app-messaging"
   RNFBMessaging:
     :path: "../node_modules/@react-native-firebase/messaging"
   RNVectorIcons:
@@ -538,9 +558,11 @@ SPEC CHECKSUMS:
   FBSDKLoginKit: 7181765f2524d7ebf82d9629066c8e6caafc99d0
   FBSDKShareKit: 0c0d51b3af47075a85ed9bea0e28b2fc70e3594b
   Firebase: 210f41ca352067d83b1ba4fd2e7fb49a0c017397
+  FirebaseABTesting: 8a9d8df3acc2b43f4a22014ddf9f601bca6af699
   FirebaseAnalytics: a299a86ef70fcc6aa011418bc65a7e101fb9636c
   FirebaseCore: 9a41e2de78fef10f63cee30ab10e2945266bc1fc
   FirebaseCoreDiagnostics: 7535fe695737f8c5b350584292a70b7f8ff0357b
+  FirebaseInAppMessaging: 3b419af4a08aa0e9e79ea7d1cb90dd2f818a1807
   FirebaseInstallations: 466c7b4d1f58fe16707693091da253726a731ed2
   FirebaseInstanceID: bd3ffc24367f901a43c063b36c640b345a4a5dd1
   FirebaseMessaging: 82d75b3770a78bbce470769a6980429608b4c407
@@ -581,6 +603,7 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: b03032fdbdb725bea0bd9e5ec5a7272865ae7398
   RNFBAnalytics: 028e77a7fbf10a0833949e123b92c4b332fa6158
   RNFBApp: 570b136767f588b7eef0ab918284e9fe364d0c3e
+  RNFBInAppMessaging: 23f5fafcdc72b780280d1c41c32ddeb208de9202
   RNFBMessaging: dc3849747c2c61bfcd3c1ce6b5390f27ff4f7756
   RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
   Yoga: 7d13633d129fd179e01b8953d38d47be90db185a
