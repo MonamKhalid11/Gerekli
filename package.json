@@ -20,6 +20,7 @@
     "@react-native-firebase/analytics": "^11.3.3",
     "@react-native-firebase/app": "^8.4.5",
     "@react-native-firebase/messaging": "^7.9.0",
+    "add": "^2.0.6",
     "axios": "^0.19.2",
     "base-64": "^0.1.0",
     "date-fns": "^2.15.0",
@@ -40,12 +41,14 @@
     "react-native-swiper": "^1.6.0",
     "react-native-vector-icons": "^7.0.0",
     "react-native-webview": "^10.7.0",
+    "react-native-zoom-view": "^1.0.2",
     "react-redux": "^7.2.1",
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "tcomb-form-native": "^0.6.20",
-    "tipsi-stripe": "^7.5.3"
+    "tipsi-stripe": "^7.5.3",
+    "yarn": "^1.22.15"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",

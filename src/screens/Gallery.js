@@ -6,9 +6,12 @@ import {
   SafeAreaView,
   Image,
   BackHandler,
+  Dimensions
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swiper from 'react-native-swiper';
+import ViewControl from 'react-native-zoom-view'
+
 
 // Components
 import Icon from '../components/Icon';
@@ -63,6 +66,8 @@ const styles = EStyleSheet.create({
  * @reactProps {string[]} images - Image links.
  * @reactProps {number} activeIndex - Current image index.
  */
+ const {width,height} = Dimensions.get('window')
+
 export default class Gallery extends Component {
   /**
    * @ignore
@@ -111,15 +116,29 @@ export default class Gallery extends Component {
       return null;
     }
     const items = images.map((href, index) => (
-      <View style={styles.slide} key={index}>
-        <Image style={styles.img} source={{ uri: href }} />
-      </View>
+      // <View style={styles.slide} key={index}>
+      //   <Image style={styles.img} source={{ uri: href }} />
+      // </View>
+      <ViewControl
+    cropWidth={width}     
+    cropHeight={height}
+    imageWidth={width}
+    imageHeight={height}>
+    <Image
+    style={{
+        width:width,
+        height:height,
+        resizeMode: 'contain'
+    }}
+    source={{
+        uri:href
+    }}/>
+</ViewControl>
     ));
-
     return (
       <SafeAreaView style={styles.wrapper}>
         <View style={styles.container}>
-          <Swiper horizontal index={activeIndex} loadMinimal={6}>
+          <Swiper horizontal index={activeIndex} loadMinimal={6} >
             {items}
           </Swiper>
           <TouchableOpacity
