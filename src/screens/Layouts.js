@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { ScrollView, RefreshControl, StatusBar } from 'react-native';
+import { ScrollView, RefreshControl } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import get from 'lodash/get';
@@ -88,13 +88,14 @@ export class Layouts extends Component {
   componentDidMount() {
     const { layoutsActions, componentId } = this.props;
     // Listener for home button. Returns to home screen.
-    this.backToHomeScreenHandler = Navigation.events().registerBottomTabSelectedListener(
-      ({ selectedTabIndex, unselectedTabIndex }) => {
-        if (selectedTabIndex === 0 && unselectedTabIndex === 0) {
-          Navigation.popToRoot(componentId);
-        }
-      },
-    );
+    this.backToHomeScreenHandler =
+      Navigation.events().registerBottomTabSelectedListener(
+        ({ selectedTabIndex, unselectedTabIndex }) => {
+          if (selectedTabIndex === 0 && unselectedTabIndex === 0) {
+            Navigation.popToRoot(componentId);
+          }
+        },
+      );
     Navigation.mergeOptions(this.props.componentId, {
       topBar: {
         title: {
@@ -107,9 +108,8 @@ export class Layouts extends Component {
 
     if (config.pushNotifications) {
       PushNotificaitons.Init();
-      this.pushNotificationListener = PushNotificaitons.RegisterPushListener(
-        componentId,
-      );
+      this.pushNotificationListener =
+        PushNotificaitons.RegisterPushListener(componentId);
     }
   }
 
@@ -289,7 +289,6 @@ export class Layouts extends Component {
             onRefresh={() => this.onRefresh()}
           />
         }>
-        <StatusBar backgroundColor="aqua" barStyle="light-content" />
         {blocksList}
       </ScrollView>
     );
