@@ -50,8 +50,8 @@ export function setClosedRoot() {
 export function setRoot() {
   Navigation.setDefaultOptions({
     statusBar: {
-      backgroundColor: 'white',
-      style: 'light'
+      backgroundColor: theme.$statusBarColor,
+      style: 'light',
     },
     topBar: {
       backButton: {
