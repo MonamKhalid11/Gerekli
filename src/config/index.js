@@ -65,9 +65,9 @@ export default {
   pushNotificationChannelId: 'cscart.default',
   pushNotificationsColor: '#26323e',
   // Demo app features
-  // demo: false,
-  // demoUsername: 'ellis.p@aytrade.co.uk',
-  // demoPassword: 'Elsowda!',
+  demo: false,
+  demoUsername: 'ellis.p@aytrade.co.uk',
+  demoPassword: 'Elsowda!',
 
   // Apple pay payments
   applePay: false,

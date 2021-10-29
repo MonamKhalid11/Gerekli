@@ -101,7 +101,7 @@ class ProductListView extends PureComponent {
   renderDiscount = () => {
     const { product } = this.props;
     const { item } = product;
-
+    console.log("showing values of products here are",product);
     if (!item.list_discount_prc && !item.discount_prc) {
       return null;
     }

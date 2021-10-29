@@ -377,9 +377,9 @@ export class Login extends Component {
       values.password = config.demoPassword;
     }
 
-    // //Testhere
-    // values.email = config.demoUsername;
-    // values.password = config.demoPassword;
+    //Testhere
+    values.email = config.demoUsername;
+    values.password = config.demoPassword;
 
     const options = {
       disableOrder: true,
