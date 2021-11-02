@@ -10,7 +10,7 @@ const styles = EStyleSheet.create({
   blockHeader: {
     fontWeight: 'bold',
     fontSize: '1rem',
-    color: '$darkColor',
+    color: '$categoriesHeaderColor',
     marginLeft: 14,
     marginRight: 14,
     marginBottom: 10,
