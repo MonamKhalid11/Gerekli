@@ -50,9 +50,9 @@ export default {
 
   apiKey: 'dc19fc3d517e1c5b232f7f046a8fe914',
   // API URL
-  baseUrl: 'https://gerekli.com.tm/api/4.0/',
+  baseUrl: 'https://gerekli.tm/cscart/api/4.0/',
   // SITE URL
-  siteUrl: 'https://gerekli.com.tm/',
+  siteUrl: 'https://gerekli.tm/cscart/',
 
   // SHOP NAME
   shopName: 'Gerekli',
@@ -65,9 +65,9 @@ export default {
   pushNotificationChannelId: 'cscart.default',
   pushNotificationsColor: '#26323e',
   // Demo app features
-  demo: false,
-  demoUsername: 'ellis.p@aytrade.co.uk',
-  demoPassword: 'Elsowda!',
+  // demo: false,
+  // demoUsername: 'ellis.p@aytrade.co.uk',
+  // demoPassword: 'Elsowda!',
 
   // Apple pay payments
   applePay: false,

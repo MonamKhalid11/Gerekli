@@ -906,9 +906,9 @@ export class ProductDetail extends Component {
           <Text style={styles.vendorProductCount}>
             {i18n.t('{{count}} item(s)', { count: vendor.products_count })}
           </Text>
-          <Text style={styles.vendorDescription}>
+          {/* <Text style={styles.vendorDescription}>
             {stripTags(vendor.description)}
-          </Text>
+          </Text> */}
           <TouchableOpacity
             style={styles.vendorInfoBtn}
             onPress={() => {

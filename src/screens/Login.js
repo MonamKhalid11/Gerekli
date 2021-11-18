@@ -293,6 +293,7 @@ export class Login extends Component {
    * Sets title and header icons.
    */
   componentWillMount() {
+    alert('testing url is : https://gerekli.tm/api/4.0/')
     Navigation.mergeOptions(this.props.componentId, {
       topBar: {
         title: {
@@ -377,9 +378,9 @@ export class Login extends Component {
       values.password = config.demoPassword;
     }
 
-    //Testhere
-    values.email = config.demoUsername;
-    values.password = config.demoPassword;
+    // //Testhere
+    // values.email = config.demoUsername;
+    // values.password = config.demoPassword;
 
     const options = {
       disableOrder: true,

@@ -372,6 +372,8 @@ export class CheckoutPayment extends Component {
       return null;
     }
     let form = null;
+    console.log("selectedItem.template",selectedItem);
+
     // FIXME: HARDCODE
     switch (selectedItem.template) {
       case TPL_EMPTY:

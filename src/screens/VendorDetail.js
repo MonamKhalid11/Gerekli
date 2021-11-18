@@ -228,9 +228,9 @@ export class VendorDetail extends Component {
             value={discussion.average_rating}
             count={discussion.search.total_items}
           />
-          <Text style={styles.vendorDescription}>
+          {/* <Text style={styles.vendorDescription}>
             {stripTags(vendors.currentVendor.description)}
-          </Text>
+          </Text> */}
         </View>
       </Section>
     );

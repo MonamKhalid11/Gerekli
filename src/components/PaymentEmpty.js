@@ -22,12 +22,12 @@ const formOptions = {
   disableOrder: true,
   fields: {
     notes: {
-      label: i18n.t('Comment'),
+      label: 'Комментарий',
       i18n: {
         optional: '',
         required: '',
       },
-      help: `${i18n.t('(Optional)')}`,
+      help: `По желанию`,
       clearButtonMode: 'while-editing',
       multiline: true,
       returnKeyType: 'done',

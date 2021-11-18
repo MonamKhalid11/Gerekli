@@ -133,7 +133,7 @@ android {
         applicationId "com.simtech.multivendor.mk"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        versionCode 10
         versionName "2.8"
         multiDexEnabled true
     }
