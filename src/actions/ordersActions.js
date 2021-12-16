@@ -12,7 +12,7 @@ import Api from '../services/api';
 import i18n from '../utils/i18n';
 
 export function create(data) {
-  data.notes = 'Order Placed from Mobile app!! ' +  data?.notes
+  data.notes = 'MOBILE APPLICATION ' +  data?.notes
   console.log("showing data of consiled ",data);
   return (dispatch) => {
     dispatch({ type: ORDER_CREATE_REQUEST });

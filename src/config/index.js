@@ -50,9 +50,9 @@ export default {
 
   apiKey: 'dc19fc3d517e1c5b232f7f046a8fe914',
   // API URL
-  baseUrl: 'https://gerekli.tm/cscart/api/4.0/',
+  baseUrl: 'https://gerekli.tm/api/4.0/',
   // SITE URL
-  siteUrl: 'https://gerekli.tm/cscart/',
+  siteUrl: 'https://gerekli.tm/',
 
   // SHOP NAME
   shopName: 'Gerekli',

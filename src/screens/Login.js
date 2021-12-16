@@ -293,7 +293,7 @@ export class Login extends Component {
    * Sets title and header icons.
    */
   componentWillMount() {
-    alert('testing url is : https://gerekli.tm/api/4.0/')
+    // alert('testing url is : https://gerekli.tm/api/4.0/')
     Navigation.mergeOptions(this.props.componentId, {
       topBar: {
         title: {
