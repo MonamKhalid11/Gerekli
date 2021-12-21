@@ -324,6 +324,29 @@ export function fetchProductOffers(pid) {
   };
 }
 
+export function fetchSubCatogeries() {
+  return (dispatch) => {
+    // dispatch({ type: FETCH_COMMON_PRODUCTS_REQUEST });
+
+    return Api.get(
+      `/SraCategoriesTree`,
+    )
+      .then((response) => {
+        console.log("showing resonse here in response",response);
+        // dispatch({
+        //   type: FETCH_COMMON_PRODUCTS_SUCCESS,
+        // });
+        return response;
+      })
+      .catch((error) => {
+        // dispatch({
+        //   type: FETCH_COMMON_PRODUCTS_FAIL,
+        //   error,
+        // });
+      });
+  };
+}
+
 export function search(params = {}) {
   return (dispatch) => {
     dispatch({ type: SEARCH_PRODUCTS_REQUEST });

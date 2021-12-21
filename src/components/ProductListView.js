@@ -179,10 +179,13 @@ class ProductListView extends PureComponent {
     const { product, onPress } = this.props;
     const { item } = product;
     const imageUri = getImagePath(item);
+    console.log("showing recieved styling item", item);
 
+    console.log("showing recieved styling", getImagePath(item));
     return (
       <TouchableOpacity style={styles.container} onPress={() => onPress(item)}>
         <View>
+          {    console.log("showing values of image styles",styles.productImage)}
           {imageUri !== null && (
             <Image
               style={styles.productImage}

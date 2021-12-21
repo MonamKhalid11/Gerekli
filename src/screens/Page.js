@@ -70,6 +70,7 @@ export class Page extends Component {
    */
   render() {
     const { uri } = this.props;
+    console.log("showing value of uri is here to be opened",uri);
     return (
       <View style={styles.container}>
         <WebView

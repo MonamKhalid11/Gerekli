@@ -61,12 +61,13 @@ const styles = EStyleSheet.create({
  */
 const CategoryListView = ({ category, onPress }) => {
   const imageUri = getImagePath(category);
-
+  console.log("showing images paths",getImagePath(category));
   return (
     <TouchableOpacity
       style={styles.container}
       onPress={() => onPress(category)}>
       <View style={styles.wrapper}>
+        {console.log("showing desings of styles.categoryImage",styles.categoryImage)}
         {imageUri ? (
           <Image source={{ uri: imageUri }} style={styles.categoryImage} />
         ) : null}

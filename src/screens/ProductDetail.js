@@ -293,7 +293,7 @@ export class ProductDetail extends Component {
   /**
    *  Gets product information and sets to store.
    */
-  componentDidMount() {
+ async componentDidMount() {
     this.productInit();
   }
 
@@ -323,6 +323,7 @@ export class ProductDetail extends Component {
 
     // If we haven't images put main image.
     const images = getProductImagesPaths(product);
+    console.log("shwoing indepth,",getProductImagesPaths(product));
 
     // Fixme
     if (
@@ -618,7 +619,7 @@ export class ProductDetail extends Component {
    */
   renderImage() {
     const { images, showSwiper } = this.state;
-
+    console.log("shwoing values of images in pd",images);
     if (!showSwiper) {
       return <View />;
     }

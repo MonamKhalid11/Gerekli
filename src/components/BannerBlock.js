@@ -70,6 +70,7 @@ export default class BannerBlocks extends Component {
    * @param {number} index - Banner index.
    */
   renderImage = (item, index) => {
+    console.log("showing item banner ",item);
     const imageUri = get(item, 'main_pair.icon.image_path');
     const { onPress } = this.props;
     return (

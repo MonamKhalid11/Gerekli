@@ -86,6 +86,10 @@ export class Categories extends Component {
    * Collects the content of the selected category.
    */
   async componentDidMount() {
+    let { productsActions } = this.props;
+
+    let  subCatogeries = await productsActions.fetchSubCatogeries();
+    console.log("showing values for sub catogeries",subCatogeries);
     const { products, categoryId, layouts } = this.props;
 
     let { category } = this.props;
